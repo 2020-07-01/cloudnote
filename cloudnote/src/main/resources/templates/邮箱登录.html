@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>登录</title>
+
+    <!--引入layui-->
+    <link rel='stylesheet' type='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
+    <script src="../static/layui-v2.5.5/layui/layui.js"></script>
+     
+</head>
+<body>
+
+    <div class="layui-container"><!--宽度100%适应的容器中-->
+
+        <div class="layui-row" style="margin-top: 5%;">
+
+        </div>
+
+        <div class="layui-row layui-col-space5" ><!--设置列之间的间距为5-->    
+        
+            <div class="layui-col-md4">
+                
+            </div>
+            
+            <div class="layui-col-md4">
+
+                <form class="layui-form" action="" style="margin-left: 10%;margin-right: 10%;">
+
+                    <div class="layui-form-item" style="text-align:center;">
+                        <h2>云笔记平台</h2>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <input type="text" name="title" required  lay-verify="required"  placeholder="邮箱" autocomplete="off" class="layui-input">
+                    </div>
+
+                    <div class="layui-form-item">           
+                            <input type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">                       
+                    </div>
+                
+                    <div class="layui-form-item">
+
+                        <div class="layui-row  layui-col-space5">
+                            <div class="layui-col-xs7">
+                              <div class="grid-demo grid-demo-bg1"><input type="checkbox" name="remember" lay-skin="primary" title="记住密码"></div>
+                            </div>
+
+
+                            <div class="layui-col-xs5">
+                                <div class="grid-demo grid-demo-bg1">
+                                    <a style="display: inline-block; text-align: center; margin-top: 9px;">忘记密码?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="formDemo">登录</button>
+                    </div>
+
+                    <div class="layui-form-item">
+
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs7">
+                                <label>其他方式登录</label>
+                                <a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>
+                            </div>
+
+                            <div class="layui-col-xs5">
+                                <a href="">注册帐号</a>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </form>
+        </div>
+
+        <div class="layui-col-md4">
+             
+        </div>
+    </div>
+</div>
+ 
+    <script>
+    //Demo
+    layui.use('form', function(){
+    var form = layui.form;
+    
+    //监听提交
+    form.on('submit(formDemo)', function(data){
+        layer.msg(JSON.stringify(data.field));
+        return false;
+    });
+    });
+    </script>
+</body>
+</html>
+      
