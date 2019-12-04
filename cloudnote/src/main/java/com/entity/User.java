@@ -1,36 +1,22 @@
 package com.entity;
 
-/**
- * @author :qiang
- * @date :2019/12/3 下午10:10
- * @description :用户信息类
- * @other :
- */
+
+import jdk.nashorn.internal.ir.IdentNode;
+
 public class User {
 
     private Integer userId;
-
     private String userName;
-
     private String userPassword;
-
-    private String phone;
-
-    private String email;
-
-    private String userRole;
-
-    private String createTime;
-
-    private String editTime;
-
-    private String isLogout;
-
-    private String loginTime;
-
-    private String remark;
-
     private String sex;
+    private String email;
+    private Integer phone;
+    private String createTime;
+    private String editTime;
+    private Integer isLogout;
+    private String lastLoginTime;
+    private String remark;
+    private String userRole;
 
 
     public Integer getUserId() {
@@ -41,6 +27,7 @@ public class User {
         this.userId = userId;
     }
 
+
     public String getUserName() {
         return userName;
     }
@@ -48,6 +35,7 @@ public class User {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
 
     public String getUserPassword() {
         return userPassword;
@@ -57,13 +45,15 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public String getPhone() {
-        return phone;
+
+    public String getSex() {
+        return sex;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
+
 
     public String getEmail() {
         return email;
@@ -73,13 +63,15 @@ public class User {
         this.email = email;
     }
 
-    public String getUserRole() {
-        return userRole;
+
+    public Integer getPhone() {
+        return phone;
     }
 
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
+    public void setPhone(Integer phone) {
+        this.phone = phone;
     }
+
 
     public String getCreateTime() {
         return createTime;
@@ -89,6 +81,7 @@ public class User {
         this.createTime = createTime;
     }
 
+
     public String getEditTime() {
         return editTime;
     }
@@ -97,21 +90,24 @@ public class User {
         this.editTime = editTime;
     }
 
-    public String getIsLogout() {
+
+    public Integer getIsLogout() {
         return isLogout;
     }
 
-    public void setIsLogout(String isLogout) {
+    public void setIsLogout(Integer isLogout) {
         this.isLogout = isLogout;
     }
 
-    public String getLoginTime() {
-        return loginTime;
+
+    public String getLastLoginTime() {
+        return lastLoginTime;
     }
 
-    public void setLoginTime(String loginTime) {
-        this.loginTime = loginTime;
+    public void setLastLoginTime(String lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
     }
+
 
     public String getRemark() {
         return remark;
@@ -121,11 +117,13 @@ public class User {
         this.remark = remark;
     }
 
-    public String getSex() {
-        return sex;
+
+    public String getUserRole() {
+        return userRole;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
     }
+
 }
