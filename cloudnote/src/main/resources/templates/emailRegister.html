@@ -7,6 +7,9 @@
     <!--引入layui-->
     <link rel='stylesheet'  media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css' >
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
+    <!--引入jquery-->
+    <script src="../static/jquery-3.4.1.min.js"></script>
+
 
 </head>
 <body>
@@ -27,36 +30,36 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <input type="text" name="title" required  lay-verify="required"  placeholder="邮箱" autocomplete="off" class="layui-input">
+                        <input type="text" name="email" required  lay-verify="required"  placeholder="邮箱" autocomplete="off" class="layui-input">
                     </div>
 
                     <div class="layui-form-item">
 
                         <div class="layui-row layui-col-space5">
                             <div class="layui-col-xs7">
-                                <input type="text" id="LAY-user-login-vercode" class="layui-input">
+                                <input type="text" id="security-code" name="securityCode" class="layui-input">
                             </div>
                             <div class="layui-col-xs5">
-                                <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" onclick="">获取验证码</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit lay-filter="securityCode" onclick="getSecurityCode()">获取验证码</button>
                             </div>
                         </div>
 
                     </div>
 
                     <div class="layui-form-item">
-                            <input type="text" name="title" required  lay-verify="required" placeholder="昵称" autocomplete="off" class="layui-input">
+                            <input type="text" name="userName" required  lay-verify="required" placeholder="昵称" autocomplete="off" class="layui-input">
                     </div>
 
                     <div class="layui-form-item">           
-                        <input type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">                       
+                        <input type="password" name="userPassword" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
                     </div>
 
                     <div class="layui-form-item">           
-                        <input type="password" name="password" required lay-verify="required" placeholder="确认密码" autocomplete="off" class="layui-input">                       
+                        <input type="password" name="confirmPassword" required lay-verify="required" placeholder="确认密码" autocomplete="off" class="layui-input">
                     </div>
 
                     <div class="layui-form-item">
-                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="formDemo">注册</button>
+                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register">注册</button>
                     </div>
 
                     <div class="layui-form-item">
@@ -72,28 +75,78 @@
 
                     </div>
                 </form>
+
         </div>
 
-        <div class="layui-col-md4"> </div>
+        <div class="layui-col-md4">  </div>
+
+        </div>
     </div>
-</div>
-    <script>
-    //Demo
-    layui.use('form', function(){
-    var form = layui.form;
-    
-    //监听提交
-    form.on('submit(formDemo)', function(data){
-        layer.msg(JSON.stringify(data.field));
-        return false;
-    });
-    });
 
+    </div>
 
-
-
-
-    </script>
 </body>
+<script>
+
+    layui.use('form', function(){
+        var form = layui.form;
+
+        /**
+         * 监听提交
+         */
+        form.on('submit(register)', function(data){
+            //alert("注册");
+            console.log(data.field);
+            var datajson = JSON.stringify(data.field);//data.field会返回当前表单的全部字段，name：value的形式
+            alert(datajson);
+
+            $.ajax({
+                type:"post",
+                contentType: "application/json",
+                data:datajson,
+                url:"http://localhost:8080/admin/email_register",
+
+                error:function(result){
+                    alert("失败");
+
+                },
+                success:function(result){
+
+                    alert(result);
+                    console.log(result);
+                }
+            });
+
+            return false;
+        });
+    });
+
+    //获取验证码
+    function getSecurityCode() {
+
+        layui.use('form', function(){
+
+            form.on('submit(securityCode)',function () {
+
+                $.ajax({
+                    contentType: "application/json",
+                    url:"http://localhost:8080/admin/email_register",
+                    error:function(result){
+                        alert(result);
+
+                    },
+                    success:function(result){
+
+                    }
+            })
+            })
+        })
+
+
+
+
+    }
+
+</script>
 </html>
       

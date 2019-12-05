@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/")
 public class DefaultController {
 
-    @RequestMapping(value = "/login")
+    @RequestMapping(value = "login")
     public String toEmailRegister(){
 
         return "emailRegister";
