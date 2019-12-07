@@ -5,7 +5,7 @@
     <title>注册</title>
 
     <!--引入layui-->
-    <link rel='stylesheet'  media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css' >
+    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
@@ -14,137 +14,136 @@
 </head>
 <body>
 
-    <div class="layui-container"><!--宽度100%适应的容器中-->
-        <div class="layui-row" style="margin-top: 6%;"> </div>
+<div class="layui-container"><!--宽度100%适应的容器中-->
+    <div class="layui-row" style="margin-top: 6%;"></div>
 
-        <div class="layui-row layui-col-space5" ><!--设置列之间的间距为5-->    
-        
-            <div class="layui-col-md4"> </div>
-            
-            <div class="layui-col-md4">
+    <div class="layui-row layui-col-space5"><!--设置列之间的间距为5-->
 
-                <form class="layui-form" action="" style="margin-left: 10%;margin-right: 10%;">
+        <div class="layui-col-md4"></div>
 
-                    <div class="layui-form-item" style="text-align:center;">
-                        <h2>云笔记平台</h2>
-                    </div>
+        <div class="layui-col-md4">
 
-                    <div class="layui-form-item">
-                        <input type="text" name="email" required  lay-verify="required"  placeholder="邮箱" autocomplete="off" class="layui-input">
-                    </div>
+            <form class="layui-form" action="" style="margin-left: 10%;margin-right: 10%;">
 
-                    <div class="layui-form-item">
+                <div class="layui-form-item" style="text-align:center;">
+                    <h2>云笔记平台</h2>
+                </div>
 
-                        <div class="layui-row layui-col-space5">
-                            <div class="layui-col-xs7">
-                                <input type="text" id="security-code" name="securityCode" class="layui-input">
-                            </div>
-                            <div class="layui-col-xs5">
-                                <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit lay-filter="securityCode" onclick="getSecurityCode()">获取验证码</button>
-                            </div>
+                <div class="layui-form-item">
+                    <input type="text" name="email" required lay-verify="required" placeholder="邮箱" autocomplete="off"
+                           class="layui-input">
+                </div>
+
+                <div class="layui-form-item">
+
+                    <div class="layui-row layui-col-space5">
+                        <div class="layui-col-xs7">
+                            <input type="text" id="security-code" name="securityCode" class="layui-input">
                         </div>
-
-                    </div>
-
-                    <div class="layui-form-item">
-                            <input type="text" name="userName" required  lay-verify="required" placeholder="昵称" autocomplete="off" class="layui-input">
-                    </div>
-
-                    <div class="layui-form-item">           
-                        <input type="password" name="userPassword" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
-                    </div>
-
-                    <div class="layui-form-item">           
-                        <input type="password" name="confirmPassword" required lay-verify="required" placeholder="确认密码" autocomplete="off" class="layui-input">
-                    </div>
-
-                    <div class="layui-form-item">
-                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register">注册</button>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <div class="layui-row layui-col-space5">
-                            <div class="layui-col-xs7">
-                                <label>其他方式注册</label>
-                                <a href="javascript:;"><i class="layui-icon layui-icon-cellphone"></i></a>
-                            </div>
-                            <div class="layui-col-xs5">
-                                <a href="">已有账户登录</a>
-                            </div>
+                        <div class="layui-col-xs5">
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
+                                    lay-filter="securityCode" onclick="getSecurityCode()">获取验证码
+                            </button>
                         </div>
-
                     </div>
-                </form>
+
+                </div>
+
+                <div class="layui-form-item">
+                    <input type="text" name="userName" required lay-verify="required" placeholder="昵称"
+                           autocomplete="off" class="layui-input">
+                </div>
+
+                <div class="layui-form-item">
+                    <input type="password" name="userPassword" required lay-verify="required" placeholder="密码"
+                           autocomplete="off" class="layui-input">
+                </div>
+
+                <div class="layui-form-item">
+                    <input type="password" name="confirmPassword" required lay-verify="required" placeholder="确认密码"
+                           autocomplete="off" class="layui-input">
+                </div>
+
+                <div class="layui-form-item">
+                    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register">注册</button>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-row layui-col-space5">
+                        <div class="layui-col-xs7">
+                            <label>其他方式注册</label>
+                            <a href="javascript:;"><i class="layui-icon layui-icon-cellphone"></i></a>
+                        </div>
+                        <div class="layui-col-xs5">
+                            <a href="">已有账户登录</a>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
 
         </div>
 
-        <div class="layui-col-md4">  </div>
-
-        </div>
-    </div>
+        <div class="layui-col-md4"></div>
 
     </div>
+</div>
+
+</div>
 
 </body>
 <script>
 
-    layui.use('form', function(){
+    layui.use('form', function () {
         var form = layui.form;
 
         /**
          * 监听提交
          */
-        form.on('submit(register)', function(data){
+        form.on('submit(register)', function (data) {
             //alert("注册");
-            console.log(data.field);
+            //console.log(data.field);
             var datajson = JSON.stringify(data.field);//data.field会返回当前表单的全部字段，name：value的形式
-            alert(datajson);
+            //alert(datajson);
 
             $.ajax({
-                type:"post",
+                type: "post",
                 contentType: "application/json",
-                data:datajson,
-                url:"http://localhost:8080/admin/email_register",
-
-                error:function(result){
-                    alert("失败");
+                data: datajson,
+                url: "http://localhost:8080/admin/email_register",
+                error: function (result) {
+                    alert(result);
 
                 },
-                success:function(result){
+                success: function () {
 
-                    alert(result);
-                    console.log(result);
+                    window.location.href = "/to_emailLogin";//进入邮箱登录页面
                 }
             });
 
-            return false;
         });
     });
 
     //获取验证码
     function getSecurityCode() {
 
-        layui.use('form', function(){
+        layui.use('form', function () {
 
-            form.on('submit(securityCode)',function () {
+            form.on('submit(securityCode)', function () {
 
                 $.ajax({
                     contentType: "application/json",
-                    url:"http://localhost:8080/admin/email_register",
-                    error:function(result){
+                    url: "http://localhost:8080/admin/email_register",
+                    error: function (result) {
                         alert(result);
 
                     },
-                    success:function(result){
+                    success: function (result) {
 
                     }
-            })
+                })
             })
         })
-
-
-
-
     }
 
 </script>

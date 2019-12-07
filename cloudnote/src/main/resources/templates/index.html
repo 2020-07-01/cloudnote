@@ -8,243 +8,237 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
     <!--引入layui-->
-    <link rel='stylesheet' type='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
+    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
-
     <!--引入jquery-->
-    <script src="jquery-3.4.1.min.js"></script>
+    <script src="../static/jquery-3.4.1.min.js"></script>
 
 
     <style>
-      .layui-side.layui-bg-black{
-        width: 100px;
-      }
+        .layui-side.layui-bg-black {
+            width: 100px;
+        }
 
-      .layui-nav-tree {
-        width: 100px;
-      }
+        .layui-nav-tree {
+            width: 100px;
+        }
 
-      .layui-body{
-        left:100px;
-      }
+        .layui-body {
+            left: 100px;
+        }
 
-      .layui-footer1{
-        position:fixed;
-        left:100px;
-        right:0;
-        bottom:0;
-        height:35px;
-        line-height:35px;
-        padding:0 15px;
-      }
+        .layui-footer1 {
+            position: fixed;
+            left: 100px;
+            right: 0;
+            bottom: 0;
+            height: 35px;
+            line-height: 35px;
+            padding: 0 15px;
+        }
 
-      .note-title{
-        border:none;
-      }
+        .note-title {
+            border: none;
+        }
 
-      </style>
+    </style>
 </head>
 
 <body class="layui-layout-body">
-  <!--顶部导航栏-->
-  <div class="layui-layout layui-layout-admin">
+<!--顶部导航栏-->
+<div class="layui-layout layui-layout-admin">
 
     <div class="layui-header">
 
-      <div class="layui-logo">云笔记平台</div>
+        <div class="layui-logo">云笔记平台</div>
 
 
-      <div class=" layui-nav layui-layout-left">
-          <li class="layui-nav-item"><a id="create-note" href="">创建笔记</a></li>
-          </li>
-      </div>
+        <div class=" layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a id="create-note" href="">创建笔记</a></li>
+            </li>
+        </div>
 
-      <ul class="layui-nav layui-layout-right">
+        <ul class="layui-nav layui-layout-right">
 
-        <li class="layui-nav-item">
-            <div class="layui-input-inline">
-               <input type="text"  name="title" required  lay-verify="required" placeholder="keyword" autocomplete="off"  class="layui-input" style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 4px;">
-            </div>
-            
-            <div class="layui-input-inline" style="margin-right: 15px; ">
-                <button class="layui-btn layui-btn-primary layui-btn-sm">搜索</button>
-            </div>
+            <li class="layui-nav-item">
+                <div class="layui-input-inline">
+                    <input type="text" name="title" required lay-verify="required" placeholder="keyword"
+                           autocomplete="off" class="layui-input"
+                           style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 4px;">
+                </div>
 
-        </li>
+                <div class="layui-input-inline" style="margin-right: 15px; ">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm">搜索</button>
+                </div>
 
-        <li class="layui-nav-item">
-          <a href="javascript:;">
-            <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-            admin
-          </a>
-          <dl class="layui-nav-child">
-            <dd><a href="">基本资料</a></dd>
-            <dd><a href="">修改密码</a></dd>
-          </dl>
-        </li>
-        <li class="layui-nav-item"><a href="">退出</a></li>
-      </ul>
+            </li>
+
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    admin
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/to_basicInformation">基本资料</a></dd>
+                    <dd><a href="/to_editPassword">修改密码</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退出</a></li>
+        </ul>
 
 
     </div>
-  
-  
-    <div class="layui-side layui-bg-black" fixwidth:true,width:100 >
-      <div class="layui-side-scroll">
-        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-        <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-          
-          <li class="layui-nav-item layui-nav-itemed">
-            <a class="" href="javascript:;">笔记</a>
-            <dl class="layui-nav-child">
-              <dd><a href="javascript:;">学习</a></dd>
-              <dd><a href="javascript:;">工作</a></dd>
-              <dd><a href="javascript:;">生活</a></dd>
-              <dd><a href="javascript:;">旅游</a></dd>
-              <dd><a href="javascript:;">随笔</a></dd>
-            </dl>
-          </li>
 
-          <li class="layui-nav-item">
-            <a href="javascript:;">回收站</a>
-            <dl class="layui-nav-child">
-              <dd><a href="javascript:;">全部恢复</a></dd>
-              <dd><a href="javascript:;">全部清空</a></dd>
-              <dd><a href="javascript:;">查看全部</a></dd>
-            </dl>
-          </li>
-        </ul>
-      </div>
+
+    <div class="layui-side layui-bg-black" style="fixwidth:true,width:100">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">笔记</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">学习</a></dd>
+                        <dd><a href="javascript:;">工作</a></dd>
+                        <dd><a href="javascript:;">生活</a></dd>
+                        <dd><a href="javascript:;">旅游</a></dd>
+                        <dd><a href="javascript:;">随笔</a></dd>
+                    </dl>
+                </li>
+
+                <li class="layui-nav-item">
+                    <a href="javascript:;">回收站</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">全部恢复</a></dd>
+                        <dd><a href="javascript:;">全部清空</a></dd>
+                        <dd><a href="javascript:;">查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="layui-body">
-      <hr>
-      <div class="layui-row layui-col-space10" >
+        <hr>
+        <div class="layui-row layui-col-space10">
 
-        <div class="layui-col-xs6">
-          <div class="grid-demo grid-demo-bg1" style="margin-left: 5px;">
-              <table class="layui-hide" id="test"></table>
-          </div>
+            <div class="layui-col-xs6">
+                <div class="grid-demo grid-demo-bg1" style="margin-left: 5px;">
+                    <table class="layui-hide" id="test"></table>
+                </div>
+            </div>
+
+            <div class="layui-col-xs6">
+                <div class="grid-demo">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+
+                            <div class="layui-input-inline" style="width: 66%;float:left;">
+                                <input type="text" class="layui-input note-title" placeholder="标题">
+                            </div>
+
+                            <div class="layui-input-inline" style="width: 14%; ">
+                                <select name="quiz2">
+                                    <option value="">分类</option>
+                                    <option value="学习">学习</option>
+                                    <option value="工作">工作</option>
+                                    <option value="生活">生活</option>
+                                    <option value="旅游">旅游</option>
+                                    <option value="随笔">随笔</option>
+                                </select>
+                            </div>
+
+                            <div class="layui-input-inline" style="width: 14%;float:right;">
+                                <button type="button" onclick="saveNote()" class="layui-btn layui-btn-fluid">保存</button>
+                            </div>
+
+                        </div>
+
+                        <div class="layui-form-item">
+                            <textarea id="note-content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+
         </div>
 
-        <div class="layui-col-xs6">
-          <div class="grid-demo" >
-              <form class="layui-form" action="">
-                <div class="layui-form-item">
-                   
-                  <div class="layui-input-inline" style="width: 66%;float:left;">
-                    <input type="text"  class="layui-input note-title" placeholder="标题">
-                  </div>
-                        
-                  <div class="layui-input-inline" style="width: 14%; ">
-                    <select name="quiz2">
-                      <option value="">分类</option>
-                      <option value="学习">学习</option>
-                      <option value="工作">工作</option>
-                      <option value="生活">生活</option>
-                      <option value="旅游">旅游</option>
-                      <option value="随笔">随笔</option>
-                      </select>
-                  </div>
 
-                  <div class="layui-input-inline" style="width: 14%;float:right;">
-                    <button type="button"  onclick="saveNote()" class="layui-btn layui-btn-fluid">保存</button>
-                  </div>
-
-                </div>
-          
-                <div class="layui-form-item" >                     
-                  <textarea id="note-content" placeholder="请输入内容" class="layui-textarea"></textarea>
-                </div>
-        
-              </form>
-          </div>
-        </div>
-          
-        
-      </div>
-
-      
     </div>
-    
+
 
     <div class="layui-footer1 layui-bg-black">
-      <!-- 底部固定区域 -->
-      © layui.com - 底部固定区域
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
     </div>
- </div>
-
-
+</div>
 
 </body>
 
- 
-
-
 <!--加载所需要的基础模块-->
 <script>
-    layui.use('element', function(){
-    var element = layui.element //
-  });
+    layui.use('element', function () {
+        var element = layui.element;
+    });
 
 
-
-  //加载编辑器
-  layui.use('layedit', function(){
-    var layedit = layui.layedit;
-    layedit.build('note-content',{height:360});
-  });
+    //加载编辑器
+    layui.use('layedit', function () {
+        var layedit = layui.layedit;
+        layedit.build('note-content', {height: 360});
+    });
 
 </script>
- 
 
-<script>
-  //加载表格
-  layui.use('table', function(){
-      var table = layui.table,form = layui.form;
-      
-      table.render({
-      elem: '#test'
-      ,url:'/demo/table/user/'
-      ,cellMinWidth: 40
-      ,cols: [[
-          {type: 'checkbox'}
-          ,{field:'id', title:'ID', width:100, unresize: true, sort: true}
-          ,{field:'noteTitle', title:'标题', templet: '#usernameTpl'}
-          ,{field:'zhao', title:'创建时间',sort:true}
-          ,{field:'wealth', title: '类别', minWidth:120}
-      ]]
-      ,page: true 
-      ,toolbar:'#toolbarDemo'
-      });
-      
-      //监听性别操作
-      form.on('switch(sexDemo)', function(obj){
-      layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
-      });
-      
-      //监听锁定操作
-      form.on('checkbox(lockDemo)', function(obj){
-      layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
-      });
-  });
-        
+
+<script type="text/javascript">
+    //加载表格
+    layui.use('table', function () {
+        var table = layui.table, form = layui.form;
+        //方法级渲染
+        table.render({
+            elem: '#test'
+            //,url:'//' //默认传递两个参数
+            , method: 'get'
+            //,where:'id=' 设置接口的其他参数
+            , cellMinWidth: 40
+            //设置表头，是一个二维数组
+            , cols: [
+                [
+                    {type: 'checkbox'}
+                    , {field: 'id', title: 'ID', width: 100}
+                    , {field: 'noteTitle', title: '标题'}
+                    , {field: 'createTime', title: '创建时间'}
+                    , {field: 'type', title: '类别'}
+                ]
+            ]
+            , page: true
+            , toolbar: '#toolbarDemo'
+        });
+
+        //监听性别操作
+        form.on('switch(sexDemo)', function (obj) {
+            layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+        });
+
+        //监听锁定操作
+        form.on('checkbox(lockDemo)', function (obj) {
+            layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+        });
+    });
+
 </script>
 
-<!--表格操作-->
+<!--&lt;!&ndash;表格操作&ndash;&gt;-->
 <script type="text/html" id="toolbarDemo">
-  <div class="layui-btn-container">
-    <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="add">查看</button>
-    <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="delete">删除</button>
-    <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="update">编辑</button>
-  </div>
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="add">查看</button>
+        <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="delete">删除</button>
+        <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="update">编辑</button>
+    </div>
 </script>
 
 
-
- 
-
- 
-
- 
 </html>

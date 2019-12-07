@@ -1,5 +1,6 @@
 package com.controller;
 
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,10 +15,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/")
 public class DefaultController {
 
-    @RequestMapping(value = "login")
-    public String toEmailRegister(){
+
+    @RequestMapping(value = "register")
+    public String toEmailRegister() {
 
         return "emailRegister";
+    }
+
+
+    @RequestMapping(value = "to_emailLogin")
+    public String toEmailLoginHtml(){
+        return "emailLogin";
+    }
+
+    @RequestMapping("to_index")
+    public String toIndex() {
+        return "index";
+    }
+
+    @RequestMapping(value = "to_editPassword")
+    public String toEditPassword(){
+
+        return "editPassword";
+    }
+
+    @RequestMapping(value = "to_basicInformation")
+    public String toInformation(){
+        return "basicInformation";
     }
 
 }
