@@ -4,12 +4,15 @@ package com.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.User;
+import com.sendEmailService.MailServiceImpl;
 import com.service.serviceImpl.AdminUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author :qiang
@@ -23,7 +26,10 @@ public class AdminUserController {
 
 
     @Autowired
-    AdminUserServiceImpl adminUserService;
+    private AdminUserServiceImpl adminUserService;
+
+    @Autowired
+    private MailServiceImpl mailService;
 
     /**
      * 邮箱注册
@@ -32,7 +38,7 @@ public class AdminUserController {
      * @return
      */
     @RequestMapping(value = "/email_register")
-    public String emailRegister(@RequestBody String jsonParam) {
+    public String emailRegister(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         String result;
         JSONObject jsonObject;
         try {
@@ -53,13 +59,13 @@ public class AdminUserController {
         } catch (Exception e) {
             result = "出现异常!";
         }
-
+        System.out.println(result);
         return result;
     }
 
 
     @RequestMapping(value = "/email_login")
-    public String emailLogin(@RequestBody String jsonParam) {
+    public String emailLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         String result;
         JSONObject jsonObject;
         try {
@@ -74,10 +80,25 @@ public class AdminUserController {
     }
 
 
-    @RequestMapping(value = "/secrityCode")
-    public String securityCode() {
-        String code = "123456";
-        return code;
+    @RequestMapping(value = "/security_code")
+    public String securityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+
+        String result;
+        JSONObject jsonObject;
+        try {
+            jsonObject = JSON.parseObject(jsonParam);
+            //在service层对邮件地址进行判断
+            String emailAddress = jsonObject.getString("emailAddress");
+            //此处进行邮件的发送
+            String sender = "2422321558@qq.com";
+            mailService.sendSecurityCode(sender, "2422321558@qq.com", "验证码", "000");
+
+            result = "登录成功!";
+
+        } catch (Exception e) {
+            result = "登录失败!";
+        }
+        return result;
     }
 
 }

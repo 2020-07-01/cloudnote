@@ -41,8 +41,8 @@
                             <input type="text" id="security-code" name="securityCode" class="layui-input">
                         </div>
                         <div class="layui-col-xs5">
-                            <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
-                                    lay-filter="securityCode" onclick="getSecurityCode()">获取验证码
+                            <button class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
+                                    lay-filter="securityCode">获取验证码
                             </button>
                         </div>
                     </div>
@@ -92,20 +92,15 @@
 </div>
 
 </body>
-<script>
-
-    layui.use('form', function () {
-        var form = layui.form;
+<script type="text/javascript">
+    layui.use(['element','form'], function () {
+        var  form = layui.form;
 
         /**
          * 监听提交
          */
         form.on('submit(register)', function (data) {
-            //alert("注册");
-            //console.log(data.field);
             var datajson = JSON.stringify(data.field);//data.field会返回当前表单的全部字段，name：value的形式
-            //alert(datajson);
-
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -116,36 +111,43 @@
 
                 },
                 success: function () {
-
                     window.location.href = "/to_emailLogin";//进入邮箱登录页面
                 }
             });
 
         });
+
+        /**
+         * 发送验证码
+         */
+        form.on('submit(securityCode)', function (dataObject) {
+            alert("验证码");
+            var emailAddress = dataObject.field.email;
+            var  data =
+                {
+                    "emailAddress" :emailAddress
+                };
+            var datajson = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                data: datajson,
+                url: "http://localhost:8080/admin/security_code",
+                error: function (result) {
+                    alert(result);
+
+                },
+                success: function () {
+
+                    window.location.href = "/to_emailLogin";//进入邮箱登录页面
+                }
+            });
+
+        })
     });
 
-    //获取验证码
-    function getSecurityCode() {
-
-        layui.use('form', function () {
-
-            form.on('submit(securityCode)', function () {
-
-                $.ajax({
-                    contentType: "application/json",
-                    url: "http://localhost:8080/admin/email_register",
-                    error: function (result) {
-                        alert(result);
-
-                    },
-                    success: function (result) {
-
-                    }
-                })
-            })
-        })
-    }
-
 </script>
+
+
 </html>
       

@@ -46,7 +46,8 @@
                     <div class="layui-row  layui-col-space5">
                         <div class="layui-col-xs7">
                             <div class="grid-demo grid-demo-bg1"><input type="checkbox" name="remember"
-                                                                        lay-skin="primary" title="记住密码"></div>
+                                                                        lay-skin="primary" title="记住密码"
+                                                                        lay-filter="remberPassword"></div>
                         </div>
 
 
@@ -100,7 +101,7 @@
 
         //提交监听
         form.on('submit(login)', function (data) {
-            var datajson = JSON.stringify(data.field);//data.field会返回当前表单的全部字段，name：value的形式，对象格式
+            var datajson = JSON.stringify(data.field);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -117,6 +118,15 @@
             });
 
         });
+
+
+        /**
+         * 记住密码事件
+         */
+        form.on('checkbox(remberPassword)', function (data) {
+            alert("记住密码事件!");
+        });
+
     });
 </script>
 </html>
