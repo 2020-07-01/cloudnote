@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * @other :
  */
 @Service
-public class AdminUserServiceImpl implements AdminUserService {
+public class UserServiceImpl implements AdminUserService {
 
     @Autowired
     private AdminUserMapper adminUserMapper;
@@ -25,5 +25,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         return row;
 
+    }
+
+    @Override
+    public User findUserById(Integer id) {
+        return null;
     }
 }

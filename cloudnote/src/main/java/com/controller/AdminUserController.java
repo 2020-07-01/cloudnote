@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.User;
 import com.sendEmailService.MailServiceImpl;
-import com.service.serviceImpl.AdminUserServiceImpl;
+import com.service.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +26,7 @@ public class AdminUserController {
 
 
     @Autowired
-    private AdminUserServiceImpl adminUserService;
+    private UserServiceImpl adminUserService;
 
     @Autowired
     private MailServiceImpl mailService;

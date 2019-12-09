@@ -12,5 +12,6 @@ public interface AdminUserService {
 
     public int insert(User user);
 
+    User findUserById(Integer id);
 
 }
