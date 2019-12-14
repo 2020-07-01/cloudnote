@@ -64,6 +64,14 @@ public class AdminUserController {
     }
 
 
+    /**
+     * 邮箱登录
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/email_login")
     public String emailLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         String result;
@@ -80,6 +88,63 @@ public class AdminUserController {
     }
 
 
+
+    /**
+     * 手机号登录
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/phone_login")
+    public String phoneLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        String result;
+        JSONObject jsonObject;
+        try {
+            jsonObject = JSON.parseObject(jsonParam);
+
+            result = "登录成功!";
+
+        } catch (Exception e) {
+            result = "登录失败!";
+        }
+        return result;
+    }
+
+
+
+    /**
+     * 用户名登录
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/username_login")
+    public String userNameLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        String result;
+        JSONObject jsonObject;
+        try {
+            jsonObject = JSON.parseObject(jsonParam);
+
+            result = "登录成功!";
+
+        } catch (Exception e) {
+            result = "登录失败!";
+        }
+        return result;
+    }
+
+    /**
+     * 发送验证码
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/security_code")
     public String securityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
 

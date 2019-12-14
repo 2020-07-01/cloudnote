@@ -1,6 +1,5 @@
 package com.controller;
 
-import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,9 +22,19 @@ public class DefaultController {
     }
 
 
+    @RequestMapping(value = "to_phoneRegister")
+    public String toPhoneRegister(){
+        return "phoneRegister";
+    }
+
     @RequestMapping(value = "to_emailLogin")
-    public String toEmailLoginHtml(){
+    public String toEmailLogin(){
         return "emailLogin";
+    }
+
+    @RequestMapping(value = "to_phoneLogin")
+    public String toPhoneLogin(){
+        return "phoneLogin";
     }
 
     @RequestMapping("to_index")
