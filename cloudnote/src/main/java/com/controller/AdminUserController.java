@@ -4,6 +4,8 @@ package com.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.User;
+import com.interceptorService.TokenEntity;
+import com.interceptorService.TokenServiceImpl;
 import com.sendEmailService.MailServiceImpl;
 import com.service.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,13 @@ public class AdminUserController {
 
 
     @Autowired
-    private UserServiceImpl adminUserService;
+    private UserServiceImpl userService;
 
     @Autowired
     private MailServiceImpl mailService;
+
+    @Autowired
+    TokenServiceImpl tokenService;
 
     /**
      * 邮箱注册
@@ -38,8 +43,8 @@ public class AdminUserController {
      * @return
      */
     @RequestMapping(value = "/email_register")
-    public String emailRegister(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
-        String result;
+    public Object emailRegister(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        JSONObject result = new JSONObject();
         JSONObject jsonObject;
         try {
             jsonObject = JSON.parseObject(jsonParam);
@@ -47,19 +52,21 @@ public class AdminUserController {
             user.setUserName(jsonObject.getString("userName"));
             user.setEmail(jsonObject.getString("email"));
             user.setUserPassword(jsonObject.getString("userPassword"));
-
-            //int row = adminUserService.insert(user);
-
-            int row = 0;
-            if (row == 0) {
-                result = "用户" + jsonObject.getString("userName") + "注册成功!";
+            user.setCreateTime("now()");
+            int row = userService.insert(user);
+            if (row == 1) {
+                result.put("code", "0");
+                result.put("msg", "注册成功!");
+                return result;
             } else {
-                result = "注册失败!";
+                result.put("msg", "1");
+                result.put("msg", "注册失败!");
+                return result;
             }
         } catch (Exception e) {
-            result = "出现异常!";
+            result.put("msg","2");
+            result.put("msg", "出现异常!");
         }
-        System.out.println(result);
         return result;
     }
 
@@ -73,20 +80,32 @@ public class AdminUserController {
      * @return
      */
     @RequestMapping(value = "/email_login")
-    public String emailLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
-        String result;
+    public Object emailLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        JSONObject result = new JSONObject();
         JSONObject jsonObject;
         try {
             jsonObject = JSON.parseObject(jsonParam);
 
-            result = "登录成功!";
+            User user = userService.findUser(new User(jsonObject.getString("email"), jsonObject.getString("userPassword")));
+            if (user == null) {
+                result.put("msg", "登录失败，用户不存在!");
+                return result;
+            } else {
+                if (user.getUserPassword() != jsonObject.getString("userPassword") || user.getEmail() != jsonObject.getString("email")) {
+                    result.put("msg", "用户名或者密码错误!");
+                    return result;
+                } else {
+                    String token = tokenService.createToken(user);
+                    result.put("token", token);
+                    return result;
+                }
+            }
 
         } catch (Exception e) {
-            result = "登录失败!";
+            result.put("msg", "登录异常!");
         }
         return result;
     }
-
 
 
     /**
@@ -111,7 +130,6 @@ public class AdminUserController {
         }
         return result;
     }
-
 
 
     /**

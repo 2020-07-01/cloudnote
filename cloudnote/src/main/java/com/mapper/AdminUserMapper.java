@@ -14,4 +14,7 @@ public interface AdminUserMapper {
 
     int insert(User user);
 
+    User findUser(User user);
+
+
 }

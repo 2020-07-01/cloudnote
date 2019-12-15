@@ -11,24 +11,9 @@ import java.time.LocalDateTime;
 public class TokenEntity implements Serializable {
 
     private Integer userId;
-    private String token;
-    private LocalDateTime expireTime;
-    private LocalDateTime updateTime;
+    private String userName;
+    private String userPassword;
 
-    public TokenEntity() {
-    }
-
-    public TokenEntity(Integer userId, String token) {
-        this.userId = userId;
-        this.token = token;
-    }
-
-    public TokenEntity(Integer userId, String token, LocalDateTime expireTime, LocalDateTime updateTime) {
-        this.userId = userId;
-        this.token = token;
-        this.expireTime = expireTime;
-        this.updateTime = updateTime;
-    }
 
     public Integer getUserId() {
         return userId;
@@ -38,27 +23,19 @@ public class TokenEntity implements Serializable {
         this.userId = userId;
     }
 
-    public String getToken() {
-        return token;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setToken(String taoken) {
-        this.token = token;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public LocalDateTime getExpireTime() {
-        return expireTime;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setExpireTime(LocalDateTime expireTime) {
-        this.expireTime = expireTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 }

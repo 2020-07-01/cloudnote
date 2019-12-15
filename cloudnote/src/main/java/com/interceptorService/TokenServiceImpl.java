@@ -12,23 +12,25 @@ import org.springframework.stereotype.Component;
  * @other :
  */
 @Component
-public class TokenServiceImpl implements TokenService {
+public class TokenServiceImpl {
 
-    @Override
-    public TokenEntity queryByToken(String token) {
 
-        return null;
-    }
-
-    @Override
-    public TokenEntity createToken(User user) {
-        String token = JWT.create().withAudience(String.valueOf(user.getUserId())).sign(Algorithm.HMAC256(user.getUserPassword()));
+    /**
+     * 创建token
+     * Algorithm.HMAC256(
+     *
+     * @param user
+     * @return
+     */
+    public String createToken(User user) {
+        String token = JWT.create().withAudience(String.valueOf(user.getUserId()))
+                .sign(Algorithm.HMAC256(user.getUserPassword()));
         //此处先不设置过期时间
-        return new TokenEntity(user.getUserId(), token);
+        return token;
     }
 
     //设置token过期
-    @Override
+
     public void expireToken(Integer userId) {
 
     }

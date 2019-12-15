@@ -19,16 +19,22 @@ public class UserServiceImpl implements AdminUserService {
     private AdminUserMapper adminUserMapper;
 
 
+
     @Override
     public int insert(User user) {
         int row = adminUserMapper.insert(user);
-
         return row;
-
     }
 
     @Override
     public User findUserById(Integer id) {
         return null;
+    }
+
+    @Override
+    public User findUser(User user) {
+
+        return adminUserMapper.findUser(user);
+
     }
 }

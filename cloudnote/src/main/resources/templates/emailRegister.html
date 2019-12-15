@@ -93,25 +93,32 @@
 
 </body>
 <script type="text/javascript">
-    layui.use(['element','form'], function () {
-        var  form = layui.form;
+    layui.use(['element', 'form'], function () {
+        var form = layui.form;
 
         /**
          * 监听提交
          */
         form.on('submit(register)', function (data) {
-            var datajson = JSON.stringify(data.field);//data.field会返回当前表单的全部字段，name：value的形式
+            alert("注册");
+            var datajson = JSON.stringify(data.field);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
                 url: "http://localhost:8080/admin/email_register",
                 error: function (result) {
-                    alert(result);
-
+                    alert("网络出现异常!");
                 },
-                success: function () {
-                    window.location.href = "/to_emailLogin";//进入邮箱登录页面
+                success: function (result) {
+                    if (result['code'] == 200) {
+                        alert(result['msg']);
+                        window.location.href = "/to_emailLogin";//进入邮箱登录页面
+                    } else {
+                        alert(result['msg']);
+                        window.location.href = "/register";
+                    }
+
                 }
             });
 
@@ -123,9 +130,9 @@
         form.on('submit(securityCode)', function (dataObject) {
             alert("验证码");
             var emailAddress = dataObject.field.email;
-            var  data =
+            var data =
                 {
-                    "emailAddress" :emailAddress
+                    "emailAddress": emailAddress
                 };
             var datajson = JSON.stringify(data);
             $.ajax({

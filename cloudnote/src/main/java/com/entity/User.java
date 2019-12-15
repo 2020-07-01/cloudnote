@@ -12,12 +12,19 @@ public class User {
     private String email;
     private Integer phone;
     private String createTime;
-    private String editTime;
+    private String updateTime;
     private Integer isLogout;
     private String lastLoginTime;
     private String remark;
     private String userRole;
 
+    public User() {
+    }
+
+    public User(String email, String userPassword) {
+        this.email = email;
+        this.userPassword = userPassword;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -82,12 +89,12 @@ public class User {
     }
 
 
-    public String getEditTime() {
-        return editTime;
+    public String getUpdateTime() {
+        return updateTime;
     }
 
-    public void setEditTime(String editTime) {
-        this.editTime = editTime;
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 
 

@@ -7,6 +7,8 @@
     <!--引入layui-->
     <link rel='stylesheet' type='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
+    <!--引入jquery-->
+    <script src="../static/jquery-3.4.1.min.js"></script>
 
 </head>
 <body>
@@ -32,12 +34,12 @@
                 </div>
 
                 <div class="layui-form-item">
-                    <input type="text" name="title" required lay-verify="required" placeholder="邮箱" autocomplete="off"
+                    <input type="text" name="email" required lay-verify="required" placeholder="邮箱" autocomplete="off"
                            class="layui-input">
                 </div>
 
                 <div class="layui-form-item">
-                    <input type="password" name="password" required lay-verify="required" placeholder="密码"
+                    <input type="password" name="userPassword" required lay-verify="required" placeholder="密码"
                            autocomplete="off" class="layui-input">
                 </div>
 
@@ -88,46 +90,44 @@
 </div>
 </body>
 <script>
-    //注册成功弹窗
-    layui.use('layer', function () {
-        var layer = layui.layer;
-        layer.msg('注册成功!',
-            {offset: 'rb'});//坐标未右下角
-    });
 
     //加载登录表单
-    layui.use('form', function () {
+    layui.use(['element','form'], function () {
         var form = layui.form;
 
-        //提交监听
+        //登录监听
         form.on('submit(login)', function (data) {
             var datajson = JSON.stringify(data.field);
+            alert("登录"+datajson);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
                 url: "http://localhost:8080/admin/email_login",
+
+                success: function (result) {
+                   alert(result);
+                   // window.location.href = "/to_index";//进入邮箱登录页面
+                },
                 error: function (result) {
                     alert(result);
 
-                },
-                success: function () {
-
-                    window.location.href = "/to_index";//进入主页
                 }
             });
 
         });
+    })
+
+    //获取token
+    function getToken() {
+
+    }
 
 
-        /**
-         * 记住密码事件
-         */
-        form.on('checkbox(remberPassword)', function (data) {
-            alert("记住密码事件!");
-        });
+    //存储token
+    function setToken() {
 
-    });
+    }
 </script>
 </html>
       

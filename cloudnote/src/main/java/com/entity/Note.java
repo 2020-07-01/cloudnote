@@ -8,17 +8,38 @@ package com.entity;
  */
 public class Note {
 
-    private String id;
+    private Integer noteId;
+    private Integer userId;
+    private Integer typeId;
     private String noteTitle;
+    private String noteContent;
     private String createTime;
-    private String type;
+    private String updateTime;
+    private String isRecycle;
 
-    public String getId() {
-        return id;
+
+    public Integer getNoteId() {
+        return noteId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setNoteId(Integer noteId) {
+        this.noteId = noteId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
     public String getNoteTitle() {
@@ -29,6 +50,14 @@ public class Note {
         this.noteTitle = noteTitle;
     }
 
+    public String getNoteContent() {
+        return noteContent;
+    }
+
+    public void setNoteContent(String noteContent) {
+        this.noteContent = noteContent;
+    }
+
     public String getCreateTime() {
         return createTime;
     }
@@ -37,11 +66,19 @@ public class Note {
         this.createTime = createTime;
     }
 
-    public String getType() {
-        return type;
+    public String getUpdateTime() {
+        return updateTime;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getIsRecycle() {
+        return isRecycle;
+    }
+
+    public void setIsRecycle(String isRecycle) {
+        this.isRecycle = isRecycle;
     }
 }

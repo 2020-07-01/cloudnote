@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
 
     <meta charset='utf-8'>
@@ -135,11 +135,11 @@
                         <div class="layui-form-item">
 
                             <div class="layui-input-inline" style="width: 66%;float:left;">
-                                <input type="text" class="layui-input note-title" placeholder="标题">
+                                <input type="text" id="note-tile" class="layui-input note-title" placeholder="标题">
                             </div>
 
                             <div class="layui-input-inline" style="width: 14%; ">
-                                <select name="quiz2">
+                                <select name="quiz2" id="note-type">
                                     <option value="">分类</option>
                                     <option value="学习">学习</option>
                                     <option value="工作">工作</option>
@@ -178,58 +178,77 @@
 
 </body>
 
-<!--加载所需要的基础模块-->
-<script>
-
-    layui.use('element', function () {
-        var element = layui.element;
-    });
-
-
+<script type="text/javascript">
     //加载编辑器
     layui.use('layedit', function () {
         var layedit = layui.layedit;
         layedit.build('note-content', {height: 360});
     });
 
-</script>
 
+    //保存笔记
+    function saveNote() {
 
-<script type="text/javascript"  >
+        var noteTitle = $('#note-tile').val();
+        var noteContent = $('#note-content').val();
+        var noteType = $("#note-type").val();
+
+        if (typeof (noteContent) == undefined || typeof (noteTitle) == undefined) {
+            alert("标题或者内容不能为空!");
+        }
+        if (typeof (noteType) == undefined) {
+            noteType = $("#note-type").val('0');
+        }
+
+        //封装为json数据
+
+        var data = {
+            "noteTitle": noteTitle,
+            "noteType": noteType,
+            "noteContent": noteContent,
+        }
+        var jsonData = JSON.stringify(data);
+
+        $.ajax({
+            type: "post",
+            contentType: "application/json",
+            dataType:'json',
+            data: jsonData,
+            url: "http://localhost:8080/note/save_note",
+            error: function (result) {
+
+                alert(result);
+
+            },
+            success: function () {
+                window.location.href = "/to_index";//进入主页
+            }
+        });
+
+    }
+
     //加载表格
     layui.use('table', function () {
-        var table = layui.table, form = layui.form;
+        var table = layui.table;
         //方法级渲染
         table.render({
             elem: '#note_list',
-            url:'http://localhost:8080/note/note_list', //默认传递两个参数
+            url: 'http://localhost:8080/note/note_list', //默认传递两个参数
             cellMinWidth: 40,
             cols: [
-                    [
-                        {type: 'checkbox'}
-                        , {field: 'id', title: 'ID', width: 100}
-                        , {field: 'noteTitle', title: '标题'}
-                        , {field: 'createTime', title: '创建时间'}
-                        , {field: 'type', title: '类别'}
-                    ]
-                  ],
-            title:'笔记信息',
-            limit:10,   //默认十条数据一页
+                [
+                    {type: 'checkbox'}
+                    , {field: 'noteId', title: 'ID', width: 100}
+                    , {field: 'noteTitle', title: '标题'}
+                    , {field: 'createTime', title: '创建时间'}
+                    , {field: 'typeId', title: '类别'}
+                ]
+            ],
+            title: '笔记信息',
+            limit: 10,   //默认十条数据一页
             page: true,
             toolbar: '#toolbarDemo',
         });
-
-        //监听性别操作
-        form.on('switch(sexDemo)', function (obj) {
-            layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
-        });
-
-        //监听锁定操作
-        form.on('checkbox(lockDemo)', function (obj) {
-            layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
-        });
-
-
     });
 
 </script>

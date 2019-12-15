@@ -10,8 +10,11 @@ import com.entity.User;
  */
 public interface AdminUserService {
 
-    public int insert(User user);
+    int insert(User user);
 
     User findUserById(Integer id);
+
+    User findUser(User user);
+
 
 }
