@@ -13,7 +13,7 @@ import java.util.List;
  * @description :注册拦截器
  * @other :
  */
-//@Configuration
+@Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
     /**

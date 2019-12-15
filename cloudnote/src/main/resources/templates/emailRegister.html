@@ -111,8 +111,7 @@
                     alert("网络出现异常!");
                 },
                 success: function (result) {
-                    if (result['code'] == 200) {
-                        alert(result['msg']);
+                    if (result['code'] == "0") {
                         window.location.href = "/to_emailLogin";//进入邮箱登录页面
                     } else {
                         alert(result['msg']);

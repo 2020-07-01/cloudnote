@@ -27,7 +27,7 @@
 
         <div class="layui-col-md4">
 
-            <form class="layui-form" action="" style="margin-left: 10%;margin-right: 10%;">
+            <form class="layui-form" action="post" style="margin-left: 10%;margin-right: 10%;">
 
                 <div class="layui-form-item" style="text-align:center;">
                     <h2>云笔记平台</h2>
@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="layui-form-item">
-                    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="login">登录</button>
+                    <button type="button" class="layui-btn layui-btn-fluid" lay-submit lay-filter="login">登录</button>
                 </div>
 
                 <div class="layui-form-item">
@@ -92,25 +92,35 @@
 <script>
 
     //加载登录表单
-    layui.use(['element','form'], function () {
+    layui.use(['element', 'form'], function () {
         var form = layui.form;
 
         //登录监听
         form.on('submit(login)', function (data) {
+            var tokendata = getToken();
             var datajson = JSON.stringify(data.field);
-            alert("登录"+datajson);
+            alert("登录" + datajson);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
+                headers: {
+                    "token": tokendata
+                },
                 url: "http://localhost:8080/admin/email_login",
 
                 success: function (result) {
-                   alert(result);
-                   // window.location.href = "/to_index";//进入邮箱登录页面
+                    if (result['code'] = 0) {
+                        alert("登录成功!");
+                        document.cookie = result['token'];//保存token到cookie中
+                        window.location.href = "/to_index";//进入邮箱登录页面
+                    } else {
+                        alert(result['msg']);
+                    }
+
                 },
-                error: function (result) {
-                    alert(result);
+                error: function () {
+                    alert("网络出现异常!");
 
                 }
             });
@@ -120,12 +130,23 @@
 
     //获取token
     function getToken() {
+        var strcookie = document.cookie;//获取cookie字符串
+        var arrcookie = strcookie.split("; ");//分割
+        //遍历匹配
+        for (var i = 0; i < arrcookie.length; i++) {
+            var arr = arrcookie[i].split("=");
+            if (arr[0] == "token") {
+                return arr[1];
+            }
+        }
+        return "";
 
     }
 
 
     //存储token
     function setToken() {
+
 
     }
 </script>

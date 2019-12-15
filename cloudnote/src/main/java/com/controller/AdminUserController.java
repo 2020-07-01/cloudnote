@@ -100,13 +100,11 @@ public class AdminUserController {
                     return result;
                 }
             }
-
         } catch (Exception e) {
             result.put("msg", "登录异常!");
         }
         return result;
     }
-
 
     /**
      * 手机号登录

@@ -4,14 +4,14 @@
 
 <mapper namespace="com.mapper.AdminUserMapper">
 
-    <!--sql语句-->
+  <!--  &lt;!&ndash;sql语句&ndash;&gt;
     <sql id="base_sql">
         note_id,user_id,type_id,note_title,note_content,create_time,update_time,is_recycle
     </sql>
-
+-->
 
     <insert id="insert" parameterType="com.entity.User">
-        insert into user ('email','user_name','user_password','create_time')
+        insert into user (email,user_name,user_password,create_time)
         value (#{email,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR})
     </insert>
 
