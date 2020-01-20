@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <appenders>
-        <!-- 控制台输出 -->
-        <console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class %L %M - %msg%n"/>
-        </console>
-
-    </appenders>
-
-    <loggers>
-
-        <root level="info">
-            <appender-ref ref="Console"/>
-
-        </root>
-    </loggers>
-
-</configuration>
+<Configuration status="INFO">
+    <Appenders>
+        <!--添加一个控制台追加器-->
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout>
+                <pattern>[%-5p] %d %c - %m%n</pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

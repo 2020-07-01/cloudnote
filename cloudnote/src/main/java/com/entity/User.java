@@ -1,8 +1,5 @@
 package com.entity;
 
-
-import jdk.nashorn.internal.ir.IdentNode;
-
 public class User {
 
     private Integer userId;
@@ -10,7 +7,7 @@ public class User {
     private String userPassword;
     private String sex;
     private String email;
-    private Integer phone;
+    private String phone;
     private String createTime;
     private String updateTime;
     private Integer isLogout;
@@ -61,7 +58,6 @@ public class User {
         this.sex = sex;
     }
 
-
     public String getEmail() {
         return email;
     }
@@ -70,15 +66,13 @@ public class User {
         this.email = email;
     }
 
-
-    public Integer getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Integer phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
-
 
     public String getCreateTime() {
         return createTime;
@@ -88,7 +82,6 @@ public class User {
         this.createTime = createTime;
     }
 
-
     public String getUpdateTime() {
         return updateTime;
     }
@@ -96,7 +89,6 @@ public class User {
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
-
 
     public Integer getIsLogout() {
         return isLogout;

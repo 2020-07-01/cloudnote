@@ -13,7 +13,7 @@ import java.util.List;
  * @description :注册拦截器
  * @other :
  */
-@Configuration
+
 public class InterceptorConfig implements WebMvcConfigurer {
 
     /**
@@ -28,14 +28,14 @@ public class InterceptorConfig implements WebMvcConfigurer {
         list.add("/admin/email_register");//邮箱注册
         list.add("/register");//进入邮箱注册页面
         list.add("/to_emailLogin");//进入邮箱登录页面
+        list.add("/admin/email_login");//登录
 
-        registry.addInterceptor(authenticationInterceptor())
-                .addPathPatterns("/**").excludePathPatterns(list);
+      /*  registry.addInterceptor(authenticationInterceptor())
+                .addPathPatterns("/**").excludePathPatterns(list);*/
     }
 
-
-    public AuthenticationInterceptor authenticationInterceptor() {
+  /*  public AuthenticationInterceptor authenticationInterceptor() {
         return new AuthenticationInterceptor();
-    }
+    }*/
 
 }

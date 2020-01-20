@@ -16,4 +16,6 @@ public interface MailService {
     //发送thymleaf模板邮件
     String sendHtml(String sender, String receiver, String subject);
 
+
+
 }

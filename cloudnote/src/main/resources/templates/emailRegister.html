@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>注册</title>
+    <title>邮箱注册</title>
 
     <!--引入layui-->
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
-
 
 </head>
 <body>
@@ -35,18 +34,16 @@
                 </div>
 
                 <div class="layui-form-item">
-
                     <div class="layui-row layui-col-space5">
                         <div class="layui-col-xs7">
                             <input type="text" id="security-code" name="securityCode" class="layui-input">
                         </div>
                         <div class="layui-col-xs5">
-                            <button class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
                                     lay-filter="securityCode">获取验证码
                             </button>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="layui-form-item">
@@ -71,11 +68,11 @@
                 <div class="layui-form-item">
                     <div class="layui-row layui-col-space5">
                         <div class="layui-col-xs7">
-                            <label>其他方式注册</label>
-                            <a href="/to_phoneRegister"><i class="layui-icon layui-icon-cellphone"></i></a>
+                            <label>手机号注册</label>
+                            <a href="/phoneRegister"><i class="layui-icon layui-icon-cellphone"></i></a>
                         </div>
                         <div class="layui-col-xs5">
-                            <a href="to_emailLogin">已有账户登录</a>
+                            <a href="/to_login">已有账户登录</a>
                         </div>
                     </div>
 
@@ -93,34 +90,50 @@
 
 </body>
 <script type="text/javascript">
-    layui.use(['element', 'form'], function () {
+
+    layui.use(['element', 'form', 'table'], function () {
         var form = layui.form;
 
         /**
          * 监听提交
          */
         form.on('submit(register)', function (data) {
-            alert("注册");
             var datajson = JSON.stringify(data.field);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
-                url: "http://localhost:8080/admin/email_register",
+                url: "http://localhost:8080/admin/register",
                 error: function (result) {
                     alert("网络出现异常!");
                 },
                 success: function (result) {
-                    if (result['code'] == "0") {
-                        window.location.href = "/to_emailLogin";//进入邮箱登录页面
+                    if (result.code == 1) {
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1500,
+                            shade: 0.6,
+                            offset: 'auto',
+                            area: ['200px', '120px'],
+                            end: function () {
+                                window.location.href = "/to_login";//进入邮箱登录页面
+                            }
+                        });
                     } else {
-                        alert(result['msg']);
-                        window.location.href = "/register";
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1500,
+                            shade: 0.6,
+                            offset: 'auto',
+                            area: ['200px', '120px']
+                        });
                     }
-
                 }
             });
-
         });
 
         /**
@@ -139,13 +152,22 @@
                 contentType: "application/json",
                 data: datajson,
                 url: "http://localhost:8080/admin/security_code",
-                error: function (result) {
-                    alert(result);
-
+                error: function () {
+                    alert("网络出现异常");
                 },
-                success: function () {
+                success: function (result) {
+                    layer.open({
+                        title: '提示',
+                        content: result.message,
+                        btn: [],
+                        time: 1500,
+                        shade: 0.6,
+                        offset: 'auto',
+                        area: ['200px', '120px']
+                    }/*, function () {
+                        window.location.href = "/to_index?token=" + tokenData;//进入主页
+                    }*/);
 
-                    window.location.href = "/to_emailLogin";//进入邮箱登录页面
                 }
             });
 
@@ -153,7 +175,5 @@
     });
 
 </script>
-
-
 </html>
       

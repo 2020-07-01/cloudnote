@@ -4,92 +4,63 @@
 
 <mapper namespace="com.mapper.AdminUserMapper">
 
-  <!--  &lt;!&ndash;sql语句&ndash;&gt;
-    <sql id="base_sql">
-        note_id,user_id,type_id,note_title,note_content,create_time,update_time,is_recycle
-    </sql>
--->
+    <resultMap id="baseMap" type="com.entity.User">
+        <id column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="user_password" property="userPassword" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="is_logout" property="isLogout" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="last_login_time" property="LastLoginTime" jdbcType="VARCHAR"/>
+        <result column="user_role" property="userRole" jdbcType="VARCHAR"/>
+    </resultMap>
 
-    <insert id="insert" parameterType="com.entity.User">
+    <!--sql语句-->
+    <sql id="base_sql">
+        user_id,user_name,user_password,email,phone,create_time,update_time,sex,is_logout,remark,last_login_time,user_role
+    </sql>
+
+    <insert id="insertByEmail" parameterType="com.entity.User">
         insert into user (email,user_name,user_password,create_time)
-        value (#{email,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR})
+        value ( #{email,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR},now())
     </insert>
 
+    <insert id="insertByPhone" parameterType="com.entity.User">
+        insert into user (phone,user_name,user_password,create_time)
+        value ( #{phone,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR},now())
+    </insert>
 
-    <!-- &lt;!&ndash;结果映射&ndash;&gt;
-     <resultMap id="resultMap" type="com.example.blog.entity.Article">
-         <id column="a_id" property="aId" jdbcType="VARCHAR"/>
-         <result column="title" property="title" jdbcType="VARCHAR"/>
-         <result column="content" property="content" jdbcType="VARCHAR"/>
-         <result column="summary" property="summary" jdbcType="VARCHAR"/>
-         <result column="create_date" property="createDate" jdbcType="VARCHAR"/>
-         <result column="edit-date" property="editDate" jdbcType="VARCHAR"/>
+    <select id="findUser" parameterType="com.entity.Condition" resultMap="baseMap">
+        select
+        <include refid="base_sql"/>
+        from user
+        where
+        <if test="userName != '' and userName != null">
+        user_name = #{userName,jdbcType=VARCHAR} and
+        </if>
+        <if test="email != '' and email != null">
+            email = #{email,jdbcType=VARCHAR} and
+        </if>
+        <if test="phone != '' and phone != null">
+            phone = #{phone,jdbcType=VARCHAR} and
+        </if>
+        user_password = #{password,jdbcType=VARCHAR}
+    </select>
 
+    <select id="findUserByUsername" parameterType="java.lang.String" resultMap="baseMap">
+        select <include refid="base_sql"/>
+        from user
+        where user_name = #{userName,jdbcType=VARCHAR}
+    </select>
 
-     </resultMap>
+    <select id="findUserByEmail" parameterType="java.lang.String" resultMap="baseMap">
+        select <include refid="base_sql"/>
+        from user
+        where email = #{email,jdbcType=VARCHAR}
+    </select>
 
-     &lt;!&ndash;查询所有的博客&ndash;&gt;
-     <select id="selectAll" resultMap="resultMap">
-         select
-         <include refid="base_sql"/>
-         from article,category
-         where category = category.c_id
-     </select>
-
-
-     &lt;!&ndash;根据id删除博客&ndash;&gt;
-     <delete id="deleteBlog">
-         delete from article where a_id = #{aId}
-     </delete>
-
-
-     &lt;!&ndash;根据id查询博客&ndash;&gt;
-     <select id="selectById" parameterType="String" resultMap="resultMap">
-         select
-         <include refid="base_sql"/>
-         from article,category
-         where a_id = #{aId} and category = category.c_id;
-     </select>
-
-
-     &lt;!&ndash;保存博客&ndash;&gt;
-     <insert id="saveBlog" parameterType="com.example.blog.entity.Article">
-         insert into article (a_id,title,content,category,summary,create_date,edit_date)
-         values (#{aId,jdbcType=VARCHAR},#{title,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{category.cId,jdbcType=VARCHAR},#{summary,jdbcType=VARCHAR},#{createDate,jdbcType=VARCHAR},#{editDate,jdbcType=VARCHAR})
-
-     </insert>
-
-
-     &lt;!&ndash;修改博客信息&ndash;&gt;
-     <update id="updateBlog" parameterType="com.example.blog.entity.Article">
-         update article
-         set title = #{title,jdbcType = VARCHAR},
-             content = #{content,jdbcType = VARCHAR},
-             category = #{category.cId,jdbcType = VARCHAR},
-             summary = #{summary,jdbcType = VARCHAR},
-             edit_date = #{editDate,jdbcType = VARCHAR}
-         where a_id = #{aId};
-     </update>
-
-     &lt;!&ndash;根据category查询所有的博客&ndash;&gt;
-     <select id="selectAllByCategory" resultMap="resultMap">
-         select
-         <include refid="base_sql"/>
-         from article,category
-         where category = #{category,jdbcType = VARCHAR} and category = category.c_id;
-     </select>
-
-     <select id="search" parameterType="java.lang.String" resultMap="resultMap">
-         select
-         <include refid="base_sql"/>
-         from article,category
-         where
-         category = category.c_id and
-         (
-         title LIKE concat('%',#{key},'%')
-         or content LIKE concat('%',#{key},'%')
-         or display_name LIKE concat('%',#{key},'%')
-         )
-
-     </select>-->
 </mapper>

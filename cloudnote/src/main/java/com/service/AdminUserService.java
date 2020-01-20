@@ -1,6 +1,9 @@
 package com.service;
 
+import com.entity.Condition;
 import com.entity.User;
+
+import java.util.Map;
 
 /**
  * @author :qiang
@@ -10,11 +13,11 @@ import com.entity.User;
  */
 public interface AdminUserService {
 
-    int insert(User user);
+    Map insert(User user);
 
     User findUserById(Integer id);
 
-    User findUser(User user);
+    Map findUser(Condition condition);
 
 
 }

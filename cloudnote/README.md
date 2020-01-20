@@ -11,7 +11,7 @@ create table user
     phone           int(44) unique      default null comment '手机号',
     create_time     varchar(255)        default null comment '创建时间',
     edit_time       varchar(255)        default null comment '更新时间',
-    is_logout       int(1)              default 1 comment '"1"代表注销，"0"代表未注销',
+    is_logout       int(1)              default 0 comment '"1"代表注销，"0"代表未注销',
     last_login_time varchar(255)        default null comment '最后登录时间',
     remark          varchar(255)        default null comment '备注',
     user_role       varchar(255)        default null comment '角色'
@@ -29,3 +29,13 @@ create table if not exists note
     is_recycle   varchar(1)   not null comment '1代表在回收站，0代表不在回收站'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
+
+
+CREATE TABLE `typeUtils` (
+  `type_id` int(10) NOT NULL COMMENT '类型id',
+  `user_id` int(10) NOT NULL COMMENT '用户id',
+  `type_name` varchar(255) NOT NULL COMMENT '类型名称',
+  `create_time` varchar(255) DEFAULT NULL COMMENT '创建时间',
+  `update_time` varchar(255) DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='类型id';

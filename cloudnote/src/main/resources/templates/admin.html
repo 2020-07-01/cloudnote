@@ -70,7 +70,7 @@
     </div>
   
   
-    <div class="layui-side layui-bg-black" fixwidth:true,width:100 >
+    <div class="layui-side layui-bg-black">
       <div class="layui-side-scroll">
         <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
         <ul class="layui-nav layui-nav-tree"  lay-filter="test">
@@ -153,7 +153,7 @@
                             </div>
                             
                             <table id="LAY-user-manage" lay-filter="LAY-user-manage"></table>
-                            <script type="text/html" id="imgTpl"> 
+                            <script type="text/html" id="imgTpl">
                               <img style="display: inline-block; width: 50%; height: 100%;" src= {{ d.avatar }}>
                             </script> 
                             <script type="text/html" id="table-useradmin-webuser">
@@ -197,7 +197,7 @@ layui.config({
   base: '../../../layuiadmin/' //静态资源所在路径
 }).extend({
   index: 'lib/index' //主入口模块
-}).use(['index', 'useradmin', 'table'], function(){
+}).use(['home.html', 'useradmin', 'table'], function(){
   var $ = layui.$
   ,form = layui.form
   ,table = layui.table;

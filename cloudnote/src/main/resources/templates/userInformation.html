@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>修改密码</title>
+    <title>基本资料</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
-
     <!--引入layui-->
-    <link rel='stylesheet' typeUtils='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
 
     <!--引入jquery-->
-    <script src="../static/jquery-3.4.1.min.js"></script>
-
+    <script src="jquery-3.4.1.min.js"></script>
 
     <style>
         .layui-side.layui-bg-black {
@@ -38,10 +37,6 @@
             padding: 0 15px;
         }
 
-        .note-title {
-            border: none;
-        }
-
     </style>
 </head>
 
@@ -54,7 +49,7 @@
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
 
         <div class=" layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a id="create-note" href="/to_index">创建笔记</a></li>
+            <li class="layui-nav-item"><a id="create-note" href="">创建笔记</a></li>
             </li>
         </div>
 
@@ -62,8 +57,8 @@
 
             <li class="layui-nav-item">
                 <div class="layui-input-inline">
-                    <input typeUtils="text" name="title" required lay-verify="required"
-                           autocomplete="off" class="layui-input"
+                    <input type ="text" name="title" required lay-verify="required" autocomplete="off"
+                           class="layui-input"
                            style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 4px;">
                 </div>
 
@@ -79,11 +74,13 @@
                     admin
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="/to_basicInformation">基本资料</a></dd>
+                    <dd><a href="">个人信息</a></dd>
+                    <dd><a href="">账号信息</a></dd>
                     <dd><a href="/to_editPassword">修改密码</a></dd>
+                    <dd><a href="">意见反馈</a></dd>
+
                 </dl>
             </li>
-
             <li class="layui-nav-item"><a href="">退出</a></li>
         </ul>
 
@@ -93,7 +90,7 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
 
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">笔记</a>
@@ -121,42 +118,74 @@
     <div class="layui-body">
 
         <div class="layui-card">
-            <div class="layui-card-header" style="margin-left: 10%;">修改密码</div>
+            <div class="layui-card-header" style="margin-left: 10%;">设置我的资料</div>
         </div>
 
         <div class="layui-row" style="margin-left: 10%;">
             <div class="layui-col-xs10">
                 <div class="grid-demo grid-demo-bg1">
-                    <form class = "layui-form" action="">
-
+                    <form class="layui-form" action="post">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">当前密码</label>
+                            <label class="layui-form-label">用户名</label>
                             <div class="layui-input-inline">
-                                <input typeUtils="text" name="username" value="xianxin" readonly class="layui-input">
+                                <input type ="text" name="userName" id="userName" value="xianxin" readonly
+                                       class="layui-input">
                             </div>
-                            <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div>
-                        </div>
-
-
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">新密码</label>
-                            <div class="layui-input-inline">
-                                <input typeUtils="text" name="cellphone" value="" lay-verify="phone" autocomplete="off" class="layui-input">
-                            </div>
+                            <div class="layui-form-mid layui-word-aux">不可修改</div>
                         </div>
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label">确认新密码</label>
-                            <div class="layui-input-inline">
-                                <input typeUtils="text" name="email" value="" lay-verify="email" autocomplete="off" class="layui-input">
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-block">
+                                <input type="radio" id="man" name="sex" value="男" title="男">
+                                <input type ="radio" id="woman" name="sex" value="女" title="女" checked>
                             </div>
                         </div>
 
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">头像</label>
+                            <div class="layui-input-inline">
+                                <input name="avatar" lay-verify="required" id="LAY_avatarSrc" placeholder="图片地址"
+                                       value="http://cdn.layui.com/avatar/168.jpg" class="layui-input">
+                            </div>
+
+                            <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                                <button type ="button" class="layui-btn layui-btn-primary" id="LAY_avatarUpload">
+                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                </button>
+                                <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">预览图片
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="phone" id="phone" value="" lay-verify="phone"
+                                       autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邮箱</label>
+                            <div class="layui-input-inline">
+                                <input type="email" name="email" id="email" lay-verify="email" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-block">
+                                <textarea name="remarks" placeholder="请输入内容" class="layui-text"
+                                          style="height: 50px; width:480px;resize: none;"></textarea>
+                            </div>
+                        </div>
 
                         <div class="layui-form-item">
                             <div class="layui-input-block">
-                                <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
-                                <button typeUtils="reset" class="layui-btn layui-btn-primary">重新填写</button>
+                                <button type="button" class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
                             </div>
                         </div>
                     </form>
@@ -174,11 +203,12 @@
     </div>
 </div>
 
+
 </body>
 
 <!--加载所需要的基础模块-->
 <script>
-    layui.use('element', function(){
+    layui.use('element', function () {
         var element = layui.element//
 
     });
@@ -187,9 +217,11 @@
 <script>
 
     //加载表单
-    layui.use('form', function(){
+    layui.use('form', function () {
         var form = layui.form;
     });
 
 </script>
+
+
 </html>
