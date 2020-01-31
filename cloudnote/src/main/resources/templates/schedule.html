@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>任务</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--引入layui-->
+    <link rel='stylesheet' typeUtils='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
+    <script src="../static/layui-v2.5.5/layui/layui.js"></script>
+    <!--引入jquery-->
+    <script src="../static/jquery-3.4.1.min.js"></script>
+
+    <style>
+        .layui-side.layui-bg-black {
+            width: 100px;
+        }
+
+        .layui-nav-tree {
+            width: 100px;
+        }
+
+        .layui-body {
+            left: 100px;
+        }
+
+        .layui-footer1 {
+            position: fixed;
+            left: 100px;
+            right: 0;
+            bottom: 0;
+            height: 35px;
+            line-height: 35px;
+            padding: 0 15px;
+        }
+
+        .note-title {
+            border: none;
+        }
+
+        #test-n2 {
+            position: relative;
+            min-height: 100%;
+            width: 100%;
+            height: 100%;
+        }
+
+        #test-n2 #layui-laydate1, #test-n2 #layui-laydate1 .layui-laydate-main, #test-n2 .layui-laydate-content table {
+            width: 100%;
+        }
+
+        #test-n2 .layui-laydate-content td, .layui-laydate-content th {
+            width: 40px;
+            height: 100px;
+            padding: 1px;
+            text-align: center;
+        }
+
+        #test-n2 .layui-laydate-content table tbody {
+            height: calc(200vh - 340px);
+        }
+
+        .text_box {
+            margin: 10px;
+        }
+
+        .time-label {
+            float: left;
+            display: block;
+            font-weight: 400;
+
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<!--顶部导航栏-->
+<div class="layui-layout layui-layout-admin">
+
+    <div class="layui-header">
+
+        <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
+        <div class=" layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a id="create-note" href="/to_index">创建笔记</a></li>
+            </li>
+        </div>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <div class="layui-input-inline">
+                    <input typeUtils="text" name="title" required lay-verify="required"
+                           autocomplete="off" class="layui-input"
+                           style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 4px;">
+                </div>
+                <div class="layui-input-inline" style="margin-right: 15px; ">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm">搜索</button>
+                </div>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    admin
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/to_basicInformation">基本资料</a></dd>
+                    <dd><a href="/to_editPassword">修改密码</a></dd>
+                </dl>
+            </li>
+
+            <li class="layui-nav-item"><a href="">退出</a></li>
+        </ul>
+
+    </div>
+    <!--左侧导航栏-->
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">笔记</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">学习</a></dd>
+                        <dd><a href="javascript:;">工作</a></dd>
+                        <dd><a href="javascript:;">生活</a></dd>
+                        <dd><a href="javascript:;">旅游</a></dd>
+                        <dd><a href="javascript:;">随笔</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">任务</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">全部恢复</a></dd>
+                        <dd><a href="javascript:;">全部清空</a></dd>
+                        <dd><a href="javascript:;">查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">回收站</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">全部恢复</a></dd>
+                        <dd><a href="javascript:;">全部清空</a></dd>
+                        <dd><a href="javascript:;">查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <div class="layui-container" style="padding: 10px;">
+            <div class="layui-row">
+                <div class="layui-col-md12">
+                    <div class="layui-inline" id="test-n2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-footer1 layui-bg-black">
+        © layui.com - 底部固定区域
+    </div>
+</div>
+</body>
+
+<!--添加任务弹出框-->
+<div class="text_box" id="test" style="display: none;">
+    <form class="layui-form" action="post" lay-filter="schedule">
+         <div class="layui-form-item">
+             <div class="layui-inline">
+                 <label class="layui-form-label">定时提醒</label>
+                 <div class="layui-input-block">
+                     <input type="checkbox" id="is-remind" name="switch" lay-skin="switch" lay-text="ON|OFF"
+                            lay-filter="switch">
+                 </div>
+             </div>
+         </div>
+
+        <fieldset id="remind" class="layui-elem-field layui-field-title" style="margin-top: 2px;display: none">
+            <legend>提醒时间</legend>
+        </fieldset>
+
+        <div class="layui-form-item" id="hour" style="display: none">
+            <div class="layui-row">
+                <div class="layui-col-xs1">
+                    <div class="layui-inline">
+                        <label class="time-label">小时</label>
+                    </div>
+                </div>
+                <div class="layui-col-xs11">
+                    <div id="slideTest1" class="demo-slider"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layui-form-item" id="minute" style="display: none">
+            <div class="layui-row">
+                <div class="layui-col-xs1">
+                    <div class="layui-inline">
+                        <label class="time-label">分钟</label>
+                    </div>
+                </div>
+                <div class="layui-col-xs11">
+                    <div id="slideTest2" class="demo-slider"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <textarea id="schedule-content" placeholder="请输入内容" class="layui-textarea" style="resize: none;"></textarea>
+        </div>
+
+    </form>
+</div>
+
+<!--定时任务弹出框-->
+<div class="text_box" id="timing" style="display: none;">
+    <form class="layui-form" action="post" lay-filter="schedule">
+
+        <div class="layui-row">
+            <div class="layui-col-md12">
+                <input type="text" class="layui-input" id="n1">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <textarea id="schedule-4" placeholder="请输入内容" class="layui-textarea" style="resize: none;"></textarea>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    //加载基础模块
+    layui.use('element', function () {
+        var element = layui.element//
+    });
+
+    //加载时间滑块模块
+    layui.use('slider', function () {
+        var $ = layui.$, slider = layui.slider;
+
+        slider.render({
+            elem: '#slideTest1'
+            , max: 24 //最大值
+            , step: 1 //步长
+            , input: true //输入框
+            , setTips: function (value) { //自定义提示文本
+                return value + '小时';
+            }
+        })
+
+        slider.render({
+            elem: '#slideTest2'
+            , max: 55 //最大值
+            , step: 5 //步长
+            , input: true //输入框
+            , setTips: function (value) { //自定义提示文本
+                return value + '分钟';
+            }
+        })
+    })
+
+</script>
+
+<script>
+    //获取token
+    var token = sessionStorage.getItem("token");
+
+    //加载页面日历模块
+    layui.use(['layer', 'form', 'jquery', 'laydate'], function () {
+        var layer = layui.layer,
+            $ = layui.jquery,
+            laydate = layui.laydate,
+            form = layui.form;
+
+        //定义json，此数据将会显示在日历中
+        //data格式：{"2020-01-29":"111111"}
+        //此data需要从后端进行查询，格式为json
+
+        //创建当前日期，此日期只是一个标注日期，与上面的显示无法
+        var new_date = new Date();
+        //创建全局的switch值,默认为关闭
+        var isRemind = "false";
+
+        //var data  = {"2020-01-29":"fadfdaf","2020-01-30":"faf"}
+        //加载日历插件，设置初始值为当前时间
+        loding_date(new_date);
+        //日历插件调用方法，传进来初始值和回显数据
+        //主要是data此时需要从后端进行查询，然后在前端进行显示
+        function loding_date(date_value) {
+            var temp = getScheduleList();
+            var scheduleData = JSON.parse(temp);
+            //alert(temp)
+            //加载日历插件
+            laydate.render({
+                elem: '#test-n2'
+                , type: 'datetime'
+                , theme: 'grid'
+                , position: 'static'
+                , isInitValue: false //是否允许填充初始值
+                , range: false
+                , format: 'yyyy-MM-dd HH:mm:ss'
+                , value: date_value
+                , calendar: true
+                , btns: false
+                , change: function (value, date, endDate) {
+
+                    //value：得到日期生成的值，也就是点击的日期
+                    //date：得到日期的对象，显示年月日时分秒 例子：{"year":2020,"month":1,"date":8,"hours":22,"minutes":45,"seconds":36}
+                    //将json对象转换为字符串
+                    //var s = JSON.stringify(date);
+                    //alert(s)
+                    showValue = value.substring(0,10);
+                    date_chose(value, showValue,scheduleData);
+                }
+                , mark: scheduleData //标注重要的日子，回显数据,mark是一个json对象
+
+            });
+        }
+
+        //获取所有的活动
+        function getScheduleList() {
+            var temp;
+            $.ajax({
+                type: "get",
+                contentType: "application/json",
+                dataType: 'json',
+                async: false,
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/schedule/schedule_list",
+                error: function (result) {
+                    //alert(result);
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        var s = JSON.stringify(result.data);
+                        temp = s;
+                    } else {
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1000,
+                            shade: 0.6,
+                            offset: 'auto',
+                            area: ['200px', '120px']
+                        });
+                    }
+                }
+            });
+            return temp;
+        }
+
+        //传入value和date
+        function date_chose(obj_date,showValue,data) {
+
+            var index = layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                title: '添加日程',
+                area: ['600px', '500px'], //宽高
+                btn: ['创建', '修改', '关闭'],
+                content: $("#test")
+                , success: function () {
+                    $('#schedule-content').val(data[showValue])
+                }
+                , yes: function () {
+                    //回调函数
+                    if ($('#schedule-content').val() != '') {
+                        //确定时执行
+                        var s = JSON.stringify(data);
+                        chose_moban(obj_date, data);
+                        layer.close(index);
+                    } else {
+                        layer.msg('不能为空', {icon: 2});
+                    }
+
+                },
+                btn2: function () {
+
+                },
+                btn3: function () {
+
+                }
+            });
+        }
+
+        //定义添加/编辑标注方法
+        //obj_data:2020-01-22
+        //markJson为之前的数据
+        function chose_moban(obj_date, markJson) {
+            //获取新的数据
+            var content = $('#schedule-content').val();
+            //var data1 = form.val("schedule");
+            var hour = $('#slideTest1').text();
+            var minute = $('#slideTest2').text();
+            var data = {
+                "taskContent": content,
+                "executeTime": obj_date,
+                "isRemind": isRemind,
+                "hour":hour,
+                "minute":minute
+            };
+
+            var jsonData = JSON.stringify(data);//转换为json字符串
+            var token = sessionStorage.getItem("token");
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/schedule/save_task",
+                error: function (result) {
+                    alert("123");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 500,
+                            shade: 0.5,
+                            offset: 'rb',
+                            area: ['200px', '120px'],
+                            end: function () {
+                                //刷新日历
+                                loding_date(obj_date);
+                            }
+                        });
+                    } else {
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1500,
+                            shade: 0.6,
+                            offset: 'auto',
+                            area: ['200px', '120px']
+                        });
+                    }
+                }
+            })
+            $('#test-n2').html('');//重要！由于插件是嵌套指定容器，再次调用前需要清空原日历控件，清空弹出层
+            //markJson[obj_date] = content;
+            //再次调用日历控件，重新添数据
+            //loding_date(obj_date);//重要！，再标注一个日期后会刷新当前日期变为初始值，所以必须调用当前选定日期。
+        }
+
+        //撤销选择
+        function chexiao(obj_date, markJson) {
+            var data = {"executeTime":obj_date};
+            var jsonData = JSON.stringify(data);
+
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/schedule/remove_schedule",
+                error: function (result) {
+                    alert("false");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1000,
+                            shade: 0.5,
+                            offset: 'rb',
+                            area: ['200px', '120px'],
+                            end: function () {
+                                //刷新日历
+                                loding_date(obj_date);
+                            }
+                        });
+                    } else {
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1500,
+                            shade: 0.6,
+                            offset: 'auto',
+                            area: ['200px', '120px']
+                        });
+                    }
+                }
+            })
+            //原理同添加一致
+            $('#test-n2').html('');
+            loding_date(obj_date, markJson);
+        }
+
+        //监听switch操作
+        form.on('switch(switch)', function (data) {
+            var checked = data.elem.checked.toString();//将undefined类型强制转换为String
+            isRemind = checked;
+            if (checked == "true") {
+
+                $("#hour").css({'display': 'block'});
+                $("#minute").css({'display': 'block'});
+                $("#remind").css({'display': 'block'});
+            } else {
+                $("#hour").css({"display": "none"});
+                $("#minute").css({"display": "none"});
+                $("#remind").css({"display": "none"});
+            }
+        });
+
+    });
+
+</script>
+
+</html>

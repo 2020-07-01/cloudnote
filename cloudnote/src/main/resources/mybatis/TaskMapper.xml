@@ -2,44 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.mapper.NoteMapper">
+<mapper namespace="com.mapper.TaskMapper">
 
     <sql id="base_sql">
-        note_id,user_id,type_id,note_title,note_content,create_time,update_time,is_recycle
+        task_id,user_id,task_content,send_time,create_time,update_time,other,
     </sql>
 
-    <resultMap id="baseMap" type="com.entity.Note">
-        <id column="note_id" property="noteId" jdbcType="INTEGER"/>
+    <resultMap id="baseMap" type="com.entity.Task">
+        <id column="task_id" property="task_id" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
-        <result column="type_id" property="typeId" jdbcType="INTEGER"/>
-        <result column="note_title" property="noteTitle" jdbcType="VARCHAR"/>
-        <result column="note_content" property="noteContent" jdbcType="VARCHAR"/>
+        <result column="task_content" property="taskContent" jdbcType="INTEGER"/>
+        <result column="send_time" property="sendTime" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
-        <result column="is_recycle" property="isRecycle" jdbcType="VARCHAR"/>
+        <result column="other" property="other" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <select id="selectNoteListByUserId" parameterType="java.lang.Integer" resultType="com.entity.Note"
+<!--    <select id="selectNoteListByUserId" parameterType="java.lang.Integer" resultType="com.entity.Note"
             resultMap="baseMap">
         select
         <include refid="base_sql"/>
         from note
         where user_id = #{userId,jdbcType=INTEGER} and is_recycle = 0
-    </select>
+    </select>-->
 
-    <insert id="insertNote" parameterType="com.entity.Note">
-        insert into note (user_id,type_id,note_title,note_content,create_time)
-     value ( #{userId,jdbcType=INTEGER},#{typeId,jdbcType=INTEGER},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=VARCHAR},now())
+    <insert id="insert" parameterType="com.entity.Task">
+        insert into task (task_id,user_id,send_time,create_time)
+        value (
+            #{taskId,jdbcType=INTEGER},
+            #{userId,jdbcType=INTEGER},
+            #{sendTime,jdbcType=VARCHAR},
+            now())
     </insert>
 
-    <select id="selectNoteByNoteId" parameterType="java.lang.Integer" resultType="com.entity.Note" resultMap="baseMap">
+   <!-- <select id="selectNoteByNoteId" parameterType="java.lang.Integer" resultType="com.entity.Note" resultMap="baseMap">
         select
         <include refid="base_sql"/>
         from note
         where note_id = #{noteId,jdbcType=INTEGER}
     </select>
 
-    <!--设置笔记进入回收站-->
+    &lt;!&ndash;设置笔记进入回收站&ndash;&gt;
     <update id="updateRecycle" parameterType="java.lang.Integer">
         update note
         set is_recycle = 1
@@ -58,5 +61,5 @@
         update note
         set note_content = #{noteContent,jdbcType=VARCHAR}, update_time = now(),note_title = #{noteTitle,jdbcType=VARCHAR},note_type=#{noteType,jdbcType=INTEGER}
         where note_id = #{noteId,jdbcType=INTEGER}
-    </update>
+    </update>-->
 </mapper>

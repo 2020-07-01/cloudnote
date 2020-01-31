@@ -35,7 +35,7 @@ public class DefaultController {
      * 用户名登录
      * @return
      */
-    @RequestMapping(value = "to_login")
+    @RequestMapping(value = "login")
     public String toEmailLogin() {
         return "login";
     }
@@ -63,9 +63,14 @@ public class DefaultController {
         return "editPassword";
     }
 
-    @RequestMapping(value = "to_basicInformation")
-    public String toInformation() {
-        return "basicInformation";
+    @RequestMapping(value = "to_task")
+    public String toTask(){
+        return "schedule";
     }
 
+
+    @RequestMapping(value = "to_timing_task")
+    public String toTimingTask(){
+        return "timingTask";
+    }
 }

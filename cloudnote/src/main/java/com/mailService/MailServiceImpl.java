@@ -1,4 +1,4 @@
-package com.sendEmailService;
+package com.mailService;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ public class MailServiceImpl implements MailService {
 
     @Autowired
     JavaMailSender javaMailSender;
-
 
     /**
      * 发送普通文本邮件

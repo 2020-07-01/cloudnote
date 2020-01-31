@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.mapper.ScheduleMapper">
+
+    <sql id="base_sql">
+        schedule_id,user_id,schedule_content,execute_time,remind_time,create_time,update_time,is_obsolete,show_execute_time
+    </sql>
+
+    <resultMap id="baseMap" type="com.entity.Schedule">
+        <id column="schedule_id" property="scheduleId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="schedule_content" property="scheduleContent" jdbcType="VARCHAR"/>
+        <result column="execute_time" property="executeTime" jdbcType="VARCHAR"/>
+        <result column="remind_time" property="remindTime" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="is_obsolete" property="isObsolete" jdbcType="VARCHAR"/>
+        <result column="show_execute_time" property="showExecuteTime" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+        <select id="selectScheduleByUserId" parameterType="java.lang.Integer" resultType="com.entity.Schedule"
+                resultMap="baseMap">
+            select
+            <include refid="base_sql"/>
+            from schedule
+            where user_id = #{userId,jdbcType=INTEGER}
+        </select>
+
+    <insert id="insertSchedule" parameterType="com.entity.Schedule">
+        insert into schedule (schedule_id,user_id,schedule_content,execute_time,remind_time,create_time,is_remind,show_execute_time)
+        value ( #{scheduleId,jdbcType=INTEGER},
+                #{userId,jdbcType=INTEGER},
+                #{scheduleContent,jdbcType=VARCHAR},
+                #{executeTime,jdbcType=VARCHAR},
+                #{remindTime,jdbcType=VARCHAR},
+                now(),
+                #{isRemind,jdbcType=VARCHAR},
+                #{showExecuteTime,jdbcType=VARCHAR})
+    </insert>
+
+    <!--  <select id="selectNoteByNoteId" parameterType="java.lang.Integer" resultType="com.entity.Note" resultMap="baseMap">
+          select
+          <include refid="base_sql"/>
+          from note
+          where note_id = #{noteId,jdbcType=INTEGER}
+      </select>-->
+
+    <!--   &lt;!&ndash;设置笔记进入回收站&ndash;&gt;
+       <update id="updateRecycle" parameterType="java.lang.Integer">
+           update note
+           set is_recycle = 1
+           where note_id = #{noteId,jdbcType=INTEGER}
+       </update>-->
+
+    <!-- <delete id="deleteNotesById" parameterType="java.util.List">
+         delete from note
+         where note_id in
+         <foreach collection="collection" item="item" open="(" separator="," close=")">
+             #{item,jdbcType=INTEGER}
+         </foreach>
+     </delete>-->
+
+    <!--<update id="updateNote" parameterType="com.entity.Note">
+        update note
+        set note_content = #{noteContent,jdbcType=VARCHAR}, update_time = now(),note_title = #{noteTitle,jdbcType=VARCHAR},note_type=#{noteType,jdbcType=INTEGER}
+        where note_id = #{noteId,jdbcType=INTEGER}
+    </update>-->
+
+    <!--    <select id="selectNoteByCondition" parameterType="com.entity.Condition" resultType="java.util.List">
+            select
+        </select>-->
+
+
+</mapper>

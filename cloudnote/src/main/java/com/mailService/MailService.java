@@ -1,4 +1,4 @@
-package com.sendEmailService;
+package com.mailService;
 
 /**
  * @author :qiang
