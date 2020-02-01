@@ -1,10 +1,13 @@
 package com.service.serviceImpl;
 
+import com.entity.Condition;
 import com.entity.Task;
 import com.mapper.TaskMapper;
 import com.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @program: TaskServiceImpl
@@ -25,5 +28,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void delete(Task task) {
 
+    }
+
+    @Override
+    public List<Task> select(Condition condition) {
+        List<Task> tasks = taskMapper.select(condition);
+        return tasks;
     }
 }

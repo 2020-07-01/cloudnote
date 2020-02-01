@@ -13,6 +13,8 @@ public class Condition {
     private String email;
     private String userName;
     private String phone;
+    private Integer userId;
+    private String currentDate;
 
     public String getKey() {
         return key;
@@ -60,5 +62,21 @@ public class Condition {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
     }
 }

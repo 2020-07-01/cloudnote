@@ -5,11 +5,11 @@
 <mapper namespace="com.mapper.TaskMapper">
 
     <sql id="base_sql">
-        task_id,user_id,task_content,send_time,create_time,update_time,other,
+        task_id,user_id,task_content,send_time,create_time,update_time,other
     </sql>
 
     <resultMap id="baseMap" type="com.entity.Task">
-        <id column="task_id" property="task_id" jdbcType="INTEGER"/>
+        <id column="task_id" property="taskId" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
         <result column="task_content" property="taskContent" jdbcType="INTEGER"/>
         <result column="send_time" property="sendTime" jdbcType="VARCHAR"/>
@@ -34,6 +34,15 @@
             #{sendTime,jdbcType=VARCHAR},
             now())
     </insert>
+
+
+    <select id="select" parameterType="com.entity.Condition" resultType="com.entity.Task"
+            resultMap="baseMap">
+        select
+        <include refid="base_sql"/>
+        from task
+        where send_time &lt;= #{currentDate,jdbcType=VARCHAR}
+    </select>
 
    <!-- <select id="selectNoteByNoteId" parameterType="java.lang.Integer" resultType="com.entity.Note" resultMap="baseMap">
         select

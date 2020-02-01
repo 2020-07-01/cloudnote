@@ -76,4 +76,17 @@ public class Task {
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "taskId=" + taskId +
+                ", userId=" + userId +
+                ", sendTime='" + sendTime + '\'' +
+                ", taskContent='" + taskContent + '\'' +
+                ", createTime='" + createTime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                ", other='" + other + '\'' +
+                '}';
+    }
 }

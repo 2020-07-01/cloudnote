@@ -51,8 +51,8 @@
         }
 
         #test-n2 .layui-laydate-content td, .layui-laydate-content th {
-            width: 40px;
-            height: 100px;
+            width: 50px;
+            height: 55px;
             padding: 1px;
             text-align: center;
         }
@@ -63,6 +63,12 @@
 
         .text_box {
             margin: 10px;
+        }
+        #test-n2 .layui-laydate-footer {
+            position: relative;
+            height: 40px;
+            line-height: 26px;
+            padding: 9px 20px;
         }
 
         .time-label {
@@ -153,7 +159,7 @@
     </div>
 
     <div class="layui-body">
-        <div class="layui-container" style="padding: 10px;">
+        <div class="layui-container" style="padding-top: 3px;">
             <div class="layui-row">
                 <div class="layui-col-md12">
                     <div class="layui-inline" id="test-n2"></div>
@@ -304,7 +310,7 @@
                 , type: 'datetime'
                 , theme: 'grid'
                 , position: 'static'
-                , isInitValue: false //是否允许填充初始值
+                , isInitValue: true //是否允许填充初始值
                 , range: false
                 , format: 'yyyy-MM-dd HH:mm:ss'
                 , value: date_value
@@ -312,6 +318,15 @@
                 , btns: false
                 , change: function (value, date, endDate) {
 
+
+                }
+                , mark: scheduleData //标注重要的日子，回显数据,mark是一个json对象
+                ,ready: function(date){
+                    //空间初始打开时的回调
+                    //alert("空间打开时的回调")
+
+                }
+                ,done: function(value, date, endDate){
                     //value：得到日期生成的值，也就是点击的日期
                     //date：得到日期的对象，显示年月日时分秒 例子：{"year":2020,"month":1,"date":8,"hours":22,"minutes":45,"seconds":36}
                     //将json对象转换为字符串
@@ -320,7 +335,6 @@
                     showValue = value.substring(0,10);
                     date_chose(value, showValue,scheduleData);
                 }
-                , mark: scheduleData //标注重要的日子，回显数据,mark是一个json对象
 
             });
         }

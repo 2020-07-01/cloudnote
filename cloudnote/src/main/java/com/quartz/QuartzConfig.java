@@ -29,13 +29,12 @@ public class QuartzConfig {
 
     /**
      * 创建调度参数的配置
-     * 设置每五分钟执行一次
      *
      * @return
      */
     @Bean
     public Trigger printTimeJobTrigger() {
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("*/5 * * * * ?");
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/5 * * * ?");
         return TriggerBuilder.newTrigger()
                 .forJob(printTimeJobDetail())//关联上述的JobDetail
                 .withIdentity("quartzTaskService")//给Trigger起个名字
