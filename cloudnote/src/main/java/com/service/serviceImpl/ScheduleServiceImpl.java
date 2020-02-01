@@ -1,5 +1,6 @@
 package com.service.serviceImpl;
 
+import com.entity.Condition;
 import com.entity.Schedule;
 import com.mapper.ScheduleMapper;
 import com.service.ScheduleService;
@@ -70,4 +71,33 @@ public class ScheduleServiceImpl implements ScheduleService {
         return result;
     }
 
+
+    @Override
+    public Map slelectExecuteTime(Condition condition) {
+        HashMap result = new HashMap();
+        List<Schedule> scheduleList = scheduleMapper.selectExcuteTimeByCondition(condition);
+        if(scheduleList != null){
+
+            for (Schedule schedule:scheduleList) {
+                result.put(schedule.getScheduleContent(),schedule.getExecuteTime());
+            }
+        }else {
+            result.put("false","该用户在当前日期下未创建日程!");
+        }
+        return result;
+    }
+
+    @Override
+    public Map selectCotnentByCondition(Condition condition) {
+        HashMap result = new HashMap();
+        List<Schedule> scheduleList = scheduleMapper.selectContentByCondition(condition);
+        if(scheduleList != null){
+            for (Schedule schedule:scheduleList) {
+                result.put(schedule.getScheduleId(),schedule.getScheduleContent());
+            }
+        }else {
+            result.put("false","该用户在当前日期下未创建日程!");
+        }
+        return result;
+    }
 }

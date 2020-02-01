@@ -1,5 +1,6 @@
 package com.service;
 
+import com.entity.Condition;
 import com.entity.Schedule;
 
 import java.util.Map;
@@ -13,4 +14,10 @@ public interface ScheduleService {
 
     //撤销活动
     Map removeSchedule(Integer scheduleId);
+
+    //查询时间
+    Map slelectExecuteTime(Condition condition);
+
+    //查询内容
+    Map selectCotnentByCondition(Condition condition);
 }

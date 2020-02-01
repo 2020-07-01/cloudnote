@@ -21,13 +21,13 @@
     </resultMap>
 
 
-        <select id="selectScheduleByUserId" parameterType="java.lang.Integer" resultType="com.entity.Schedule"
-                resultMap="baseMap">
-            select
-            <include refid="base_sql"/>
-            from schedule
-            where user_id = #{userId,jdbcType=INTEGER}
-        </select>
+    <select id="selectScheduleByUserId" parameterType="java.lang.Integer" resultType="com.entity.Schedule"
+            resultMap="baseMap">
+        select
+        <include refid="base_sql"/>
+        from schedule
+        where user_id = #{userId,jdbcType=INTEGER}
+    </select>
 
     <insert id="insertSchedule" parameterType="com.entity.Schedule">
         insert into schedule (schedule_id,user_id,schedule_content,execute_time,remind_time,create_time,is_remind,show_execute_time)
@@ -40,6 +40,22 @@
                 #{isRemind,jdbcType=VARCHAR},
                 #{showExecuteTime,jdbcType=VARCHAR})
     </insert>
+
+
+    <select id="selectExcuteTimeByCondition" parameterType="com.entity.Condition" resultType="com.entity.Schedule"
+            resultMap="baseMap">
+        select execute_time,schedule_content
+        from schedule
+        where user_id = #{userId,jdbcType=INTEGER} and show_execute_time = #{showExecuteTime,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="selectContentByCondition" parameterType="com.entity.Condition" resultType="com.entity.Schedule"
+            resultMap="baseMap">
+        select schedule_id,schedule_content
+        from schedule
+        where user_id = #{userId,jdbcType=INTEGER} and execute_time = #{executeTime,jdbcType=VARCHAR}
+    </select>
 
     <!--  <select id="selectNoteByNoteId" parameterType="java.lang.Integer" resultType="com.entity.Note" resultMap="baseMap">
           select
@@ -72,6 +88,4 @@
     <!--    <select id="selectNoteByCondition" parameterType="com.entity.Condition" resultType="java.util.List">
             select
         </select>-->
-
-
 </mapper>

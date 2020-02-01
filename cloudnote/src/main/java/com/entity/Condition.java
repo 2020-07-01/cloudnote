@@ -15,6 +15,8 @@ public class Condition {
     private String phone;
     private Integer userId;
     private String currentDate;
+    private String showExecuteTime;
+    private String executeTime;
 
     public String getKey() {
         return key;
@@ -78,5 +80,21 @@ public class Condition {
 
     public void setCurrentDate(String currentDate) {
         this.currentDate = currentDate;
+    }
+
+    public String getShowExecuteTime() {
+        return showExecuteTime;
+    }
+
+    public void setShowExecuteTime(String showExecuteTime) {
+        this.showExecuteTime = showExecuteTime;
+    }
+
+    public String getExecuteTime() {
+        return executeTime;
+    }
+
+    public void setExecuteTime(String executeTime) {
+        this.executeTime = executeTime;
     }
 }

@@ -1,4 +1,4 @@
-package com.resultUtil;
+package com.Util;
 
 /**
  * @author :qiang

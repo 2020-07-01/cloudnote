@@ -1,5 +1,6 @@
 package com.mapper;
 
+import com.entity.Condition;
 import com.entity.Schedule;
 import com.service.ScheduleService;
 import org.springframework.stereotype.Repository;
@@ -17,5 +18,10 @@ public interface ScheduleMapper {
 
     //撤销活动
     void removeScheduleByScheduleId(Integer scheduleId);
+
+
+    List<Schedule> selectExcuteTimeByCondition(Condition condition);
+
+    List<Schedule> selectContentByCondition(Condition condition);
 
 }

@@ -1,11 +1,6 @@
-package com.resultUtil;
+package com.Util;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.tomcat.util.buf.ByteBufferUtils;
-
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * @program: MD5Util

@@ -1,15 +1,19 @@
 package com.controller;
 
-
+import com.Util.DateUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.entity.Condition;
 import com.entity.Schedule;
 import com.entity.Task;
 import com.interceptorService.TokenUtil;
-import com.resultUtil.Json;
-import com.resultUtil.Result;
+import com.Util.Json;
+import com.Util.Result;
 import com.service.serviceImpl.ScheduleServiceImpl;
 import com.service.serviceImpl.TaskServiceImpl;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +47,6 @@ public class ScheduleController {
         String token = request.getHeader("token");
         Integer userId = tokenUtil.getUserIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-
         Schedule schedule = new Schedule();
         schedule.setUserId(userId);
         schedule.setScheduleContent(jsonObject.getString("taskContent"));
@@ -51,6 +54,12 @@ public class ScheduleController {
         schedule.setIsObsolete("1");
         //获取执行时间
         String executeTime = jsonObject.getString("executeTime");
+
+        if(DateUtils.isBefore(executeTime,DateUtils.getCurrentDate())){
+            Json.toJson(new Result(false, "不能创建空白任务"), response);
+            return;
+        }
+
         //计算showExecuteTime
         String showExecuteTime = executeTime.substring(0,10);
         schedule.setShowExecuteTime(showExecuteTime);
@@ -89,7 +98,6 @@ public class ScheduleController {
             schedule.setIsRemind("0");
         }
 
-
         Map result = scheduleService.insertSchedule(schedule);
         if (result.get("true") != null) {
             Json.toJson(new Result(true, (String) result.get("true")), response);
@@ -97,7 +105,6 @@ public class ScheduleController {
             Json.toJson(new Result(false, (String) result.get("false")), response);
         }
     }
-
 
     private String getRemindTime(long milliSecond){
         Date date = new Date(milliSecond);
@@ -138,8 +145,50 @@ public class ScheduleController {
         } else {
             Json.toJson(new Result(false, (String) result.get("false")), response);
         }*/
+    }
 
+    /**
+     * 查询执行时间初始化下拉框
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/get_execute_time")
+    public void getExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response){
+        String token = request.getHeader("token");
+        Integer userId = tokenUtil.getUserIdByToken(token);
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+
+        String showExecuteTime = jsonObject.getString("showExecuteTime");
+
+        Condition condition = new Condition();
+        condition.setUserId(userId);
+        condition.setShowExecuteTime(showExecuteTime);
+        Map data = scheduleService.slelectExecuteTime(condition);
+        Json.toJson(new Result(true, (String) "查询成功",data), response);
 
     }
 
+    /**
+     * 查询内容
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/get_execute_content")
+    public void getExecuteContent(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response){
+        String token = request.getHeader("token");
+        Integer userId = tokenUtil.getUserIdByToken(token);
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        String executeTime = jsonObject.getString("executeTime");
+        Condition condition = new Condition();
+
+        condition.setUserId(userId);
+        condition.setExecuteTime(executeTime);
+
+        Map data = scheduleService.selectCotnentByCondition(condition);
+        Json.toJson(new Result(true, (String) "查询成功",data), response);
+    }
+
 }
+
