@@ -176,6 +176,7 @@
 
 <!--添加任务弹出框-->
 <div class="text_box" id="test" style="display: none;">
+
     <form class="layui-form" action="post" lay-filter="schedule">
          <div class="layui-form-item">
              <div class="layui-inline">
@@ -188,7 +189,7 @@
          </div>
 
         <fieldset id="remind" class="layui-elem-field layui-field-title" style="margin-top: 2px;display: none">
-            <legend>提醒时间</legend>
+            <legend>提前时间</legend>
         </fieldset>
 
         <div class="layui-form-item" id="hour" style="display: none">
@@ -227,14 +228,38 @@
 
 <!--查看任务弹窗-->
 <div class="text_box" id="schedule1" style="display: none;">
-
     <form class="layui-form" action="post">
-
-        <div class="layui-form-item">
-            <label class="layui-form-label">所有的日程</label>
+        <div class="layui-form-item" style="padding-bottom: 3px">
+            <label class="layui-form-label">所有日程</label>
             <div class="layui-input-block">
-                <select name="interest" lay-filter="execute-time" id="execute-time" >
+                <select name="interest" lay-filter="execute-time-filter" id="execute-time" >
                 </select>
+            </div>
+        </div>
+        <div class="layui-form-item" id="check-hour">
+            <div class="layui-row">
+                <div class="layui-col-xs1">
+                    <div class="layui-inline">
+                        <label class="time-label">小时</label>
+                    </div>
+                </div>
+                <div class="layui-col-xs11">
+                    <div id="check-slideTest1" class="demo-slider"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layui-form-item" id="check-minute"  >
+            <div class="layui-row">
+                <div class="layui-col-xs1">
+                    <div class="layui-inline">
+                        <label class="time-label">分钟</label>
+                    </div>
+                </div>
+                <div class="layui-col-xs11">
+                    <div id="check-slideTest2" class="demo-slider"></div>
+                </div>
             </div>
         </div>
 
@@ -245,8 +270,6 @@
     </form>
 </div>
 
-
-
 <script>
 
     //加载基础模块
@@ -254,11 +277,14 @@
         var element = layui.element//
     });
 
-    //加载时间滑块模块
+     //设置全局变量
+    var add_slider_hour;
+    var add_slider_minute;
+    //添加记录：加载时间滑块模块
     layui.use('slider', function () {
         var $ = layui.$, slider = layui.slider;
 
-        slider.render({
+        add_slider_hour = slider.render({
             elem: '#slideTest1'
             , max: 24 //最大值
             , step: 1 //步长
@@ -268,10 +294,36 @@
             }
         })
 
-        slider.render({
+        add_slider_minute = slider.render({
             elem: '#slideTest2'
             , max: 55 //最大值
-            , step: 5 //步长
+            , step: 5
+            , input: true //输入框
+            , setTips: function (value) { //自定义提示文本
+                return value + '分钟';
+            }
+        })
+    })
+    //设置全局变量
+    var check_slider_hour;
+    var check_slider_minute
+    //查看记录：加载时间滑块模块
+    layui.use('slider', function () {
+        var $ = layui.$, slider = layui.slider;
+         check_slider_hour = slider.render({
+            elem: '#check-slideTest1'
+            , max: 24 //最大值
+            , step: 1 //步长
+            , input: true //输入框
+            , setTips: function (value) { //自定义提示文本
+                return value + '小时';
+            }
+        })
+
+        check_slider_minute = slider.render({
+            elem: '#check-slideTest2'
+            , max: 55 //最大值
+            , step: 5
             , input: true //输入框
             , setTips: function (value) { //自定义提示文本
                 return value + '分钟';
@@ -293,20 +345,20 @@
         //data格式：{"2020-01-29":"111111"}
         //此data需要从后端进行查询，格式为json
 
+        //创建全局的checiaoExecuteTime 变量
         //创建当前日期，此日期只是一个标注日期，与上面的显示无法
-        var new_date = new Date();
+        var current_date = new Date();
         //创建全局的switch值,默认为关闭
         var isRemind = "false";
 
         //var data  = {"2020-01-29":"fadfdaf","2020-01-30":"faf"}
         //加载日历插件，设置初始值为当前时间
-        loding_date(new_date);
+        loding_date(current_date);
         //日历插件调用方法，传进来初始值和回显数据
         //主要是data此时需要从后端进行查询，然后在前端进行显示
-        function loding_date(date_value) {
+        function loding_date(current_date) {
             var temp = getScheduleList();
             var scheduleData = JSON.parse(temp);
-
             //加载日历插件
             laydate.render({
                 elem: '#test-n2'
@@ -316,7 +368,7 @@
                 , isInitValue: true //是否允许填充初始值
                 , range: false
                 , format: 'yyyy-MM-dd HH:mm:ss'
-                , value: date_value
+                , value: current_date
                 , calendar: true
                 , btns: false
                 , change: function (value, date, endDate) {
@@ -335,7 +387,7 @@
                     showValue = value.substring(0,10);
                     if(typeof (scheduleData[showValue]) == "undefined")
                     {
-                        date_chose(value, showValue,scheduleData);
+                        date_chose(value);
                     }else {
                         init_select(showValue);
                         check_schedule(value, showValue,scheduleData)
@@ -346,7 +398,7 @@
         }
 
         //添加任务的弹窗函数
-        function date_chose(obj_date,showValue,data) {
+        function date_chose(current_date) {
             var index = layer.open({
                 type: 1,
                 skin: 'layui-layer-rim', //加上边框
@@ -355,17 +407,24 @@
                 btn: ['创建','关闭'],
                 content: $("#test")
                 , success: function () {
-                    $('#schedule-content').val(data[showValue])
+
                 }
                 , yes: function () {
-                    //回调函数
+                    var hour = $('#slideTest1').text();
+                    var minute = $('#slideTest2').text();
+
+                    if(isRemind == "true"){
+                        if(hour == '' && minute == ''){
+                            layer.msg('提醒时间不能为空!', {icon: 2});
+                            return;
+                        }
+                    }
+                    //点击创建按钮之后执行
                     if ($('#schedule-content').val() != '') {
-                        //确定时执行
-                        var s = JSON.stringify(data);
-                        chose_moban(obj_date, data);
+                        chose_moban(current_date);
                         layer.close(index);
                     } else {
-                        layer.msg('不能为空', {icon: 2});
+                        layer.msg('内容不能为空', {icon: 2});
                     }
                 },
                 btn2: function () {
@@ -376,31 +435,37 @@
 
         //查看任务的弹窗函数
         function check_schedule(value, showValue,scheduleData) {
-            //init_select(showValue);//初始化下拉选择框
             var index1 = layer.open({
                 type: 1,
                 skin: 'layui-layer-rim', //加上边框
                 title: '查看日程',
                 area: ['600px', '500px'], //宽高
-                btn: ['更新','撤销','关闭'],
+                btn: ['新建','更新','撤销','关闭'],
                 content: $("#schedule1")
                 , success: function () {
-                    //init_select(showValue);//初始化下拉选择框
+                    init_check_slider();
                 }
                 , yes: function () {
                     layer.close(index1);
+                    date_chose(current_date);
                 },
                 btn2: function () {
+                    alert("更新");
+                },
+                btn3: function () {
+
+                    chexiao(current_date);
+                },
+                btn4: function () {
                     layer.close(index1);
+
                 }
             });
 
         }
 
-        //定义添加/编辑标注方法
-        //obj_data:2020-01-22
-        //markJson为之前的数据
-        function chose_moban(obj_date, markJson) {
+        //创建活动
+        function chose_moban(obj_date) {
             //获取新的数据
             var content = $('#schedule-content').val();
             //var data1 = form.val("schedule");
@@ -451,24 +516,25 @@
                             offset: 'rb',
                             area: ['200px', '120px'],
                             end: function () {
-                                //刷新日历
                                 loding_date(obj_date);
                             }
                         });
                     }
                 }
             })
+            $('#schedule-content').val("");
             $('#test-n2').html('');//重要！由于插件是嵌套指定容器，再次调用前需要清空原日历控件，清空弹出层
             //markJson[obj_date] = content;
             //再次调用日历控件，重新添数据
             //loding_date(obj_date);//重要！，再标注一个日期后会刷新当前日期变为初始值，所以必须调用当前选定日期。
         }
 
-        //撤销选择
-        function chexiao(obj_date, markJson) {
-            var data = {"executeTime":obj_date};
+        //撤销
+        function chexiao(obj_date) {
+            var data = {
+                "executeTime":checiaoExecuteTime
+            }
             var jsonData = JSON.stringify(data);
-
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -507,9 +573,12 @@
                     }
                 }
             })
-            //原理同添加一致
             $('#test-n2').html('');
-            loding_date(obj_date, markJson);
+        }
+        //初始滑块
+        function init_check_slider(){
+            check_slider_hour.setValue(0);
+            check_slider_minute.setValue(0);
         }
 
         //监听switch操作
@@ -517,7 +586,6 @@
             var checked = data.elem.checked.toString();//将undefined类型强制转换为String
             isRemind = checked;
             if (checked == "true") {
-
                 $("#hour").css({'display': 'block'});
                 $("#minute").css({'display': 'block'});
                 $("#remind").css({'display': 'block'});
@@ -529,13 +597,44 @@
         });
 
         //监听select操作
-        form.on('select(execute-time)', function(data){
+        form.on('select(execute-time-filter)', function(data){
             var content_temp = JSON.stringify(data.value);
             var content = content_temp.substring(1,content_temp.length-1);
-            $('#schedule-content1').val(content);
+            $('#schedule-content1').val(content);//设置内容
+            var executeTime = data.elem[data.elem.selectedIndex].text;
+            checiaoExecuteTime = executeTime;
+
+            var data = {
+              "executeTime":executeTime
+            }
+            var jsonData = JSON.stringify(data);
+            //获取提前量
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                data: jsonData,
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/schedule/get_advance_time",
+                success: function (result) {
+                    var advanceData = result.data;//获取json数组
+                    check_slider_hour.setValue(advanceData.advanceHour);
+                    check_slider_minute.setValue(advanceData.advanceMinute);
+
+                    form.render("select");//刷性select，显示出数据
+                }, error: function (result) {
+                    alert("false");
+                }
+            });
+
         });
 
+        //初始化下拉框
         function init_select(showValue) {
+            //在初始化之前先清空上一个查询下拉值以及content
+            $("#execute-time").empty();
+            $('#schedule-content1').val("");
+            //封装data数据
             var data = {
                 "showExecuteTime": showValue
             }
@@ -549,13 +648,12 @@
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 url: "http://localhost:8080/schedule/get_execute_time",
                 success: function (result) {
-                    //清空上一个查询下拉值
-                    $("#execute-time").empty();
+                  /* check_slider_hour.setValue(0);
+                    check_slider_minute.setValue(0);*/
                     //设置初始值，请选择
                     var server = document.getElementById("execute-time"); //server为select定义的id
                     var option = document.createElement("option");  // 创建添加option属性
                     server.appendChild(option);
-
                     var list = result.data;//获取json数组
                     for (var p in list) {
                         var option = document.createElement("option");  // 创建添加option属性
@@ -567,14 +665,7 @@
                 }
             });
         }
-
-
     });
-
-
-
-
-
 
     //初始化内容
     function  init_content(executeTime) {

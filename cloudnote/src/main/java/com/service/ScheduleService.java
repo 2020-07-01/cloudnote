@@ -13,11 +13,14 @@ public interface ScheduleService {
     Map selectSchedule(Integer userId);
 
     //撤销活动
-    Map removeSchedule(Integer scheduleId);
+    Map removeSchedule(Condition condition);
 
     //查询时间
     Map slelectExecuteTime(Condition condition);
 
     //查询内容
     Map selectCotnentByCondition(Condition condition);
+
+    //查询提前量
+    Map selectAdvanceByCondition(Condition condition);
 }

@@ -60,10 +60,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
     @Override
-    public Map removeSchedule(Integer scheduleId) {
+    public Map removeSchedule(Condition condition) {
         HashMap<String, String> result = new HashMap();
         try {
-            scheduleMapper.removeScheduleByScheduleId(scheduleId);
+            scheduleMapper.removeScheduleByCondition(condition);
             result.put("true", "撤销成功!");
         } catch (Exception e) {
 
@@ -91,6 +91,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public Map selectCotnentByCondition(Condition condition) {
         HashMap result = new HashMap();
         List<Schedule> scheduleList = scheduleMapper.selectContentByCondition(condition);
+
         if(scheduleList != null){
             for (Schedule schedule:scheduleList) {
                 result.put(schedule.getScheduleId(),schedule.getScheduleContent());
@@ -98,6 +99,15 @@ public class ScheduleServiceImpl implements ScheduleService {
         }else {
             result.put("false","该用户在当前日期下未创建日程!");
         }
+        return result;
+    }
+
+    @Override
+    public Map selectAdvanceByCondition(Condition condition) {
+        HashMap<String,String> result = new HashMap();
+        Schedule schedule = scheduleMapper.selectAdvanceByCondition(condition);
+            result.put("advanceHour",String.valueOf(schedule.getAdvanceHour()));
+            result.put("advanceMinute",String.valueOf(schedule.getAdvanceMinute()));
         return result;
     }
 }

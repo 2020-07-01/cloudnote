@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.geom.RectangularShape;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,15 +67,17 @@ public class ScheduleController {
         //获取提前量
         Long hour = 0L;
         Long minute = 0L;
-        String hourTemp = jsonObject.getString("hour");
-        String minuteTemp = jsonObject.getString("minute");
-        if( !hourTemp.equals("")){
-            hour = Long.parseLong(hourTemp .substring(0,hourTemp.length()-2));
-        }
-        if( !minuteTemp.equals("")){
-            minute = Long.parseLong(minuteTemp.substring(0,minuteTemp.length()-2));
-        }
+        String advanceHour = jsonObject.getString("hour");
+        String advanceMinute = jsonObject.getString("minute");
 
+        if( !advanceHour.equals("")){
+            hour = Long.parseLong(advanceHour .substring(0,advanceHour.length()-2));
+        }
+        if( !advanceMinute.equals("")){
+            minute = Long.parseLong(advanceMinute.substring(0,advanceMinute.length()-2));
+        }
+        schedule.setAdvanceHour(hour.intValue());
+        schedule.setAdvanceMinute(minute.intValue());
         //计算发送邮件的时间
         SimpleDateFormat dateFormat =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date1 =  dateFormat.parse(executeTime);
@@ -136,15 +139,18 @@ public class ScheduleController {
         String token = request.getHeader("token");
         Integer userId = tokenUtil.getUserIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-
-        String scheduleId = jsonObject.getString("executeTime");
-        //Map result = scheduleService.insertSchedule();
-
-      /*  if (result.get("true") != null) {
-            Json.toJson(new Result(true, (String) result.get("true")), response);
+        String executeTime = jsonObject.getString("executeTime");
+        Condition condition = new Condition();
+        condition.setUserId(userId);
+        condition.setExecuteTime(executeTime);
+        Map map = scheduleService.removeSchedule(condition);
+        if (map.get("true") != null) {
+            Result result = new Result(true,(String)map.get("true"));
+            Json.toJson(result,response);
         } else {
-            Json.toJson(new Result(false, (String) result.get("false")), response);
-        }*/
+            Result result = new Result(false,(String)map.get("false"));
+            Json.toJson(result,response);
+        }
     }
 
     /**
@@ -188,6 +194,23 @@ public class ScheduleController {
 
         Map data = scheduleService.selectCotnentByCondition(condition);
         Json.toJson(new Result(true, (String) "查询成功",data), response);
+    }
+
+
+    @RequestMapping(value = "/get_advance_time")
+    public void getAdvanceTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response){
+        String token = request.getHeader("token");
+        Integer userId = tokenUtil.getUserIdByToken(token);
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+
+        String executeTime = jsonObject.getString("executeTime");
+        Condition condition = new Condition();
+        condition.setUserId(userId);
+        condition.setExecuteTime(executeTime);
+        Map data = scheduleService.selectAdvanceByCondition(condition);
+
+        Result result = new Result(true, "111!",data);
+        Json.toJson(result, response);
     }
 
 }

@@ -17,11 +17,14 @@ public interface ScheduleMapper {
     List<Schedule> selectScheduleByUserId(Integer userId);
 
     //撤销活动
-    void removeScheduleByScheduleId(Integer scheduleId);
+    void removeScheduleByCondition(Condition condition);
 
 
     List<Schedule> selectExcuteTimeByCondition(Condition condition);
 
     List<Schedule> selectContentByCondition(Condition condition);
+
+    //获取提前量
+    Schedule selectAdvanceByCondition(Condition condition);
 
 }

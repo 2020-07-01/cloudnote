@@ -25,9 +25,12 @@ public class Schedule {
     private String isObsolete;
     //受否使用邮件进行提醒
     private String isRemind;
-
+    //日期
     private String showExecuteTime;
-
+    //提前量小时
+    private Integer advanceHour;
+    //提前量分钟
+    private Integer advanceMinute;
 
     public Integer getScheduleId() {
         return scheduleId;
@@ -108,5 +111,21 @@ public class Schedule {
 
     public void setShowExecuteTime(String showExecuteTime) {
         this.showExecuteTime = showExecuteTime;
+    }
+
+    public Integer getAdvanceHour() {
+        return advanceHour;
+    }
+
+    public void setAdvanceHour(Integer advanceHour) {
+        this.advanceHour = advanceHour;
+    }
+
+    public Integer getAdvanceMinute() {
+        return advanceMinute;
+    }
+
+    public void setAdvanceMinute(Integer advanceMinute) {
+        this.advanceMinute = advanceMinute;
     }
 }
