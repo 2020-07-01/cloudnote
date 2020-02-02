@@ -27,4 +27,6 @@ public interface ScheduleMapper {
     //获取提前量
     Schedule selectAdvanceByCondition(Condition condition);
 
+    //更新日程
+    void updateSchedule(Schedule schedule);
 }

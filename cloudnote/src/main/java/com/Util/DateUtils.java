@@ -25,14 +25,14 @@ public class DateUtils {
         Long first = parse(firstDate).getTime();
         Long second = parse(secondDate).getTime();
 
-       Comparator<Long> comparator = new Comparator<Long>() {
-           @Override
-           public int compare(Long o1, Long o2) {
+        Comparator<Long> comparator = new Comparator<Long>() {
+            @Override
+            public int compare(Long o1, Long o2) {
 
-               return (o1 < o2) ? 0:1;
-           }
-       };
-        return comparator.compare(first,second)== 0 ? true:false;
+                return (o1 < o2) ? 0 : 1;
+            }
+        };
+        return comparator.compare(first, second) == 0 ? true : false;
     }
 
 
@@ -48,12 +48,23 @@ public class DateUtils {
     }
 
 
-    public static Long parse(Date date){
+    public static Long parse(Date date) {
         return date.getTime();
     }
 
-    public static String getCurrentDate(){
-        return  format.format(new Date());
+    public static String getCurrentDate() {
+        return format.format(new Date());
     }
 
+    public static String parse(Long hour, Long minute, String executeTime) {
+        try {
+            Date date = format.parse(executeTime);
+            Long milliSecond = date.getTime() - hour * 60 * 60 * 1000 - minute * 60 * 1000;
+            Date date2 = new Date(milliSecond);
+            return format.format(date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

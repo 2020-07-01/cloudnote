@@ -110,4 +110,16 @@ public class ScheduleServiceImpl implements ScheduleService {
             result.put("advanceMinute",String.valueOf(schedule.getAdvanceMinute()));
         return result;
     }
+
+    @Override
+    public Map updateSchedule(Schedule schedule) {
+        HashMap<String,String> result = new HashMap<>();
+        try {
+            scheduleMapper.updateSchedule(schedule);
+            result.put("true","更新成功!");
+        }catch (Exception e){
+            result.put("false","更新失败!");
+        }
+        return result;
+    }
 }

@@ -23,4 +23,7 @@ public interface ScheduleService {
 
     //查询提前量
     Map selectAdvanceByCondition(Condition condition);
+
+    //更新日程
+    Map updateSchedule(Schedule schedule);
 }

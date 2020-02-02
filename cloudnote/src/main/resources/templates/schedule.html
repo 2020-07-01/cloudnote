@@ -244,7 +244,7 @@
                     </div>
                 </div>
                 <div class="layui-col-xs11">
-                    <div id="check-slideTest1" class="demo-slider"></div>
+                    <div id="check-slide-hour" class="demo-slider"></div>
                 </div>
 
             </div>
@@ -258,13 +258,13 @@
                     </div>
                 </div>
                 <div class="layui-col-xs11">
-                    <div id="check-slideTest2" class="demo-slider"></div>
+                    <div id="check-slide-minute" class="demo-slider"></div>
                 </div>
             </div>
         </div>
 
         <div class="layui-form-item layui-form-text">
-            <textarea id="schedule-content1" placeholder="请选择时间" class="layui-textarea" style="resize: none;"></textarea>
+            <textarea id="check-schedule-content" placeholder="请选择时间" class="layui-textarea" style="resize: none;"></textarea>
         </div>
 
     </form>
@@ -311,7 +311,7 @@
     layui.use('slider', function () {
         var $ = layui.$, slider = layui.slider;
          check_slider_hour = slider.render({
-            elem: '#check-slideTest1'
+            elem: '#check-slide-hour'
             , max: 24 //最大值
             , step: 1 //步长
             , input: true //输入框
@@ -321,7 +321,7 @@
         })
 
         check_slider_minute = slider.render({
-            elem: '#check-slideTest2'
+            elem: '#check-slide-minute'
             , max: 55 //最大值
             , step: 5
             , input: true //输入框
@@ -345,7 +345,8 @@
         //data格式：{"2020-01-29":"111111"}
         //此data需要从后端进行查询，格式为json
 
-        //创建全局的checiaoExecuteTime 变量
+        //创建全局的chexiaoExecuteTime 变量
+        var chexiaoExecuteTime = "";
         //创建当前日期，此日期只是一个标注日期，与上面的显示无法
         var current_date = new Date();
         //创建全局的switch值,默认为关闭
@@ -450,7 +451,8 @@
                     date_chose(current_date);
                 },
                 btn2: function () {
-                    alert("更新");
+                    updateSchedule(current_date);
+
                 },
                 btn3: function () {
 
@@ -531,8 +533,12 @@
 
         //撤销
         function chexiao(obj_date) {
+            if(chexiaoExecuteTime == ""){
+                layer.msg('请选择日程', {icon: 2});
+                return;
+            }
             var data = {
-                "executeTime":checiaoExecuteTime
+                "executeTime":chexiaoExecuteTime
             }
             var jsonData = JSON.stringify(data);
             $.ajax({
@@ -575,6 +581,66 @@
             })
             $('#test-n2').html('');
         }
+
+        //更新
+        function updateSchedule(obj_date) {
+
+            if(chexiaoExecuteTime == ""){
+                layer.msg('请选择日程', {icon: 2});
+                return;
+            }
+
+            var hour = $('#check-slide-hour').text();
+            var minute = $('#check-slide-minute').text();
+            var content = $('#check-schedule-content').val();
+            var data = {
+                "executeTime":chexiaoExecuteTime, //获取执行时间
+                "advanceHour":hour,
+                "advanceMinute":minute,
+                "scheduleContent":content
+            }
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/schedule/update_schedule",
+                error: function (result) {
+                    alert("false");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1000,
+                            shade: 0.5,
+                            offset: 'rb',
+                            area: ['200px', '120px'],
+                            end: function () {
+                                //刷新日历
+                                loding_date(obj_date);
+                            }
+                        });
+                    } else {
+                        layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1500,
+                            shade: 0.6,
+                            offset: 'auto',
+                            area: ['200px', '120px']
+                        });
+                    }
+                }
+            })
+            $('#test-n2').html('');
+        }
+
         //初始滑块
         function init_check_slider(){
             check_slider_hour.setValue(0);
@@ -600,9 +666,9 @@
         form.on('select(execute-time-filter)', function(data){
             var content_temp = JSON.stringify(data.value);
             var content = content_temp.substring(1,content_temp.length-1);
-            $('#schedule-content1').val(content);//设置内容
+            $('#check-schedule-content').val(content);//设置内容
             var executeTime = data.elem[data.elem.selectedIndex].text;
-            checiaoExecuteTime = executeTime;
+            chexiaoExecuteTime = executeTime;
 
             var data = {
               "executeTime":executeTime
@@ -617,10 +683,10 @@
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 url: "http://localhost:8080/schedule/get_advance_time",
                 success: function (result) {
+                    //如果提前量为0则进行提示
                     var advanceData = result.data;//获取json数组
                     check_slider_hour.setValue(advanceData.advanceHour);
                     check_slider_minute.setValue(advanceData.advanceMinute);
-
                     form.render("select");//刷性select，显示出数据
                 }, error: function (result) {
                     alert("false");

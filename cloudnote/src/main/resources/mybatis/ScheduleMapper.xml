@@ -72,12 +72,21 @@
         where user_id = #{userId,jdbcType=INTEGER} and execute_time = #{executeTime,jdbcType=VARCHAR}
     </delete>
 
-    <!--  <select id="selectNoteByNoteId" parameterType="java.lang.Integer" resultType="com.entity.Note" resultMap="baseMap">
-          select
-          <include refid="base_sql"/>
-          from note
-          where note_id = #{noteId,jdbcType=INTEGER}
-      </select>-->
+
+
+    <update id="updateSchedule" parameterType="com.entity.Schedule">
+        update schedule
+        set
+            schedule_content= #{scheduleContent,jdbcType=VARCHAR},
+            update_time = now(),
+            remind_time = #{remindTime,jdbcType=VARCHAR},
+            advance_hour = #{advanceHour,jdbcType=INTEGER},
+            advance_minute = #{advanceMinute,jdbcType=INTEGER}
+        where execute_time = #{executeTime,jdbcType=VARCHAR} and user_id = #{userId,jdbcType = INTEGER}
+    </update>
+    <!--
+    #{executeTime,jdbcType=VARCHAR}
+    set  -->
 
     <!--   &lt;!&ndash;设置笔记进入回收站&ndash;&gt;
        <update id="updateRecycle" parameterType="java.lang.Integer">
@@ -88,11 +97,7 @@
 
 
 
-    <!--<update id="updateNote" parameterType="com.entity.Note">
-        update note
-        set note_content = #{noteContent,jdbcType=VARCHAR}, update_time = now(),note_title = #{noteTitle,jdbcType=VARCHAR},note_type=#{noteType,jdbcType=INTEGER}
-        where note_id = #{noteId,jdbcType=INTEGER}
-    </update>-->
+
 
     <!--    <select id="selectNoteByCondition" parameterType="com.entity.Condition" resultType="java.util.List">
             select

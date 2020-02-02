@@ -10,16 +10,12 @@ import com.Util.Json;
 import com.Util.Result;
 import com.service.serviceImpl.ScheduleServiceImpl;
 import com.service.serviceImpl.TaskServiceImpl;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnNotWebApplication;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.geom.RectangularShape;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -197,20 +193,71 @@ public class ScheduleController {
     }
 
 
+    /**
+     * 获取日程的提前量
+     * @param jsonString
+     * @param request
+     * @param response
+     */
     @RequestMapping(value = "/get_advance_time")
     public void getAdvanceTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response){
         String token = request.getHeader("token");
         Integer userId = tokenUtil.getUserIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-
         String executeTime = jsonObject.getString("executeTime");
         Condition condition = new Condition();
         condition.setUserId(userId);
         condition.setExecuteTime(executeTime);
-        Map data = scheduleService.selectAdvanceByCondition(condition);
-
-        Result result = new Result(true, "111!",data);
+        Map<String,String> data = scheduleService.selectAdvanceByCondition(condition);
+        Result result = new Result(true, "",data);
         Json.toJson(result, response);
+    }
+
+
+    /**
+     * 更新日程
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/update_schedule")
+    public void updateSchedule(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response){
+
+        String token = request.getHeader("token");
+        Integer userId = tokenUtil.getUserIdByToken(token);
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+
+        Schedule schedule = new Schedule();
+        schedule.setUserId(userId);
+        String executeTime = jsonObject.getString("executeTime");
+        schedule.setExecuteTime(executeTime);
+        String advanceHour = jsonObject.getString("advanceHour");
+        String advanceMinute = jsonObject.getString("advanceMinute");
+        //获取提前量
+        Long hour = 0L;
+        Long minute = 0L;
+
+        if( !advanceHour.equals("")){
+            hour = Long.parseLong(advanceHour .substring(0,advanceHour.length()-2));
+        }
+        if( !advanceMinute.equals("")) {
+            minute = Long.parseLong(advanceMinute.substring(0, advanceMinute.length() - 2));
+        }
+        schedule.setAdvanceHour(hour.intValue());
+        schedule.setAdvanceMinute(minute.intValue());
+        schedule.setScheduleContent(jsonObject.getString("scheduleContent"));
+
+
+        String remindTime = DateUtils.parse(hour,minute,executeTime);
+        schedule.setRemindTime(remindTime);
+        Map<String,String> data = scheduleService.updateSchedule(schedule);
+        if(data.get("true") != null){
+            Result result = new Result(true,data.get("true"));
+            Json.toJson(result, response);
+        }else {
+            Result result = new Result(false,data.get("false"));
+            Json.toJson(result, response);
+        }
     }
 
 }
