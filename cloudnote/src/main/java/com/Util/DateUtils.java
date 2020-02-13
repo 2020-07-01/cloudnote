@@ -35,7 +35,6 @@ public class DateUtils {
         return comparator.compare(first, second) == 0 ? true : false;
     }
 
-
     /**
      * 字符串转换为日期
      *
@@ -47,10 +46,6 @@ public class DateUtils {
         return format.parse(date);
     }
 
-
-    public static Long parse(Date date) {
-        return date.getTime();
-    }
 
     public static String getCurrentDate() {
         return format.format(new Date());
@@ -66,5 +61,14 @@ public class DateUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    /**
+     * Date转换为字符串
+     * @return
+     */
+    public static String parse(Date date){
+        return format.format(date);
     }
 }

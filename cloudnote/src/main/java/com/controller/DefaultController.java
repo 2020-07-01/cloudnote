@@ -73,4 +73,16 @@ public class DefaultController {
     public String toTimingTask(){
         return "timingTask";
     }
+
+
+    @RequestMapping(value = "/to_resource_image")
+    public String toResource(){
+        return "resource-image";
+    }
+
+
+    @RequestMapping(value = "/to_resoure_file")
+    public String toResourceFile(){
+        return "resource-file";
+    }
 }

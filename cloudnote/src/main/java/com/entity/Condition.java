@@ -18,6 +18,11 @@ public class Condition {
     private String showExecuteTime;
     private String executeTime;
 
+    private String imageType;
+
+    private String imageName;
+
+
     public String getKey() {
         return key;
     }
@@ -96,5 +101,21 @@ public class Condition {
 
     public void setExecuteTime(String executeTime) {
         this.executeTime = executeTime;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 }

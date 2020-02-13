@@ -29,7 +29,7 @@ public final class Result {
         this.data = data;
     }
 
-    public Result(boolean status, String massage, Object data) {
+    public Result(boolean status, String message, Object data) {
         this.code = (status) ? STATUS_SUCCESS : STATUS_FAILED;
         this.message = message;
         this.data = data;

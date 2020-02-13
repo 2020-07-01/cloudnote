@@ -55,7 +55,7 @@
         <div class=" layui-nav layui-layout-left">
             <li class="layui-nav-item" ><a id="my-note" href="/">我的笔记</a></li>
             <li class="layui-nav-item"><a id="my-event" href="/to_task">我的活动</a></li>
-            <li class="layui-nav-item"><a id="my-source" href="">我的资源</a></li>
+            <li class="layui-nav-item"><a id="my-source" href="/to_resource_image">我的资源</a></li>
         </div>
 
         <ul class="layui-nav layui-layout-right">
@@ -68,7 +68,6 @@
                 </div>
 
                 <div class="layui-input-inline" style="margin-right: 15px; ">
-
                     <button class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="selectNoteByKey">搜索</button>
 
                 </div>
@@ -122,6 +121,7 @@
 
             <div class="layui-col-xs5">
                 <div class="grid-demo grid-demo-bg1" style="margin-left: 1px;">
+
                     <table class="layui-hide layui-table-grid-down" id="note_list" lay-filter="note-table"></table>
                 </div>
             </div>
@@ -164,10 +164,7 @@
             </div>
 
         </div>
-
-
     </div>
-
 
     <div class="layui-footer1 layui-bg-black">
         © layui.com - 底部固定区域
