@@ -17,11 +17,12 @@ public class Condition {
     private String currentDate;
     private String showExecuteTime;
     private String executeTime;
-
     private String imageType;
-
     private String imageName;
 
+    private Integer imageId;
+
+    private String isRecycle;
 
     public String getKey() {
         return key;
@@ -117,5 +118,21 @@ public class Condition {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public Integer getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Integer imageId) {
+        this.imageId = imageId;
+    }
+
+    public String getIsRecycle() {
+        return isRecycle;
+    }
+
+    public void setIsRecycle(String isRecycle) {
+        this.isRecycle = isRecycle;
     }
 }

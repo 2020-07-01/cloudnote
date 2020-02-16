@@ -7,24 +7,28 @@ package com.entity;
  **/
 public class Image {
 
-    //id
-    Integer imageId;
-    //userid
-    Integer userId;
-    //名称
-    String imageName;
-    //类型
-    String imageType;
-    //地址
-    String imagePath;
-    //大小
-    Long imageSize;
-    //创建日期
-    String createTime;
-    //url
-    String imageUrl;
-    //连接失效时间
-    String expireDate;
+    // id
+    private Integer imageId;
+    // userid
+    private Integer userId;
+    // 名称
+    private String imageName;
+    // 类型
+    private String imageType;
+    // 地址
+    private String imagePath;
+    // 大小
+    private Long imageSize;
+    // 创建日期
+    private String createTime;
+    // url
+    private String imageUrl;
+    // 连接失效时间
+    private String expireDate;
+
+    private String wholeName;
+    // 是否已经删除
+    private String isRecycle;
 
     public Integer getImageId() {
         return imageId;
@@ -82,7 +86,6 @@ public class Image {
         this.imageSize = imageSize;
     }
 
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -97,5 +100,21 @@ public class Image {
 
     public void setExpireDate(String expireDate) {
         this.expireDate = expireDate;
+    }
+
+    public String getWholeName() {
+        return wholeName;
+    }
+
+    public void setWholeName(String wholeName) {
+        this.wholeName = wholeName;
+    }
+
+    public String getIsRecycle() {
+        return isRecycle;
+    }
+
+    public void setIsRecycle(String isRecycle) {
+        this.isRecycle = isRecycle;
     }
 }

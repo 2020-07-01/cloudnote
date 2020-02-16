@@ -1,12 +1,11 @@
 package com.mapper;
 
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
 
 import com.entity.Condition;
 import com.entity.Image;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Repository
 public interface ImageMapper {
@@ -22,4 +21,8 @@ public interface ImageMapper {
     String selectImageUrl(Integer imageId);
 
     Image selectImageByCondition(Condition condition);
+
+    void updateIsRecycle(Condition condition);
+
+    List<Image> selectImageByKey(Condition condition);
 }

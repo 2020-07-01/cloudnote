@@ -53,7 +53,7 @@
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
 
         <div class=" layui-nav layui-layout-left">
-            <li class="layui-nav-item" ><a id="my-note" href="/">我的笔记</a></li>
+            <li class="layui-nav-item"><a id="my-note" href="/">我的笔记</a></li>
             <li class="layui-nav-item"><a id="my-event" href="/to_task">我的活动</a></li>
             <li class="layui-nav-item"><a id="my-source" href="/to_resource_image">我的资源</a></li>
         </div>
@@ -291,7 +291,8 @@
                         layui.open({})
                     }
                     break;
-            };
+            }
+            ;
         });
 
         //保存按钮监听
@@ -312,13 +313,6 @@
             if (noteType == "" || noteType == null || noteType == undefined) {
                 alert("类型是否设置为默认值?");
             }
-            var data = {
-                "noteContent": noteContent,
-                "noteTitle": noteTitle,
-                "noteType": noteType
-            };
-            var jsonData = JSON.stringify(data);//转换为json字符串
-            var token = sessionStorage.getItem("token");
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -364,6 +358,14 @@
                     }
                 }
             })
+            var data = {
+                "noteContent": noteContent,
+                "noteTitle": noteTitle,
+                "noteType": noteType
+            };
+            var jsonData = JSON.stringify(data);//转换为json字符串
+            var token = sessionStorage.getItem("token");
+
         })
 
 
@@ -373,8 +375,6 @@
             var data = {
                 "key": key
             }
-
-
         })
     });
 

@@ -1,10 +1,12 @@
 package com.controller;
 
-import com.interceptorService.TokenUtil;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import javax.servlet.http.HttpServletRequest;
+
+import com.interceptorService.TokenUtil;
 
 /**
  * @author :qiang
@@ -16,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping(value = "/")
 public class DefaultController {
-
 
     @Autowired
     TokenUtil tokenUtil;
@@ -33,6 +34,7 @@ public class DefaultController {
 
     /**
      * 用户名登录
+     * 
      * @return
      */
     @RequestMapping(value = "login")
@@ -42,6 +44,7 @@ public class DefaultController {
 
     /**
      * 动态验证登录
+     * 
      * @return
      */
     @RequestMapping(value = "to_dynamicLogin")
@@ -52,7 +55,7 @@ public class DefaultController {
     @RequestMapping("to_index")
     public String toIndex(HttpServletRequest request) {
         String token = request.getParameter("token");
-        //对token进行验证
+        // 对token进行验证
         tokenUtil.verifyToken(token);
         return "homePage";
     }
@@ -64,25 +67,18 @@ public class DefaultController {
     }
 
     @RequestMapping(value = "to_task")
-    public String toTask(){
+    public String toTask() {
         return "schedule";
     }
 
-
     @RequestMapping(value = "to_timing_task")
-    public String toTimingTask(){
+    public String toTimingTask() {
         return "timingTask";
     }
 
-
     @RequestMapping(value = "/to_resource_image")
-    public String toResource(){
+    public String toResource() {
         return "resource-image";
     }
 
-
-    @RequestMapping(value = "/to_resoure_file")
-    public String toResourceFile(){
-        return "resource-file";
-    }
 }
