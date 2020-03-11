@@ -12,7 +12,7 @@
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
 
     <!--引入jquery-->
-    <script src="jquery-3.4.1.min.js"></script>
+    <script src="../static/jquery-3.4.1.min.js"></script>
 
     <style>
         .layui-side.layui-bg-black {
@@ -57,7 +57,7 @@
 
             <li class="layui-nav-item">
                 <div class="layui-input-inline">
-                    <input type ="text" name="title" required lay-verify="required" autocomplete="off"
+                    <input type="text" name="title" required lay-verify="required" autocomplete="off"
                            class="layui-input"
                            style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 4px;">
                 </div>
@@ -121,24 +121,60 @@
             <div class="layui-card-header" style="margin-left: 10%;">设置我的资料</div>
         </div>
 
-        <div class="layui-row" style="margin-left: 10%;">
-            <div class="layui-col-xs10">
+        <div class="layui-row">
+            <div class="layui-col-xs6">
+                <div class="grid-demo grid-demo-bg1">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账号：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userName" id="userName" value="xianxin" readonly
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">注册日期：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="phone" id="registerdate" value="" lay-verify="phone"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">绑定手机号：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="phone" id="phone" value="" lay-verify="phone"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                        <!--弹窗验证--->
+                        <div>修改</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">绑定邮箱：</label>
+                        <div class="layui-input-inline">
+                            <input type="email" name="email" id="email" lay-verify="email" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                        <!--弹窗验证--->
+                        <div>修改</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="layui-col-xs6">
                 <div class="grid-demo grid-demo-bg1">
                     <form class="layui-form" action="post">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">用户名</label>
-                            <div class="layui-input-inline">
-                                <input type ="text" name="userName" id="userName" value="xianxin" readonly
-                                       class="layui-input">
-                            </div>
-                            <div class="layui-form-mid layui-word-aux">不可修改</div>
-                        </div>
+
 
                         <div class="layui-form-item">
                             <label class="layui-form-label">性别</label>
                             <div class="layui-input-block">
-                                <input type="radio" id="man" name="sex" value="男" title="男">
-                                <input type ="radio" id="woman" name="sex" value="女" title="女" checked>
+                                <input type="radio" id="man" name="sex" value="男" title="男"/>
+                                <input type="radio" id="woman" name="sex" value="女" title="女"/>
+                                <input type="radio" id="secrecy" name="secrecy" value="保密" title="保密" checked/>
                             </div>
                         </div>
 
@@ -150,27 +186,11 @@
                             </div>
 
                             <div class="layui-input-inline layui-btn-container" style="width: auto;">
-                                <button type ="button" class="layui-btn layui-btn-primary" id="LAY_avatarUpload">
+                                <button type="button" class="layui-btn layui-btn-primary" id="LAY_avatarUpload">
                                     <i class="layui-icon">&#xe67c;</i>上传图片
                                 </button>
                                 <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">预览图片
                                 </button>
-                            </div>
-                        </div>
-
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">手机</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="phone" id="phone" value="" lay-verify="phone"
-                                       autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">邮箱</label>
-                            <div class="layui-input-inline">
-                                <input type="email" name="email" id="email" lay-verify="email" autocomplete="off"
-                                       class="layui-input">
                             </div>
                         </div>
 
@@ -182,19 +202,45 @@
                             </div>
                         </div>
 
-                        <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <button type="button" class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
-                                <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>
-
-            <div class="layui-col-xs2">
-            </div>
         </div>
+
+
+        <div class="layui-row">
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
     <!-- 底部固定区域 -->
@@ -210,12 +256,10 @@
 <script>
     layui.use('element', function () {
         var element = layui.element//
-
     });
 </script>
 
 <script>
-
     //加载表单
     layui.use('form', function () {
         var form = layui.form;

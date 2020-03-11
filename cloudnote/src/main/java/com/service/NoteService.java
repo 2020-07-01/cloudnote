@@ -1,10 +1,10 @@
 package com.service;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.List;
+import java.util.Map;
+
 import com.entity.Condition;
 import com.entity.Note;
-
-import java.util.List;
 
 /**
  * @author :qiang
@@ -14,21 +14,11 @@ import java.util.List;
  */
 public interface NoteService {
 
-    //保存信息
-    void insertNote(Note note);
+    // 保存信息
+    Map insertNote(Note note);
 
-    //根据userid查询信息
-    List<Note> selectNoteByUserId(Integer userId);
+    Map updateNote(Note note);
 
-    //批量删除笔记信息
-    boolean deleteNotesById(List<Integer> userIdList);
-
-    //获取单条数据
-    Note selectNoteByNoteId(Integer noteId);
-
-    int selectNoteByCondition(Condition condition);
-
-    void updateNote(Note note);
-
+    List<Note> selectNoteByCondition(Condition condition);
 
 }

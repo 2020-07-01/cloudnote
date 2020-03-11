@@ -1,13 +1,16 @@
 package com.service.serviceImpl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.entity.Condition;
 import com.entity.Note;
 import com.mapper.NoteMapper;
 import com.service.NoteService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author :qiang
@@ -23,53 +26,33 @@ public class NoteServiceImpl implements NoteService {
     NoteMapper noteMapper;
 
     @Override
-    public void insertNote(Note note) {
-        noteMapper.insertNote(note);
-
-    }
-
-    @Override
-    public List<Note> selectNoteByUserId(Integer userId) {
-        List<Note> listNote = noteMapper.selectNoteListByUserId(userId);
-        return listNote;
-    }
-
-
-    @Override
-    public boolean deleteNotesById(List<Integer> userIdList) {
+    public Map insertNote(Note note) {
+        HashMap result = new HashMap();
         try {
-            noteMapper.deleteNotesById(userIdList);
-            return true;
+            noteMapper.insertNote(note);
+            result.put("true", "SUCCESS");
         } catch (Exception e) {
-            return false;
+            result.put("false", "FAILURE");
         }
+        return result;
     }
 
     @Override
-    public Note selectNoteByNoteId(Integer noteId) {
-        return noteMapper.selectNoteByNoteId(noteId);
-    }
-
-
-    @Override
-    public int selectNoteByCondition(Condition condition) {
-        return noteMapper.selectNoteByCondition(condition);
-    }
-
-    @Override
-    public void updateNote(Note note) {
-        noteMapper.updateNote(note);
-    }
-
-    public boolean updateRecycle(Integer noteId) {
-        int row;
+    public Map updateNote(Note note) {
+        Map result = new HashMap();
         try {
-            row = noteMapper.updateRecycle(noteId);
+            noteMapper.updateNote(note);
+            result.put("true", "SUCCESS");
         } catch (Exception e) {
-            return false;
+            result.put("false", "FALIURE");
         }
-        return (row == 1) ? true : false;
+        return result;
     }
 
+    @Override
+    public List<Note> selectNoteByCondition(Condition condition) {
+        List<Note> notes = noteMapper.selectNoteByCondition(condition);
+        return notes;
+    }
 
 }

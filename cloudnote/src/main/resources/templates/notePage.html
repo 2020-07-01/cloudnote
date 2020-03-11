@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset='utf-8'>
+    <title>云笔记</title>
+
+    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
+    <script src="../static/layui-v2.5.5/layui/layui.js"></script>
+    <script src="../static/jquery-3.4.1.min.js"></script>
+
+    <script type="text/javascript" src="../static/wangEditor-3.1.1/release/wangEditor.min.js"></script>
+
+    <style>
+        .layui-side.layui-bg-black {
+            width: 100px;
+        }
+
+        .layui-table-grid-down {
+            display: none;
+        }
+
+        .layui-nav-tree {
+            width: 100px;
+        }
+
+        .layui-body {
+            left: 100px;
+        }
+
+        .layui-footer1 {
+            position: fixed;
+            left: 100px;
+            right: 0;
+            bottom: 0;
+            height: 35px;
+            line-height: 35px;
+            padding: 0 15px;
+        }
+
+        .note-title {
+            border: none;
+        }
+
+        .toolbar {
+            border: 1px solid #ccc;
+        }
+
+        .text {
+            border: 1px solid #ccc;
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+<!--顶部导航栏-->
+<div class="layui-layout layui-layout-admin">
+
+    <div class="layui-header">
+
+        <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
+
+        <div class=" layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a id="my-note" href="/">我的笔记</a></li>
+            <li class="layui-nav-item"><a id="my-event" href="/to_task">我的活动</a></li>
+            <li class="layui-nav-item"><a id="my-source" href="/to_resource_image">我的资源</a></li>
+        </div>
+
+        <ul class="layui-nav layui-layout-right">
+
+            <!-- <li class="layui-nav-item">
+                 <div class="layui-input-inline">
+                     <input type="text" id="key" name="key" required lay-verify="required"
+                            autocomplete="off" class="layui-input"
+                            style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 2px;">
+                 </div>
+
+                 <div class="layui-input-inline" style="margin-right: 15px; ">
+                     <button class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="selectNoteByKey">搜索</button>
+
+                 </div>
+             </li>-->
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    admin
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/to_userInformation">信息设置</a></dd>
+                    <dd><a href="/to_editPassword">修改密码</a></dd>
+                    <dd><a href="">意见反馈</a></dd>
+                    <dd><a href="">注销登录</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+
+            <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a>笔记</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#" id="study">学习</a></dd>
+                        <dd><a href="#" id="work">工作</a></dd>
+                        <dd><a href="#" id="life">生活</a></dd>
+                        <dd><a href="#" id="travel">旅游</a></dd>
+                        <dd><a href="#" id="other">随笔</a></dd>
+                        <dd><a href="#" id="all">所有</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">回收站</a>
+                    <dl class="layui-nav-child" style="text-align: left">
+                        <dd><a href="javascript:;">全部恢复</a></dd>
+                        <dd><a href="javascript:;">全部清空</a></dd>
+                        <dd><a href="javascript:;">查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+
+        <div class="layui-container">
+            <div class="layui-row">
+
+                <!--笔记列表-->
+                <div class="layui-col-xs3">
+                    <div class="grid-demo grid-demo-bg1" style="margin-left: 1px;">
+
+                        <div>
+                            <div class="layui-inline">
+                                <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
+                                       class="layui-input"
+                                       style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
+                            </div>
+
+                            <div class="layui-inline">
+                                <button id="search-note" type="button" class="layui-btn layui-btn-primary"
+                                        style="border:none;padding: 0 auto;"><i
+                                        class="layui-icon layui-icon-search" style="font-size: 32px;"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--列表信息-->
+                        <div>
+                            <table class="layui-hide layui-table-grid-down" lay-skin="ngb" id="note-list"
+                                   lay-filter="note-filter"
+                                   style="border-bottom: none"></table>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--笔记编辑区-->
+                <div class="layui-col-xs9">
+                    <div class="grid-demo">
+
+
+                        <div class="layui-row">
+                            <div class="layui-col-xs9">
+                                <div class="grid-demo">
+                                    <div class="layui-input-inline" style="width: 100%;float:left;">
+                                        <input type="text" id="note-title" name="noteTitle"
+                                               class="layui-input note-title"
+                                               placeholder="标题">
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="layui-col-xs3">
+                                <div class="grid-demo">
+                                    <div class="layui-btn-group" style="float:right">
+                                        <button id="save-button" type="button" class="layui-btn layui-btn-primary"
+                                                style="border:none;padding: 0 5px;"><i
+                                                class="layui-icon layui-icon-add-1" style="font-size: 32px;"></i>
+                                        </button>
+                                        <button id="delete-note" type="button" class="layui-btn layui-btn-primary"
+                                                button-space
+                                                style="border:none;padding: 0 5px;" onmouseover="123"><i
+                                                class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
+                                        </button>
+                                        <button type="button" class="layui-btn layui-btn-primary"
+                                                style="border:none;padding: 0 5px;padding-right: 15px"><i
+                                                class="layui-icon layui-icon-about" style="font-size: 32px;"></i>
+                                        </button>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--编辑区-->
+                        <div class="layui-row">
+                            <div class="layui-col-xs12">
+                                <div id="div1" class="toolbar">
+
+                                </div>
+
+                                <div id="div2" class="text"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+                                    <p>请输入内容</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-footer1 layui-bg-black">
+        © layui.com - 底部固定区域
+    </div>
+</div>
+</body>
+
+<script th:inline="none">
+
+    //设置全局token
+    var token = sessionStorage.getItem("token");
+    //设置全局笔记类型为所有
+    var noteType = "";
+    //设置全局noteId
+    var noteId = "";
+    //预先加载模块
+    layui.use(['table', 'element', 'form', 'layer'], function () {
+        var form = layui.form;
+        var table = layui.table;
+        var layer = layui.layer;
+        var element = layui.element;
+
+        //方法级自动渲染表单数据
+        var table_reload = table.render({
+            elem: '#note-list',
+            where: {token: token},//传递token到服务端
+            url: 'http://localhost:8080/note/note_list', //默认传递两个参
+            height: 430,
+            cols:
+                [[ //标题栏
+                    {field: 'noteTitle', title: '笔记列表', width: 280, unresize: true}
+                ]]
+            , done:
+                function (res, curr, count) {
+                    //点击按钮创建笔记
+                    $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
+                    /*
+                                        $("th").click(function () {
+                                            alert("123");
+                                        })*/
+                }
+        })
+
+        //学习
+        $("#study").click(function () {
+            init_table("study");
+            noteType = "study";
+            /* $('#note-title').val("");//清除标题
+             editor.txt.html("");//清除文本*/
+        })
+
+        //工作
+        $("#work").click(function () {
+            init_table("work");
+            noteType = "work";
+            /* $('#note-title').val("");//清除标题
+             editor.txt.html("");//清除文本*/
+        })
+
+        //生活
+        $("#life").click(function () {
+            init_table("life");
+            noteType = "life";
+            /* $('#note-title').val("");//清除标题
+             editor.txt.html("");//清除文本*/
+        })
+
+        //旅游
+        $("#travel").click(function () {
+            init_table("travel");
+            noteType = "travel";
+            /* $('#note-title').val("");//清除标题
+             editor.txt.html("");//清除文本*/
+        })
+
+        //随笔
+        $("#other").click(function () {
+            init_table("other");
+            noteType = "other";
+            /* $('#note-title').val("");//清除标题
+             editor.txt.html("");//清除文本*/
+        })
+
+        //所有
+        $("#all").click(function () {
+            init_table("");
+            noteType = "";
+            /*$('#note-title').val("");//清除标题
+            editor.txt.html("");//清除文本*/
+        })
+
+        //初始化table
+        function init_table(type) {
+            $('#note-title').val("");//清除标题
+            editor.txt.html("");//清除文本
+            var table_reload1 = table.render({
+                elem: '#note-list',
+                where: {token: token, type: type},//传递token到服务端
+                url: 'http://localhost:8080/note/note_list', //默认传递两个参
+                height: 436,
+                cols:
+                    [[ //标题栏
+                        {field: 'noteTitle', title: '创建笔记', width: 290, unresize: true}
+                    ]]
+                , done:
+                    function (res, curr, count) {
+                        //点击按钮创建笔记
+                        $('th').css({'text-align': 'center', 'font-size': '17px'});
+                        $("th").click(function () {
+                            alert("123");
+                        })
+                    }
+            })
+        }
+
+        //单击事件
+        table.on('row(note-filter)', function (obj) {
+            //单机时获取当前数据，存储在全局变量之中，然后点击删除或者下载按钮，最后清除数据
+            var noteContent = obj.data.noteContent;
+            var noteTitle = obj.data.noteTitle;
+            noteId = obj.data.noteId;
+            $('#note-title').val(noteTitle);//设置标题
+            editor.txt.html(noteContent);
+
+        });
+
+        //保存笔记
+        $("#save-button").click(function () {
+            var noteTitle = $('#note-title').val();
+            //  var noteType = $('#note-type').val();
+            //获取html内容
+            var noteContent = editor.txt.html();
+            var data = {
+                "noteTitle": noteTitle,
+                "noteType": noteType,
+                "noteContent": noteContent
+            }
+            var jsonData = JSON.stringify(data);
+            //alert(jsonData);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/note/save_note.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg('添加成功!');
+                        init_table(noteType);
+                    } else {
+                        layer.msg('添加失败!');
+                    }
+                },
+            })
+        });
+
+        //删除笔记
+        $("#delete-note").click(function () {
+            var data = {
+                "noteId": noteId
+            }
+            var jsonData = JSON.stringify(data);
+            alert(jsonData);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/note/delete_note.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg('删除成功!');
+                        init_table(noteType);
+                    }
+                },
+            })
+        });
+
+        //渲染编辑区
+        var E = window.wangEditor
+        var editor = new E('#div1', '#div2')  //工具栏与内容区分开
+        editor.create()
+
+        //查找数据
+        $("#search-note").click(function () {
+            var key = $("#input-search-note").val();
+            var table_reload2 = table.render({
+                elem: '#note-list',
+                where: {token: token, key: key},//传递token到服务端
+                url: 'http://localhost:8080/note/note_list', //默认传递两个参
+                height: 436,
+                cols:
+                    [[ //标题栏
+                        {field: 'noteTitle', title: '创建笔记', width: 290, unresize: true}
+                    ]]
+                , done:
+                    function (res, curr, count) {
+                        //点击按钮创建笔记
+                        $('th').css({'text-align': 'center', 'font-size': '17px'});
+                        $("th").click(function () {
+                            alert("123");
+                        })
+                    }
+            })
+        })
+    })
+
+
+</script>
+
+
+</html>

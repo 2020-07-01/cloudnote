@@ -86,25 +86,25 @@
 
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
 
-        <div class=" layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a id="my-note" href="/">我的笔记</a></li>
-            <li class="layui-nav-item"><a id="my-event" href="/to_task">我的活动</a></li>
-            <li class="layui-nav-item"><a id="my-source" href=/to_resource_image>我的资源</a></li>
-        </div>
+        <!--  <div class=" layui-nav layui-layout-left">
+              <li class="layui-nav-item"><a id="my-note" href="/">我的笔记</a></li>
+              <li class="layui-nav-item"><a id="my-event" href="/to_task">我的活动</a></li>
+              <li class="layui-nav-item"><a id="my-source" href=/to_resource_image>我的资源</a></li>
+          </div>-->
 
         <ul class="layui-nav layui-layout-right">
 
-            <li class="layui-nav-item">
-                <div class="layui-input-inline">
-                    <input type="text" id="key" name="key" required lay-verify="required"
-                           autocomplete="off" class="layui-input"
-                           style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 2px;">
-                </div>
+            <!--  <li class="layui-nav-item">
+                  <div class="layui-input-inline">
+                      <input type="text" id="key" name="key" required lay-verify="required"
+                             autocomplete="off" class="layui-input"
+                             style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 2px;">
+                  </div>
 
-                <div class="layui-input-inline" style="margin-right: 15px; ">
-                    <button class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="selectNoteByKey">搜索</button>
-                </div>
-            </li>
+                  <div class="layui-input-inline" style="margin-right: 15px; ">
+                      <button class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="selectNoteByKey">搜索</button>
+                  </div>
+              </li>-->
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
@@ -126,7 +126,7 @@
 
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">笔记</a>
+                    <a class="" href="javascript:;">我的笔记</a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;">学习</a></dd>
                         <dd><a href="javascript:;">工作</a></dd>
@@ -140,20 +140,9 @@
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">回收站</a>
-                    <dl class="layui-nav-child" style="text-align: left">
-                        <dd><a href="javascript:;">全部恢复</a></dd>
-                        <dd><a href="javascript:;">全部清空</a></dd>
-                        <dd><a href="javascript:;">查看全部</a></dd>
-                    </dl>
-                </li>
-            </ul>
-
-            <ul class="layui-nav layui-nav-tree">
-                <li class="layui-nav-item">
-                    <a href="javascript:;">资源</a>
+                    <a href="javascript:;">我的资源</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="/to_resource-image">图片</a></dd>
+                        <dd><a href="/to_resource_image">图片</a></dd>
                         <dd><a href="javascript:;">视频</a></dd>
                         <dd><a href="javascript:;">文档</a></dd>
                     </dl>
@@ -162,8 +151,20 @@
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">任务</a>
+                    <a href="javascript:;">我的日程</a>
                     <dl class="layui-nav-child">
+                        <dd><a href="/to_task">查看</a>
+                            <!--<dd><a href="javascript:;">全部恢复</a></dd>
+                            <dd><a href="javascript:;">全部清空</a></dd>
+                            <dd><a href="javascript:;">查看全部</a></dd>-->
+                    </dl>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">回收站</a>
+                    <dl class="layui-nav-child" style="text-align: left">
                         <dd><a href="javascript:;">全部恢复</a></dd>
                         <dd><a href="javascript:;">全部清空</a></dd>
                         <dd><a href="javascript:;">查看全部</a></dd>
@@ -193,9 +194,9 @@
                                 </button>
                             </div>
                         </div>
-                        <!--图片连接区域-->
+                        <!--列表信息-->
                         <div>
-                            <table class="layui-hide" lay-skin="ngb" id="note_list" lay-filter="table-filter"
+                            <table class="layui-hide" lay-skin="ngb" id="image-list" lay-filter="table-filter"
                                    style="border-bottom: none"></table>
                         </div>
 
@@ -214,6 +215,7 @@
                                            style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
                                 </div>
                             </div>
+
                             <div class="layui-col-xs3">
                                 <div class="grid-demo">
                                     <div class="layui-btn-group" style="float:right">
@@ -277,7 +279,7 @@
         var deleteImagePath = "";
 
         var table_reload = table.render({
-            elem: '#note_list',
+            elem: '#image-list',
             where: {token: token},//传递token到服务端
             url: 'http://localhost:8080/image/get_images.json', //默认传递两个参
             height: 436,
@@ -465,7 +467,7 @@
 
             //重新将table渲染一次，
             var table_reload_temp = table.render({
-                elem: '#note_list',
+                elem: '#image-list',
                 where: {token: token, key: imageKey},//传递token到服务端
                 url: 'http://localhost:8080/image/search_image.json', //默认传递两个参
                 height: 436,

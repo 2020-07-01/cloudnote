@@ -24,6 +24,8 @@ public class Condition {
 
     private String isRecycle;
 
+    private String type;
+
     public String getKey() {
         return key;
     }
@@ -134,5 +136,13 @@ public class Condition {
 
     public void setIsRecycle(String isRecycle) {
         this.isRecycle = isRecycle;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

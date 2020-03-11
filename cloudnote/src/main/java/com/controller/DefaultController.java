@@ -57,18 +57,17 @@ public class DefaultController {
         String token = request.getParameter("token");
         // 对token进行验证
         tokenUtil.verifyToken(token);
-        return "homePage";
+        return "notePage";
     }
 
     @RequestMapping(value = "to_editPassword")
     public String toEditPassword() {
-
         return "editPassword";
     }
 
-    @RequestMapping(value = "to_task")
+    @RequestMapping(value = "to_schedule_page")
     public String toTask() {
-        return "schedule";
+        return "schedulePage";
     }
 
     @RequestMapping(value = "to_timing_task")
@@ -76,9 +75,13 @@ public class DefaultController {
         return "timingTask";
     }
 
-    @RequestMapping(value = "/to_resource_image")
+    @RequestMapping(value = "/to_image_page")
     public String toResource() {
-        return "resource-image";
+        return "imagePage";
     }
 
+    @RequestMapping(value = "to_userInformation")
+    public String touserInformation() {
+        return "userInformation";
+    }
 }

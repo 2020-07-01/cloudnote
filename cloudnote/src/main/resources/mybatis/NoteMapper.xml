@@ -5,13 +5,13 @@
 <mapper namespace="com.mapper.NoteMapper">
 
     <sql id="base_sql">
-        note_id,user_id,type_id,note_title,note_content,create_time,update_time,is_recycle
+        note_id,user_id,note_type,note_title,note_content,create_time,update_time,is_recycle
     </sql>
 
     <resultMap id="baseMap" type="com.entity.Note">
         <id column="note_id" property="noteId" jdbcType="INTEGER"/>
         <result column="user_id" property="userId" jdbcType="INTEGER"/>
-        <result column="type_id" property="typeId" jdbcType="INTEGER"/>
+        <result column="note_type" property="noteType" jdbcType="VARCHAR"/>
         <result column="note_title" property="noteTitle" jdbcType="VARCHAR"/>
         <result column="note_content" property="noteContent" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
@@ -19,44 +19,41 @@
         <result column="is_recycle" property="isRecycle" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <select id="selectNoteListByUserId" parameterType="java.lang.Integer" resultType="com.entity.Note"
+    <select id="selectNoteByCondition" parameterType="com.entity.Condition" resultType="com.entity.Note"
             resultMap="baseMap">
         select
         <include refid="base_sql"/>
         from note
-        where user_id = #{userId,jdbcType=INTEGER} and is_recycle = 0
+        where user_id = #{userId,jdbcType=INTEGER}
+        and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        <if test="type != null and type != ''">
+            and note_type = #{type,jdbcType=VARCHAR}
+        </if>
     </select>
 
-    <insert id="insertNote" parameterType="com.entity.Note">
-        insert into note (user_id,type_id,note_title,note_content,create_time)
-     value ( #{userId,jdbcType=INTEGER},#{typeId,jdbcType=INTEGER},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=VARCHAR},now())
+    <insert id="insertNote" parameterType="com.entity.Note" useGeneratedKeys="true" keyProperty="noteId">
+        insert into note (user_id,note_type,note_title,note_content,create_time)
+     value ( #{userId,jdbcType=INTEGER},#{noteType,jdbcType=VARCHAR},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=VARCHAR},now())
     </insert>
-
-    <select id="selectNoteByNoteId" parameterType="java.lang.Integer" resultType="com.entity.Note" resultMap="baseMap">
-        select
-        <include refid="base_sql"/>
-        from note
-        where note_id = #{noteId,jdbcType=INTEGER}
-    </select>
-
-    <!--设置笔记进入回收站-->
-    <update id="updateRecycle" parameterType="java.lang.Integer">
-        update note
-        set is_recycle = 1
-        where note_id = #{noteId,jdbcType=INTEGER}
-    </update>
-
-    <delete id="deleteNotesById" parameterType="java.util.List">
-        delete from note
-        where note_id in
-        <foreach collection="collection" item="item" open="(" separator="," close=")">
-            #{item,jdbcType=INTEGER}
-        </foreach>
-    </delete>
 
     <update id="updateNote" parameterType="com.entity.Note">
         update note
-        set note_content = #{noteContent,jdbcType=VARCHAR}, update_time = now(),note_title = #{noteTitle,jdbcType=VARCHAR},note_type=#{noteType,jdbcType=INTEGER}
+        <set>
+            <if test="noteContent != null">
+                note_content = #{noteContent,jdbcType=VARCHAR},
+            </if>
+            <if test="noteTitle != null">
+                note_title = #{noteTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="isRecycle != null">
+                is_recycle = #{isRecycle,jdbcType=VARCHAR},
+            </if>
+            <if test="noteType != null">
+                note_type=#{noteType,jdbcType=INTEGER},
+            </if>
+            update_time = now()
+        </set>
         where note_id = #{noteId,jdbcType=INTEGER}
     </update>
+
 </mapper>

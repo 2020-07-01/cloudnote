@@ -10,13 +10,12 @@ public class Note {
 
     private Integer noteId;
     private Integer userId;
-    private Integer typeId;
+    private String noteType;
     private String noteTitle;
     private String noteContent;
     private String createTime;
     private String updateTime;
     private String isRecycle;
-
 
     public Integer getNoteId() {
         return noteId;
@@ -32,14 +31,6 @@ public class Note {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public Integer getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
     }
 
     public String getNoteTitle() {
@@ -80,5 +71,13 @@ public class Note {
 
     public void setIsRecycle(String isRecycle) {
         this.isRecycle = isRecycle;
+    }
+
+    public String getNoteType() {
+        return noteType;
+    }
+
+    public void setNoteType(String noteType) {
+        this.noteType = noteType;
     }
 }

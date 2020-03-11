@@ -1,23 +1,25 @@
 package com.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.entity.Condition;
-import com.entity.Note;
-import com.entity.TypeUtils;
-import com.interceptorService.TokenUtil;
-import com.Util.Json;
-import com.Util.Result;
-import com.service.serviceImpl.NoteServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.Util.Json;
+import com.Util.Result;
+import com.alibaba.fastjson.JSONObject;
+import com.entity.Condition;
+import com.entity.Note;
+import com.interceptorService.TokenUtil;
+import com.service.serviceImpl.NoteServiceImpl;
 
 /**
  * @author :qiang
@@ -38,16 +40,30 @@ public class NoteController {
     /**
      * 数据列表
      *
-     * @param pageno
-     * @param pagesize
      * @return 返回json数据
      */
     @RequestMapping(value = "/note_list")
-    public Object indexList(@RequestParam(value = "page") String pageno, @RequestParam(value = "limit") String pagesize, @RequestParam(value = "token") String token) {
+    public Object indexList(@RequestParam(value = "token") String token,
+        @RequestParam(value = "type", defaultValue = "") String type,
+        @RequestParam(value = "isRecycle", defaultValue = "0") String isRecycle,
+        @RequestParam(value = "key", defaultValue = "") String key) {
 
-        //根据token解析userId
+        // 根据token解析userId
         Integer userId = tokenUtil.getUserIdByToken(token);
-        List<Note> list = noteService.selectNoteByUserId(userId);
+
+        if (!key.equals("")) {
+
+        }
+
+        Condition condition = new Condition();
+        condition.setUserId(userId);
+        condition.setType(type);
+
+        if (isRecycle != null) {
+            condition.setIsRecycle(isRecycle);
+        }
+
+        List<Note> list = noteService.selectNoteByCondition(condition);
 
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
@@ -55,6 +71,11 @@ public class NoteController {
         hashMap.put("count", list.size());
         hashMap.put("data", list);
         return hashMap;
+    }
+
+    private List<Note> search(Condition condition) {
+        List<Note> list = noteService.selectNoteByCondition(condition);
+        return list;
     }
 
     /**
@@ -65,42 +86,44 @@ public class NoteController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/save_note")
+    @RequestMapping(value = "/save_note.json")
     public void insertNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        Result result = null;
+        Map result;
         String token = request.getHeader("token");
         Integer userId = tokenUtil.getUserIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
 
         Note note = new Note();
         note.setUserId(userId);
-        note.setNoteTitle(jsonObject.getString("noteTitle"));
-        note.setNoteContent(jsonObject.getString("noteContent"));
-        note.setTypeId(Integer.parseInt(jsonObject.getString("noteType")));
-        try {
-            noteService.insertNote(note);
-        } catch (Exception e) {
-            result = new Result(false, "保存失败!");
-            Json.toJson(result, response);
+        String noteTitle = jsonObject.getString("noteTitle");
+        if (!noteTitle.equals("")) {
+            note.setNoteTitle(jsonObject.getString("noteTitle"));
+        } else {
+            Json.toJson(new Result(false, "标题不能为空!"), response);
         }
-        result = new Result(true, "保存成功!");
-        Json.toJson(result, response);
+        String noteContent = jsonObject.getString("noteContent");
+        if (!noteContent.equals("")) {
+            note.setNoteContent(jsonObject.getString("noteContent"));
+        } else {
+            Json.toJson(new Result(false, "内容不能为空!"), response);
+        }
+        if (jsonObject.getString("noteType").equals("")) {
+            note.setNoteType("default");
+        } else {
+            note.setNoteType(jsonObject.getString("noteType"));
+        }
+        try {
+            result = noteService.insertNote(note);
+            if (result.get("true") != null) {
+                Json.toJson(new Result(true, "保存成功!"), response);
+            } else {
+                Json.toJson(new Result(false, "保存失败!"), response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Json.toJson(new Result(false, "保存失败!"), response);
+        }
     }
-
-    /**
-     * 查看笔记
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/check_note")
-    public void checkNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-
-
-    }
-
 
     /**
      * 更新笔记
@@ -121,12 +144,11 @@ public class NoteController {
         note.setUserId(userId);
         note.setNoteTitle(jsonObject.getString("noteTitle"));
         note.setNoteContent(jsonObject.getString("noteContent"));
-        note.setTypeId(TypeUtils.getSexEnumByCode(jsonObject.getString("noteType")));
+        // note.setNoteType(TypeUtils.getSexEnumByCode(jsonObject.getString("noteType")));
         noteService.updateNote(note);
         result = new Result(true, "更新成功!");
         Json.toJson(result, response);
     }
-
 
     /**
      * 删除笔记
@@ -136,7 +158,7 @@ public class NoteController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/delete_note")
+    @RequestMapping(value = "/delete_note.json")
     public void deleteNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         Result result = null;
         String token = request.getHeader("token");
@@ -145,52 +167,21 @@ public class NoteController {
         } catch (Exception e) {
             result = new Result(false, "用户验证失败，请重新登录!");
         }
-        try {
-            JSONArray jsonArray = JSONArray.parseArray(jsonString);
-            List<Integer> listNoteId = new ArrayList<>();
-            for (int i = 0; i < jsonArray.size(); i++) {
-                String temp = jsonArray.getString(i);
-                JSONObject jsonObject = JSONArray.parseObject(temp);
-                Integer userId = Integer.parseInt(jsonObject.getString("noteId"));
-                listNoteId.add(userId);
-            }
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        Integer noteId = Integer.parseInt(jsonObject.getString("noteId"));
 
-            boolean p = noteService.deleteNotesById(listNoteId);
-            if (p) {
-                result = new Result(false, "删除成功!");
+        try {
+            Note note = new Note();
+            note.setNoteId(noteId);
+            note.setIsRecycle("1");
+            Map map = noteService.updateNote(note);
+            if (map.get("true") != null) {
+                Json.toJson(new Result(true, "删除成功!"), response);
             } else {
-                result = new Result(true, "删除失败!");
+                Json.toJson(new Result(false, "删除失败!"), response);
             }
         } catch (Exception e) {
-            //此处应该打印日志
-        }
-        Json.toJson(result, response);
-    }
-
-
-    /**
-     * 关键字检索
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    public void selectByKey(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        Result result = null;
-        String token = request.getHeader("token");
-        try {
-            tokenUtil.verifyToken(token);
-        } catch (Exception e) {
-            result = new Result(false, "用户验证失败，请重新登录!");
-        }
-        try {
-            JSONArray jsonArray = JSONArray.parseArray(jsonString);
-            Condition condition = new Condition();
-
-            noteService.selectNoteByCondition(condition);
-
-        } catch (Exception e) {
-
+            // 此处应该打印日志
         }
     }
 
