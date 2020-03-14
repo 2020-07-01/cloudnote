@@ -1,11 +1,10 @@
 package com.entity;
 
-public class User {
+public class Account {
 
-    private Integer userId;
-    private String userName;
-    private String userPassword;
-    private String sex;
+    private Integer accountId;
+    private String accountName;
+    private String accountPassword;
     private String email;
     private String phone;
     private String createTime;
@@ -13,49 +12,31 @@ public class User {
     private Integer isLogout;
     private String lastLoginTime;
     private String remark;
-    private String userRole;
+    private String accountRole;
+    private String isClosed;
 
-    public User() {
+    public Integer getAccountId() {
+        return accountId;
     }
 
-    public User(String email, String userPassword) {
-        this.email = email;
-        this.userPassword = userPassword;
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
-
-    public String getUserName() {
-        return userName;
+    public String getAccountPassword() {
+        return accountPassword;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setAccountPassword(String accountPassword) {
+        this.accountPassword = accountPassword;
     }
 
     public String getEmail() {
@@ -98,7 +79,6 @@ public class User {
         this.isLogout = isLogout;
     }
 
-
     public String getLastLoginTime() {
         return lastLoginTime;
     }
@@ -106,7 +86,6 @@ public class User {
     public void setLastLoginTime(String lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
     }
-
 
     public String getRemark() {
         return remark;
@@ -116,13 +95,19 @@ public class User {
         this.remark = remark;
     }
 
-
-    public String getUserRole() {
-        return userRole;
+    public String getAccountRole() {
+        return accountRole;
     }
 
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
+    public void setAccountRole(String accountRole) {
+        this.accountRole = accountRole;
     }
 
+    public String getIsClosed() {
+        return isClosed;
+    }
+
+    public void setIsClosed(String isClosed) {
+        this.isClosed = isClosed;
+    }
 }

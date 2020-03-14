@@ -89,11 +89,11 @@
     <div class="layui-header">
 
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
-        <div class=" layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a id="create-note" href="/to_index">创建笔记</a></li>
-            </li>
-        </div>
-
+        <!-- <div class=" layui-nav layui-layout-left">
+             <li class="layui-nav-item"><a id="create-note" href="/to_index">创建笔记</a></li>
+             </li>
+         </div>
+ -->
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <div class="layui-input-inline">
@@ -124,23 +124,20 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">我的笔记</a>
+                    <a>我的笔记</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">学习</a></dd>
-                        <dd><a href="javascript:;">工作</a></dd>
-                        <dd><a href="javascript:;">生活</a></dd>
-                        <dd><a href="javascript:;">旅游</a></dd>
-                        <dd><a href="javascript:;">随笔</a></dd>
+                        <dd><a href="/to_note_page">查看</a></dd>
                     </dl>
                 </li>
             </ul>
+
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
                     <a href="javascript:;">我的资源</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="/to_resource_image">图片</a></dd>
+                        <dd><a href="/to_image_page">图片</a></dd>
                         <dd><a href="javascript:;">视频</a></dd>
                         <dd><a href="javascript:;">文档</a></dd>
                     </dl>
@@ -151,10 +148,8 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;">我的日程</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="/to_task">查看</a>
-                            <!--<dd><a href="javascript:;">全部恢复</a></dd>
-                            <dd><a href="javascript:;">全部清空</a></dd>
-                            <dd><a href="javascript:;">查看全部</a></dd>-->
+                        <dd><a href="/to_schedule_page">查看</a>
+
                     </dl>
                 </li>
             </ul>

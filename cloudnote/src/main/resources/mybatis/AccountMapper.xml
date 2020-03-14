@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.mapper.AccountMapper">
+
+    <resultMap id="baseMap" type="com.entity.Account">
+        <id column="account_id" property="accountId" jdbcType="INTEGER"/>
+        <result column="account_name" property="accountName" jdbcType="VARCHAR"/>
+        <result column="account_password" property="accountPassword" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="is_logout" property="isLogout" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="last_login_time" property="LastLoginTime" jdbcType="VARCHAR"/>
+        <result column="account_role" property="accountRole" jdbcType="VARCHAR"/>
+        <result column="is_closed" property="isClosed" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="base_sql">
+        account_id,account_name,account_password,email,phone,create_time,update_time,is_logout,remark,last_login_time,account_role,is_closed
+    </sql>
+
+    <insert id="insertAccount" parameterType="com.entity.Account">
+        insert into account (email,account_name,account_password,create_time)
+        value ( #{email,jdbcType=VARCHAR},#{accountName,jdbcType=VARCHAR},#{accountPassword,jdbcType=VARCHAR},now())
+    </insert>
+
+    <insert id="insertByPhone" parameterType="com.entity.Account">
+        insert into account (phone,user_name,user_password,create_time)
+        value ( #{phone,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR},now())
+    </insert>
+
+    <select id="findPasswordByAcoountId" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select account_password
+        from account
+        where account_id = #{accountId,jdbcType=INTEGER}
+    </select>
+
+    <select id="findAccountByCondition" parameterType="com.entity.Condition" resultMap="baseMap">
+        select
+        <include refid="base_sql"/>
+        from account
+        where
+        1=1
+        <if test="accountName != '' and accountName != null">
+            and account_name = #{accountName,jdbcType=VARCHAR}
+        </if>
+        <if test="email != '' and email != null">
+            and email = #{email,jdbcType=VARCHAR}
+        </if>
+        <if test="phone != '' and phone != null">
+            and phone = #{phone,jdbcType=VARCHAR}
+        </if>
+        <if test="accountPassword != '' and accountPassword != null">
+            and account_password = #{accountPassword,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <update id="updateAccount" parameterType="com.entity.Account">
+        update account
+        <set>
+            <if test=" accountPassword!= null">
+                account_password = #{accountPassword,jdbcType=VARCHAR},
+            </if>
+            update_time = now()
+        </set>
+        where account_id = #{accountId,jdbcType=INTEGER}
+    </update>
+
+</mapper>

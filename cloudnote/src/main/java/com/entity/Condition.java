@@ -9,9 +9,9 @@ public class Condition {
 
     private String key;
     private String name;
-    private String password;
+    private String accountPassword;
     private String email;
-    private String userName;
+    private String accountName;
     private String phone;
     private Integer userId;
     private String currentDate;
@@ -19,12 +19,10 @@ public class Condition {
     private String executeTime;
     private String imageType;
     private String imageName;
-
     private Integer imageId;
-
     private String isRecycle;
-
     private String type;
+    private String accountId;
 
     public String getKey() {
         return key;
@@ -42,12 +40,12 @@ public class Condition {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getAccountPassword() {
+        return accountPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAccountPassword(String accountPassword) {
+        this.accountPassword = accountPassword;
     }
 
     public String getEmail() {
@@ -58,12 +56,12 @@ public class Condition {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public String getPhone() {
@@ -144,5 +142,13 @@ public class Condition {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
     }
 }

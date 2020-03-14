@@ -60,6 +60,11 @@ public class DefaultController {
         return "notePage";
     }
 
+    @RequestMapping("/to_note_page")
+    public String toNotePage() {
+        return "notePage";
+    }
+
     @RequestMapping(value = "to_editPassword")
     public String toEditPassword() {
         return "editPassword";
@@ -83,5 +88,10 @@ public class DefaultController {
     @RequestMapping(value = "to_userInformation")
     public String touserInformation() {
         return "userInformation";
+    }
+
+    @RequestMapping(value = "information")
+    public String toInformation() {
+        return "information";
     }
 }

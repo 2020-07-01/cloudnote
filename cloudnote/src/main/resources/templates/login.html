@@ -32,12 +32,13 @@
                 </div>
 
                 <div class="layui-form-item">
-                    <input type="text" name="name" required lay-verify="required" placeholder="用户名/邮箱/手机号" autocomplete="off"
+                    <input type="text" name="name" required lay-verify="required" placeholder="用户名/邮箱/手机号"
+                           autocomplete="off"
                            class="layui-input">
                 </div>
 
                 <div class="layui-form-item">
-                    <input type="password" name="userPassword" required lay-verify="required" placeholder="密码"
+                    <input type="password" name="accountPassword" required lay-verify="required" placeholder="密码"
                            autocomplete="off" class="layui-input">
                 </div>
 
@@ -72,7 +73,7 @@
                         </div>
 
                         <div class="layui-col-xs5">
-                            <a href="">注册帐号</a>
+                            <a href="register">注册帐号</a>
                         </div>
                     </div>
                 </div>
@@ -99,7 +100,7 @@
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
-                url: "http://localhost:8080/admin/login",
+                url: "http://localhost:8080/account/login",
                 success: function (result) {
                     if (result.code == 1) {
                         var tokenData = result.data.token;

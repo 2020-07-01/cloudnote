@@ -1,18 +1,5 @@
 package com.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.Util.Json;
 import com.Util.Result;
 import com.alibaba.fastjson.JSONObject;
@@ -20,6 +7,17 @@ import com.entity.Condition;
 import com.entity.Note;
 import com.interceptorService.TokenUtil;
 import com.service.serviceImpl.NoteServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author :qiang
@@ -44,12 +42,12 @@ public class NoteController {
      */
     @RequestMapping(value = "/note_list")
     public Object indexList(@RequestParam(value = "token") String token,
-        @RequestParam(value = "type", defaultValue = "") String type,
-        @RequestParam(value = "isRecycle", defaultValue = "0") String isRecycle,
-        @RequestParam(value = "key", defaultValue = "") String key) {
+                            @RequestParam(value = "type", defaultValue = "") String type,
+                            @RequestParam(value = "isRecycle", defaultValue = "0") String isRecycle,
+                            @RequestParam(value = "key", defaultValue = "") String key) {
 
         // 根据token解析userId
-        Integer userId = tokenUtil.getUserIdByToken(token);
+        Integer userId = tokenUtil.getAccountIdByToken(token);
 
         if (!key.equals("")) {
 
@@ -90,7 +88,7 @@ public class NoteController {
     public void insertNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         Map result;
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getUserIdByToken(token);
+        Integer userId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
 
         Note note = new Note();
@@ -137,7 +135,7 @@ public class NoteController {
     public void updateNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         Result result = null;
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getUserIdByToken(token);
+        Integer userId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
 
         Note note = new Note();
@@ -183,6 +181,36 @@ public class NoteController {
         } catch (Exception e) {
             // 此处应该打印日志
         }
+    }
+
+    /**
+     * 根据关键字进行查询
+     *
+     * @param token
+     * @param key
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/search_image.json")
+    public Object search(@RequestParam(value = "token") String token, @RequestParam(value = "key") String key,
+                         HttpServletRequest request, HttpServletResponse response) {
+
+        Integer userId = tokenUtil.getAccountIdByToken(token);
+
+        Condition condition = new Condition();
+        condition.setUserId(userId);
+        condition.setKey(key);
+        Map<String, Object> hashMap = new HashMap();
+        /* //List<Image> images = imageService.selectImageByKey(condition);
+        
+        Map<String, Object> hashMap = new HashMap();
+        hashMap.put("code", "0");
+        hashMap.put("msg", "ok");
+        hashMap.put("count", images.size());
+        hashMap.put("data", images);*/
+
+        return hashMap;
     }
 
 }

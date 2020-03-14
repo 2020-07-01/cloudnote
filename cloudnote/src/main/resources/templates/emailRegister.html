@@ -36,7 +36,8 @@
                 <div class="layui-form-item">
                     <div class="layui-row layui-col-space5">
                         <div class="layui-col-xs7">
-                            <input type="text" id="security-code" name="securityCode" class="layui-input">
+                            <input type="text" id="security-code" name="securityCode" required lay-verify="required"
+                                   class="layui-input">
                         </div>
                         <div class="layui-col-xs5">
                             <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
@@ -47,12 +48,12 @@
                 </div>
 
                 <div class="layui-form-item">
-                    <input type="text" name="userName" required lay-verify="required" placeholder="昵称"
+                    <input type="text" name="accountName" required lay-verify="required" placeholder="昵称"
                            autocomplete="off" class="layui-input">
                 </div>
 
                 <div class="layui-form-item">
-                    <input type="password" name="userPassword" required lay-verify="required" placeholder="密码"
+                    <input type="password" name="accountPassword" required lay-verify="required" placeholder="密码"
                            autocomplete="off" class="layui-input">
                 </div>
 
@@ -72,17 +73,14 @@
                             <a href="/phoneRegister"><i class="layui-icon layui-icon-cellphone"></i></a>
                         </div>
                         <div class="layui-col-xs5">
-                            <a href="/to_login">已有账户登录</a>
+                            <a href="/login">已有账户登录</a>
                         </div>
                     </div>
 
                 </div>
             </form>
-
         </div>
-
         <div class="layui-col-md4"></div>
-
     </div>
 </div>
 
@@ -103,7 +101,7 @@
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
-                url: "http://localhost:8080/admin/register",
+                url: "http://localhost:8080/account/register",
                 error: function (result) {
                     alert("网络出现异常!");
                 },
@@ -118,7 +116,7 @@
                             offset: 'auto',
                             area: ['200px', '120px'],
                             end: function () {
-                                window.location.href = "/to_login";//进入邮箱登录页面
+                                window.location.href = "/login";//进入邮箱登录页面
                             }
                         });
                     } else {
@@ -140,7 +138,7 @@
          * 发送验证码
          */
         form.on('submit(securityCode)', function (dataObject) {
-            alert("验证码");
+            //alert("验证码");
             var emailAddress = dataObject.field.email;
             var data =
                 {
