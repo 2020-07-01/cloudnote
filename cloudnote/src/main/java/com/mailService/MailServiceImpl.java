@@ -40,7 +40,6 @@ public class MailServiceImpl implements MailService {
 
         try {
             javaMailSender.send(mainMessage);
-
         } catch (Exception e) {
             return "fail";
         }

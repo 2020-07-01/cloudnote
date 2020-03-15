@@ -1,4 +1,4 @@
-package com.interceptorService;
+package com.Util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -20,7 +20,7 @@ import java.util.Map;
  * @other :
  */
 @Component
-public class TokenUtil {
+public class TokenUtils {
 
     @Autowired
     AccountService userService;

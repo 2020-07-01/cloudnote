@@ -1,287 +1,255 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>主页</title>
+    <title>基本资料</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
-    <!->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!--引入layui-->
     <link rel='stylesheet' type='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <!--引入jquery-->
-    <script src="jquery-3.4.1.min.js"></script>
+    <script src="../static/jquery-3.4.1.min.js"></script>
 
-    <style>
-      .layui-side.layui-bg-black{
-        width: 100px;
-      }
-
-      .layui-nav-tree {
-        width: 100px;
-      }
-
-      .layui-body{
-        left:100px;
-      }
-
-      .layui-footer1{
-        position:fixed;
-        left:100px;
-        right:0;
-        bottom:0;
-        height:35px;
-        line-height:35px;
-        padding:0 15px;
-      }
-
-      .note-title{
-        border:none;
-      }
-
-    </style>
 </head>
 
 <body class="layui-layout-body">
-  <!--顶部导航栏-->
-  <div class="layui-layout layui-layout-admin">
-
+<div class="layui-layout layui-layout-admin">
+    <!--头部导航栏-->
     <div class="layui-header">
-      <div class="layui-logo">云笔记平台</div>
-
-      <ul class="layui-nav layui-layout-left">
-          <li class="layui-nav-item"><a id="create-note" href="" >创建笔记</a></li>
-      </ul>
-    
-      <ul class="layui-nav layui-layout-right">
-        <li class="layui-nav-item">
-          <a href="javascript:;">
-            <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-            admin
-          </a>
-          <dl class="layui-nav-child">
-            <dd><a href="">基本资料</a></dd>
-            <dd><a href="">安全设置</a></dd>
-          </dl>
-        </li>
-        <li class="layui-nav-item"><a href="">退出</a></li>
-      </ul>
-    </div>
-  
-  
-    <div class="layui-side layui-bg-black">
-      <div class="layui-side-scroll">
-        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-        <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-          
-          <li class="layui-nav-item layui-nav-itemed">
-            <a class="" href="javascript:;">笔记</a>
-            <dl class="layui-nav-child">
-              <dd><a href="javascript:;">学习</a></dd>
-              <dd><a href="javascript:;">工作</a></dd>
-              <dd><a href="javascript:;">生活</a></dd>
-              <dd><a href="javascript:;">旅游</a></dd>
-              <dd><a href="javascript:;">随笔</a></dd>
-            </dl>
-          </li>
-
-          <li class="layui-nav-item">
-            <a href="javascript:;">回收站</a>
-            <dl class="layui-nav-child">
-              <dd><a href="javascript:;">全部恢复</a></dd>
-              <dd><a href="javascript:;">全部清空</a></dd>
-              <dd><a href="javascript:;">查看全部</a></dd>
-            </dl>
-          </li>
+        <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    admin
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/information">账号设置</a></dd>
+                    <dd><a href="/to_editPassword">修改密码</a></dd>
+                    <dd><a href="">意见反馈</a></dd>
+                    <dd><a href="">注销登录</a></dd>
+                </dl>
+            </li>
         </ul>
-      </div>
     </div>
+    <!--左侧导航栏-->
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a>我的笔记</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/to_note_page">查看</a></dd>
+                    </dl>
+                </li>
+            </ul>
 
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">我的资源</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/to_image_page">图片</a></dd>
+                        <dd><a href="javascript:;">视频</a></dd>
+                        <dd><a href="javascript:;">文档</a></dd>
+                    </dl>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">我的日程</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/to_schedule_page">查看</a>
+                    </dl>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">回收站</a>
+                    <dl class="layui-nav-child" style="text-align: left">
+                        <dd><a href="javascript:;">全部恢复</a></dd>
+                        <dd><a href="javascript:;">全部清空</a></dd>
+                        <dd><a href="javascript:;">查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    <!--中间部分-->
     <div class="layui-body">
-     
-      <div class="layui-row">
-
-        <div class="layui-col-xs12">
-          <div class="grid-demo grid-demo-bg1" style="margin-left: 5px;">
-                <div class="layui-fluid">
-                        <div class="layui-card">
-                          <div class="layui-form layui-card-header layuiadmin-card-header-auto">
-                            <div class="layui-form-item">
-                              <div class="layui-inline">
-                                <label class="layui-form-label">ID</label>
-                                <div class="layui-input-block">
-                                  <input type="text" name="id" placeholder="请输入" autocomplete="off" class="layui-input">
-                                </div>
-                              </div>
-
-                              <div class="layui-inline">
-                                <label class="layui-form-label">用户名</label>
-                                <div class="layui-input-block">
-                                  <input type="text" name="username" placeholder="请输入" autocomplete="off" class="layui-input">
-                                </div>
-                              </div>
-                              
-                              <div class="layui-inline">
-                                <label class="layui-form-label">邮箱</label>
-                                <div class="layui-input-block">
-                                  <input type="text" name="email" placeholder="请输入" autocomplete="off" class="layui-input">
-                                </div>
-                              </div>
-                              <div class="layui-inline">
-                                <label class="layui-form-label">性别</label>
-                                <div class="layui-input-block">
-                                  <select name="sex">
-                                    <option value="0">不限</option>
-                                    <option value="1">男</option>
-                                    <option value="2">女</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div class="layui-inline">
-                                <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
-                                  <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                                </button>
-                              </div>
+        <div class="layui-fluid">
+            <div class="layui-card">
+                <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">登录名</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="loginname" placeholder="请输入" autocomplete="off"
+                                       class="layui-input">
                             </div>
-                          </div>
-                          
-                          <div class="layui-card-body">
-                            <div style="padding-bottom: 10px;">
-                              <button class="layui-btn layuiadmin-btn-useradmin" data-type="batchdel">删除</button>
-                              <button class="layui-btn layuiadmin-btn-useradmin" data-type="add">添加</button>
-                            </div>
-                            
-                            <table id="LAY-user-manage" lay-filter="LAY-user-manage"></table>
-                            <script type="text/html" id="imgTpl">
-                              <img style="display: inline-block; width: 50%; height: 100%;" src= {{ d.avatar }}>
-                            </script> 
-                            <script type="text/html" id="table-useradmin-webuser">
-                              <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-                              <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
-                            </script>
-                          </div>
                         </div>
-                      </div>
-          </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">手机</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="telphone" placeholder="请输入" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">邮箱</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="email" placeholder="请输入" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色</label>
+                            <div class="layui-input-block">
+                                <select name="role">
+                                    <option value="0">管理员</option>
+                                    <option value="1">超级管理员</option>
+                                    <option value="2">纠错员</option>
+                                    <option value="3">采购员</option>
+                                    <option value="4">推销员</option>
+                                    <option value="5">运营人员</option>
+                                    <option value="6">编辑</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-user-back-search">
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-card-body">
+                    <div style="padding-bottom: 10px;">
+                        <button class="layui-btn layuiadmin-btn-admin" data-type="batchdel">删除</button>
+                        <button class="layui-btn layuiadmin-btn-admin" data-type="add">添加</button>
+                    </div>
+
+                    <table id="LAY-user-back-manage" lay-filter="LAY-user-back-manage"></table>
+                    <script type="text/html" id="buttonTpl">
+                        {{#  if(d.check == true){ }}
+                        <button class="layui-btn layui-btn-xs">已审核</button>
+                        {{#  } else { }}
+                        <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="table-useradmin-admin">
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                                class="layui-icon layui-icon-edit"></i>编辑</a>
+                        {{#  if(d.role == '超级管理员'){ }}
+                        <a class="layui-btn layui-btn-disabled layui-btn-xs"><i
+                                class="layui-icon layui-icon-delete"></i>删除</a>
+                        {{#  } else { }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                                class="layui-icon layui-icon-delete"></i>删除</a>
+                        {{#  } }}
+                    </script>
+                </div>
+            </div>
         </div>
 
-      </div>
-      
     </div>
-    
 
-    <div class="layui-footer1 layui-bg-black">
-      <!-- 底部固定区域 -->
-      © layui.com - 底部固定区域
+    <!-- 底部固定区域 -->
+    <div class="layui-footer layui-bg-black">
+        © layui.com - 底部固定区域
     </div>
- </div>
-
-
+</div>
 </body>
-  
-<!--加载所需要的基础模块-->
-<script>
-    layui.use('element', function(){
-    var element = layui.element //
-  });
-
-</script>
-
-
-
-<script src="../../../layuiadmin/layui/layui.js"></script>  
 
 <script>
-layui.config({
-  base: '../../../layuiadmin/' //静态资源所在路径
-}).extend({
-  index: 'lib/index' //主入口模块
-}).use(['home.html', 'useradmin', 'table'], function(){
-  var $ = layui.$
-  ,form = layui.form
-  ,table = layui.table;
-  
-  //监听搜索
-  form.on('submit(LAY-user-front-search)', function(data){
-    var field = data.field;
-    
-    //执行重载
-    table.reload('LAY-user-manage', {
-      where: field
-    });
-  });
+    layui.config({
+        base: '../../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'useradmin', 'table'], function () {
+        var $ = layui.$
+            , form = layui.form
+            , table = layui.table;
 
-  //事件
-  var active = {
-    batchdel: function(){
-      var checkStatus = table.checkStatus('LAY-user-manage')
-      ,checkData = checkStatus.data; //得到选中的数据
+        //监听搜索
+        form.on('submit(LAY-user-back-search)', function (data) {
+            var field = data.field;
 
-      if(checkData.length === 0){
-        return layer.msg('请选择数据');
-      }
-      
-      layer.prompt({
-        formType: 1
-        ,title: '敏感操作，请验证口令'
-      }, function(value, index){
-        layer.close(index);
-        
-        layer.confirm('确定删除吗？', function(index) {
-          
-          //执行 Ajax 后重载
-          /*
-          admin.req({
-            url: 'xxx'
-            //,……
-          });
-          */
-          table.reload('LAY-user-manage');
-          layer.msg('已删除');
+            //执行重载
+            table.reload('LAY-user-back-manage', {
+                where: field
+            });
         });
-      });
-    }
 
+        //事件
+        var active = {
+            batchdel: function () {
+                var checkStatus = table.checkStatus('LAY-user-back-manage')
+                    , checkData = checkStatus.data; //得到选中的数据
 
-    ,add: function(){
-      layer.open({
-        type: 2
-        ,title: '添加用户'
-        ,content: 'userform.html'
-        ,maxmin: true
-        ,area: ['500px', '450px']
-        ,btn: ['确定', '取消']
-        ,yes: function(index, layero){
-          var iframeWindow = window['layui-layer-iframe'+ index]
-          ,submitID = 'LAY-user-front-submit'
-          ,submit = layero.find('iframe').contents().find('#'+ submitID);
+                if (checkData.length === 0) {
+                    return layer.msg('请选择数据');
+                }
 
-          //监听提交
-          iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
-            var field = data.field; //获取提交的字段
-            
-            //提交 Ajax 成功后，静态更新表格中的数据
-            //$.ajax({});
-            table.reload('LAY-user-front-submit'); //数据刷新
-            layer.close(index); //关闭弹层
-          });  
-          
-          submit.trigger('click');
+                layer.prompt({
+                    formType: 1
+                    , title: '敏感操作，请验证口令'
+                }, function (value, index) {
+                    layer.close(index);
+
+                    layer.confirm('确定删除吗？', function (index) {
+
+                        //执行 Ajax 后重载
+                        /*
+                        admin.req({
+                          url: 'xxx'
+                          //,……
+                        });
+                        */
+                        table.reload('LAY-user-back-manage');
+                        layer.msg('已删除');
+                    });
+                });
+            }
+            , add: function () {
+                layer.open({
+                    type: 2
+                    , title: '添加管理员'
+                    , content: 'adminform.html'
+                    , area: ['420px', '420px']
+                    , btn: ['确定', '取消']
+                    , yes: function (index, layero) {
+                        var iframeWindow = window['layui-layer-iframe' + index]
+                            , submitID = 'LAY-user-back-submit'
+                            , submit = layero.find('iframe').contents().find('#' + submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
+                            var field = data.field; //获取提交的字段
+
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            //$.ajax({});
+                            table.reload('LAY-user-front-submit'); //数据刷新
+                            layer.close(index); //关闭弹层
+                        });
+
+                        submit.trigger('click');
+                    }
+                });
+            }
         }
-      }); 
-    }
-  };
-  
-  $('.layui-btn.layuiadmin-btn-useradmin').on('click', function(){
-    var type = $(this).data('type');
-    active[type] ? active[type].call(this) : '';
-  });
-});
+        $('.layui-btn.layuiadmin-btn-admin').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
 </script>
-</html>>
 
+</html>
 
-
- 

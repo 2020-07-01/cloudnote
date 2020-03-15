@@ -2,10 +2,10 @@ package com.controller;
 
 import com.Util.Json;
 import com.Util.Result;
+import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.Condition;
 import com.entity.Note;
-import com.interceptorService.TokenUtil;
 import com.service.serviceImpl.NoteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +33,7 @@ public class NoteController {
     NoteServiceImpl noteService;
 
     @Autowired
-    TokenUtil tokenUtil;
+    TokenUtils tokenUtil;
 
     /**
      * 数据列表

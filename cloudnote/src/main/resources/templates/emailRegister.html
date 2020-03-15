@@ -2,144 +2,151 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>邮箱注册</title>
+    <title>note</title>
 
     <!--引入layui-->
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
+    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/admin.css" type='text/css'>
+    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/login.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
-
 </head>
 <body>
 
-<div class="layui-container"><!--宽度100%适应的容器中-->
-    <div class="layui-row" style="margin-top: 6%;"></div>
-
-    <div class="layui-row layui-col-space5"><!--设置列之间的间距为5-->
-
-        <div class="layui-col-md4"></div>
-
-        <div class="layui-col-md4">
-
-            <form class="layui-form" action="post" style="margin-left: 10%;margin-right: 10%;">
-
-                <div class="layui-form-item" style="text-align:center;">
-                    <h2>云笔记平台</h2>
-                </div>
-
-                <div class="layui-form-item">
-                    <input type="text" name="email" required lay-verify="required" placeholder="邮箱" autocomplete="off"
-                           class="layui-input">
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-row layui-col-space5">
-                        <div class="layui-col-xs7">
-                            <input type="text" id="security-code" name="securityCode" required lay-verify="required"
-                                   class="layui-input">
-                        </div>
-                        <div class="layui-col-xs5">
-                            <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
-                                    lay-filter="securityCode">获取验证码
+<div class="layadmin-user-login layadmin-user-display-show" style="padding-top: 15px;padding-bottom: 0">
+    <div class="layadmin-user-login-main">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2>cloud note</h2>
+        </div>
+        <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-email"
+                       for="email"></label>
+                <input type="text" name="email" id="email" lay-verify="email" placeholder="邮箱"
+                       class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-row">
+                    <div class="layui-col-xs7">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
+                               for="securityCode"></label>
+                        <input type="text" name="securityCode" id="securityCode" lay-verify="required"
+                               placeholder="验证码" class="layui-input">
+                    </div>
+                    <div class="layui-col-xs5">
+                        <div style="margin-left: 10px;">
+                            <button type="button" id="securityCodeButton"
+                                    class="layui-btn layui-btn-primary layui-btn-fluid">
+                                获取验证码
                             </button>
                         </div>
                     </div>
                 </div>
-
-                <div class="layui-form-item">
-                    <input type="text" name="accountName" required lay-verify="required" placeholder="昵称"
-                           autocomplete="off" class="layui-input">
-                </div>
-
-                <div class="layui-form-item">
-                    <input type="password" name="accountPassword" required lay-verify="required" placeholder="密码"
-                           autocomplete="off" class="layui-input">
-                </div>
-
-                <div class="layui-form-item">
-                    <input type="password" name="confirmPassword" required lay-verify="required" placeholder="确认密码"
-                           autocomplete="off" class="layui-input">
-                </div>
-
-                <div class="layui-form-item">
-                    <button type="button" class="layui-btn layui-btn-fluid" lay-submit lay-filter="register">注册</button>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-row layui-col-space5">
-                        <div class="layui-col-xs7">
-                            <label>手机号注册</label>
-                            <a href="/phoneRegister"><i class="layui-icon layui-icon-cellphone"></i></a>
-                        </div>
-                        <div class="layui-col-xs5">
-                            <a href="/login">已有账户登录</a>
-                        </div>
-                    </div>
-
-                </div>
-            </form>
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+                       for="accountPassword"></label>
+                <input type="password" name="accountPassword" id="accountPassword" lay-verify="pass" placeholder="密码"
+                       class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+                       for="confirmPassword"></label>
+                <input type="password" name="confirmPassword" id="confirmPassword" lay-verify="required"
+                       placeholder="确认密码"
+                       class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-username"
+                       for="accountName"></label>
+                <input type="text" name="accountName" id="accountName" lay-verify="nickname" placeholder="昵称"
+                       class="layui-input">
+            </div>
+            <!--  <div class="layui-form-item">
+                  <input type="checkbox" name="agreement" lay-skin="primary" title="同意用户协议" checked>
+              </div>-->
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register">注 册</button>
+            </div>
+            <div class="layui-trans layui-form-item layadmin-user-login-other">
+                <!-- <label>社交账号注册</label>
+                 <a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>
+                 <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>
+                 <a href="javascript:;"><i class="layui-icon layui-icon-login-weibo"></i></a>-->
+                <a href="/login" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
+            </div>
         </div>
-        <div class="layui-col-md4"></div>
     </div>
-</div>
+
+    <div class="layui-trans layadmin-user-login-footer">
+        <!--  <p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>
+          <p>
+              <span><a href="http://www.layui.com/admin/#get" target="_blank">获取授权</a></span>
+              <span><a href="http://www.layui.com/admin/pro/" target="_blank">在线演示</a></span>
+              <span><a href="http://www.layui.com/admin/" target="_blank">前往官网</a></span>
+          </p>-->
+    </div>
 
 </div>
 
 </body>
 <script type="text/javascript">
 
+    //设置全局的验证码
+    var tempSecurityCode = "";
+
     layui.use(['element', 'form', 'table'], function () {
         var form = layui.form;
 
         /**
-         * 监听提交
+         * 注册
          */
         form.on('submit(register)', function (data) {
-            var datajson = JSON.stringify(data.field);
+
+            var accountPassword = data.field.accountPassword;
+            var confirmPassword = data.field.confirmPassword;
+            var formData = {
+                "accountPassword": accountPassword,
+                "confirmPassword": confirmPassword
+            }
+            var jsonData = JSON.stringify(formData);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
-                data: datajson,
-                url: "http://localhost:8080/account/register",
+                data: jsonData,
+                url: "http://localhost:8080/account/updatePassoword.json",
                 error: function (result) {
                     alert("网络出现异常!");
                 },
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1500,
-                            shade: 0.6,
-                            offset: 'auto',
-                            area: ['200px', '120px'],
-                            end: function () {
+                        layer.msg(result.message, function () {
                                 window.location.href = "/login";//进入邮箱登录页面
                             }
-                        });
+                        );
                     } else {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1500,
-                            shade: 0.6,
-                            offset: 'auto',
-                            area: ['200px', '120px']
-                        });
+                        layer.msg(result.message);
+                        /* layer.open({
+                             title: '提示',
+                             content: result.message,
+                             btn: [],
+                             time: 1500,
+                             shade: 0.6,
+                             offset: 'auto',
+                             area: ['200px', '120px']
+                         });*/
                     }
                 }
-            });
+            })
+            ;
         });
 
         /**
          * 发送验证码
          */
-        form.on('submit(securityCode)', function (dataObject) {
-            //alert("验证码");
-            var emailAddress = dataObject.field.email;
+        $("#securityCodeButton").click(function () {
+            var emailAddress = $('#email').val();
             var data =
                 {
                     "emailAddress": emailAddress
@@ -149,29 +156,30 @@
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
-                url: "http://localhost:8080/admin/security_code",
+                url: "http://localhost:8080/account/security_code",
                 error: function () {
                     alert("网络出现异常");
                 },
                 success: function (result) {
-                    layer.open({
-                        title: '提示',
-                        content: result.message,
-                        btn: [],
-                        time: 1500,
-                        shade: 0.6,
-                        offset: 'auto',
-                        area: ['200px', '120px']
-                    }/*, function () {
-                        window.location.href = "/to_index?token=" + tokenData;//进入主页
-                    }*/);
-
+                    if (result.code == 1) {
+                        layer.msg(result.message);
+                        tempSecurityCode = result.data.securityCode;
+                        /*layer.open({
+                            title: '提示',
+                            content: result.message,
+                            btn: [],
+                            time: 1500,
+                            shade: 0.6,
+                            offset: 'auto',
+                            area: ['200px', '120px']
+                        });*/
+                    } else {
+                        layer.msg(result.message);
+                    }
                 }
             });
-
-        })
+        });
     });
-
 </script>
 </html>
       

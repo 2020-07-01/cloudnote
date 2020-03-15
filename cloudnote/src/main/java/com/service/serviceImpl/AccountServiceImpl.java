@@ -105,7 +105,7 @@ public class AccountServiceImpl implements AccountService {
             condition.setEmail(email);
             Account user = accountMapper.findAccountByCondition(condition);
             if (user == null) {
-                result.put("true", "");
+                result.put("true", "此邮箱不存在");
                 return result;
             } else {
                 result.put("false", "此邮箱已注册!");

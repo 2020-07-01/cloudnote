@@ -3,11 +3,11 @@ package com.controller;
 import com.Util.DateUtils;
 import com.Util.Json;
 import com.Util.Result;
+import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.Condition;
 import com.entity.Schedule;
 import com.entity.Task;
-import com.interceptorService.TokenUtil;
 import com.service.serviceImpl.ScheduleServiceImpl;
 import com.service.serviceImpl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import java.util.Map;
 public class ScheduleController {
 
     @Autowired
-    TokenUtil tokenUtil;
+    TokenUtils tokenUtil;
 
     @Autowired
     ScheduleServiceImpl scheduleService;

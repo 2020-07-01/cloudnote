@@ -1,12 +1,11 @@
 package com.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.Util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.interceptorService.TokenUtil;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author :qiang
@@ -20,7 +19,7 @@ import com.interceptorService.TokenUtil;
 public class DefaultController {
 
     @Autowired
-    TokenUtil tokenUtil;
+    TokenUtils tokenUtil;
 
     @RequestMapping(value = "register")
     public String toEmailRegister() {
@@ -34,7 +33,7 @@ public class DefaultController {
 
     /**
      * 用户名登录
-     * 
+     *
      * @return
      */
     @RequestMapping(value = "login")
@@ -44,7 +43,7 @@ public class DefaultController {
 
     /**
      * 动态验证登录
-     * 
+     *
      * @return
      */
     @RequestMapping(value = "to_dynamicLogin")
@@ -94,4 +93,20 @@ public class DefaultController {
     public String toInformation() {
         return "information";
     }
+
+    @RequestMapping(value = "/admin")
+    public String toAdmin() {
+        return "admin";
+    }
+
+    @RequestMapping(value = "/findPassword")
+    public String toFindPassword() {
+        return "findPassword";
+    }
+
+    @RequestMapping(value = "/resetPassword")
+    public String toResetPassword() {
+        return "resetPassword";
+    }
+
 }

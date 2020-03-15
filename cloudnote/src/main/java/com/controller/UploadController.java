@@ -2,11 +2,11 @@ package com.controller;
 
 import com.Util.Json;
 import com.Util.Result;
+import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.Condition;
 import com.entity.Image;
-import com.interceptorService.TokenUtil;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.ImageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import java.util.Map;
 public class UploadController {
 
     @Autowired
-    private TokenUtil tokenUtil;
+    private TokenUtils tokenUtil;
 
     @Autowired
     OSSUtil ossUtil;
