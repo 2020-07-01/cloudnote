@@ -79,7 +79,7 @@ public class DefaultController {
         return "timingTask";
     }
 
-    @RequestMapping(value = "/to_image_page")
+    @RequestMapping(value = "/imagePage")
     public String toResource() {
         return "imagePage";
     }
@@ -109,4 +109,8 @@ public class DefaultController {
         return "resetPassword";
     }
 
+    @RequestMapping(value = "/filePage")
+    public String toFilePage() {
+        return "filePage";
+    }
 }

@@ -123,6 +123,7 @@
     </div>
 
     <div class="layui-body">
+
         <div class="layui-container">
             <div class="layui-row">
                 <div class="layui-col-xs3">
@@ -159,7 +160,12 @@
                                                class="layui-input note-title" lay-verify="title"
                                                placeholder="标题">
                                     </div>
-
+                                    <!--<div class="layui-input-inline" style="width: 100%;float:left;">
+                                        <input id="image-whole-name" type="text" name="title" lay-verify="title"
+                                               autocomplete="off"
+                                               class="layui-input"
+                                               style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
+                                    </div>-->
                                 </div>
                             </div>
 
@@ -188,10 +194,10 @@
                         <div class="layui-row">
                             <div class="layui-col-xs12">
                                 <div class="layui-upload-drag"
-                                     style="width: 100%;height: 100%; ">
-                                    <img id="show-image"
-                                         style="max-width: 80%;max-height: 80%; top:0;left:0;right: 0;bottom: 0;margin: auto">
+                                     style="width: 100px;height: 100%; min-width:872px;min-height:424px;padding: 5px;">
+                                    <img id="show-image" style=" max-width: 872px;max-height: 424px">
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -232,7 +238,7 @@
             elem: '#image-list',
             where: {token: token},//传递token到服务端
             url: 'http://localhost:8080/image/get_images.json', //默认传递两个参
-            height: 'full-180',
+            height: 'full-140',
             cols:
                 [[ //标题栏
                     {field: 'wholeName', title: '点击上传', unresize: true}
@@ -522,7 +528,6 @@
                         });
                     }
             })
-
         });
     })
 

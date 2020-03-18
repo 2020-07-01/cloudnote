@@ -110,4 +110,5 @@ public class Account {
     public void setIsClosed(String isClosed) {
         this.isClosed = isClosed;
     }
+
 }

@@ -5,7 +5,6 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>云笔记</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
     <!--引入layui-->
     <link rel='stylesheet' typeUtils='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
@@ -13,36 +12,9 @@
     <script src="../static/jquery-3.4.1.min.js"></script>
 
     <style>
-        .layui-side.layui-bg-black {
-            width: 100px;
-        }
-
-        .layui-nav-tree {
-            width: 100px;
-        }
-
-        .layui-body {
-            left: 100px;
-        }
-
-        .layui-footer1 {
-            position: fixed;
-            left: 100px;
-            right: 0;
-            bottom: 0;
-            height: 35px;
-            line-height: 35px;
-            padding: 0 15px;
-        }
-
-        .note-title {
-            border: none;
-        }
-
         #test-n2 {
             position: relative;
-            min-height: 100%;
-            width: 100%;
+            width: 93%;
             height: 100%;
         }
 
@@ -51,7 +23,6 @@
         }
 
         #test-n2 .layui-laydate-content td, .layui-laydate-content th {
-            width: 50px;
             height: 55px;
             padding: 1px;
             text-align: center;
@@ -76,7 +47,6 @@
             float: left;
             display: block;
             font-weight: 400;
-
             text-align: center;
         }
     </style>
@@ -89,34 +59,20 @@
     <div class="layui-header">
 
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
-        <!-- <div class=" layui-nav layui-layout-left">
-             <li class="layui-nav-item"><a id="create-note" href="/to_index">创建笔记</a></li>
-             </li>
-         </div>
- -->
+
         <ul class="layui-nav layui-layout-right">
-            <li class="layui-nav-item">
-                <div class="layui-input-inline">
-                    <input typeUtils="text" name="title" required lay-verify="required"
-                           autocomplete="off" class="layui-input"
-                           style="width: 100%; height: 30px;line-height: 30px;padding:0 10px;margin-top: 4px;">
-                </div>
-                <div class="layui-input-inline" style="margin-right: 15px; ">
-                    <button class="layui-btn layui-btn-primary layui-btn-sm">搜索</button>
-                </div>
-            </li>
+
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
                     admin
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="/to_basicInformation">基本资料</a></dd>
-                    <dd><a href="/to_editPassword">修改密码</a></dd>
+                    <dd><a href="information">账号设置</a></dd>
+                    <dd><a href="">意见反馈</a></dd>
+                    <dd><a href="">注销登录</a></dd>
                 </dl>
             </li>
-
-            <li class="layui-nav-item"><a href="">退出</a></li>
         </ul>
 
     </div>
@@ -125,7 +81,7 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
-                <li class="layui-nav-item layui-nav-itemed">
+                <li class="layui-nav-item">
                     <a>我的笔记</a>
                     <dl class="layui-nav-child">
                         <dd><a href="/to_note_page">查看</a></dd>
@@ -149,7 +105,6 @@
                     <a href="javascript:;">我的日程</a>
                     <dl class="layui-nav-child">
                         <dd><a href="/to_schedule_page">查看</a>
-
                     </dl>
                 </li>
             </ul>
@@ -157,7 +112,7 @@
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
                     <a href="javascript:;">回收站</a>
-                    <dl class="layui-nav-child" style="text-align: left">
+                    <dl class="layui-nav-child" style="text-align: center">
                         <dd><a href="javascript:;">全部恢复</a></dd>
                         <dd><a href="javascript:;">全部清空</a></dd>
                         <dd><a href="javascript:;">查看全部</a></dd>
@@ -178,7 +133,7 @@
         </div>
     </div>
 
-    <div class="layui-footer1 layui-bg-black">
+    <div class="layui-footer layui-bg-black">
         © layui.com - 底部固定区域
     </div>
 </div>
@@ -280,6 +235,7 @@
 
     </form>
 </div>
+
 
 <script>
 

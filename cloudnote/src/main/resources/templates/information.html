@@ -14,27 +14,6 @@
     <script src="../static/jquery-3.4.1.min.js"></script>
 
     <style>
-        .layui-side.layui-bg-black {
-            width: 100px;
-        }
-
-        .layui-nav-tree {
-            width: 100px;
-        }
-
-        .layui-body {
-            left: 100px;
-        }
-
-        .layui-footer1 {
-            position: fixed;
-            left: 100px;
-            right: 0;
-            bottom: 0;
-            height: 35px;
-            line-height: 35px;
-            padding: 0 15px;
-        }
 
     </style>
 </head>
@@ -51,8 +30,7 @@
                     admin
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="/information">账号设置</a></dd>
-                    <dd><a href="/to_editPassword">修改密码</a></dd>
+                    <dd><a href="information">账号设置</a></dd>
                     <dd><a href="">意见反馈</a></dd>
                     <dd><a href="">注销登录</a></dd>
                 </dl>
@@ -63,7 +41,7 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
-                <li class="layui-nav-item layui-nav-itemed">
+                <li class="layui-nav-item">
                     <a>我的笔记</a>
                     <dl class="layui-nav-child">
                         <dd><a href="/to_note_page">查看</a></dd>
@@ -284,7 +262,7 @@
         </div>
     </div>
     <!-- 底部固定区域 -->
-    <div class="layui-footer1 layui-bg-black">
+    <div class="layui-footer layui-bg-black">
         © layui.com - 底部固定区域
     </div>
 </div>
