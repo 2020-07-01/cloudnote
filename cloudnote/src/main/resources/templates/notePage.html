@@ -62,6 +62,7 @@
                 <li class="layui-nav-item">
                     <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="#" id="cleanEditSpace"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a></dd>
                         <dd><a href="#" id="all"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
                         <dd><a href="#" id="starList"><i class="layui-icon layui-icon-star-fill"> 收藏夹</i></a></dd>
                     </dl>
@@ -232,7 +233,6 @@
     var token = sessionStorage.getItem("token");
     //设置全局noteId
     var noteId = "";
-
     //标签点击全局判断
     var flag = true;
 
@@ -359,6 +359,19 @@
                 },
             })
         });
+
+
+        //创建笔记
+
+        $("#cleanEditSpace").click(function () {
+            $('#note-title').val("");//清除标题
+            tinyMCE.activeEditor.setContent("");//清除内容
+            $('#noteType').val("");//清除标签
+            $('#ifStar').html("&#xe600;");//设置空心收藏
+            noteId = "";//清除全局noteId
+            showNoteType();//显示标签
+        });
+
 
         //保存/更新笔记
         $("#saveNote").click(function () {

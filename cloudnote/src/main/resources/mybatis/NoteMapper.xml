@@ -33,6 +33,9 @@
         <if test="key != null and key != ''">
             and note_title like '%' #{key} '%' or note_content like '%' #{key} '%'
         </if>
+        <if test="star != null and star !=''">
+            and star = #{star,jdbcType=VARCHAR}
+        </if>
     </select>
 
     <insert id="insertNote" parameterType="com.entity.Note" useGeneratedKeys="true" keyProperty="noteId">

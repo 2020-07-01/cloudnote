@@ -23,6 +23,7 @@ public class Condition {
     private String isRecycle;
     private String type;
     private Integer accountId;
+    private String star;
 
     public String getKey() {
         return key;
@@ -150,5 +151,13 @@ public class Condition {
 
     public void setAccountId(Integer accountId) {
         this.accountId = accountId;
+    }
+
+    public String getStar() {
+        return star;
+    }
+
+    public void setStar(String star) {
+        this.star = star;
     }
 }

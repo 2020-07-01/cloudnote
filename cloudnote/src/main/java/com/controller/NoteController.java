@@ -55,6 +55,7 @@ public class NoteController {
         condition.setAccountId(accountId);
         condition.setType(type);
         condition.setIsRecycle(isRecycle);
+        condition.setStar(star);
         if (!key.equals("")) {
             condition.setKey(key);
             condition.setType("");
