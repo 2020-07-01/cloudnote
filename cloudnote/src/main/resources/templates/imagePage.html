@@ -10,58 +10,42 @@
     <script src="../static/jquery-3.4.1.min.js"></script>
     <script src="../static/mouseRightMenu/mouseRightMenu.js"></script>
 
-
     <style>
 
-        .layui-table-grid-down {
-            display: none;
+        .layui-container {
+            width: 100%;
+            height: 100%;
+            padding: 0 0;
+            overflow: hidden;
+        }
+
+        .layui-table, .layui-table-view {
+            margin: 0 0;
+        }
+
+        .layui-form-item {
         }
 
         .layui-tab-title li {
             display: block;
         }
 
-        .layui-table-cell {
-            height: 42px;
-            line-height: 42px;
-        }
-
         .button-space {
             padding: 0 5px;
-        }
-
-        .layui-table, .layui-table-view {
-            margin: 0 0;
-        }
-
-        .layui-container {
-            width: 100%;
-            height: 100%;
-            padding: 0 0;
         }
 
         .note-title {
             border: none;
         }
 
-        .layui-table, .layui-table-view {
-            margin: 0 0;
-        }
-
-
     </style>
 </head>
-
 <body>
-<!--顶部导航栏-->
 <div class="layui-layout layui-layout-admin">
 
     <div class="layui-header">
-
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
-
         <ul class="layui-nav layui-layout-right">
-
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
@@ -77,30 +61,29 @@
     </div>
 
     <div class="layui-side layui-bg-black">
-        <div class="layui-side-scroll">
-
+        <div class="layui-side-scroll" style="text-align: left;padding-left: 8px">
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
                 <li class="layui-nav-item">
-                    <a>我的笔记</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_note_page">查看</a></dd>
+                    <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/to_note_page" id="cleanEditSpace"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a></dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的资源</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/imagePage">图片</a></dd>
-                        <dd><a href="/filePage">文档</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="/filePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的日程</a>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child">
                         <dd><a href="/to_schedule_page">查看</a>
 
@@ -110,11 +93,22 @@
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">回收站</a>
-                    <dl class="layui-nav-child" style="text-align: left">
-                        <dd><a href="javascript:;">全部恢复</a></dd>
-                        <dd><a href="javascript:;">全部清空</a></dd>
-                        <dd><a href="javascript:;">查看全部</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 意见反馈</a></dd>
+                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -127,6 +121,7 @@
             <div class="layui-row">
                 <div class="layui-col-xs3">
                     <div class="grid-demo grid-demo-bg1">
+
                         <div class="layui-row">
                             <div class="layui-col-xs9">
                                 <input id="input-search-image" type="text" placeholder="搜索" autocomplete="off"
@@ -140,10 +135,13 @@
                                 </button>
                             </div>
                         </div>
+
                         <!--列表信息-->
-                        <div>
-                            <table class="layui-hide" lay-skin="ngb" id="image-list" lay-filter="table-filter"
-                                   style="border-bottom: none"></table>
+                        <div class="layui-row">
+                            <div class="layui-col-xs12">
+                                <table class="layui-hide" lay-skin="ngb" id="image-list" lay-filter="table-filter"
+                                       style="border-bottom: none"></table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -205,14 +203,6 @@
 </div>
 </body>
 
-
-<!--右击操作-->
-<div id="schedule1" style="display: none;">
-
-    <button type="button" class="layui-btn layui-btn-primary">原始按钮</button>
-
-</div>
-
 <script th:inline="none">
 
     //预先加载模块
@@ -232,7 +222,8 @@
             elem: '#image-list',
             where: {token: token},//传递token到服务端
             url: 'http://localhost:8080/image/get_images.json', //默认传递两个参
-            height: 'full-180',
+            height: 'full-140',
+            cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols:
                 [[ //标题栏
                     {field: 'wholeName', title: '点击上传', unresize: true}
@@ -240,9 +231,8 @@
             , done:
                 function (res, curr, count) {
                     $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
-
                     //完成数据渲染之后的回调
-                    $('th').css({'text-align': 'center', 'font-size': '17px'});
+
                     var uploadInit = upload.render({
                         elem: 'th'
                         , size: 0
