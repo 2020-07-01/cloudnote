@@ -5,18 +5,19 @@
 <mapper namespace="com.mapper.NoteMapper">
 
     <sql id="base_sql">
-        note_id,user_id,note_type,note_title,note_content,create_time,update_time,is_recycle
+        note_id,account_id,note_type,note_title,note_content,create_time,update_time,is_recycle,star
     </sql>
 
     <resultMap id="baseMap" type="com.entity.Note">
         <id column="note_id" property="noteId" jdbcType="INTEGER"/>
-        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="account_id" property="accountId" jdbcType="INTEGER"/>
         <result column="note_type" property="noteType" jdbcType="VARCHAR"/>
         <result column="note_title" property="noteTitle" jdbcType="VARCHAR"/>
         <result column="note_content" property="noteContent" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
         <result column="is_recycle" property="isRecycle" jdbcType="VARCHAR"/>
+        <result column="star" property="star" jdbcType="VARCHAR"/>
     </resultMap>
 
     <select id="selectNoteByCondition" parameterType="com.entity.Condition" resultType="com.entity.Note"
@@ -24,16 +25,22 @@
         select
         <include refid="base_sql"/>
         from note
-        where user_id = #{userId,jdbcType=INTEGER}
+        where account_id = #{accountId,jdbcType=INTEGER}
         and is_recycle = #{isRecycle,jdbcType=VARCHAR}
         <if test="type != null and type != ''">
             and note_type = #{type,jdbcType=VARCHAR}
         </if>
+        <if test="key != null and key != ''">
+            and note_title like '%' #{key} '%' or note_content like '%' #{key} '%'
+        </if>
+        <if test="star != null and star !=''">
+            and star = #{star,jdbcType=VARCHAR}
+        </if>
     </select>
 
     <insert id="insertNote" parameterType="com.entity.Note" useGeneratedKeys="true" keyProperty="noteId">
-        insert into note (user_id,note_type,note_title,note_content,create_time)
-     value ( #{userId,jdbcType=INTEGER},#{noteType,jdbcType=VARCHAR},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=VARCHAR},now())
+        insert into note (account_id,note_type,note_title,note_content,create_time)
+     value ( #{accountId,jdbcType=INTEGER},#{noteType,jdbcType=VARCHAR},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=VARCHAR},now())
     </insert>
 
     <update id="updateNote" parameterType="com.entity.Note">
@@ -50,6 +57,9 @@
             </if>
             <if test="noteType != null">
                 note_type=#{noteType,jdbcType=INTEGER},
+            </if>
+            <if test="star != null and star !=''">
+                star = #{star,jdbcType=VARCHAR},
             </if>
             update_time = now()
         </set>

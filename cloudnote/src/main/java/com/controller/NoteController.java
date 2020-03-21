@@ -3,9 +3,11 @@ package com.controller;
 import com.Util.Json;
 import com.Util.Result;
 import com.Util.TokenUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.Condition;
 import com.entity.Note;
+import com.entity.TextValue;
 import com.service.serviceImpl.NoteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,23 +47,19 @@ public class NoteController {
     public Object indexList(@RequestParam(value = "token") String token,
                             @RequestParam(value = "type", defaultValue = "") String type,
                             @RequestParam(value = "isRecycle", defaultValue = "0") String isRecycle,
-                            @RequestParam(value = "key", defaultValue = "") String key) {
+                            @RequestParam(value = "key", defaultValue = "") String key,
+                            @RequestParam(value = "star",defaultValue = "") String star) {
 
-        // 根据token解析userId
-        Integer userId = tokenUtil.getAccountIdByToken(token);
-
-        if (!key.equals("")) {
-
-        }
-
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
-        condition.setUserId(userId);
+        condition.setAccountId(accountId);
         condition.setType(type);
-
-        if (isRecycle != null) {
-            condition.setIsRecycle(isRecycle);
+        condition.setIsRecycle(isRecycle);
+        condition.setStar(star);
+        if (!key.equals("")) {
+            condition.setKey(key);
+            condition.setType("");
         }
-
         List<Note> list = noteService.selectNoteByCondition(condition);
 
         Map<String, Object> hashMap = new HashMap();
@@ -88,11 +87,11 @@ public class NoteController {
     public void insertNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         Map result;
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
 
         Note note = new Note();
-        note.setUserId(userId);
+        note.setAccountId(accountId);
         String noteTitle = jsonObject.getString("noteTitle");
         if (!noteTitle.equals("")) {
             note.setNoteTitle(jsonObject.getString("noteTitle"));
@@ -106,9 +105,21 @@ public class NoteController {
             Json.toJson(new Result(false, "内容不能为空!"), response);
         }
         if (jsonObject.getString("noteType").equals("")) {
-            note.setNoteType("default");
+            note.setNoteType("未分类");
         } else {
             note.setNoteType(jsonObject.getString("noteType"));
+        }
+        String noteId = jsonObject.getString("noteId");
+        //如果此笔记存在则进行更新
+        if (!noteId.equals("")) {
+            note.setNoteId(Integer.parseInt(noteId));
+            if (updateNote(note)) {
+                Json.toJson(new Result(true, "更新成功!"), response);
+                return;
+            } else {
+                Json.toJson(new Result(false, "更新失败!"), response);
+                return;
+            }
         }
         try {
             result = noteService.insertNote(note);
@@ -126,26 +137,16 @@ public class NoteController {
     /**
      * 更新笔记
      *
-     * @param jsonString
-     * @param request
-     * @param response
      * @return
      */
-    @RequestMapping(value = "/update_note")
-    public void updateNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        Result result = null;
-        String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+    private boolean updateNote(Note note) {
+        try {
+            noteService.updateNote(note);
+            return true;
+        } catch (Exception e) {
 
-        Note note = new Note();
-        note.setUserId(userId);
-        note.setNoteTitle(jsonObject.getString("noteTitle"));
-        note.setNoteContent(jsonObject.getString("noteContent"));
-        // note.setNoteType(TypeUtils.getSexEnumByCode(jsonObject.getString("noteType")));
-        noteService.updateNote(note);
-        result = new Result(true, "更新成功!");
-        Json.toJson(result, response);
+        }
+        return false;
     }
 
     /**
@@ -184,33 +185,59 @@ public class NoteController {
     }
 
     /**
-     * 根据关键字进行查询
+     * 初始化类型
      *
-     * @param token
-     * @param key
      * @param request
      * @param response
-     * @return
      */
-    @RequestMapping(value = "/search_image.json")
-    public Object search(@RequestParam(value = "token") String token, @RequestParam(value = "key") String key,
-                         HttpServletRequest request, HttpServletResponse response) {
-
-        Integer userId = tokenUtil.getAccountIdByToken(token);
-
+    @RequestMapping(value = "/init_noteType.json")
+    public void initNoteType(HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("token");
+        int accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
-        condition.setUserId(userId);
-        condition.setKey(key);
-        Map<String, Object> hashMap = new HashMap();
-        /* //List<Image> images = imageService.selectImageByKey(condition);
-        
-        Map<String, Object> hashMap = new HashMap();
-        hashMap.put("code", "0");
-        hashMap.put("msg", "ok");
-        hashMap.put("count", images.size());
-        hashMap.put("data", images);*/
-
-        return hashMap;
+        condition.setAccountId(accountId);
+        condition.setIsRecycle("0");
+        List<Note> notes = noteService.selectNoteByCondition(condition);
+        HashMap data = new HashMap();
+        ArrayList<TextValue> textValues = new ArrayList<>();
+        HashMap repeatHashMap = new HashMap();
+        for (Note note : notes) {
+            if (repeatHashMap.get(note.getNoteType()) != null) {
+                continue;
+            }
+            if (note.getNoteType().equals("未分类")) {
+                continue;
+            }
+            TextValue textValue = new TextValue();
+            textValue.setKey(note.getNoteType());
+            textValue.setValue(note.getNoteType());
+            repeatHashMap.put(note.getNoteType(), note.getNoteType());
+            //此处进行去重
+            textValues.add(textValue);
+        }
+        data.put("textValues", textValues);
+        Json.toJson(new Result(true, "SUCCESS", data), response);
     }
 
+    @RequestMapping(value = "/set_star.json")
+    public void setStar(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+
+        String token = request.getHeader("token");
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
+
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        String noteId = jsonObject.getString("noteId");
+
+        Note note = new Note();
+        note.setStar("1");
+        note.setNoteId(Integer.parseInt(noteId));
+        try {
+            updateNote(note);
+            Json.toJson(new Result(true, "收藏成功!"), response);
+        } catch (Exception e) {
+            Json.toJson(new Result(false, "收藏失败!"), response);
+        }
+
+
+    }
 }

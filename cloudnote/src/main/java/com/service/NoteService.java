@@ -20,5 +20,5 @@ public interface NoteService {
     Map updateNote(Note note);
 
     List<Note> selectNoteByCondition(Condition condition);
-
 }
+
