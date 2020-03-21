@@ -9,13 +9,14 @@ package com.entity;
 public class Note {
 
     private Integer noteId;
-    private Integer userId;
+    private Integer accountId;
     private String noteType;
     private String noteTitle;
     private String noteContent;
     private String createTime;
     private String updateTime;
     private String isRecycle;
+    private String star;
 
     public Integer getNoteId() {
         return noteId;
@@ -25,12 +26,12 @@ public class Note {
         this.noteId = noteId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getAccountId() {
+        return accountId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
     public String getNoteTitle() {
@@ -79,5 +80,13 @@ public class Note {
 
     public void setNoteType(String noteType) {
         this.noteType = noteType;
+    }
+
+    public String getStar() {
+        return star;
+    }
+
+    public void setStar(String star) {
+        this.star = star;
     }
 }

@@ -22,7 +22,7 @@ public class Condition {
     private Integer imageId;
     private String isRecycle;
     private String type;
-    private String accountId;
+    private Integer accountId;
 
     public String getKey() {
         return key;
@@ -144,11 +144,11 @@ public class Condition {
         this.type = type;
     }
 
-    public String getAccountId() {
+    public Integer getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(Integer accountId) {
         this.accountId = accountId;
     }
 }
