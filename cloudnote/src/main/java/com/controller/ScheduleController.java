@@ -4,6 +4,7 @@ import com.Util.DateUtils;
 import com.Util.Json;
 import com.Util.Result;
 import com.Util.TokenUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.Condition;
 import com.entity.Schedule;
@@ -13,6 +14,7 @@ import com.service.serviceImpl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -265,6 +267,33 @@ public class ScheduleController {
             Result result = new Result(false, data.get("false"));
             Json.toJson(result, response);
         }
+    }
+
+
+    /**
+     * 判断当前点击的日期的是否过时
+     */
+    @RequestMapping(value = "/is_pass.json")
+    public void isPass(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response){
+        String token = request.getHeader("token");
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        String year = jsonObject.getString("year");
+        String month = jsonObject.getString("month");
+        String date = jsonObject.getString("date");
+        String hours = jsonObject.getString("hours");
+        String minutes = jsonObject.getString("minutes");
+        String seconds = jsonObject.getString("seconds");
+
+        //获取当前时间
+        Date currentDate = new Date();
+
+
+
+        Json.toJson(new Result(true,"SUCCESS"), response);
+
+
+
+
     }
 
 }
