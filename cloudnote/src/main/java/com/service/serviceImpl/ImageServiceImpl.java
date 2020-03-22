@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cache.CacheService;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,24 +32,27 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     OSSUtil ossUtil;
 
+    @Autowired
+    CacheService cacheService;
+
     /**
      * 首次上传图片
      * 
      * @param file
-     * @param userId
+     * @param accountId
      * @return
      */
     @Override
-    public Map uploadImage(MultipartFile file, Integer userId) {
+    public Map uploadImage(MultipartFile file, Integer accountId) {
         HashMap result = new HashMap();
         String wholeName = file.getOriginalFilename();// 获取源文件名
         String imageName = wholeName.substring(0, wholeName.lastIndexOf("."));// 文件名
         String imageType = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的类型
         Long imageSize = file.getSize();// 获取文件的大小 字节
-        String imagePath = getImagePath(wholeName, userId.toString(), imageType);// 生成图片在oss上的目录
+        String imagePath = getImagePath(wholeName, accountId.toString(), imageType);// 生成图片在oss上的目录
         // 验证是否存在重名
         Condition condition = new Condition();
-        condition.setUserId(userId);
+        condition.setAccountId(accountId);
         condition.setImageName(imageName);
         condition.setIsRecycle("0");
         Image image = imageMapper.selectImageByCondition(condition);
@@ -60,7 +65,7 @@ public class ImageServiceImpl implements ImageService {
             while (p) {
                 newImageName = imageName + "(" + i + ")";
                 Condition condition1 = new Condition();
-                condition1.setUserId(userId);
+                condition1.setAccountId(accountId);
                 condition1.setImageName(newImageName);
                 condition1.setIsRecycle("0");
                 if (imageMapper.selectImageByCondition(condition1) != null) {
@@ -70,15 +75,17 @@ public class ImageServiceImpl implements ImageService {
                 }
             }
             // 图片的完成命名
-            String wholeName1 = newImageName + "." + imageType;
+            String newWholeName = newImageName + "." + imageType;
             // 将图片存储到oss零时目录
-            ossUtil.putObjectTemp(file, userId.toString(), wholeName1);
+            ossUtil.putObjectTemp(file, accountId.toString(), newWholeName);
             result.put("false", "图片名称重复!");
-            result.put("message", "已经存在重名文件，是否重命名为：" + newImageName + "." + imageType);
-
+            result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>"+"<br><p style=\"text-align: center;font-weight: bold;\">"+ newImageName + "." + imageType+"</p>");
+            result.put("cache",newWholeName);
+            //将新的文件名存储在缓存中
+            cacheService.putValue(newWholeName,newWholeName);
         } else {// 如果图片命名不重复
             Image newImage = new Image();
-            newImage.setUserId(userId);
+            newImage.setAccountId(accountId);
             newImage.setImageSize(imageSize);
             newImage.setImageType(imageType);
             newImage.setImagePath(imagePath);
@@ -87,7 +94,7 @@ public class ImageServiceImpl implements ImageService {
             // 存储数据库
             imageMapper.insertImage(newImage);
             // 存储到oss
-            ossUtil.putObject(file, userId.toString());
+            ossUtil.putObject(file, accountId.toString());
             result.put("true", "上传成功!");
         }
         return result;
@@ -109,10 +116,10 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<Image> selectImage(Integer userId) {
+    public List<Image> selectImage(Integer accountId) {
 
         try {
-            List<Image> images = imageMapper.selectImageList(userId);
+            List<Image> images = imageMapper.selectImageList(accountId);
             return images;
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,11 +179,11 @@ public class ImageServiceImpl implements ImageService {
      * 获取图片路径 55/images/png/2020-01-01/1.png
      *
      * @param sourceFileName
-     * @param userId
+     * @param accountId
      * @return
      */
-    private String getImagePath(String sourceFileName, String userId, String type) {
+    private String getImagePath(String sourceFileName, String accountId, String type) {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-        return userId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
+        return accountId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 }

@@ -96,11 +96,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- springboot整合redis -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
         <!--oss-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -112,6 +107,14 @@
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>3.8.0</version>
         </dependency>
+
+        <!-- guava cache -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.2-jre</version>
+        </dependency>
+
 
     </dependencies>
 
