@@ -5,12 +5,12 @@
 <mapper namespace="com.mapper.ImageMapper">
 
     <sql id="base_sql">
-        image_id,user_id,image_name,image_type,image_size,create_time,image_path,image_url,expire_date,whole_name,is_recycle
+        image_id,account_id,image_name,image_type,image_size,create_time,image_path,image_url,expire_date,whole_name,is_recycle
     </sql>
 
     <resultMap id="baseMap" type="com.entity.Image">
         <id column="image_id" property="imageId" jdbcType="INTEGER"/>
-        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="account_id" property="accountId" jdbcType="INTEGER"/>
         <result column="image_name" property="imageName" jdbcType="INTEGER"/>
         <result column="image_type" property="imageType" jdbcType="VARCHAR"/>
         <result column="image_size" property="imageSize" jdbcType="BIGINT"/>
@@ -30,9 +30,9 @@
      </select>
 
     <insert id="insertImage" parameterType="com.entity.Image">
-        insert into image(user_id,image_name,image_type,image_size,image_path,whole_name,create_time)
+        insert into image(account_id,image_name,image_type,image_size,image_path,whole_name,create_time)
         value (
-        #{userId,jdbcType=INTEGER},
+        #{accountId,jdbcType=INTEGER},
         #{imageName,jdbcType=VARCHAR},
         #{imageType,jdbcType=VARCHAR},
         #{imageSize,jdbcType=BIGINT},
@@ -44,7 +44,7 @@
     <select id="selectImageList" parameterType="java.lang.Integer" resultType="com.entity.Image" resultMap="baseMap">
         select  image_id,image_name,image_path,whole_name
         from image
-        where user_id = #{userId,jdbcType=INTEGER} and is_recycle = '0'
+        where account_id = #{accountId,jdbcType=INTEGER} and is_recycle = '0'
     </select>
 
 
@@ -59,7 +59,7 @@
             resultMap="baseMap">
         select  image_id
         from image
-        where user_id = #{userId,jdbcType=INTEGER} and image_name = #{imageName,jdbcType=VARCHAR} and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        where account_id = #{accountId,jdbcType=INTEGER} and image_name = #{imageName,jdbcType=VARCHAR} and is_recycle = #{isRecycle,jdbcType=VARCHAR}
     </select>
 
 
@@ -73,7 +73,7 @@
             resultMap="baseMap">
         select  image_id,image_name,image_path,whole_name
         from image
-        where user_id = #{userId,jdbcType=INTEGER} and is_recycle = '0' and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
+        where account_id = #{accountId,jdbcType=INTEGER} and is_recycle = '0' and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
     </select>
 
     <!--

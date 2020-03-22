@@ -12,9 +12,7 @@ public interface ImageMapper {
 
     void insertImage(Image image);
 
-    void deleteImage(Integer imageId);
-
-    List<Image> selectImageList(Integer userId);
+    List<Image> selectImageList(Integer accountId);
 
     void updateImage(Image image);
 

@@ -5,6 +5,7 @@ import com.Util.Result;
 import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cache.CacheService;
 import com.entity.Condition;
 import com.entity.Image;
 import com.oss.OSSUtil;
@@ -43,6 +44,9 @@ public class UploadController {
     @Autowired
     ImageServiceImpl imageService;
 
+    @Autowired
+    CacheService cacheService;
+
     /**
      * 上传图片 运行机制：先挨个全部传递到后端运行后再依次反馈运行结果到前端 重命名解决方案： 如果不存在重命名，则正常存储 如果存在重命名，则先将图片存储到
      *
@@ -55,20 +59,18 @@ public class UploadController {
     public void uploadImage(@RequestParam(value = "file", required = false) MultipartFile uploadFile,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
-        Map serviceData = imageService.uploadImage(uploadFile, userId);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        Map serviceData = imageService.uploadImage(uploadFile, accountId);
         if (serviceData.get("true") != null) {
             HashMap<String, String> data = new HashMap<>();
             data.put("message", "上传成功!");
             Result result = new Result(true, "上传成功!", data);
             Json.toJson(result, response);
-
         } else {
             HashMap<String, String> data = new HashMap<>();
             Long image_size = uploadFile.getSize();
-            // data.put("wholeName", serviceData.get("message").toString());
             data.put("imageSize", image_size.toString());
-            // data.put("message", serviceData.get("message").toString());
+            data.put("cache",serviceData.get("cache").toString());
             Result result = new Result(false, serviceData.get("message").toString(), data);
             Json.toJson(result, response);
         }
@@ -84,27 +86,26 @@ public class UploadController {
     @RequestMapping(value = "/rename.json")
     public void rename(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
-
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
-        String message = jsonObject.getString("message");
+        String cache = jsonObject.getString("cache");
+        //获取缓存中存储的新的文件名
+        String wholeName = cacheService.getValue(cache).toString();
         String imageSizeString = jsonObject.getString("imageSize");
         Long imageSize = Long.parseLong(imageSizeString);
-        String wholeName = message.substring(message.lastIndexOf("：") + 1);
-
         // 拷贝文件
-        ossUtil.copy_delete_Image(wholeName, userId.toString());
+        ossUtil.copy_delete_Image(wholeName, accountId.toString());
         // 从临时文件中删除图片
-        String key = userId + "/temp/" + wholeName;
+        String key = accountId + "/temp/" + wholeName;
         ossUtil.deleteImage(key);
         // 获取图片的信息
         String imageName = wholeName.substring(0, wholeName.lastIndexOf("."));
         String imageType = wholeName.substring(wholeName.lastIndexOf(".") + 1);
-        String imagePath = getImagePath(wholeName, userId.toString(), imageType);
+        String imagePath = getImagePath(wholeName, accountId.toString(), imageType);
         Image image = new Image();
         image.setImageName(imageName);
         image.setImageType(imageType);
-        image.setUserId(userId);
+        image.setAccountId(accountId);
         image.setImagePath(imagePath);
         image.setImageSize(imageSize);
         image.setWholeName(wholeName);
@@ -113,7 +114,6 @@ public class UploadController {
         imageService.uploadImage(image);
         Result result = new Result(true, "存储成功!");
         Json.toJson(result, response);
-
     }
 
     /**
@@ -122,26 +122,29 @@ public class UploadController {
     @RequestMapping(value = "/noRename.json")
     public void noReanme(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
 
         JSONObject jsonObject = JSON.parseObject(jsonString);
-        String message = jsonObject.getString("message");
-
-        String wholeName = message.substring(message.lastIndexOf("：") + 1);
-        String key = userId + "/temp/" + wholeName;
+        //String message = jsonObject.getString("message");
+        //String wholeName = message.substring(message.lastIndexOf("：") + 1);
+        //获取缓存中存储的新的文件名
+        String wholeName = cacheService.getValue("wholeName").toString();
+        String key = accountId + "/temp/" + wholeName;
         ossUtil.deleteImage(key);
+        Result result = new Result(true, "删除临时文件成功");
+        Json.toJson(result, response);
     }
 
     /**
      * 设置图片的路径 55/images/png/2020-01-01/1.png
      *
      * @param sourceFileName
-     * @param userId
+     * @param accountId
      * @return
      */
-    private String getImagePath(String sourceFileName, String userId, String type) {
+    private String getImagePath(String sourceFileName, String accountId, String type) {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-        return userId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
+        return accountId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 
     /**
@@ -155,8 +158,8 @@ public class UploadController {
                                @RequestParam(value = "limit") String pagesize, @RequestParam(value = "token") String token,
                                HttpServletRequest request, HttpServletResponse response) {
 
-        Integer userId = tokenUtil.getAccountIdByToken(token);
-        List<Image> images = imageService.selectImage(userId);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        List<Image> images = imageService.selectImage(accountId);
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
         hashMap.put("msg", "ok");
@@ -176,7 +179,7 @@ public class UploadController {
     @RequestMapping(value = "/get_image_url.json")
     public void getImageUrl(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String imagePath = jsonObject.getString("imagePath");
         Integer imageId = Integer.parseInt(jsonObject.getString("imageId"));
@@ -231,13 +234,13 @@ public class UploadController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/updatePassword.json")
+    @RequestMapping(value = "/search_image.json")
     public Object search(@RequestParam(value = "token") String token, @RequestParam(value = "key") String key,
                          HttpServletRequest request, HttpServletResponse response) {
 
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
-        condition.setUserId(userId);
+        condition.setAccountId(accountId);
         condition.setKey(key);
         List<Image> images = imageService.selectImageByKey(condition);
 

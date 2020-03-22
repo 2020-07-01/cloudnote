@@ -10,58 +10,42 @@
     <script src="../static/jquery-3.4.1.min.js"></script>
     <script src="../static/mouseRightMenu/mouseRightMenu.js"></script>
 
-
     <style>
 
-        .layui-table-grid-down {
-            display: none;
+        .layui-container {
+            width: 100%;
+            height: 100%;
+            padding: 0 0;
+            overflow: hidden;
+        }
+
+        .layui-table, .layui-table-view {
+            margin: 0 0;
+        }
+
+        .layui-form-item {
         }
 
         .layui-tab-title li {
             display: block;
         }
 
-        .layui-table-cell {
-            height: 42px;
-            line-height: 42px;
-        }
-
         .button-space {
             padding: 0 5px;
-        }
-
-        .layui-table, .layui-table-view {
-            margin: 0 0;
-        }
-
-        .layui-container {
-            width: 100%;
-            height: 100%;
-            padding: 0 0;
         }
 
         .note-title {
             border: none;
         }
 
-        .layui-table, .layui-table-view {
-            margin: 0 0;
-        }
-
-
     </style>
 </head>
-
 <body>
-<!--顶部导航栏-->
 <div class="layui-layout layui-layout-admin">
 
     <div class="layui-header">
-
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
-
         <ul class="layui-nav layui-layout-right">
-
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
@@ -77,44 +61,55 @@
     </div>
 
     <div class="layui-side layui-bg-black">
-        <div class="layui-side-scroll">
-
+        <div class="layui-side-scroll" style="text-align: left;padding-left: 8px">
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
                 <li class="layui-nav-item">
-                    <a>我的笔记</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_note_page">查看</a></dd>
+                    <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/to_note_page" ><i class="layui-icon layui-icon-edit"></i> 创建笔记</a>
+                        <dd><a href="/to_note_page" ><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
+                        </dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的资源</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/imagePage">图片</a></dd>
-                        <dd><a href="/filePage">文档</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的日程</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_schedule_page">查看</a>
-
+                    <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/to_schedule_page"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">回收站</a>
-                    <dl class="layui-nav-child" style="text-align: left">
-                        <dd><a href="javascript:;">全部恢复</a></dd>
-                        <dd><a href="javascript:;">全部清空</a></dd>
-                        <dd><a href="javascript:;">查看全部</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 意见反馈</a></dd>
+                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -127,6 +122,7 @@
             <div class="layui-row">
                 <div class="layui-col-xs3">
                     <div class="grid-demo grid-demo-bg1">
+
                         <div class="layui-row">
                             <div class="layui-col-xs9">
                                 <input id="input-search-image" type="text" placeholder="搜索" autocomplete="off"
@@ -140,10 +136,13 @@
                                 </button>
                             </div>
                         </div>
+
                         <!--列表信息-->
-                        <div>
-                            <table class="layui-hide" lay-skin="ngb" id="image-list" lay-filter="table-filter"
-                                   style="border-bottom: none"></table>
+                        <div class="layui-row">
+                            <div class="layui-col-xs12">
+                                <table class="layui-hide" lay-skin="ngb" id="image-list" lay-filter="table-filter"
+                                       style="border-bottom: none"></table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -184,13 +183,17 @@
                                 </div>
                             </div>
                         </div>
+
+                        </p>
                         <!--图片显示区-->
                         <div class="layui-row">
                             <div class="layui-col-xs12">
-                                <div class="layui-upload-drag"
-                                     style="width: 100%;height: 100%; ">
-                                    <img id="show-image"
-                                         style="max-width: 80%;max-height: 80%; top:0;left:0;right: 0;bottom: 0;margin: auto">
+                                <div class="grid-demo grid-demo-bg1">
+                                    <div class="layui-upload-drag"
+                                         style="width: 100%;height: 370px; ">
+                                        <img id="show-image"
+                                             style="max-width: 100%;max-height: 100%; top:0;left:0;right: 0;bottom: 0;margin: auto">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -204,14 +207,6 @@
     </div>
 </div>
 </body>
-
-
-<!--右击操作-->
-<div id="schedule1" style="display: none;">
-
-    <button type="button" class="layui-btn layui-btn-primary">原始按钮</button>
-
-</div>
 
 <script th:inline="none">
 
@@ -232,7 +227,8 @@
             elem: '#image-list',
             where: {token: token},//传递token到服务端
             url: 'http://localhost:8080/image/get_images.json', //默认传递两个参
-            height: 'full-180',
+            height: 'full-140',
+            cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols:
                 [[ //标题栏
                     {field: 'wholeName', title: '点击上传', unresize: true}
@@ -240,95 +236,96 @@
             , done:
                 function (res, curr, count) {
                     $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
-
                     //完成数据渲染之后的回调
-                    $('th').css({'text-align': 'center', 'font-size': '17px'});
-                    var uploadInit = upload.render({
-                        elem: 'th'
-                        , size: 0
-                        , multiple: true    //设置多图片上传
-                        , headers: {token: token}
-                        , url: 'http://localhost:8080/image/upload_image.json'
-                        , accept: 'images'   //接受图片
-                        , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
-                            obj.preview(function (index, file, result) {
-                                $('#show-image').attr('src', result); //图片链接（base64）
-                            });
-                        }
-                        , done: function (result) {//每个文件触发一次，回调一次
-                            if (result.code == 0) {
-                                //成功之后添加数据
-                                var message = result.message;
-                                var imageSize = result.data.imageSize;
-                                var data = {
-                                    "message": message,
-                                    "imageSize": imageSize
-                                }
-                                var jsonData = JSON.stringify(data);
-                                var index = layer.open({
-                                    type: 1
-                                    , title: false //不显示标题栏
-                                    , closeBtn: false
-                                    , area: '300px;'
-                                    , shade: 0.8
-                                    , id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                                    , btn: ['yes', 'no']
-                                    , btnAlign: 'c'
-                                    , moveType: 1 //拖拽模式，0或者1
-                                    , content: result.message
-                                    , yes: function (index, layero) {
-                                        $.ajax({
-                                            type: "post",
-                                            contentType: "application/json",
-                                            dataType: 'json',
-                                            headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                                            data: jsonData,
-                                            url: "http://localhost:8080/image/rename.json",
-                                            error: function (result) {
-                                                alert("error");
-                                            },
-                                            success: function (result) {
-                                                if (result.code == 1) {
-                                                    alert("1");
-                                                    table_reload.reload();//刷新数据
-
-                                                }
-                                            }
-                                        })
-                                        layer.close(index);
-                                    }
-                                    , btn2: function (index, layero) {
-
-                                        $.ajax({
-                                            type: "post",
-                                            contentType: "application/json",
-                                            dataType: 'json',
-                                            headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                                            data: jsonData,
-                                            url: "http://localhost:8080/image/noRename.json",
-                                            error: function (result) {
-                                                alert("error");
-                                            },
-                                        })
-                                    }
-                                });
-                            } else {
-
-                                table_reload.reload();//刷新数据
-                                return layer.msg('上传成功');
-                            }
-                        }
-                        , error: function () {
-                            //演示失败状态，并实现重传
-                            /* var demoText = $('#demoText');
-                             demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-                             demoText.find('.demo-reload').on('click', function () {
-                                 uploadInst.upload();
-                             });*/
-                        }
-                    });
+                    init_upload();
                 }
         })
+
+        //加载上传图片功能
+        function init_upload(){
+            upload.render({
+                elem: 'th'
+                , size: 0
+                , multiple: true    //设置多图片上传
+                , headers: {token: token}
+                , url: 'http://localhost:8080/image/upload_image.json'
+                , accept: 'images'
+                , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                    obj.preview(function (index, file, result) {
+                        $('#show-image').attr('src', result); //图片链接（base64）
+                    });
+                }
+                , done: function (result) {//每个文件触发一次，回调一次
+                    if (result.code == 0) {
+                        //成功之后添加数据
+                        var cache = result.data.cache;
+                        var imageSize = result.data.imageSize;
+                        var data = {
+                            "cache": cache,
+                            "imageSize": imageSize
+                        }
+                        var jsonData = JSON.stringify(data);
+                        var index = layer.open({
+                            type: 1
+                            , title: false //不显示标题栏
+                            , closeBtn: false
+                            , area: '300px;'
+                            , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                            , btn: ['yes', 'no']
+                            , btnAlign: 'c'
+                            , moveType: 1 //拖拽模式，0或者1
+                            , content: result.message
+                            , yes: function (index, layero) {
+                                $.ajax({
+                                    type: "post",
+                                    contentType: "application/json",
+                                    dataType: 'json',
+                                    headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                                    data: jsonData,
+                                    url: "http://localhost:8080/image/rename.json",
+                                    error: function (result) {
+                                        alert("error");
+                                    },
+                                    success: function (result) {
+                                        if (result.code == 1) {
+                                            table_reload.reload();//刷新数据
+                                        }
+                                    }
+                                })
+                                layer.close(index);
+                            }
+                            , btn2: function (index, layero) {
+                                $.ajax({
+                                    type: "post",
+                                    contentType: "application/json",
+                                    dataType: 'json',
+                                    headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                                    data: jsonData,
+                                    url: "http://localhost:8080/image/noRename.json",
+                                    error: function (result) {
+                                        alert("error");
+                                    },
+                                    success: function (result) {
+                                    }
+                                })
+                                layer.close(index);
+                            }
+                        });
+                    } else {
+                        table_reload.reload();//刷新数据
+                        return layer.msg(result.message);
+                    }
+                }
+                , error: function () {
+                    //演示失败状态，并实现重传
+                    /* var demoText = $('#demoText');
+                     demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                     demoText.find('.demo-reload').on('click', function () {
+                         uploadInst.upload();
+                     });*/
+                }
+            });
+        }
 
         //监听行单击事件（双击事件为：rowDouble）
         table.on('row(table-filter)', function (obj) {
@@ -364,7 +361,6 @@
             }
             var imageWholeName = obj.data.wholeName;
             //显示标题
-
             $('#image-whole-name').val(imageWholeName);
             //标注选中样式
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
@@ -416,7 +412,9 @@
         //查询图片
         $("#search-image").click(function () {
             var imageKey = $("#input-search-image").val();
-
+            //清空右侧区域
+            $('#show-image').attr('src', "");
+            $('#image-whole-name').val("");
             //重新将table渲染一次，
             var table_reload_temp = table.render({
                 elem: '#image-list',
@@ -425,12 +423,12 @@
                 height: 'full-140',
                 cols:
                     [[ //标题栏
-                        {field: 'wholeName', title: '点击上传，或将文件拖拽到此处', unresize: true}
+                        {field: 'wholeName', title: '点击上传', unresize: true}
                     ]]
                 , done:
                     function (res, curr, count) {
                         //完成数据渲染之后的回调
-                        $('th').css({'text-align': 'center', 'font-size': '17px'});
+                        $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
                         var uploadInit = upload.render({
                             elem: 'th'
                             , size: 0
@@ -504,7 +502,6 @@
                                                 },
                                             })
                                         }
-
                                     });
                                 } else {
                                     table_reload.reload();//刷新数据
@@ -522,10 +519,7 @@
                         });
                     }
             })
-
         });
     })
-
 </script>
-
 </html>

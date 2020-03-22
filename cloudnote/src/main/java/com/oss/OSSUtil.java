@@ -35,10 +35,10 @@ public class OSSUtil {
      * 上传单个图片
      *
      * @param file
-     * @param userId
+     * @param accountId
      * @return
      */
-    public Map putObject(MultipartFile file, String userId) {
+    public Map putObject(MultipartFile file, String accountId) {
         HashMap<String, Boolean> result = new HashMap<>();
 
         // 获取文件名
@@ -46,7 +46,7 @@ public class OSSUtil {
         // 获取文件类型
         String type = fileName.substring(fileName.lastIndexOf(".") + 1);// 获取文件的后缀名
         // 获取文件的新路径
-        String imagePath = getImagePath(fileName, userId, type);
+        String imagePath = getImagePath(fileName, accountId, type);
         PutObjectRequest putObjectRequest = null;
         try {
             putObjectRequest = new PutObjectRequest("001-bucket", imagePath, new ByteArrayInputStream(file.getBytes()));
@@ -71,17 +71,17 @@ public class OSSUtil {
      * 存储临时文件
      *
      * @param file
-     * @param userId
+     * @param accountId
      * @param newImageName
      */
-    public void putObjectTemp(MultipartFile file, String userId, String newImageName) {
+    public void putObjectTemp(MultipartFile file, String accountId, String newImageName) {
 
         // 获取文件名
         String wholeName = file.getOriginalFilename();
         // 获取文件类型
         String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀名
         // 获取文件的新路径
-        String imagePath = userId + "/temp/" + newImageName;
+        String imagePath = accountId + "/temp/" + newImageName;
         PutObjectRequest putObjectRequest = null;
         try {
             putObjectRequest = new PutObjectRequest("001-bucket", imagePath, new ByteArrayInputStream(file.getBytes()));
@@ -139,18 +139,18 @@ public class OSSUtil {
      * 复制源文件到目标文件，成功后删除源文件
      *
      * @param wholeName
-     * @param userId
+     * @param accountId
      * @return
      */
-    public Map copy_delete_Image(String wholeName, String userId) {
+    public Map copy_delete_Image(String wholeName, String accountId) {
         HashMap result = new HashMap();
         // 目标
         String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀名
         // 目标路径
-        String destinationKey = getImagePath(wholeName, userId, type);
+        String destinationKey = getImagePath(wholeName, accountId, type);
 
         // 源路径
-        String sourceKey = userId + "/temp/" + wholeName;
+        String sourceKey = accountId + "/temp/" + wholeName;
         CopyObjectResult copyObjectResult = ossClient.copyObject("001-bucket", sourceKey, "001-bucket", destinationKey);
 
         this.deleteImage(sourceKey);
@@ -162,65 +162,13 @@ public class OSSUtil {
      * 获取图片路径 55/images/png/2020-01-01/1.png
      *
      * @param sourceFileName
-     * @param userId
+     * @param accountId
      * @return
      */
-    private String getImagePath(String sourceFileName, String userId, String type) {
+    private String getImagePath(String sourceFileName, String accountId, String type) {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-        return userId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
+        return accountId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 
-    /*    *//**
-             * 上传单个文件
-             *
-             * @param file
-             * @param userId
-             * @return
-             *//*
-               public Map uploadFile(MultipartFile file, String userId) {
-                HashMap<String, String> result = new HashMap<>();
-                if (file.getSize() > 1024 * 1024 * 20) {
-                    result.put("false", "文件大小超过限制");
-                    return result;
-                }
-                //获取文件名
-                String fileName = file.getOriginalFilename();
-                //获取文件类型
-                String type = fileName.substring(fileName.lastIndexOf(".") + 1);//获取文件的后缀名
-                //获取文件的新路径
-                String filePath = getFilePath(fileName, userId, type);
-                PutObjectRequest putObjectRequest = null;
-                try {
-                    putObjectRequest = new PutObjectRequest("001-bucket", filePath, new ByteArrayInputStream(file.getBytes()));
-                    result.put("true", "上传成功");
-                } catch (IOException e) {
-                    result.put("false", "出现异常");
-                    e.printStackTrace();
-                }
-               
-                // 如果需要上传时设置存储类型与访问权限，请参考以下示例代码。
-                // ObjectMetadata metadata = new ObjectMetadata();
-                // metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.Standard.toString());
-                // metadata.setObjectAcl(CannedAccessControlList.Private);
-                // putObjectRequest.setMetadata(metadata);
-                //上传图片
-                ossClient.putObject(putObjectRequest);
-                // ossClient.shutdown();//关闭客户端
-                return result;
-               }*/
-
-    /* *//**
-          * 获取文件的路径
-          *
-          * @param sourceFileName
-          * @param userId
-          * @param type
-          * @return
-          *//*
-            private String getFilePath(String sourceFileName, String userId, String type) {
-             String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-             return userId + "/" + "file" + "/" + date + "/" + type + "/" + sourceFileName;
-            
-            }*/
 
 }

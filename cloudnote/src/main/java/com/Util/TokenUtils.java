@@ -31,7 +31,7 @@ public class TokenUtils {
     /**
      * 创建token Algorithm.HMAC256(
      */
-    public String createToken(String userId) {
+    public String createToken(String accountId) {
         // 通过私钥来生成签名
         Algorithm ALGORITHM = Algorithm.HMAC256(TOKEN_SECRET);
         // 设置头部信息
@@ -44,7 +44,7 @@ public class TokenUtils {
                 // 设置签发者
                 .withIssuer("admin")
                 // 设置用户信息
-                .withAudience(userId)
+                .withAudience(accountId)
                 // 设置创建时间
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 // 设置过期时间一天
@@ -66,11 +66,11 @@ public class TokenUtils {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("admin").build();
             DecodedJWT jwt = verifier.verify(token);
-            String userId = jwt.getAudience().get(0);
-            if (userId == null) {
-                throw new RuntimeException("token校验失败,原因：token中不存在userId");
+            String accountId = jwt.getAudience().get(0);
+            if (accountId == null) {
+                throw new RuntimeException("token校验失败,原因：token中不存在accountId");
             }
-            Account user = userService.findUserById(Integer.parseInt(userId));
+            Account user = userService.findUserById(Integer.parseInt(accountId));
             if (user == null) {
                 throw new RuntimeException("token校验失败，原因：用户不存在");
             }
@@ -82,7 +82,7 @@ public class TokenUtils {
     }
 
     /**
-     * 解析出token中的userId
+     * 解析出token中的accountId
      *
      * @param token
      * @return
@@ -92,11 +92,11 @@ public class TokenUtils {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("admin").build();
             DecodedJWT jwt = verifier.verify(token);// 进行验证
-            String userId = jwt.getAudience().get(0);
-            if (userId != null) {
-                return Integer.decode(userId);
+            String accountId = jwt.getAudience().get(0);
+            if (accountId != null) {
+                return Integer.decode(accountId);
             } else {
-                throw new RuntimeException("token中不存在userId");
+                throw new RuntimeException("token中不存在accountId");
             }
         } catch (Exception e) {
             throw new RuntimeException("token校验抛出异常");

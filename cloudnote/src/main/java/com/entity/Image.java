@@ -10,7 +10,7 @@ public class Image {
     // id
     private Integer imageId;
     // userid
-    private Integer userId;
+    private Integer accountId;
     // 名称
     private String imageName;
     // 类型
@@ -70,12 +70,12 @@ public class Image {
         this.createTime = createTime;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getAccountId() {
+        return accountId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
     public Long getImageSize() {
