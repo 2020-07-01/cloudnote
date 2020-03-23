@@ -287,8 +287,6 @@ public class ScheduleController {
         //获取当前时间
         Date currentDate = new Date();
 
-
-
         Json.toJson(new Result(true,"SUCCESS"), response);
 
 
