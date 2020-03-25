@@ -274,24 +274,22 @@ public class ScheduleController {
      * 判断当前点击的日期的是否过时
      */
     @RequestMapping(value = "/is_pass.json")
-    public void isPass(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response){
+    public void isPass(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        JSONObject jsonObject = JSON.parseObject(jsonString);
-        String year = jsonObject.getString("year");
-        String month = jsonObject.getString("month");
-        String date = jsonObject.getString("date");
-        String hours = jsonObject.getString("hours");
-        String minutes = jsonObject.getString("minutes");
-        String seconds = jsonObject.getString("seconds");
-
-        //获取当前时间
-        Date currentDate = new Date();
-
-        Json.toJson(new Result(true,"SUCCESS"), response);
-
-
-
-
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            JSONObject jsonObject = JSON.parseObject(jsonString);
+            Date selectDate = format.parse(jsonObject.getString("selectDate"));
+            Date currentDate = new Date();
+            if (currentDate.getTime() + 60 * 10000 < selectDate.getTime()) {
+                Json.toJson(new Result(true, "true"), response);
+            } else {
+                Json.toJson(new Result(true, "false"), response);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Json.toJson(new Result(false, "失败"), response);
+        }
     }
 
 }

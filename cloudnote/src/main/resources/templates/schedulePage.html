@@ -49,7 +49,9 @@
             text-align: center;
         }
 
-        .layui-unselect dl { max-height:180px; }
+        .layui-unselect dl {
+            max-height: 140px;
+        }
     </style>
 </head>
 
@@ -149,13 +151,13 @@
 </body>
 
 <!--任务弹出框-->
-<div class="text_box" id="createScheduleSpace" style="display: none;">
-    <div style="display: block">
+<div class="text_box" id="scheduleSpace" style="display: none;">
+    <div id="createSpace" style="display: block">
         <div class="layui-row">
             <div class="layui-col-xs12">
                 <div class="grid-demo grid-demo-bg1">
                     <div class="layui-input-inline" style="width: 100%;">
-                        <input type="text" id="time" name="noteTitle"
+                        <input type="text" id="currentTime" name="noteTitle"
                                class="layui-input note-title"
                                placeholder="活动时间" readonly style="border: none;text-align: center">
                     </div>
@@ -203,6 +205,60 @@
             </div>
         </div>
     </div>
+
+    <div id="checkSpace" style="display: none">
+        <div class="layui-row">
+            <div class="layui-col-xs12">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-input-inline" style="width: 100%;">
+                        <input type="text" id="123" name="noteTitle"
+                               class="layui-input note-title"
+                               placeholder="活动时间" readonly style="border: none;text-align: center">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-xs5">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="post" lay-filter="schedule">
+                        <div class="layui-form-item" style="margin-bottom: 0">
+                            <div class="layui-input-inline" style="width: 100%">
+                                <select name="noteType" id="f" lay-filter="selectNoteTpe">
+                                    <option value="0">不提醒</option>
+                                    <option value="0">提前1小时</option>
+                                    <option value="0">提前30分钟</option>
+                                    <option value="0">提前15分钟</option>
+                                    <option value="0">提前10分钟</option>
+                                    <option value="0">提前5分钟</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs7">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-input-inline" style="width: 100%;float:left;">
+                        <input type="text" id="f-title" name="noteTitle"
+                               class="layui-input note-title"
+                               placeholder="标题">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-xs12">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-form-item layui-form-text">
+                        <textarea id=" " class="layui-textarea" placeholder="请输入内容"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -216,18 +272,14 @@
         var laydate = layui.laydate;
         var form = layui.form;
 
-        //创建当前日期，此日期只是一个标注日期，与上面的显示无法
-        var current_date = new Date();
         //创建全局的switch值,默认为关闭
         var isRemind = "false";
-
         //加载日历插件
-        loding_date(current_date);
+        loading_date();
 
         //日历插件函数
-        function loding_date(current_date) {
+        function loading_date() {
             var initData = "";
-
             //加载日历插件
             laydate.render({
                 elem: '#calendar'
@@ -245,7 +297,7 @@
                 }
                 , mark: initData //标注重要的日子，回显数据,mark是一个json对象
                 , ready: function (date) {
-                    //alert("控件初始打开时的回调");
+                    //alert("控件初始打开时的回调");{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
                     var temp = getScheduleList();
                     initData = JSON.parse(temp);
                 }
@@ -255,7 +307,7 @@
                     //date：得到日期的对象，显示年月日时分秒 例子：{"year":2020,"month":1,"date":8,"hours":22,"minutes":45,"seconds":36}
 
                     //判读当前选择的时间是否符合要求，如果符合则弹窗否则提示不弹窗
-                    isPass(date);
+                    isPass(date, value);
 
                     /* if (typeof (scheduleData[showValue]) == "undefined") {
                          date_chose(value);
@@ -265,15 +317,16 @@
                      }*/
                 }
                 , change: function (value, date, endDate) {
-
                 }
-
             });
         }
 
         //判断选择的时间是否符合要求
-        function isPass(selectDate) {
-            var jsonData = JSON.stringify(selectDate);
+        function isPass(selectDate, value) {
+            var data = {
+                "selectDate": value
+            }
+            var jsonData = JSON.stringify(data);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -286,7 +339,7 @@
                 },
                 success: function (result) {
                     if (result.code == 1) {
-                        createSpace(selectDate);//弹窗
+                        createSpace(value, result.message);//弹窗
                     } else {
                         layer.msg(result.message);
                     }
@@ -294,77 +347,54 @@
             })
         }
 
-        //添加任务弹窗
-        function createSpace(currentSelectDate) {
+        //弹窗
+        function createSpace(value, flag) {
             var index = layer.open({
                 type: 1,
                 skin: 'layui-layer-rim', //加上边框
                 title: '添加任务',
                 area: ['450px', '350px'], //宽高
-                btn: ['创建', '关闭'],
-                content: $("#createScheduleSpace")
+                btn: ['创建', '查看', '关闭'],
+                content: $("#scheduleSpace")
                 , success: function () {
-
-                }
-                , yes: function () {
-                    var hour = $('#slideTest1').text();
-                    var minute = $('#slideTest2').text();
-
-                    if (isRemind == "true") {
-                        if (hour == '' && minute == '') {
-                            layer.msg('提醒时间不能为空!', {icon: 2});
-                            return;
-                        }
-                    }
-                    //点击创建按钮之后执行
-                    if ($('#schedule-content').val() != '') {
-                        chose_moban(currentSelectDate);
-                        layer.close(index);
+                    if (flag == "true") {
+                        $('#currentTime').val(value);
+                        $('#createSpace').css({'display': 'block'});
+                        $('#checkSpace').css({'display': 'none'});
                     } else {
-                        layer.msg('内容不能为空', {icon: 2});
+                        //回显数据
+                        $('#createSpace').css({'display': 'none'});
+                        $('#checkSpace').css({'display': 'block'});
                     }
-                },
-                btn2: function () {
-                    layer.close(index);
-                }
-            });
-        }
-
-
-        //查看任务的弹窗函数
-        function check_schedule(value, showValue, scheduleData) {
-            var index1 = layer.open({
-                type: 1,
-                skin: 'layui-layer-rim', //加上边框
-                title: '查看日程',
-                area: ['600px', '500px'], //宽高
-                btn: ['新建', '更新', '撤销', '关闭'],
-                content: $("#schedule1")
-                , success: function () {
-                    init_check_slider();
                 }
                 , yes: function () {
-                    layer.close(index1);
-                    date_chose(current_date);
+
+
+
+
                 },
                 btn2: function () {
-                    updateSchedule(current_date);
 
+                    $('#createSpace').css({'display': 'none'});
+                    $('#checkSpace').css({'display': 'block'});
+                    alert("查看");
+                    return false;
                 },
-                btn3: function () {
+                btn3: function (index, layero) {
+                    alert("关闭");
+                    //按钮【按钮三】的回调
 
-                    chexiao(current_date);
+                    //return false 开启该代码可禁止点击该按钮关闭
                 },
-                btn4: function () {
-                    layer.close(index1);
-
+                cancel: function () {
+                    //右上角关闭回调
+                    //return false 开启该代码可禁止点击该按钮关闭
                 }
             });
-
         }
 
-        //创建活动
-        function chose_moban(obj_date) {
+        //活动
+        function saveSchedule(obj_date) {
             //获取新的数据
             var content = $('#schedule-content').val();
             //var data1 = form.val("schedule");
@@ -421,6 +451,7 @@
                     }
                 }
             })
+
             $('#schedule-content').val("");
             $('#test-n2').html('');//重要！由于插件是嵌套指定容器，再次调用前需要清空原日历控件，清空弹出层
             //markJson[obj_date] = content;
