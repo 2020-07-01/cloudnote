@@ -6,11 +6,13 @@ import com.Util.Result;
 import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cache.CacheService;
 import com.entity.Condition;
 import com.entity.Schedule;
 import com.entity.Task;
 import com.service.serviceImpl.ScheduleServiceImpl;
 import com.service.serviceImpl.TaskServiceImpl;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -41,64 +44,48 @@ public class ScheduleController {
 
     @Autowired
     TaskServiceImpl taskService;
-    ;
+
+    @Autowired
+    CacheService cacheService;
 
     @RequestMapping(value = "/save_task")
     public void insertNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        String scheduleContent = jsonObject.getString("scheduleContent");
+        if (scheduleContent.trim().length() == 0) {
+            Json.toJson(new Result(false, "内容不能为空!"), response);
+        }
+        String scheduleTitle = jsonObject.getString("scheduleTitle");
+        if (scheduleTitle.trim().length() == 0) {
+            Json.toJson(new Result(false, "标题不能为空!"), response);
+        }
+
         Schedule schedule = new Schedule();
-        schedule.setUserId(userId);
+        schedule.setAccountId(accountId);
+        schedule.setScheduleContent(scheduleContent);
+        schedule.setScheduleTitle(scheduleTitle);
+        String aheadTime = jsonObject.getString("aheadTime");
+        int integerAheadTime = Integer.parseInt(aheadTime);
+        //获取数据
+        HashMap<String, String> aheadTimeMap = getAheadTimeMapCache(accountId);
+        schedule.setAheadTime(aheadTimeMap.get(aheadTime));
         schedule.setScheduleContent(jsonObject.getString("taskContent"));
-        schedule.setExecuteTime(jsonObject.getString("executeTime"));
-        schedule.setIsObsolete("1");
-        //获取执行时间
+
         String executeTime = jsonObject.getString("executeTime");
-
-        if (DateUtils.isBefore(executeTime, DateUtils.getCurrentDate())) {
-            Json.toJson(new Result(false, "不能创建空白任务"), response);
-            return;
-        }
-
-        //计算showExecuteTime
-        String showExecuteTime = executeTime.substring(0, 10);
-        schedule.setShowExecuteTime(showExecuteTime);
-        //获取提前量
-        Long hour = 0L;
-        Long minute = 0L;
-        String advanceHour = jsonObject.getString("hour");
-        String advanceMinute = jsonObject.getString("minute");
-
-        if (!advanceHour.equals("")) {
-            hour = Long.parseLong(advanceHour.substring(0, advanceHour.length() - 2));
-        }
-        if (!advanceMinute.equals("")) {
-            minute = Long.parseLong(advanceMinute.substring(0, advanceMinute.length() - 2));
-        }
-        schedule.setAdvanceHour(hour.intValue());
-        schedule.setAdvanceMinute(minute.intValue());
-        //计算发送邮件的时间
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date1 = dateFormat.parse(executeTime);
-
-        Long milliSecond1 = date1.getTime();
-        Long milliSecond2 = milliSecond1 - hour * 60 * 60 * 1000 - minute * 60 * 1000;
-
-        String s = getRemindTime(milliSecond2);
-
-        //设置发送邮件的时间
-        schedule.setRemindTime(s);
-        //设置是否进行邮件提醒
-        if (jsonObject.getString("isRemind").equals("true")) {
-            schedule.setIsRemind("1");
-            Task task = new Task();
-            task.setUserId(userId);
-            task.setSendTime(s);
-
-            taskService.insert(task);
+        schedule.setExecuteTime(executeTime);
+        //是否发送邮件
+        if (integerAheadTime == 0) {
+            schedule.setIsNeedRemind("0");
         } else {
-            schedule.setIsRemind("0");
+            schedule.setIsNeedRemind("1");
+            //计算发送邮件的时间
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date executeTimeDate = dateFormat.parse(executeTime);
+            Long remindTime = executeTimeDate.getTime() - integerAheadTime * 60 * 1000;
+            String remindTimeString = dateFormat.format(remindTime);
+            schedule.setRemindTime(remindTimeString);
         }
 
         Map result = scheduleService.insertSchedule(schedule);
@@ -109,13 +96,25 @@ public class ScheduleController {
         }
     }
 
-    private String getRemindTime(long milliSecond) {
-        Date date = new Date(milliSecond);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(format.format(date));
-        return format.format(date);
+    /**
+     * 获取缓存中的aheadTime
+     *
+     * @param accountId
+     * @return
+     */
+    private HashMap getAheadTimeMapCache(int accountId) {
+        String key = accountId + "aheadTIme";
+        if (cacheService.getValue(key) != null) {
+            HashMap<String, String> aheadTimeMap = new HashMap();
+            aheadTimeMap.put("0", "不提醒");
+            aheadTimeMap.put("15", "提前15分钟");
+            aheadTimeMap.put("30", "提前30分钟");
+            aheadTimeMap.put("60", "提前1小时");
+            aheadTimeMap.put("120", "提前两小时");
+            cacheService.putValue(key, aheadTimeMap);
+        }
+        return (HashMap) cacheService.getValue(key);
     }
-
 
     @RequestMapping(value = "/schedule_list")
     public void scheduleList(HttpServletRequest request, HttpServletResponse response) {

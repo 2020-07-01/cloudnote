@@ -171,13 +171,13 @@
                     <form class="layui-form" action="post" lay-filter="schedule">
                         <div class="layui-form-item" style="margin-bottom: 0">
                             <div class="layui-input-inline" style="width: 100%">
-                                <select name="noteType" id="selectNoteTpe" lay-filter="selectNoteTpe">
+                                <select name="noteType" id="aheadTime" lay-filter="selectNoteTpe">
                                     <option value="0">不提醒</option>
-                                    <option value="0">提前1小时</option>
-                                    <option value="0">提前30分钟</option>
-                                    <option value="0">提前15分钟</option>
-                                    <option value="0">提前10分钟</option>
-                                    <option value="0">提前5分钟</option>
+                                    <option value="5">提前5分钟</option>
+                                    <option value="15">提前15分钟</option>
+                                    <option value="30">提前30分钟</option>
+                                    <option value=60>提前1小时</option>
+                                    <option value="120">提前1小时</option>
                                 </select>
                             </div>
                         </div>
@@ -187,7 +187,7 @@
             <div class="layui-col-xs7">
                 <div class="grid-demo grid-demo-bg1">
                     <div class="layui-input-inline" style="width: 100%;float:left;">
-                        <input type="text" id="note-title" name="noteTitle"
+                        <input type="text" id="scheduleTitle" name="noteTitle"
                                class="layui-input note-title"
                                placeholder="标题">
                     </div>
@@ -199,7 +199,7 @@
             <div class="layui-col-xs12">
                 <div class="grid-demo grid-demo-bg1">
                     <div class="layui-form-item layui-form-text">
-                        <textarea id="" class="layui-textarea" placeholder="请输入内容"></textarea>
+                        <textarea id="scheduleContent" class="layui-textarea" placeholder="请输入内容"></textarea>
                     </div>
                 </div>
             </div>
@@ -359,6 +359,7 @@
                 , success: function () {
                     if (flag == "true") {
                         $('#currentTime').val(value);
+
                         $('#createSpace').css({'display': 'block'});
                         $('#checkSpace').css({'display': 'none'});
                     } else {
@@ -368,10 +369,7 @@
                     }
                 }
                 , yes: function () {
-
-
-
-
+                    saveSchedule(value);
                 },
                 btn2: function () {
 
@@ -394,20 +392,17 @@
         }
 
         //活动
-        function saveSchedule(obj_date) {
+        function saveSchedule(value) {
             //获取新的数据
-            var content = $('#schedule-content').val();
-            //var data1 = form.val("schedule");
-            var hour = $('#slideTest1').text();
-            var minute = $('#slideTest2').text();
+            var scheduleTitle = $('#scheduleTitle');
+            var scheduleContent = $('#scheduleContent').val();
+            var aheadTime = $('#aheadTime').val();
             var data = {
-                "taskContent": content,
-                "executeTime": obj_date,
-                "isRemind": isRemind,
-                "hour": hour,
-                "minute": minute
+                "aheadTime": aheadTime,
+                "scheduleContent": scheduleContent,
+                "scheduleTitle":scheduleTitle,
+                "executeTime":value
             };
-
             var jsonData = JSON.stringify(data);//转换为json字符串
             var token = sessionStorage.getItem("token");
             $.ajax({
