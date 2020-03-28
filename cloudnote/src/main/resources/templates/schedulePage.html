@@ -157,7 +157,7 @@
             <div class="layui-col-xs12">
                 <div class="grid-demo grid-demo-bg1">
                     <div class="layui-input-inline" style="width: 100%;">
-                        <input type="text" id="currentTime" name="noteTitle"
+                        <input type="text" id="currentTime" name="currentTime"
                                class="layui-input note-title"
                                placeholder="活动时间" readonly style="border: none;text-align: center">
                     </div>
@@ -166,7 +166,7 @@
         </div>
 
         <div class="layui-row">
-            <div class="layui-col-xs5">
+            <div class="layui-col-xs4">
                 <div class="grid-demo grid-demo-bg1">
                     <form class="layui-form" action="post" lay-filter="schedule">
                         <div class="layui-form-item" style="margin-bottom: 0">
@@ -184,10 +184,10 @@
                     </form>
                 </div>
             </div>
-            <div class="layui-col-xs7">
+            <div class="layui-col-xs8">
                 <div class="grid-demo grid-demo-bg1">
                     <div class="layui-input-inline" style="width: 100%;float:left;">
-                        <input type="text" id="scheduleTitle" name="noteTitle"
+                        <input type="text" id="scheduleTitle" name="scheduleTitle"
                                class="layui-input note-title"
                                placeholder="标题">
                     </div>
@@ -210,38 +210,36 @@
         <div class="layui-row">
             <div class="layui-col-xs12">
                 <div class="grid-demo grid-demo-bg1">
-                    <div class="layui-input-inline" style="width: 100%;">
-                        <input type="text" id="123" name="noteTitle"
-                               class="layui-input note-title"
-                               placeholder="活动时间" readonly style="border: none;text-align: center">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-row">
-            <div class="layui-col-xs5">
-                <div class="grid-demo grid-demo-bg1">
                     <form class="layui-form" action="post" lay-filter="schedule">
                         <div class="layui-form-item" style="margin-bottom: 0">
                             <div class="layui-input-inline" style="width: 100%">
-                                <select name="noteType" id="f" lay-filter="selectNoteTpe">
-                                    <option value="0">不提醒</option>
-                                    <option value="0">提前1小时</option>
-                                    <option value="0">提前30分钟</option>
-                                    <option value="0">提前15分钟</option>
-                                    <option value="0">提前10分钟</option>
-                                    <option value="0">提前5分钟</option>
+                                <select name="executeTime" id="executeTime" lay-filter="selectExecuteTime">
                                 </select>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-            <div class="layui-col-xs7">
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="post" lay-filter="schedule">
+                        <div class="layui-form-item" style="margin-bottom: 0">
+                            <div class="layui-input-inline" style="width: 100%">
+                                <select name="aheadTime" id="checkAheadTime" lay-filter="checkAheadTime">
+
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs8">
                 <div class="grid-demo grid-demo-bg1">
                     <div class="layui-input-inline" style="width: 100%;float:left;">
-                        <input type="text" id="f-title" name="noteTitle"
+                        <input type="text" id="scheduleTitle1" name="scheduleTitle1"
                                class="layui-input note-title"
                                placeholder="标题">
                     </div>
@@ -253,7 +251,7 @@
             <div class="layui-col-xs12">
                 <div class="grid-demo grid-demo-bg1">
                     <div class="layui-form-item layui-form-text">
-                        <textarea id=" " class="layui-textarea" placeholder="请输入内容"></textarea>
+                        <textarea id="scheduleContent1" class="layui-textarea" placeholder="请输入内容"></textarea>
                     </div>
                 </div>
             </div>
@@ -285,9 +283,8 @@
         //日历插件函数
         function loading_date() {
             markData = JSON.parse(getScheduleList());
-            alert(JSON.stringify(markData));
             //加载日历插件
-            laydate.render({
+            var laydateRender = laydate.render({
                 elem: '#calendar'
                 , type: 'datetime'
                 , theme: 'grid'
@@ -303,7 +300,6 @@
                 }
                 , mark: markData//此处为json对象
                 , ready: function (date) {
-                    //alert("控件初始打开时的回调");{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
 
                 }
                 , done: function (value, date, endDate) {
@@ -370,26 +366,34 @@
                     saveSchedule(value);
                 },
                 btn2: function () {
-
+                    //初始化selectExecuteTime
                     $('#createSpace').css({'display': 'none'});
                     $('#checkSpace').css({'display': 'block'});
-                    alert("查看");
+                    initSelectExecuteTime(value);
                     return false;
                 },
                 btn3: function (index, layero) {
-                    alert("关闭");
-                    //按钮【按钮三】的回调
-
-                    //return false 开启该代码可禁止点击该按钮关闭
+                    $('#scheduleTitle').val("");
+                    $('#scheduleContent').val("");
+                    $('#aheadTime').val("");
+                    $('#currentTime').val("");
+                    $('#scheduleTitle1').val("");
+                    $('#scheduleContent1').val("");
                 },
                 cancel: function () {
-                    //右上角关闭回调
-                    //return false 开启该代码可禁止点击该按钮关闭
+                    //清空时间，标题，内容
+                    $('#scheduleTitle').val("");
+                    $('#scheduleContent').val("");
+                    $('#aheadTime').val("");
+                    $('#currentTime').val("");
+                    $('#scheduleTitle1').val("");
+                    $('#scheduleContent1').val("");
+
                 }
             });
         }
 
-        //活动
+        //创建日程
         function saveSchedule(value) {
             //获取新的数据
             var scheduleTitle = $('#scheduleTitle').val();
@@ -415,134 +419,184 @@
                 },
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg(result.message);
                         //成功之后刷新日历
-                        loading_date();
                         layer.close(index);
-
+                        location.reload();
                     } else {
                         layer.msg(result.message);
                     }
                 }
             })
-
-            $('#schedule-content').val("");
-            $('#test-n2').html('');//重要！由于插件是嵌套指定容器，再次调用前需要清空原日历控件，清空弹出层
-            //markJson[obj_date] = content;
-            //再次调用日历控件，重新添数据
-
-            //loding_date(obj_date);//重要！，再标注一个日期后会刷新当前日期变为初始值，所以必须调用当前选定日期。
         }
 
-        //撤销
-        function chexiao(obj_date) {
-            if (chexiaoExecuteTime == "") {
-                layer.msg('请选择日程', {icon: 2});
-                return;
-            }
+
+        //初始化selectExecuteTime
+        function initSelectExecuteTime(executeTime) {
+            $("#executeTime").empty();//先进行清空
             var data = {
-                "executeTime": chexiaoExecuteTime
+                "executeTime":executeTime
             }
             var jsonData = JSON.stringify(data);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 dataType: 'json',
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/schedule/remove_schedule",
-                error: function (result) {
-                    alert("false");
-                },
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/schedule/init_executeTime.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1000,
-                            shade: 0.5,
-                            offset: 'rb',
-                            area: ['200px', '120px'],
-                            end: function () {
-                                //刷新日历
-                                loding_date(obj_date);
-                            }
-                        });
-                    } else {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1500,
-                            shade: 0.6,
-                            offset: 'auto',
-                            area: ['200px', '120px']
-                        });
+                        var selectData = result.data.textValues;
+                        var htmls = '<option value="">请选择日程</option>';
+                        for (var x in selectData) {
+                            htmls += '<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>'
+                        }
+                        $("#executeTime").append(htmls);
+                        form.render();
                     }
-                }
+                },
             })
-            $('#test-n2').html('');
-        }
+        };
 
-        //更新
-        function updateSchedule(obj_date) {
 
-            if (chexiaoExecuteTime == "") {
-                layer.msg('请选择日程', {icon: 2});
-                return;
-            }
-
-            var hour = $('#check-slide-hour').text();
-            var minute = $('#check-slide-minute').text();
-            var content = $('#check-schedule-content').val();
+        //标签选择事件
+        form.on('select(selectExecuteTime)', function (data) {
+            //获取数据
             var data = {
-                "executeTime": chexiaoExecuteTime, //获取执行时间
-                "advanceHour": hour,
-                "advanceMinute": minute,
-                "scheduleContent": content
+                "executeTime":data.value
             }
+
             var jsonData = JSON.stringify(data);
+
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 dataType: 'json',
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/schedule/update_schedule",
-                error: function (result) {
-                    alert("false");
-                },
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/schedule/get_schedule.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1000,
-                            shade: 0.5,
-                            offset: 'rb',
-                            area: ['200px', '120px'],
-                            end: function () {
-                                //刷新日历
-                                loding_date(obj_date);
-                            }
-                        });
-                    } else {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1500,
-                            shade: 0.6,
-                            offset: 'auto',
-                            area: ['200px', '120px']
-                        });
+                        //回显标题
+                        $('#scheduleTitle1').val(result.data.scheduleTitle);//设置标题
+                        //回显内容
+                        $('#scheduleContent1').val(result.data.scheduleContent);
                     }
-                }
+                },
             })
-            $('#test-n2').html('');
-        }
+        });
+
+
+
+        /*     //撤销
+             function chexiao(obj_date) {
+                 if (chexiaoExecuteTime == "") {
+                     layer.msg('请选择日程', {icon: 2});
+                     return;
+                 }
+                 var data = {
+                     "executeTime": chexiaoExecuteTime
+                 }
+                 var jsonData = JSON.stringify(data);
+                 $.ajax({
+                     type: "post",
+                     contentType: "application/json",
+                     dataType: 'json',
+                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                     data: jsonData,
+                     url: "http://localhost:8080/schedule/remove_schedule",
+                     error: function (result) {
+                         alert("false");
+                     },
+                     success: function (result) {
+                         if (result.code == 1) {
+                             layer.open({
+                                 title: '提示',
+                                 content: result.message,
+                                 btn: [],
+                                 time: 1000,
+                                 shade: 0.5,
+                                 offset: 'rb',
+                                 area: ['200px', '120px'],
+                                 end: function () {
+                                     //刷新日历
+                                     loding_date(obj_date);
+                                 }
+                             });
+                         } else {
+                             layer.open({
+                                 title: '提示',
+                                 content: result.message,
+                                 btn: [],
+                                 time: 1500,
+                                 shade: 0.6,
+                                 offset: 'auto',
+                                 area: ['200px', '120px']
+                             });
+                         }
+                     }
+                 })
+                 $('#test-n2').html('');
+             }*/
+
+        /*   //更新
+           function updateSchedule(obj_date) {
+
+               if (chexiaoExecuteTime == "") {
+                   layer.msg('请选择日程', {icon: 2});
+                   return;
+               }
+
+               var hour = $('#check-slide-hour').text();
+               var minute = $('#check-slide-minute').text();
+               var content = $('#check-schedule-content').val();
+               var data = {
+                   "executeTime": chexiaoExecuteTime, //获取执行时间
+                   "advanceHour": hour,
+                   "advanceMinute": minute,
+                   "scheduleContent": content
+               }
+               var jsonData = JSON.stringify(data);
+               $.ajax({
+                   type: "post",
+                   contentType: "application/json",
+                   dataType: 'json',
+                   headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                   data: jsonData,
+                   url: "http://localhost:8080/schedule/update_schedule",
+                   error: function (result) {
+                       alert("false");
+                   },
+                   success: function (result) {
+                       if (result.code == 1) {
+                           layer.open({
+                               title: '提示',
+                               content: result.message,
+                               btn: [],
+                               time: 1000,
+                               shade: 0.5,
+                               offset: 'rb',
+                               area: ['200px', '120px'],
+                               end: function () {
+                                   //刷新日历
+                                   loding_date(obj_date);
+                               }
+                           });
+                       } else {
+                           layer.open({
+                               title: '提示',
+                               content: result.message,
+                               btn: [],
+                               time: 1500,
+                               shade: 0.6,
+                               offset: 'auto',
+                               area: ['200px', '120px']
+                           });
+                       }
+                   }
+               })
+               $('#test-n2').html('');
+           }*/
 
         //监听select操作
         form.on('select(execute-time-filter)', function (data) {

@@ -219,6 +219,13 @@ public class NoteController {
         Json.toJson(new Result(true, "SUCCESS", data), response);
     }
 
+
+    /**
+     * 加星
+     * @param jsonString
+     * @param request
+     * @param response
+     */
     @RequestMapping(value = "/set_star.json")
     public void setStar(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
@@ -237,7 +244,6 @@ public class NoteController {
         } catch (Exception e) {
             Json.toJson(new Result(false, "收藏失败!"), response);
         }
-
-
     }
+
 }

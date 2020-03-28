@@ -2,7 +2,9 @@ package com.service;
 
 import com.entity.Condition;
 import com.entity.Schedule;
+import org.checkerframework.checker.units.qual.C;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ScheduleService {
@@ -26,4 +28,8 @@ public interface ScheduleService {
 
     //更新日程
     Map updateSchedule(Schedule schedule);
+
+    Map selectScheduleByCondition(Condition condition);
+
+    List<Schedule> selectScheduleByExecuteTime(Condition condition);
 }

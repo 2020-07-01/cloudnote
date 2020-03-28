@@ -7,25 +7,18 @@ import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
-import com.entity.Condition;
-import com.entity.Schedule;
-import com.entity.Task;
+import com.entity.*;
 import com.service.serviceImpl.ScheduleServiceImpl;
 import com.service.serviceImpl.TaskServiceImpl;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @program: TaskController
@@ -108,7 +101,7 @@ public class ScheduleController {
         if (cacheService.getValue(key) == null) {
             HashMap<String, String> aheadTimeMap = new HashMap();
             aheadTimeMap.put("0", "不提醒");
-            aheadTimeMap.put("5","提前5分钟");
+            aheadTimeMap.put("5", "提前5分钟");
             aheadTimeMap.put("15", "提前15分钟");
             aheadTimeMap.put("30", "提前30分钟");
             aheadTimeMap.put("60", "提前1小时");
@@ -289,5 +282,56 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * 初始化selectExecuteTime
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/init_executeTime.json")
+    public void initSelectExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("token");
+        int accountId = tokenUtil.getAccountIdByToken(token);
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        String executeTime = jsonObject.getString("executeTime").substring(0, 10);
+
+        Condition condition = new Condition();
+        condition.setAccountId(accountId);
+        condition.setExecuteTime(executeTime);
+
+        Map schedules = scheduleService.selectScheduleByCondition(condition);
+
+        Json.toJson(new Result(true, "SUCCESS", schedules), response);
+
+    }
+
+    /**
+     * 选择时间后获取全部数据
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/get_schedule.json")
+    public void getScheduleByExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("token");
+        int accountId = tokenUtil.getAccountIdByToken(token);
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        String executeTime = jsonObject.getString("executeTime");
+
+        Condition condition = new Condition();
+        condition.setAccountId(accountId);
+        condition.setExecuteTime(executeTime);
+
+        List<Schedule> scheduleList = scheduleService.selectScheduleByExecuteTime(condition);
+
+        HashMap data = new HashMap();
+        data.put("scheduleTitle", scheduleList.get(0).getScheduleTitle());
+        data.put("scheduleContent", scheduleList.get(0).getScheduleContent());
+        data.put("aheadTime", scheduleList.get(0).getAheadTime());
+
+        Json.toJson(new Result(true, "SUCCESS", data), response);
+    }
 }
 

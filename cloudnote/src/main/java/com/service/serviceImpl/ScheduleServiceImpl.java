@@ -1,15 +1,19 @@
 package com.service.serviceImpl;
 
 import com.entity.Condition;
+import com.entity.Note;
 import com.entity.Schedule;
+import com.entity.TextValue;
 import com.mapper.ScheduleMapper;
 import com.service.ScheduleService;
 import com.service.TaskService;
+import org.checkerframework.checker.units.qual.C;
 import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +47,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Map getScheduleList(Integer accountId) {
-        List<Schedule> listSchedule = scheduleMapper.selectScheduleByCondition(accountId);
+        Condition condition = new Condition();
+        condition.setAccountId(accountId);
+        List<Schedule> listSchedule = scheduleMapper.selectScheduleByCondition(condition);
         HashMap<String, String> data = new HashMap();
         String styleStart = "<p style=\"text-align:left;padding-left:15px;line-height :19px\">";
         String styleEnd = "<br></p>";
@@ -136,4 +142,29 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         return result;
     }
+
+    @Override
+    public Map selectScheduleByCondition(Condition condition) {
+        List<Schedule> schedules = scheduleMapper.selectScheduleByCondition(condition);
+        HashMap data = new HashMap();
+        ArrayList<TextValue> textValues = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            TextValue textValue = new TextValue();
+            textValue.setKey(schedule.getExecuteTime());
+            textValue.setValue(schedule.getExecuteTime());
+
+            textValues.add(textValue);
+        }
+
+        data.put("textValues", textValues);
+        return data;
+    }
+
+    @Override
+    public List<Schedule> selectScheduleByExecuteTime(Condition condition) {
+        List<Schedule> schedules = scheduleMapper.selectScheduleByCondition(condition);
+        return schedules;
+    }
+
+
 }
