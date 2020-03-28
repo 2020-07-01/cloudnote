@@ -14,7 +14,7 @@ public interface ScheduleMapper {
     int insertSchedule(Schedule schedule);
 
     //查询所有活动
-    List<Schedule> selectScheduleByUserId(Integer userId);
+    List<Schedule> selectScheduleByCondition(Integer accountId);
 
     //撤销活动
     void removeScheduleByCondition(Condition condition);

@@ -66,13 +66,15 @@ public class ScheduleController {
         schedule.setAccountId(accountId);
         schedule.setScheduleContent(scheduleContent);
         schedule.setScheduleTitle(scheduleTitle);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        schedule.setCreateTime(dateFormat.format(new Date()));
         String aheadTime = jsonObject.getString("aheadTime");
         int integerAheadTime = Integer.parseInt(aheadTime);
         //获取数据
         HashMap<String, String> aheadTimeMap = getAheadTimeMapCache(accountId);
         schedule.setAheadTime(aheadTimeMap.get(aheadTime));
-        schedule.setScheduleContent(jsonObject.getString("taskContent"));
-
         String executeTime = jsonObject.getString("executeTime");
         schedule.setExecuteTime(executeTime);
         //是否发送邮件
@@ -81,7 +83,6 @@ public class ScheduleController {
         } else {
             schedule.setIsNeedRemind("1");
             //计算发送邮件的时间
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date executeTimeDate = dateFormat.parse(executeTime);
             Long remindTime = executeTimeDate.getTime() - integerAheadTime * 60 * 1000;
             String remindTimeString = dateFormat.format(remindTime);
@@ -90,9 +91,9 @@ public class ScheduleController {
 
         Map result = scheduleService.insertSchedule(schedule);
         if (result.get("true") != null) {
-            Json.toJson(new Result(true, (String) result.get("true")), response);
+            Json.toJson(new Result(true, "创建成功!"), response);
         } else {
-            Json.toJson(new Result(false, (String) result.get("false")), response);
+            Json.toJson(new Result(false, "创建失败!"), response);
         }
     }
 
@@ -104,9 +105,10 @@ public class ScheduleController {
      */
     private HashMap getAheadTimeMapCache(int accountId) {
         String key = accountId + "aheadTIme";
-        if (cacheService.getValue(key) != null) {
+        if (cacheService.getValue(key) == null) {
             HashMap<String, String> aheadTimeMap = new HashMap();
             aheadTimeMap.put("0", "不提醒");
+            aheadTimeMap.put("5","提前5分钟");
             aheadTimeMap.put("15", "提前15分钟");
             aheadTimeMap.put("30", "提前30分钟");
             aheadTimeMap.put("60", "提前1小时");
@@ -116,14 +118,12 @@ public class ScheduleController {
         return (HashMap) cacheService.getValue(key);
     }
 
-    @RequestMapping(value = "/schedule_list")
+    @RequestMapping(value = "/schedule_list.json")
     public void scheduleList(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
-
-        Map data = scheduleService.selectSchedule(userId);
-
-        Json.toJson(new Result(true, (String) "查询成功", data), response);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        Map data = scheduleService.getScheduleList(accountId);
+        Json.toJson(new Result(true, "查询成功", data), response);
     }
 
 
@@ -220,7 +220,6 @@ public class ScheduleController {
         Json.toJson(result, response);
     }
 
-
     /**
      * 更新日程
      *
@@ -232,11 +231,11 @@ public class ScheduleController {
     public void updateSchedule(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
 
         Schedule schedule = new Schedule();
-        schedule.setUserId(userId);
+        schedule.setAccountId(accountId);
         String executeTime = jsonObject.getString("executeTime");
         schedule.setExecuteTime(executeTime);
         String advanceHour = jsonObject.getString("advanceHour");
@@ -251,8 +250,7 @@ public class ScheduleController {
         if (!advanceMinute.equals("")) {
             minute = Long.parseLong(advanceMinute.substring(0, advanceMinute.length() - 2));
         }
-        schedule.setAdvanceHour(hour.intValue());
-        schedule.setAdvanceMinute(minute.intValue());
+
         schedule.setScheduleContent(jsonObject.getString("scheduleContent"));
 
 

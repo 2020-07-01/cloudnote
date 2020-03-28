@@ -9,6 +9,7 @@ import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,19 +42,33 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Map selectSchedule(Integer userId) {
-        List<Schedule> listSchedule = scheduleMapper.selectScheduleByUserId(userId);
+    public Map getScheduleList(Integer accountId) {
+        List<Schedule> listSchedule = scheduleMapper.selectScheduleByCondition(accountId);
         HashMap<String, String> data = new HashMap();
+        String styleStart = "<p style=\"text-align:left;padding-left:15px;line-height :19px\">";
+        String styleEnd = "<br></p>";
+        String styleBr = "<br>";
+        for (int i = 0; i < listSchedule.size(); i++) {
 
-        for (Schedule schedule : listSchedule) {
-            if(data.get(schedule.getShowExecuteTime()) == null){
-                data.put(schedule.getShowExecuteTime(), schedule.getScheduleContent());
-            }else{
-                String string = data.get(schedule.getShowExecuteTime());
-                string = string +"\r\n"+ schedule.getScheduleContent();
-                data.put(schedule.getShowExecuteTime(), string);
+            StringBuilder stringBuilder = new StringBuilder();
+            String date = listSchedule.get(i).getExecuteTime().substring(0, 10);
+            String title = listSchedule.get(i).getScheduleTitle().length() > 10 ? listSchedule.get(i).getScheduleTitle().substring(0, 8) + "..." : listSchedule.get(i).getScheduleTitle();
+            if (data.get(date) != null) {
+
+                String oldData = data.get(date);
+                String newData = oldData.replace(styleEnd, "");
+                stringBuilder.append(newData);
+                stringBuilder.append(styleBr);
+
+                stringBuilder.append(title);
+                stringBuilder.append(styleEnd);
+                data.put(date, stringBuilder.toString());
+            } else {
+                stringBuilder.append(styleStart);
+                stringBuilder.append(title);
+                stringBuilder.append(styleEnd);
+                data.put(date, stringBuilder.toString());
             }
-
         }
         return data;
     }
@@ -76,13 +91,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     public Map slelectExecuteTime(Condition condition) {
         HashMap result = new HashMap();
         List<Schedule> scheduleList = scheduleMapper.selectExcuteTimeByCondition(condition);
-        if(scheduleList != null){
+        if (scheduleList != null) {
 
-            for (Schedule schedule:scheduleList) {
-                result.put(schedule.getScheduleContent(),schedule.getExecuteTime());
+            for (Schedule schedule : scheduleList) {
+                result.put(schedule.getScheduleContent(), schedule.getExecuteTime());
             }
-        }else {
-            result.put("false","该用户在当前日期下未创建日程!");
+        } else {
+            result.put("false", "该用户在当前日期下未创建日程!");
         }
         return result;
     }
@@ -92,33 +107,32 @@ public class ScheduleServiceImpl implements ScheduleService {
         HashMap result = new HashMap();
         List<Schedule> scheduleList = scheduleMapper.selectContentByCondition(condition);
 
-        if(scheduleList != null){
-            for (Schedule schedule:scheduleList) {
-                result.put(schedule.getScheduleId(),schedule.getScheduleContent());
+        if (scheduleList != null) {
+            for (Schedule schedule : scheduleList) {
+                result.put(schedule.getScheduleId(), schedule.getScheduleContent());
             }
-        }else {
-            result.put("false","该用户在当前日期下未创建日程!");
+        } else {
+            result.put("false", "该用户在当前日期下未创建日程!");
         }
         return result;
     }
 
     @Override
     public Map selectAdvanceByCondition(Condition condition) {
-        HashMap<String,String> result = new HashMap();
+        HashMap<String, String> result = new HashMap();
         Schedule schedule = scheduleMapper.selectAdvanceByCondition(condition);
-            result.put("advanceHour",String.valueOf(schedule.getAdvanceHour()));
-            result.put("advanceMinute",String.valueOf(schedule.getAdvanceMinute()));
+
         return result;
     }
 
     @Override
     public Map updateSchedule(Schedule schedule) {
-        HashMap<String,String> result = new HashMap<>();
+        HashMap<String, String> result = new HashMap<>();
         try {
             scheduleMapper.updateSchedule(schedule);
-            result.put("true","更新成功!");
-        }catch (Exception e){
-            result.put("false","更新失败!");
+            result.put("true", "更新成功!");
+        } catch (Exception e) {
+            result.put("false", "更新失败!");
         }
         return result;
     }

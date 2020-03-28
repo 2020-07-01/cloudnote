@@ -10,7 +10,7 @@ public interface ScheduleService {
     Map insertSchedule(Schedule schedule);
 
     //查询活动
-    Map selectSchedule(Integer userId);
+    Map getScheduleList(Integer accountId);
 
     //撤销活动
     Map removeSchedule(Condition condition);
