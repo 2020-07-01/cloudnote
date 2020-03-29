@@ -14,7 +14,7 @@ public interface ScheduleMapper {
     int insertSchedule(Schedule schedule);
 
     //查询所有活动
-    List<Schedule> selectScheduleByUserId(Integer userId);
+    List<Schedule> selectScheduleByCondition(Condition condition);
 
     //撤销活动
     void removeScheduleByCondition(Condition condition);
@@ -28,5 +28,7 @@ public interface ScheduleMapper {
     Schedule selectAdvanceByCondition(Condition condition);
 
     //更新日程
+    void updateIsNeedRemind(List<Schedule> list);
+
     void updateSchedule(Schedule schedule);
 }

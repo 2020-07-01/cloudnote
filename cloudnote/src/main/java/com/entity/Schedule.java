@@ -7,10 +7,18 @@ package com.entity;
  **/
 public class Schedule {
 
+    public Schedule() {
+    }
+
+    public Schedule(Integer scheduleId,String isNeedRemind) {
+        this.scheduleId = scheduleId;
+        this.isNeedRemind = isNeedRemind;
+    }
+
     //任务id
     private Integer scheduleId;
-    //用户id
-    private Integer userId;
+    //账户id
+    private Integer accountId;
     //任务内容
     private String scheduleContent;
     //创建时间
@@ -19,18 +27,14 @@ public class Schedule {
     private String updateTime;
     //执行时间
     private String executeTime;
-    //提醒时间
-    private String remindTime;
-    //是否已经过期
-    private String isObsolete;
-    //受否使用邮件进行提醒
-    private String isRemind;
-    //日期
-    private String showExecuteTime;
-    //提前量小时
-    private Integer advanceHour;
-    //提前量分钟
-    private Integer advanceMinute;
+    //提前时间
+    private String aheadTime;
+    //是否需要提醒
+    private String isNeedRemind;
+    //标题
+    private String scheduleTitle;
+    //发送邮件的时间
+    public String remindTime;
 
     public Integer getScheduleId() {
         return scheduleId;
@@ -48,14 +52,14 @@ public class Schedule {
         this.scheduleContent = scheduleContent;
     }
 
-    public Integer getUserId() {
-        return userId;
+
+    public Integer getAccountId() {
+        return accountId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
-
 
     public String getCreateTime() {
         return createTime;
@@ -81,51 +85,35 @@ public class Schedule {
         this.executeTime = executeTime;
     }
 
+    public String getAheadTime() {
+        return aheadTime;
+    }
+
+    public void setAheadTime(String aheadTime) {
+        this.aheadTime = aheadTime;
+    }
+
+    public String getIsNeedRemind() {
+        return isNeedRemind;
+    }
+
+    public void setIsNeedRemind(String isNeedRemind) {
+        this.isNeedRemind = isNeedRemind;
+    }
+
+    public String getScheduleTitle() {
+        return scheduleTitle;
+    }
+
+    public void setScheduleTitle(String scheduleTitle) {
+        this.scheduleTitle = scheduleTitle;
+    }
+
     public String getRemindTime() {
         return remindTime;
     }
 
     public void setRemindTime(String remindTime) {
         this.remindTime = remindTime;
-    }
-
-    public String getIsObsolete() {
-        return isObsolete;
-    }
-
-    public void setIsObsolete(String isObsolete) {
-        this.isObsolete = isObsolete;
-    }
-
-    public String getIsRemind() {
-        return isRemind;
-    }
-
-    public void setIsRemind(String isRemind) {
-        this.isRemind = isRemind;
-    }
-
-    public String getShowExecuteTime() {
-        return showExecuteTime;
-    }
-
-    public void setShowExecuteTime(String showExecuteTime) {
-        this.showExecuteTime = showExecuteTime;
-    }
-
-    public Integer getAdvanceHour() {
-        return advanceHour;
-    }
-
-    public void setAdvanceHour(Integer advanceHour) {
-        this.advanceHour = advanceHour;
-    }
-
-    public Integer getAdvanceMinute() {
-        return advanceMinute;
-    }
-
-    public void setAdvanceMinute(Integer advanceMinute) {
-        this.advanceMinute = advanceMinute;
     }
 }

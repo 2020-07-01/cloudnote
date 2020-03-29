@@ -10,25 +10,24 @@
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
-
     <style>
-        #test-n2 {
+        #calendar {
             position: relative;
-            width: 93%;
+            width: 94%;
             height: 100%;
         }
 
-        #test-n2 #layui-laydate1, #test-n2 #layui-laydate1 .layui-laydate-main, #test-n2 .layui-laydate-content table {
+        #calendar #layui-laydate1, #calendar #layui-laydate1 .layui-laydate-main, #calendar .layui-laydate-content table {
             width: 100%;
         }
 
-        #test-n2 .layui-laydate-content td, .layui-laydate-content th {
+        #calendar .layui-laydate-content td, .layui-laydate-content th {
             height: 55px;
             padding: 1px;
             text-align: center;
         }
 
-        #test-n2 .layui-laydate-content table tbody {
+        #calendar .layui-laydate-content table tbody {
             height: calc(200vh - 340px);
         }
 
@@ -36,7 +35,7 @@
             margin: 10px;
         }
 
-        #test-n2 .layui-laydate-footer {
+        #calendar .layui-laydate-footer {
             position: relative;
             height: 40px;
             line-height: 26px;
@@ -49,19 +48,19 @@
             font-weight: 400;
             text-align: center;
         }
+
+        .layui-unselect dl {
+            max-height: 140px;
+        }
     </style>
 </head>
 
 <body class="layui-layout-body">
 <!--顶部导航栏-->
 <div class="layui-layout layui-layout-admin">
-
     <div class="layui-header">
-
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
-
         <ul class="layui-nav layui-layout-right">
-
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
@@ -78,44 +77,56 @@
     </div>
     <!--左侧导航栏-->
     <div class="layui-side layui-bg-black">
-        <div class="layui-side-scroll">
-            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <div class="layui-side-scroll" style="text-align: left;padding-left: 8px">
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
                 <li class="layui-nav-item">
-                    <a>我的笔记</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_note_page">查看</a></dd>
+                    <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a>
+                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
+                        </dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的资源</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_image_page">图片</a></dd>
-                        <dd><a href="javascript:;">视频</a></dd>
-                        <dd><a href="javascript:;">文档</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
+                    </dl>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的日程</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_schedule_page">查看</a>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/to_schedule_page"><i class="layui-icon layui-icon-form"></i> 查看任务</a></dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">回收站</a>
-                    <dl class="layui-nav-child" style="text-align: center">
-                        <dd><a href="javascript:;">全部恢复</a></dd>
-                        <dd><a href="javascript:;">全部清空</a></dd>
-                        <dd><a href="javascript:;">查看全部</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 意见反馈</a></dd>
+                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -127,7 +138,7 @@
         <div class="layui-container" style="padding-top: 3px;">
             <div class="layui-row">
                 <div class="layui-col-md12">
-                    <div class="layui-inline" id="test-n2"></div>
+                    <div class="layui-inline" id="calendar"></div>
                 </div>
             </div>
         </div>
@@ -139,314 +150,297 @@
 </div>
 </body>
 
-<!--添加任务弹出框-->
-<div class="text_box" id="test" style="display: none;">
-
-    <form class="layui-form" action="post" lay-filter="schedule">
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">定时提醒</label>
-                <div class="layui-input-block">
-                    <input type="checkbox" id="is-remind" name="switch" lay-skin="switch" lay-text="ON|OFF"
-                           lay-filter="switch">
-                </div>
-            </div>
-        </div>
-
-        <fieldset id="remind" class="layui-elem-field layui-field-title" style="margin-top: 2px;display: none">
-            <legend>提前时间</legend>
-        </fieldset>
-
-        <div class="layui-form-item" id="hour" style="display: none">
-            <div class="layui-row">
-                <div class="layui-col-xs1">
-                    <div class="layui-inline">
-                        <label class="time-label">小时</label>
+<!--任务弹出框-->
+<div class="text_box" id="scheduleSpace" style="display: none;">
+    <div id="createSpace" style="display: block">
+        <div class="layui-row">
+            <div class="layui-col-xs12">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-input-inline" style="width: 100%;">
+                        <input type="text" id="currentTime" name="currentTime"
+                               class="layui-input note-title"
+                               placeholder="活动时间" readonly style="border: none;text-align: center">
                     </div>
                 </div>
-                <div class="layui-col-xs11">
-                    <div id="slideTest1" class="demo-slider"></div>
-                </div>
-
             </div>
         </div>
 
-        <div class="layui-form-item" id="minute" style="display: none">
-            <div class="layui-row">
-                <div class="layui-col-xs1">
-                    <div class="layui-inline">
-                        <label class="time-label">分钟</label>
+        <div class="layui-row">
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="post" lay-filter="schedule">
+                        <div class="layui-form-item" style="margin-bottom: 0">
+                            <div class="layui-input-inline" style="width: 100%">
+                                <select name="noteType" id="aheadTime" lay-filter="selectNoteTpe">
+                                    <option value="0">不提醒</option>
+                                    <option value="5">提前5分钟</option>
+                                    <option value="15">提前15分钟</option>
+                                    <option value="30">提前30分钟</option>
+                                    <option value=60>提前1小时</option>
+                                    <option value="120">提前2小时</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs8">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-input-inline" style="width: 100%;float:left;">
+                        <input type="text" id="scheduleTitle" name="scheduleTitle"
+                               class="layui-input note-title"
+                               placeholder="标题">
                     </div>
                 </div>
-                <div class="layui-col-xs11">
-                    <div id="slideTest2" class="demo-slider"></div>
+            </div>
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-xs12">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-form-item layui-form-text">
+                        <textarea id="scheduleContent" class="layui-textarea" placeholder="请输入内容"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkSpace" style="display: none">
+        <div class="layui-row">
+            <div class="layui-col-xs8">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="post" lay-filter="schedule">
+                        <div class="layui-form-item" style="margin-bottom: 0">
+                            <div class="layui-input-inline" style="width: 100%">
+                                <select name="executeTime" id="executeTime" lay-filter="selectExecuteTime">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="post" lay-filter="schedule">
+                        <div class="layui-form-item" style="margin-bottom: 0">
+                            <div class="layui-input-inline" style="width: 100%">
+                                <select name="aheadTime" id="checkAheadTime" lay-filter="checkAheadTime">
+                                    <option value="0">不提醒</option>
+                                    <option value="5">提前5分钟</option>
+                                    <option value="15">提前15分钟</option>
+                                    <option value="30">提前30分钟</option>
+                                    <option value=60>提前1小时</option>
+                                    <option value="120">提前2小时</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-xs4">
+                <div class="grid-demo grid-demo-bg1">
+                    <form class="layui-form" action="post" lay-filter="schedule">
+                        <div class="layui-form-item" style="margin-bottom: 0">
+                            <div class="layui-input-inline" style="width: 100%">
+                                <input type="text" id="aheadTime1" name="aheadTime"
+                                       class="layui-input note-title" readonly="readonly">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-col-xs8">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-input-inline" style="width: 100%;float:left;">
+                        <input type="text" id="scheduleTitle1" name="scheduleTitle1"
+                               class="layui-input note-title"
+                               placeholder="标题">
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="layui-form-item layui-form-text">
-            <textarea id="schedule-content" placeholder="请输入内容" class="layui-textarea" style="resize: none;"></textarea>
+        <div class="layui-row">
+            <div class="layui-col-xs12">
+                <div class="grid-demo grid-demo-bg1">
+                    <div class="layui-form-item layui-form-text">
+                        <textarea id="scheduleContent1" class="layui-textarea" placeholder="请输入内容"></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
-
-    </form>
+    </div>
 </div>
-
-<!--查看任务弹窗-->
-<div class="text_box" id="schedule1" style="display: none;">
-    <form class="layui-form" action="post">
-        <div class="layui-form-item" style="padding-bottom: 3px">
-            <label class="layui-form-label">所有日程</label>
-            <div class="layui-input-block">
-                <select name="interest" lay-filter="execute-time-filter" id="execute-time">
-                </select>
-            </div>
-        </div>
-        <div class="layui-form-item" id="check-hour">
-            <div class="layui-row">
-                <div class="layui-col-xs1">
-                    <div class="layui-inline">
-                        <label class="time-label">小时</label>
-                    </div>
-                </div>
-                <div class="layui-col-xs11">
-                    <div id="check-slide-hour" class="demo-slider"></div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="layui-form-item" id="check-minute">
-            <div class="layui-row">
-                <div class="layui-col-xs1">
-                    <div class="layui-inline">
-                        <label class="time-label">分钟</label>
-                    </div>
-                </div>
-                <div class="layui-col-xs11">
-                    <div id="check-slide-minute" class="demo-slider"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="layui-form-item layui-form-text">
-            <textarea id="check-schedule-content" placeholder="请选择时间" class="layui-textarea"
-                      style="resize: none;"></textarea>
-        </div>
-
-    </form>
-</div>
-
 
 <script>
-
-    //加载基础模块
-    layui.use('element', function () {
-        var element = layui.element//
-    });
-
-    //设置全局变量
-    var add_slider_hour;
-    var add_slider_minute;
-    //添加记录：加载时间滑块模块
-    layui.use('slider', function () {
-        var $ = layui.$, slider = layui.slider;
-
-        add_slider_hour = slider.render({
-            elem: '#slideTest1'
-            , max: 24 //最大值
-            , step: 1 //步长
-            , input: true //输入框
-            , setTips: function (value) { //自定义提示文本
-                return value + '小时';
-            }
-        })
-
-        add_slider_minute = slider.render({
-            elem: '#slideTest2'
-            , max: 55 //最大值
-            , step: 5
-            , input: true //输入框
-            , setTips: function (value) { //自定义提示文本
-                return value + '分钟';
-            }
-        })
-    })
-    //设置全局变量
-    var check_slider_hour;
-    var check_slider_minute
-    //查看记录：加载时间滑块模块
-    layui.use('slider', function () {
-        var $ = layui.$, slider = layui.slider;
-        check_slider_hour = slider.render({
-            elem: '#check-slide-hour'
-            , max: 24 //最大值
-            , step: 1 //步长
-            , input: true //输入框
-            , setTips: function (value) { //自定义提示文本
-                return value + '小时';
-            }
-        })
-
-        check_slider_minute = slider.render({
-            elem: '#check-slide-minute'
-            , max: 55 //最大值
-            , step: 5
-            , input: true //输入框
-            , setTips: function (value) { //自定义提示文本
-                return value + '分钟';
-            }
-        })
-    })
 
     //获取token
     var token = sessionStorage.getItem("token");
 
     //加载页面日历模块
-    layui.use(['layer', 'form', 'jquery', 'laydate'], function () {
-        var layer = layui.layer,
-            $ = layui.jquery,
-            laydate = layui.laydate,
-            form = layui.form;
+    layui.use(['layer', 'form', 'laydate', 'element'], function () {
+        var layer = layui.layer;
+        var laydate = layui.laydate;
+        var form = layui.form;
 
-        //定义json，此数据将会显示在日历中
-        //data格式：{"2020-01-29":"111111"}
-        //此data需要从后端进行查询，格式为json
-
-        //创建全局的chexiaoExecuteTime 变量
-        var chexiaoExecuteTime = "";
-        //创建当前日期，此日期只是一个标注日期，与上面的显示无法
-        var current_date = new Date();
+        var markData = "";
+        //弹窗
+        var index;
         //创建全局的switch值,默认为关闭
         var isRemind = "false";
 
-        //var data  = {"2020-01-29":"fadfdaf","2020-01-30":"faf"}
-        //加载日历插件，设置初始值为当前时间
-        loding_date(current_date);
-        //日历插件调用方法，传进来初始值和回显数据
-        //主要是data此时需要从后端进行查询，然后在前端进行显示
-        function loding_date(current_date) {
-            var temp = getScheduleList();
-            var scheduleData = JSON.parse(temp);
+        var scheduleId = "";
+        //加载日历插件
+        loading_date();
+
+        //日历插件函数
+        function loading_date() {
+            markData = JSON.parse(getScheduleList());
             //加载日历插件
-            laydate.render({
-                elem: '#test-n2'
+            var laydateRender = laydate.render({
+                elem: '#calendar'
                 , type: 'datetime'
                 , theme: 'grid'
                 , position: 'static'
                 , isInitValue: true //是否允许填充初始值
                 , range: false
                 , format: 'yyyy-MM-dd HH:mm:ss'
-                , value: current_date
+                , value: new Date()
                 , calendar: true
                 , btns: false
                 , change: function (value, date, endDate) {
+                    //alert("日期被切换时的回调 ");
                 }
-                , mark: scheduleData //标注重要的日子，回显数据,mark是一个json对象
+                , mark: markData//此处为json对象
                 , ready: function (date) {
-                    //空间初始打开时的回调
-                    //alert("空间打开时的回调")
+
                 }
                 , done: function (value, date, endDate) {
-                    //value：得到日期生成的值，也就是点击的日期
+                    //选择完毕后的回调
+                    //value：得到日期生成的值，也就是点击的日期   2020-03-10 22:09:52
                     //date：得到日期的对象，显示年月日时分秒 例子：{"year":2020,"month":1,"date":8,"hours":22,"minutes":45,"seconds":36}
-                    //将json对象转换为字符串
-                    //var s = JSON.stringify(date);
-                    //alert(s)
-                    showValue = value.substring(0, 10);
-                    if (typeof (scheduleData[showValue]) == "undefined") {
-                        date_chose(value);
-                    } else {
-                        init_select(showValue);
-                        check_schedule(value, showValue, scheduleData)
-                    }
+
+                    //判读当前选择的时间是否符合要求，如果符合则弹窗否则提示不弹窗
+                    isPass(date, value);
                 }
-
-            });
-        }
-
-        //添加任务的弹窗函数
-        function date_chose(current_date) {
-            var index = layer.open({
-                type: 1,
-                skin: 'layui-layer-rim', //加上边框
-                title: '添加日程',
-                area: ['600px', '500px'], //宽高
-                btn: ['创建', '关闭'],
-                content: $("#test")
-                , success: function () {
-
-                }
-                , yes: function () {
-                    var hour = $('#slideTest1').text();
-                    var minute = $('#slideTest2').text();
-
-                    if (isRemind == "true") {
-                        if (hour == '' && minute == '') {
-                            layer.msg('提醒时间不能为空!', {icon: 2});
-                            return;
-                        }
-                    }
-                    //点击创建按钮之后执行
-                    if ($('#schedule-content').val() != '') {
-                        chose_moban(current_date);
-                        layer.close(index);
-                    } else {
-                        layer.msg('内容不能为空', {icon: 2});
-                    }
-                },
-                btn2: function () {
-                    layer.close(index);
+                , change: function (value, date, endDate) {
                 }
             });
         }
 
-        //查看任务的弹窗函数
-        function check_schedule(value, showValue, scheduleData) {
-            var index1 = layer.open({
-                type: 1,
-                skin: 'layui-layer-rim', //加上边框
-                title: '查看日程',
-                area: ['600px', '500px'], //宽高
-                btn: ['新建', '更新', '撤销', '关闭'],
-                content: $("#schedule1")
-                , success: function () {
-                    init_check_slider();
-                }
-                , yes: function () {
-                    layer.close(index1);
-                    date_chose(current_date);
-                },
-                btn2: function () {
-                    updateSchedule(current_date);
-
-                },
-                btn3: function () {
-
-                    chexiao(current_date);
-                },
-                btn4: function () {
-                    layer.close(index1);
-
-                }
-            });
-
-        }
-
-        //创建活动
-        function chose_moban(obj_date) {
-            //获取新的数据
-            var content = $('#schedule-content').val();
-            //var data1 = form.val("schedule");
-            var hour = $('#slideTest1').text();
-            var minute = $('#slideTest2').text();
+        //判断选择的时间是否符合要求
+        function isPass(selectDate, value) {
             var data = {
-                "taskContent": content,
-                "executeTime": obj_date,
-                "isRemind": isRemind,
-                "hour": hour,
-                "minute": minute
-            };
+                "selectDate": value
+            }
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/schedule/is_pass.json",
+                error: function (result) {
+                    alert("123");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        createSpace(value, result.message);//弹窗
+                    } else {
+                        layer.msg(result.message);
+                    }
+                }
+            })
+        }
 
+        //弹窗
+        function createSpace(value, flag) {
+            index = layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                title: '添加任务',
+                area: ['450px', '350px'], //宽高
+                btn: ['创建', '查看', '关闭'],
+                content: $("#scheduleSpace")
+                , success: function () {
+                    if (flag == "true") {
+                        $('#currentTime').val(value);
+
+                        $('#createSpace').css({'display': 'block'});
+                        $('#checkSpace').css({'display': 'none'});
+                    } else {
+                        //回显数据
+                        $('#createSpace').css({'display': 'none'});
+                        $('#checkSpace').css({'display': 'block'});
+                    }
+                }
+                , yes: function () {
+                    saveSchedule(value);
+                },
+                btn2: function () {
+                    //初始化selectExecuteTime
+                    $('#createSpace').css({'display': 'none'});
+                    $('#checkSpace').css({'display': 'block'});
+                    initSelectExecuteTime(value);
+                    creaetCheckFlag = false;
+                    return false;
+                },
+                btn3: function (index, layero) {
+                    //清空时间，标题，内容
+                    $('#scheduleTitle').val("");
+                    $('#scheduleContent').val("");
+                    $('#aheadTime').val("");
+                    $('#currentTime').val("");
+                    $('#scheduleTitle1').val("");
+                    $('#scheduleContent1').val("");
+                    $('#executeTime').val();
+                    $('#scheduleContent1').val();
+                    $('#checkAheadTime').val();
+                },
+                cancel: function () {
+                    //清空时间，标题，内容
+                    $('#scheduleTitle').val("");
+                    $('#scheduleContent').val("");
+                    $('#aheadTime').val("");
+                    $('#currentTime').val("");
+                    $('#scheduleTitle1').val("");
+                    $('#scheduleContent1').val("");
+                    $('#executeTime').val();
+                    $('#scheduleContent1').val();
+                    $('#checkAheadTime').val();
+
+                }
+            });
+        }
+
+        //创建日程
+        function saveSchedule(value) {
+            //获取新的数据
+            var scheduleTitle = $('#scheduleTitle').val();
+            var scheduleTitleUpdate = $('#scheduleTitle1').val();
+            var scheduleContent = $('#scheduleContent').val();
+            var executeTimeUpdate = $('#executeTime').val();
+            var scheduleContentUpdate = $('#scheduleContent1').val();
+            var aheadTime = $('#aheadTime').val();
+            var aheadTime2 = $('#checkAheadTime').val();
+
+            var data = {
+                "aheadTime": aheadTime,
+                "scheduleContent": scheduleContent,
+                "scheduleTitle": scheduleTitle,
+                "executeTime": value,
+                "scheduleId": scheduleId,
+                "aheadTime2": aheadTime2,
+                "scheduleTitleUpdate": scheduleTitleUpdate,
+                "scheduleContentUpdate": scheduleContentUpdate,
+                "executeTimeUpdate": executeTimeUpdate
+            };
             var jsonData = JSON.stringify(data);//转换为json字符串
             var token = sessionStorage.getItem("token");
             $.ajax({
@@ -455,306 +449,143 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/schedule/save_task",
+                url: "http://localhost:8080/schedule/save_task.json",
                 error: function (result) {
-                    alert("123");
+
                 },
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 500,
-                            shade: 0.5,
-                            offset: 'rb',
-                            area: ['200px', '120px'],
-                            end: function () {
-                                //刷新日历
-                                loding_date(obj_date);
-                            }
-                        });
+                        //成功之后刷新日历
+                        layer.close(index);
+                        location.reload();
                     } else {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1500,
-                            shade: 0.6,
-                            offset: 'rb',
-                            area: ['200px', '120px'],
-                            end: function () {
-                                loding_date(obj_date);
-                            }
-                        });
+                        layer.msg(result.message);
                     }
                 }
             })
-            $('#schedule-content').val("");
-            $('#test-n2').html('');//重要！由于插件是嵌套指定容器，再次调用前需要清空原日历控件，清空弹出层
-            //markJson[obj_date] = content;
-            //再次调用日历控件，重新添数据
-            //loding_date(obj_date);//重要！，再标注一个日期后会刷新当前日期变为初始值，所以必须调用当前选定日期。
         }
 
-        //撤销
-        function chexiao(obj_date) {
-            if (chexiaoExecuteTime == "") {
-                layer.msg('请选择日程', {icon: 2});
-                return;
-            }
-            var data = {
-                "executeTime": chexiaoExecuteTime
-            }
-            var jsonData = JSON.stringify(data);
-            $.ajax({
-                type: "post",
-                contentType: "application/json",
-                dataType: 'json',
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: jsonData,
-                url: "http://localhost:8080/schedule/remove_schedule",
-                error: function (result) {
-                    alert("false");
-                },
-                success: function (result) {
-                    if (result.code == 1) {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1000,
-                            shade: 0.5,
-                            offset: 'rb',
-                            area: ['200px', '120px'],
-                            end: function () {
-                                //刷新日历
-                                loding_date(obj_date);
+        /*
+                //更新日程
+                function updateSchedule(value) {
+                    //获取新的数据
+                    var scheduleTitle = $('#scheduleTitle').val();
+                    var scheduleContent = $('#scheduleContent').val();
+                    var aheadTime = $('#aheadTime').val();
+                    var data = {
+                        "aheadTime": aheadTime,
+                        "scheduleContent": scheduleContent,
+                        "scheduleTitle": scheduleTitle,
+                        "executeTime": value
+                    };
+                    var jsonData = JSON.stringify(data);//转换为json字符串
+                    var token = sessionStorage.getItem("token");
+                    $.ajax({
+                        type: "post",
+                        contentType: "application/json",
+                        dataType: 'json',
+                        headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                        data: jsonData,
+                        url: "http://localhost:8080/schedule/save_task",
+                        error: function (result) {
+
+                        },
+                        success: function (result) {
+                            if (result.code == 1) {
+                                //成功之后刷新日历
+                                layer.close(index);
+                                location.reload();
+                            } else {
+                                layer.msg(result.message);
                             }
-                        });
-                    } else {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1500,
-                            shade: 0.6,
-                            offset: 'auto',
-                            area: ['200px', '120px']
-                        });
-                    }
-                }
-            })
-            $('#test-n2').html('');
-        }
+                        }
+                    })
+                }*/
 
-        //更新
-        function updateSchedule(obj_date) {
 
-            if (chexiaoExecuteTime == "") {
-                layer.msg('请选择日程', {icon: 2});
-                return;
-            }
-
-            var hour = $('#check-slide-hour').text();
-            var minute = $('#check-slide-minute').text();
-            var content = $('#check-schedule-content').val();
-            var data = {
-                "executeTime": chexiaoExecuteTime, //获取执行时间
-                "advanceHour": hour,
-                "advanceMinute": minute,
-                "scheduleContent": content
-            }
-            var jsonData = JSON.stringify(data);
-            $.ajax({
-                type: "post",
-                contentType: "application/json",
-                dataType: 'json',
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: jsonData,
-                url: "http://localhost:8080/schedule/update_schedule",
-                error: function (result) {
-                    alert("false");
-                },
-                success: function (result) {
-                    if (result.code == 1) {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1000,
-                            shade: 0.5,
-                            offset: 'rb',
-                            area: ['200px', '120px'],
-                            end: function () {
-                                //刷新日历
-                                loding_date(obj_date);
-                            }
-                        });
-                    } else {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1500,
-                            shade: 0.6,
-                            offset: 'auto',
-                            area: ['200px', '120px']
-                        });
-                    }
-                }
-            })
-            $('#test-n2').html('');
-        }
-
-        //初始滑块
-        function init_check_slider() {
-            check_slider_hour.setValue(0);
-            check_slider_minute.setValue(0);
-        }
-
-        //监听switch操作
-        form.on('switch(switch)', function (data) {
-            var checked = data.elem.checked.toString();//将undefined类型强制转换为String
-            isRemind = checked;
-            if (checked == "true") {
-                $("#hour").css({'display': 'block'});
-                $("#minute").css({'display': 'block'});
-                $("#remind").css({'display': 'block'});
-            } else {
-                $("#hour").css({"display": "none"});
-                $("#minute").css({"display": "none"});
-                $("#remind").css({"display": "none"});
-            }
-        });
-
-        //监听select操作
-        form.on('select(execute-time-filter)', function (data) {
-            var content_temp = JSON.stringify(data.value);
-            var content = content_temp.substring(1, content_temp.length - 1);
-            $('#check-schedule-content').val(content);//设置内容
-            var executeTime = data.elem[data.elem.selectedIndex].text;
-            chexiaoExecuteTime = executeTime;
-
+        //初始化selectExecuteTime
+        function initSelectExecuteTime(executeTime) {
+            $("#executeTime").empty();//先进行清空
             var data = {
                 "executeTime": executeTime
             }
             var jsonData = JSON.stringify(data);
-            //获取提前量
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 dataType: 'json',
                 data: jsonData,
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                url: "http://localhost:8080/schedule/get_advance_time",
+                url: "http://localhost:8080/schedule/init_executeTime.json",
                 success: function (result) {
-                    //如果提前量为0则进行提示
-                    var advanceData = result.data;//获取json数组
-                    check_slider_hour.setValue(advanceData.advanceHour);
-                    check_slider_minute.setValue(advanceData.advanceMinute);
-                    form.render("select");//刷性select，显示出数据
-                }, error: function (result) {
-                    alert("false");
-                }
-            });
-
-        });
-
-        //初始化下拉框
-        function init_select(showValue) {
-            //在初始化之前先清空上一个查询下拉值以及content
-            $("#execute-time").empty();
-            $('#schedule-content1').val("");
-            //封装data数据
-            var data = {
-                "showExecuteTime": showValue
-            }
-            var jsonData = JSON.stringify(data);
-            $.ajax({
-                type: "post",
-                contentType: "application/json",
-                dataType: 'json',
-                //async: false,
-                data: jsonData,
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                url: "http://localhost:8080/schedule/get_execute_time",
-                success: function (result) {
-                    /* check_slider_hour.setValue(0);
-                      check_slider_minute.setValue(0);*/
-                    //设置初始值，请选择
-                    var server = document.getElementById("execute-time"); //server为select定义的id
-                    var option = document.createElement("option");  // 创建添加option属性
-                    server.appendChild(option);
-                    var list = result.data;//获取json数组
-                    for (var p in list) {
-                        var option = document.createElement("option");  // 创建添加option属性
-                        option.setAttribute("value", p); // 给option的value添加值
-                        option.innerText = list[p];     // 打印option对应的纯文本
-                        server.appendChild(option);           //给select添加option子标签
+                    if (result.code == 1) {
+                        var selectData = result.data.textValues;
+                        var htmls = '<option value="">请选择日程</option>';
+                        for (var x in selectData) {
+                            htmls += '<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>'
+                        }
+                        $("#executeTime").append(htmls);
+                        form.render();
                     }
-                    form.render("select");//刷性select，显示出数据
-                }
-            });
-        }
+                },
+            })
+        };
+
+
+        //标签选择事件
+        form.on('select(selectExecuteTime)', function (data) {
+            //获取数据
+            var data = {
+                "executeTime": data.value
+            }
+
+            var jsonData = JSON.stringify(data);
+
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                data: jsonData,
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/schedule/get_schedule.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        //回显标题
+                        $('#scheduleTitle1').val(result.data.scheduleTitle);//设置标题
+                        //回显内容
+                        $('#scheduleContent1').val(result.data.scheduleContent);
+                        //回显提前时间
+                        $('#aheadTime1').val(result.data.aheadTime);
+
+                        scheduleId = result.data.scheduleId;
+                    }
+                },
+            })
+        });
     });
 
-    //初始化内容
-    function init_content(executeTime) {
-        var temp;
-        var data = {
-            "executeTime": executeTime
-        }
-        var jsonData = JSON.stringify(data);
-        $.ajax({
-            type: "post",
-            contentType: "application/json",
-            dataType: 'json',
-            //async: false,
-            data: jsonData,
-            headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-            url: "http://localhost:8080/schedule/get_execute_content",
-            success: function (result) {
-                var s = JSON.stringify(result.data);
-                temp = s;
-            }
-        });
-        return temp;
-    }
-
-    //获取所有的活动
+    //获取活动内容
     function getScheduleList() {
-        var temp;
+        var data = "";
         $.ajax({
             type: "get",
             contentType: "application/json",
             dataType: 'json',
             async: false,
             headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-            url: "http://localhost:8080/schedule/schedule_list",
+            url: "http://localhost:8080/schedule/schedule_list.json",
             error: function (result) {
 
             },
             success: function (result) {
                 if (result.code == 1) {
-                    var s = JSON.stringify(result.data);
-                    temp = s;
+                    data = JSON.stringify(result.data);
                 } else {
-                    layer.open({
-                        title: '提示',
-                        content: result.message,
-                        btn: [],
-                        time: 1000,
-                        shade: 0.6,
-                        offset: 'auto',
-                        area: ['200px', '120px']
-                    });
+                    //初始化失败
                 }
             }
         });
-        return temp;
+        return data;
     }
-
 </script>
-
 </html>
