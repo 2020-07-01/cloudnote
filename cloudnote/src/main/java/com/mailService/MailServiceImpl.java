@@ -32,7 +32,6 @@ public class MailServiceImpl implements MailService {
 
         //简单邮件模型，对邮件的属性进行了封装
         SimpleMailMessage mainMessage = new SimpleMailMessage();
-
         mainMessage.setFrom(sender);
         mainMessage.setTo(receiver);
         mainMessage.setSubject(title);
@@ -48,8 +47,15 @@ public class MailServiceImpl implements MailService {
 
 
     @Override
-    public String sendHtml(String sender, String receiver, String subject) {
-        return null;
+    public boolean sendSchedule(String sender, String receiver, String title,String content) {
+        SimpleMailMessage mainMessage = new SimpleMailMessage();
+        mainMessage.setFrom(sender);
+        mainMessage.setTo(receiver);
+        mainMessage.setSubject(title);
+        mainMessage.setText(content);
+        javaMailSender.send(mainMessage);
+
+        return true;
     }
 
    /* @Autowired

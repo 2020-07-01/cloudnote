@@ -20,7 +20,6 @@
         <result column="ahead_time" property="aheadTime" jdbcType="VARCHAR"/>
     </resultMap>
 
-
     <select id="selectScheduleByCondition" parameterType="com.entity.Condition" resultType="com.entity.Schedule"
             resultMap="baseMap">
         select
@@ -89,57 +88,35 @@
         </trim>
     </insert>
 
-  <!--  <select id="selectScheduleByCondition" parameterType="com.entity.Condition" resultType="com.entity.Schedule"
-            resultMap="baseMap">
-        select execute_time,schedule_content
-        from schedule
-        where user_id = #{userId,jdbcType=INTEGER} and show_execute_time = #{showExecuteTime,jdbcType=VARCHAR}
-    </select>
+    <!--批量设置isNeedRemind-->
+    <update id="updateIsNeedRemind" parameterType="java.util.List">
+        <foreach collection="list" item="item" close="" open="" index="index" separator=";">
+            update schedule
+            set
+            is_need_remind = #{item.isNeedRemind,jdbcType=VARCHAR},
+            update_time = now()
+            where
+            schedule_id = #{item.scheduleId,jdbcType=INTEGER}
+        </foreach>
+    </update>
 
-
-    <select id="selectContentByCondition" parameterType="com.entity.Condition" resultType="com.entity.Schedule"
-            resultMap="baseMap">
-        select schedule_id,schedule_content
-        from schedule
-        where user_id = #{userId,jdbcType=INTEGER} and execute_time = #{executeTime,jdbcType=VARCHAR}
-    </select>-->
-
-  <!--  <select id="selectAdvanceByCondition" parameterType="com.entity.Condition" resultType="com.entity.Schedule"
-            resultMap="baseMap">
-        select schedule_id,schedule_content,advance_hour,advance_minute
-        from schedule
-        where user_id = #{userId,jdbcType=INTEGER} and execute_time = #{executeTime,jdbcType=VARCHAR}
-    </select>-->
-<!--
-    <delete id="removeScheduleByCondition" parameterType="com.entity.Condition">
-        delete from schedule
-        where user_id = #{userId,jdbcType=INTEGER} and execute_time = #{executeTime,jdbcType=VARCHAR}
-    </delete>-->
-
-
-   <!-- <update id="updateSchedule" parameterType="com.entity.Schedule">
+    <update id="updateSchedule" parameterType="com.entity.Schedule">
         update schedule
-        set
-            schedule_content= #{scheduleContent,jdbcType=VARCHAR},
-            update_time = now(),
-            remind_time = #{remindTime,jdbcType=VARCHAR},
-            advance_hour = #{advanceHour,jdbcType=INTEGER},
-            advance_minute = #{advanceMinute,jdbcType=INTEGER}
-        where execute_time = #{executeTime,jdbcType=VARCHAR} and user_id = #{userId,jdbcType = INTEGER}
-    </update>-->
-    <!--
-    #{executeTime,jdbcType=VARCHAR}
-    set  -->
-
-    <!--   &lt;!&ndash;设置笔记进入回收站&ndash;&gt;
-       <update id="updateRecycle" parameterType="java.lang.Integer">
-           update note
-           set is_recycle = 1
-           where note_id = #{noteId,jdbcType=INTEGER}
-       </update>-->
-
-
-    <!--    <select id="selectNoteByCondition" parameterType="com.entity.Condition" resultType="java.util.List">
-            select
-        </select>-->
+        <set>
+            <if test="scheduleContent != null">
+                schedule_content = #{scheduleContent,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduleTitle != null">
+                schedule_title = #{scheduleTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="isNeedRemind != null">
+                is_need_remind = #{isNeedRemind,jdbcType=VARCHAR},
+            </if>
+            <if test="aheadTime != null">
+                ahead_time = #{aheadTime,jdbcType=VARCHAR},
+            </if>
+            update_time = now()
+        </set>
+        where schedule_id = #{scheduleId,jdbcType=INTEGER}
+    </update>
 </mapper>

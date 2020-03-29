@@ -7,6 +7,14 @@ package com.entity;
  **/
 public class Schedule {
 
+    public Schedule() {
+    }
+
+    public Schedule(Integer scheduleId,String isNeedRemind) {
+        this.scheduleId = scheduleId;
+        this.isNeedRemind = isNeedRemind;
+    }
+
     //任务id
     private Integer scheduleId;
     //账户id

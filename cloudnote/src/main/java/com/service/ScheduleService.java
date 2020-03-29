@@ -26,10 +26,13 @@ public interface ScheduleService {
     //查询提前量
     Map selectAdvanceByCondition(Condition condition);
 
-    //更新日程
-    Map updateSchedule(Schedule schedule);
+    Map updateIsNeedRemind(List<Schedule> list);
 
     Map selectScheduleByCondition(Condition condition);
 
     List<Schedule> selectScheduleByExecuteTime(Condition condition);
+
+    //更新schedule
+    boolean updateSchedule(Schedule schedule);
+
 }

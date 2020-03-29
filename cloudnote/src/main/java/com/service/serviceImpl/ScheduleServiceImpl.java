@@ -1,18 +1,14 @@
 package com.service.serviceImpl;
 
+import com.cache.CacheService;
 import com.entity.Condition;
-import com.entity.Note;
 import com.entity.Schedule;
 import com.entity.TextValue;
 import com.mapper.ScheduleMapper;
 import com.service.ScheduleService;
-import com.service.TaskService;
-import org.checkerframework.checker.units.qual.C;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,12 +128,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Map updateSchedule(Schedule schedule) {
+    public Map updateIsNeedRemind(List<Schedule> list) {
         HashMap<String, String> result = new HashMap<>();
         try {
-            scheduleMapper.updateSchedule(schedule);
+            scheduleMapper.updateIsNeedRemind(list);
             result.put("true", "更新成功!");
         } catch (Exception e) {
+            e.printStackTrace();
+            e.getMessage();
             result.put("false", "更新失败!");
         }
         return result;
@@ -166,5 +164,15 @@ public class ScheduleServiceImpl implements ScheduleService {
         return schedules;
     }
 
+    @Override
+    public boolean updateSchedule(Schedule schedule) {
+        try {
+            scheduleMapper.updateSchedule(schedule);
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.getMessage();
+        }
+        return true;
+    }
 
 }

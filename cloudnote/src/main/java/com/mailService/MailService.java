@@ -13,8 +13,8 @@ public interface MailService {
     //发送验证码
     String sendSecurityCode(String sender, String receiver, String title, String context);
 
-    //发送thymleaf模板邮件
-    String sendHtml(String sender, String receiver, String subject);
+    //发送日程提醒
+    boolean sendSchedule(String sender, String receiver, String title,String content);
 
 
 

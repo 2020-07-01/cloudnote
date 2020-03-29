@@ -28,5 +28,7 @@ public interface ScheduleMapper {
     Schedule selectAdvanceByCondition(Condition condition);
 
     //更新日程
+    void updateIsNeedRemind(List<Schedule> list);
+
     void updateSchedule(Schedule schedule);
 }
