@@ -5,15 +5,21 @@ import com.Util.Result;
 import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.entity.PIM;
+import com.entity.*;
 import com.service.serviceImpl.PIMServiceImpl;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @program: PimContorller
@@ -29,6 +35,8 @@ public class PIMController {
 
     @Autowired
     TokenUtils tokenUtil;
+
+
 
     @RequestMapping(value = "/updatePIM.json")
     public void updatePIM(@RequestBody String jsonString, HttpServletResponse response, HttpServletRequest request) {
@@ -58,6 +66,26 @@ public class PIMController {
         } else {
             Json.toJson(new Result(false, "修改失败"), response);
         }
+    }
 
+
+    @RequestMapping(value = "/account_list.json")
+    public Object accountList(@RequestParam(value = "token") String token, HttpServletRequest request, HttpServletResponse response) {
+
+        Condition condition = new Condition();
+
+        List<AccountPIMData> accountPIMDataList = pimService.getAccountPIMData(condition);
+        List<AdminData> adminDataList = new ArrayList<>();
+        //封装实体
+        accountPIMDataList.forEach(p->{
+            AdminData adminData = new AdminData(p);
+        });
+
+        Map<String, Object> hashMap = new HashMap();
+        hashMap.put("code", "0");
+        hashMap.put("msg", "1312");
+        hashMap.put("count", accountPIMDataList.size());
+        hashMap.put("data", );
+        return hashMap;
     }
 }

@@ -14,6 +14,21 @@
         <result column="head_image_url" property="headImageUrl" jdbcType="VARCHAR"/>
     </resultMap>
 
+
+    <resultMap id="baseMap1" type="com.entity.AccountPIMData">
+        <id column="account_id" property="accountId" jdbcType="INTEGER"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <result column="city" property="city" jdbcType="VARCHAR"/>
+        <result column="account_name" property="accountName" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="last_login_time" property="LastLoginTime" jdbcType="VARCHAR"/>
+        <result column="account_role" property="accountRole" jdbcType="VARCHAR"/>
+        <result column="is_closed" property="isClosed" jdbcType="INTEGER"/>
+    </resultMap>
+
     <sql id="base_sql">
         PIM_id,account_id,head_image_url,province,sex,city,remark
     </sql>
@@ -22,27 +37,6 @@
         insert into account (email,account_name,account_password,create_time)
         value ( #{email,jdbcType=VARCHAR},#{accountName,jdbcType=VARCHAR},#{accountPassword,jdbcType=VARCHAR},now())
     </insert>
-
-
-    <!-- <select id="findAccountByCondition" parameterType="com.entity.Condition" resultMap="baseMap">
-         select
-         <include refid="base_sql"/>
-         from account
-         where
-         1=1
-         <if test="accountName != '' and accountName != null">
-             and account_name = #{accountName,jdbcType=VARCHAR}
-         </if>
-         <if test="email != '' and email != null">
-             and email = #{email,jdbcType=VARCHAR}
-         </if>
-         <if test="phone != '' and phone != null">
-             and phone = #{phone,jdbcType=VARCHAR}
-         </if>
-         <if test="accountPassword != '' and accountPassword != null">
-             and account_password = #{accountPassword,jdbcType=VARCHAR}
-         </if>
-     </select>-->
 
     <update id="updatePIM" parameterType="com.entity.PIM">
         update pim
@@ -66,5 +60,15 @@
         </set>
         where account_id = #{accountId,jdbcType=INTEGER}
     </update>
+
+
+
+    <select id="selectAccountPIMData" parameterType="com.entity.Condition" resultMap="baseMap1">
+        select
+        A.account_id,P.sex,P.province,P.city,A.account_name,A.email,A.phone,A,create_time,A.last_login_time,A,account_role,A.is_close
+        from account A inner join pim  P on A.account_Id = P.account_id
+
+    </select>
+
 
 </mapper>

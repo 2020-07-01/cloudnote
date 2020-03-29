@@ -1,255 +1,492 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-
     <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>基本资料</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-
-    <!--引入layui-->
-    <link rel='stylesheet' type='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
+    <title>cloudNote</title>
+    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
-    <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="../static/layui_exts/tinymce/js/tinymce/langs/zh_CN.js"></script>
+    <script type="text/javascript" src="../static/layui_exts/tinymce/js/tinymce/tinymce.min.js"></script>
+    <style>
 
+        .note-title {
+            border: none;
+        }
+
+        .layui-container {
+            width: 100%;
+            height: 100%;
+            padding: 0 0;
+            overflow: hidden;
+        }
+
+        .layui-table, .layui-table-view {
+            margin: 0 0;
+        }
+
+        .layui-form-item {
+        }
+
+    </style>
 </head>
 
-<body class="layui-layout-body">
+<body>
+<!--顶部导航栏-->
 <div class="layui-layout layui-layout-admin">
-    <!--头部导航栏-->
+
     <div class="layui-header">
+
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
+
         <ul class="layui-nav layui-layout-right">
+
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
                     admin
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="/information">账号设置</a></dd>
-                    <dd><a href="/to_editPassword">修改密码</a></dd>
+                    <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
                     <dd><a href="">意见反馈</a></dd>
-                    <dd><a href="">注销登录</a></dd>
+                    <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
                 </dl>
             </li>
         </ul>
     </div>
-    <!--左侧导航栏-->
+
     <div class="layui-side layui-bg-black">
-        <div class="layui-side-scroll">
+        <div class="layui-side-scroll" style="text-align: left;padding-left: 8px">
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
-                <li class="layui-nav-item layui-nav-itemed">
-                    <a>我的笔记</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_note_page">查看</a></dd>
+                <li class="layui-nav-item">
+                    <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="#" id="cleanEditSpace"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a></dd>
+                        <dd><a href="#" id="all"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
+                        <dd><a href="#" id="starList"><i class="layui-icon layui-icon-star-fill"> 收藏夹</i></a></dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的资源</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_image_page">图片</a></dd>
-                        <dd><a href="javascript:;">视频</a></dd>
-                        <dd><a href="javascript:;">文档</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的日程</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_schedule_page">查看</a>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/to_schedule_page"><i class="layui-icon layui-icon-form"></i> 查看</a>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">回收站</a>
-                    <dl class="layui-nav-child" style="text-align: left">
-                        <dd><a href="javascript:;">全部恢复</a></dd>
-                        <dd><a href="javascript:;">全部清空</a></dd>
-                        <dd><a href="javascript:;">查看全部</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 意见反馈</a></dd>
+                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
+                        <dd><a href="/admin"><i class="layui-icon layui-icon-username"></i> 管理员 </a></dd>
                     </dl>
                 </li>
             </ul>
 
         </div>
     </div>
-    <!--中间部分-->
+
+
     <div class="layui-body">
-        <div class="layui-fluid">
-            <div class="layui-card">
-                <div class="layui-form layui-card-header layuiadmin-card-header-auto">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">登录名</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="loginname" placeholder="请输入" autocomplete="off"
-                                       class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">手机</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="telphone" placeholder="请输入" autocomplete="off"
-                                       class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">邮箱</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="email" placeholder="请输入" autocomplete="off"
-                                       class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">角色</label>
-                            <div class="layui-input-block">
-                                <select name="role">
-                                    <option value="0">管理员</option>
-                                    <option value="1">超级管理员</option>
-                                    <option value="2">纠错员</option>
-                                    <option value="3">采购员</option>
-                                    <option value="4">推销员</option>
-                                    <option value="5">运营人员</option>
-                                    <option value="6">编辑</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-user-back-search">
-                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                            </button>
-                        </div>
+        <div class="layui-container">
+            <div class="layui-row">
+                <!--笔记列表-->
+                <div class="layui-col-xs12">
+                    <div class="grid-demo grid-demo-bg1">
+                        <table class="layui-hide" id="test" lay-filter="test"></table>
                     </div>
                 </div>
 
-                <div class="layui-card-body">
-                    <div style="padding-bottom: 10px;">
-                        <button class="layui-btn layuiadmin-btn-admin" data-type="batchdel">删除</button>
-                        <button class="layui-btn layuiadmin-btn-admin" data-type="add">添加</button>
-                    </div>
-
-                    <table id="LAY-user-back-manage" lay-filter="LAY-user-back-manage"></table>
-                    <script type="text/html" id="buttonTpl">
-                        {{#  if(d.check == true){ }}
-                        <button class="layui-btn layui-btn-xs">已审核</button>
-                        {{#  } else { }}
-                        <button class="layui-btn layui-btn-primary layui-btn-xs">未审核</button>
-                        {{#  } }}
-                    </script>
-                    <script type="text/html" id="table-useradmin-admin">
-                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
-                                class="layui-icon layui-icon-edit"></i>编辑</a>
-                        {{#  if(d.role == '超级管理员'){ }}
-                        <a class="layui-btn layui-btn-disabled layui-btn-xs"><i
-                                class="layui-icon layui-icon-delete"></i>删除</a>
-                        {{#  } else { }}
-                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
-                                class="layui-icon layui-icon-delete"></i>删除</a>
-                        {{#  } }}
-                    </script>
-                </div>
             </div>
         </div>
-
     </div>
 
-    <!-- 底部固定区域 -->
     <div class="layui-footer layui-bg-black">
         © layui.com - 底部固定区域
     </div>
+
 </div>
 </body>
 
-<script>
-    layui.config({
-        base: '../../../layuiadmin/' //静态资源所在路径
-    }).extend({
-        index: 'lib/index' //主入口模块
-    }).use(['index', 'useradmin', 'table'], function () {
-        var $ = layui.$
-            , form = layui.form
-            , table = layui.table;
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit"></a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"></a>
+</script>
 
-        //监听搜索
-        form.on('submit(LAY-user-back-search)', function (data) {
-            var field = data.field;
 
-            //执行重载
-            table.reload('LAY-user-back-manage', {
-                where: field
-            });
+<script src="//res.layui.com/layui/dist/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+
+<script th:inline="none">
+
+    //设置全局token
+    var token = sessionStorage.getItem("token");
+
+    layui.use(['table', 'element', 'form', 'layer'], function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#test'
+            , where: {token: token}//传递token到服务端
+            , url: 'http://localhost:8080/note/account_list.json' //默认传递两个参
+            , title: '用户数据表'
+            , cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'id', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true}
+                , {field: 'accountName', title: '用户名', width: 120, unresize: true, edit: 'text'}
+                , {field: 'sex', title: '性别', width: 80, edit: 'text'}
+                , {field: 'email', title: '邮箱', width: 150, edit: 'text'}
+                , {field: 'phone', title: '手机', width: 80, edit: 'text'}
+                , {field: 'zone', title: '区域', width: 100}
+                , {field: 'logins', title: '登入次数', width: 100, sort: true}
+                , {field: 'joinTime', title: '加入时间', width: 120, sort: true}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}
+            ]]
         });
 
-        //事件
-        var active = {
-            batchdel: function () {
-                var checkStatus = table.checkStatus('LAY-user-back-manage')
-                    , checkData = checkStatus.data; //得到选中的数据
+        //头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
 
-                if (checkData.length === 0) {
-                    return layer.msg('请选择数据');
-                }
+                //自定义头工具栏右侧图标 - 提示
+                case 'LAYTABLE_TIPS':
+                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
+                    break;
+            }
+            ;
+        });
 
-                layer.prompt({
-                    formType: 1
-                    , title: '敏感操作，请验证口令'
-                }, function (value, index) {
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            //console.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
                     layer.close(index);
-
-                    layer.confirm('确定删除吗？', function (index) {
-
-                        //执行 Ajax 后重载
-                        /*
-                        admin.req({
-                          url: 'xxx'
-                          //,……
-                        });
-                        */
-                        table.reload('LAY-user-back-manage');
-                        layer.msg('已删除');
+                });
+            } else if (obj.event === 'edit') {
+                layer.prompt({
+                    formType: 2
+                    , value: data.email
+                }, function (value, index) {
+                    obj.update({
+                        email: value
                     });
+                    layer.close(index);
                 });
             }
-            , add: function () {
-                layer.open({
-                    type: 2
-                    , title: '添加管理员'
-                    , content: 'adminform.html'
-                    , area: ['420px', '420px']
-                    , btn: ['确定', '取消']
-                    , yes: function (index, layero) {
-                        var iframeWindow = window['layui-layer-iframe' + index]
-                            , submitID = 'LAY-user-back-submit'
-                            , submit = layero.find('iframe').contents().find('#' + submitID);
-
-                        //监听提交
-                        iframeWindow.layui.form.on('submit(' + submitID + ')', function (data) {
-                            var field = data.field; //获取提交的字段
-
-                            //提交 Ajax 成功后，静态更新表格中的数据
-                            //$.ajax({});
-                            table.reload('LAY-user-front-submit'); //数据刷新
-                            layer.close(index); //关闭弹层
-                        });
-
-                        submit.trigger('click');
-                    }
-                });
-            }
-        }
-        $('.layui-btn.layuiadmin-btn-admin').on('click', function () {
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
         });
     });
 </script>
 
-</html>
 
+<!--
+<script th:inline="none">
+
+    //设置全局token
+    var token = sessionStorage.getItem("token");
+
+
+
+    layui.use(['table', 'element', 'form', 'layer'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+
+        //初始化列表
+        table.render({
+            elem: '#note-list',
+            where: {token: token},//传递token到服务端
+            url: 'http://localhost:8080/note/note_list', //默认传递两个参
+            height: 'full-180',
+            cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            cols:
+                [[ //标题栏
+                    {field: 'noteTitle', title: '笔记列表', unresize: true}
+                ]]
+            , done:
+                function (res, curr, count) {
+                    $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
+                    init_select();//初始化标签
+                }
+        })
+
+        //所有笔记
+        $("#all").click(function () {
+            init_select();//初始化标签
+            clearEidtSpace();
+            init_table("","","");
+        });
+
+        //收藏夹
+        $("#starList").click(function () {
+            init_select();//初始化标签
+            clearEidtSpace();
+            init_table("","","1");
+        })
+
+        //根据类型刷新笔记列表
+        function init_table(type, key,star) {
+            table.render({
+                elem: '#note-list',
+                where: {token: token, type: type, key: key,star:star},//传递token到服务端
+                url: 'http://localhost:8080/note/note_list', //默认传递两个参数
+                cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                height: 'full-180',
+                cols:
+                    [[ //标题栏
+                        {field: 'noteTitle', title: '笔记列表', unresize: true}
+                    ]]
+                , done:
+                    function (res, curr, count) {
+                        $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
+                    }
+            })
+        }
+
+        //点击标题
+        table.on('row(note-filter)', function (obj) {
+            var noteContent = obj.data.noteContent;
+            var noteTitle = obj.data.noteTitle;
+            noteId = obj.data.noteId;//设置全局笔记id
+            $('#note-title').val(noteTitle);//设置标题
+            tinyMCE.activeEditor.setContent(noteContent);
+            $('#noteType').val(obj.data.noteType);
+            showNoteType();//设置标签可见
+            //显示是否已经收藏
+            var ifStar = obj.data.star;
+            if(ifStar == "1"){
+                $('#ifStar').html("&#xe658;");
+            }
+            if(ifStar == "0"){
+                $('#ifStar').html("&#xe600;");
+            }
+        });
+
+        //加星笔记
+        $("#star").click(function () {
+            var falg = $('#ifStar').val();
+            if(flag == "&#xe658;"){
+                layer.msg("已收藏");
+            };
+            if(noteId == ""){
+                return;
+            };
+            var data = {
+                "noteId": noteId
+            };
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/note/set_star.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message);
+                        /*init_table("", "","");
+                        hideNoteType();
+                        clearEidtSpace();
+                        init_select();*/
+                        $('#ifStar').html("&#xe658;");//设置为已经收藏
+                    } else {
+                        layer.msg(result.message);
+                    }
+                },
+            })
+        });
+
+
+        //创建笔记
+        $("#cleanEditSpace").click(function () {
+            $('#note-title').val("");//清除标题
+            tinyMCE.activeEditor.setContent("");//清除内容
+            $('#noteType').val("");//清除标签
+            $('#ifStar').html("&#xe600;");//设置空心收藏
+            noteId = "";//清除全局noteId
+            showNoteType();//显示标签
+        });
+
+
+        //保存/更新笔记
+        $("#saveNote").click(function () {
+            var noteTitle = $('#note-title').val();
+            //获取html内容
+            var noteContent = tinyMCE.activeEditor.getContent();
+            var noteType = $('#noteType').val();
+            var data = {
+                "noteTitle": noteTitle,
+                "noteType": noteType,
+                "noteContent": noteContent,
+                "noteId": noteId
+            }
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/note/save_note.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message);
+                        init_table("", "","");
+                        hideNoteType();
+                        clearEidtSpace();
+                        init_select();
+                    } else {
+                        layer.msg(result.message);
+                    }
+                },
+            })
+        });
+
+        //删除笔记
+        $("#delete-note").click(function () {
+
+            if (noteId == "") {
+                return;
+            }
+            var data = {
+                "noteId": noteId
+            }
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "http://localhost:8080/note/delete_note.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg('删除成功!');
+                        init_table("", "","");
+                        clearEidtSpace();
+                        hideNoteType();
+                    }
+                },
+            })
+        });
+
+        //全文搜索
+        $("#search-note").click(function () {
+            var key = $("#input-search-note").val();
+            init_table("", key,"");
+        })
+
+
+        //设置标签是否可见
+        $("#setType").click(function () {
+            if (flag == true) {
+                $('#showType').css({'display': 'block'});
+                flag = false;
+                return;
+            }
+            if (flag == false) {
+                $('#showType').css({'display': 'none'});
+                flag = true;
+                return;
+            }
+        });
+
+        //隐藏标签
+        function hideNoteType() {
+            $('#showType').css({'display': 'none'});
+            flag = true;
+        };
+
+        //显示标签
+        function showNoteType() {
+            $('#showType').css({'display': 'block'});
+            flag = false;
+        }
+
+        //清除编辑区
+        function clearEidtSpace() {
+            $('#note-title').val("");//清除标题
+            tinyMCE.activeEditor.setContent("");
+            $('#noteType').val("");//清除标签
+            $('#ifStar').html("&#xe600;");//设置空心收藏
+            noteId = "";
+        }
+
+        //初始化标签
+        function init_select() {
+            $("#selectNoteTpe").empty();//先对类型进行清空
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/note/init_noteType.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        var selectData = result.data.textValues;
+                        var htmls = '<option value="">请选择类型</option>';
+                        for (var x in selectData) {
+                            htmls += '<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>'
+                        }
+                        htmls += '<option value = "未分类">未分类</option>'
+                        $("#selectNoteTpe").append(htmls);
+                        form.render();
+                    }
+                },
+            })
+        };
+
+        //标签选择事件
+        form.on('select(selectNoteTpe)', function (data) {
+            init_table(data.value, "","");
+            hideNoteType();
+            clearEidtSpace();
+            //设置
+            $('#noteType').val(data.value);//设置标题
+        });
+    })
+</script>-->
+</html>
