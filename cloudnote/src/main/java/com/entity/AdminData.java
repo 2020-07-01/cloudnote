@@ -8,7 +8,12 @@ public class AdminData {
     public AdminData(AccountPIMData accountPIMData){
         this.accountId = accountPIMData.getAccountId();
         this.accountName = accountPIMData.getAccountName();
-        this.accountRole = accountPIMData.getAccountRole()
+        this.accountRole = accountPIMData.getAccountRole();
+        this.createTime = accountPIMData.getCreateTime();
+        this.phone = accountPIMData.getPhone();
+        this.email = accountPIMData.getEmail();
+        this.isClosed = accountPIMData.getIsClosed();
+        this.lastLoginTime = accountPIMData.getLastLoginTime();
     }
 
 

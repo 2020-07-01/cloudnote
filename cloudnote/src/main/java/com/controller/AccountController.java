@@ -80,6 +80,7 @@ public class AccountController {
             account.setEmail(email);
 
             Map result = accountService.insert(account);
+
             if (result.get("true") != null) {
                 Json.toJson(new Result(true, (String) result.get("true")), response);
             } else {
@@ -90,7 +91,6 @@ public class AccountController {
             Json.toJson(new Result(false, "出现异常"), response);
         }
     }
-
 
     /**
      * 用户名登录

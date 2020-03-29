@@ -2,6 +2,7 @@ package com.service.serviceImpl;
 
 import com.entity.Account;
 import com.entity.Condition;
+import com.entity.PIM;
 import com.mapper.AccountMapper;
 import com.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountMapper accountMapper;
 
+    @Autowired
+    private PIMServiceImpl pimService;
+
     /**
      * 邮箱注册
      *
@@ -41,6 +45,8 @@ public class AccountServiceImpl implements AccountService {
                 result.put("false", "用户已经存在!");
             } else {
                 accountMapper.insertAccount(account);
+                //存储pim
+
                 result.put("true", "注册成功!");
             }
         } catch (Exception e) {

@@ -37,7 +37,6 @@ public class PIMController {
     TokenUtils tokenUtil;
 
 
-
     @RequestMapping(value = "/updatePIM.json")
     public void updatePIM(@RequestBody String jsonString, HttpServletResponse response, HttpServletRequest request) {
 
@@ -71,21 +70,21 @@ public class PIMController {
 
     @RequestMapping(value = "/account_list.json")
     public Object accountList(@RequestParam(value = "token") String token, HttpServletRequest request, HttpServletResponse response) {
-
         Condition condition = new Condition();
-
         List<AccountPIMData> accountPIMDataList = pimService.getAccountPIMData(condition);
         List<AdminData> adminDataList = new ArrayList<>();
         //封装实体
-        accountPIMDataList.forEach(p->{
+        accountPIMDataList.forEach(p -> {
             AdminData adminData = new AdminData(p);
+            adminData.setZone(p.getProvince() == null ? "" : p.getProvince() + p.getCity() == null ? "" : p.getCity());
+            adminDataList.add(adminData);
         });
 
-        Map<String, Object> hashMap = new HashMap();
-        hashMap.put("code", "0");
-        hashMap.put("msg", "1312");
-        hashMap.put("count", accountPIMDataList.size());
-        hashMap.put("data", );
-        return hashMap;
+        Map<String, Object> data = new HashMap();
+        data.put("code", "0");
+        data.put("msg", "初始化成功!");
+        data.put("count", accountPIMDataList.size());
+        data.put("data", adminDataList);
+        return data;
     }
 }
