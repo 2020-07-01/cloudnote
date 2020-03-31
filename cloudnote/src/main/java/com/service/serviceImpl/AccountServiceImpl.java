@@ -8,6 +8,8 @@ import com.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,9 +58,6 @@ public class AccountServiceImpl implements AccountService {
         return result;
     }
 
-    public Account findUserById(Integer id) {
-        return null;
-    }
 
     @Override
     public Map findAccountByCondition(Condition condition) {
@@ -71,10 +70,11 @@ public class AccountServiceImpl implements AccountService {
         else {
             condition.setAccountName(condition.getName());
         }
-        Account user = accountMapper.findAccountByCondition(condition);
-        if (user != null) {
-            result.put("userId", String.valueOf(user.getAccountId()));
+        Account account = accountMapper.findAccountByCondition(condition);
+        if (account != null) {
+            result.put("userId", String.valueOf(account.getAccountId()));
             result.put("true", "登录成功!");
+            result.put("accountId", String.valueOf(account.getAccountId()));
         } else {
             result.put("false", "登录失败!");
         }
@@ -96,6 +96,50 @@ public class AccountServiceImpl implements AccountService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 当登录成功时更新is_online login_count  last_login_time三个字段信息
+     *
+     * @param account
+     * @return
+     */
+    @Override
+    public boolean updateLoginStatus(Account account) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String lastLoginTime = dateFormat.format(new Date());
+            account.setLastLoginTime(lastLoginTime);
+            account.setIsOnline("ONLINE");
+            accountMapper.updateLoginStatus(account);
+            return true;
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+
+    /**
+     * 根据用户名和密码获取用户的id
+     *
+     * @param condition
+     * @return
+     */
+    @Override
+    public String findAccountId(Condition condition) {
+        Integer accountId = accountMapper.findAccountId(condition);
+        return String.valueOf(accountId);
+    }
+
+    /**
+     * 根据token中的accountId验证用户
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Account findAccountByAccountId(Integer accountId) {
+
+        return null;
     }
 
     /**

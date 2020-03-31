@@ -5,18 +5,16 @@ package com.entity;
  */
 public class AdminData {
 
-    public AdminData(AccountPIMData accountPIMData){
+    public AdminData(AccountPIMData accountPIMData) {
         this.accountId = accountPIMData.getAccountId();
         this.accountName = accountPIMData.getAccountName();
         this.accountRole = accountPIMData.getAccountRole();
         this.createTime = accountPIMData.getCreateTime();
         this.phone = accountPIMData.getPhone();
         this.email = accountPIMData.getEmail();
-        this.isClosed = accountPIMData.getIsClosed();
+        this.isLocked = accountPIMData.getIsLocked();
         this.lastLoginTime = accountPIMData.getLastLoginTime();
     }
-
-
 
     private Integer accountId;
     private String sex;
@@ -27,7 +25,7 @@ public class AdminData {
     private String createTime;
     private String lastLoginTime;
     private String accountRole;
-    private String isClosed;
+    private String isLocked;
 
     public Integer getAccountId() {
         return accountId;
@@ -101,11 +99,11 @@ public class AdminData {
         this.accountRole = accountRole;
     }
 
-    public String getIsClosed() {
-        return isClosed;
+    public String getIsLocked() {
+        return isLocked;
     }
 
-    public void setIsClosed(String isClosed) {
-        this.isClosed = isClosed;
+    public void setIsLocked(String isLocked) {
+        this.isLocked = isLocked;
     }
 }

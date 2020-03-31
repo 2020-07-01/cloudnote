@@ -2,6 +2,7 @@ package com.service;
 
 import com.entity.Account;
 import com.entity.Condition;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.Map;
 
@@ -15,13 +16,19 @@ public interface AccountService {
 
     Map insert(Account user);
 
-    Account findUserById(Integer id);
-
     Map findAccountByCondition(Condition condition);
 
     String findPasswordByAccountId(Integer accountId);
 
     boolean updateAccount(Account account);
 
+    boolean updateLoginStatus(Account account);
+    //查询accountId生成token
+    String findAccountId(Condition condition);
+
+    //根据token中的accountId验证用户
+    Account findAccountByAccountId(Integer accountId);
+
 
 }
+

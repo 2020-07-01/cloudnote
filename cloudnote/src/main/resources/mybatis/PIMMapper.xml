@@ -26,7 +26,7 @@
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="last_login_time" property="LastLoginTime" jdbcType="VARCHAR"/>
         <result column="account_role" property="accountRole" jdbcType="VARCHAR"/>
-        <result column="is_closed" property="isClosed" jdbcType="INTEGER"/>
+        <result column="is_locked" property="isLocked" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="base_sql">
@@ -65,7 +65,7 @@
 
     <select id="selectAccountPIMData" parameterType="com.entity.Condition" resultMap="baseMap1">
         select
-        A.account_id,P.sex,P.province,P.city,A.account_name,A.email,A.phone,A.create_time,A.last_login_time,A.account_role,A.is_closed
+        A.account_id,P.sex,P.province,P.city,A.account_name,A.email,A.phone,A.create_time,A.last_login_time,A.account_role,A.is_locked
         from account A left join pim  P on A.account_Id = P.account_id
 
     </select>

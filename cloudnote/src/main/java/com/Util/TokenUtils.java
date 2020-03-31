@@ -70,10 +70,10 @@ public class TokenUtils {
             if (accountId == null) {
                 throw new RuntimeException("token校验失败,原因：token中不存在accountId");
             }
-            Account user = userService.findUserById(Integer.parseInt(accountId));
-            if (user == null) {
+            //验证accountId是否合法
+          /*  if (user == null) {
                 throw new RuntimeException("token校验失败，原因：用户不存在");
-            }
+            }*/
             return true;
         } catch (Exception e) {
             e.toString();

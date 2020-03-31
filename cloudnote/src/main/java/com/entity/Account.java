@@ -2,6 +2,14 @@ package com.entity;
 
 public class Account {
 
+    public Account() {
+    }
+
+    public Account(String accountName, String accountPassword) {
+        this.accountName = accountName;
+        this.accountPassword = accountPassword;
+    }
+
     private Integer accountId;
     private String accountName;
     private String accountPassword;
@@ -9,11 +17,12 @@ public class Account {
     private String phone;
     private String createTime;
     private String updateTime;
-    private Integer isLogout;
+    private String isOnline;
     private String lastLoginTime;
     private String remark;
     private String accountRole;
-    private String isClosed;
+    private String isLocked;
+    private Integer LoginCount;
 
     public Integer getAccountId() {
         return accountId;
@@ -71,14 +80,6 @@ public class Account {
         this.updateTime = updateTime;
     }
 
-    public Integer getIsLogout() {
-        return isLogout;
-    }
-
-    public void setIsLogout(Integer isLogout) {
-        this.isLogout = isLogout;
-    }
-
     public String getLastLoginTime() {
         return lastLoginTime;
     }
@@ -103,12 +104,28 @@ public class Account {
         this.accountRole = accountRole;
     }
 
-    public String getIsClosed() {
-        return isClosed;
+    public String getIsLocked() {
+        return isLocked;
     }
 
-    public void setIsClosed(String isClosed) {
-        this.isClosed = isClosed;
+    public void setIsLocked(String isLocked) {
+        this.isLocked = isLocked;
     }
 
+
+    public Integer getLoginCount() {
+        return LoginCount;
+    }
+
+    public void setLoginCount(Integer loginCount) {
+        LoginCount = loginCount;
+    }
+
+    public String getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(String isOnline) {
+        this.isOnline = isOnline;
+    }
 }

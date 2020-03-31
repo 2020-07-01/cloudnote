@@ -117,19 +117,22 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">登录名</label>
                             <div class="layui-input-block">
-                                <input type="text" name="loginname" placeholder="请输入" autocomplete="off" class="layui-input">
+                                <input type="text" name="loginname" placeholder="请输入" autocomplete="off"
+                                       class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">手机</label>
                             <div class="layui-input-block">
-                                <input type="text" name="telphone" placeholder="请输入" autocomplete="off" class="layui-input">
+                                <input type="text" name="telphone" placeholder="请输入" autocomplete="off"
+                                       class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">邮箱</label>
                             <div class="layui-input-block">
-                                <input type="text" name="email" placeholder="请输入" autocomplete="off" class="layui-input">
+                                <input type="text" name="email" placeholder="请输入" autocomplete="off"
+                                       class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -159,12 +162,10 @@
 </body>
 
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
+    <a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="unLock">解锁</a>
 
-<script src="//res.layui.com/layui/dist/layui.js" charset="utf-8"></script>
-<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+</script>
 
 <script th:inline="none">
 
@@ -187,57 +188,30 @@
                 , {field: 'email', title: '邮箱', width: 200, unresize: true,}
                 , {field: 'phone', title: '手机', width: 160, unresize: true,}
                 , {field: 'zone', title: '区域', width: 100, unresize: true,}
-                /* , {field: 'logins', title: '登入次数', width: 100, sort: true}*/
                 , {field: 'createTime', title: '加入时间', width: 160, sort: true, unresize: true}
                 , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200, unresize: true}
             ]]
         });
 
-        //头工具栏事件
-        table.on('toolbar(test)', function (obj) {
-            var checkStatus = table.checkStatus(obj.config.id);
-            switch (obj.event) {
-                case 'getCheckData':
-                    var data = checkStatus.data;
-                    layer.alert(JSON.stringify(data));
-                    break;
-                case 'getCheckLength':
-                    var data = checkStatus.data;
-                    layer.msg('选中了：' + data.length + ' 个');
-                    break;
-                case 'isAll':
-                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
-                    break;
-
-                //自定义头工具栏右侧图标 - 提示
-                case 'LAYTABLE_TIPS':
-                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
-                    break;
-            }
-            ;
-        });
-
-        //监听行工具事件
+        //监听按钮事件
         table.on('tool(test)', function (obj) {
             var data = obj.data;
-            //console.log(obj)
-            if (obj.event === 'del') {
-                layer.confirm('真的删除行么', function (index) {
-                    obj.del();
-                    layer.close(index);
-                });
-            } else if (obj.event === 'edit') {
-                layer.prompt({
-                    formType: 2
-                    , value: data.email
-                }, function (value, index) {
-                    obj.update({
-                        email: value
-                    });
-                    layer.close(index);
-                });
+            if (obj.event === 'lock') {
+
+            } else if (obj.event === 'unLock') {
             }
         });
+
+        //锁定账户
+        function lock() {
+
+        }
+
+
+        //解锁账户
+        function unLock() {
+
+        }
     });
 </script>
 

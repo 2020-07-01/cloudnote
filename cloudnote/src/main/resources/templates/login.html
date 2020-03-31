@@ -24,15 +24,15 @@
         <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-username"
-                       for="LAY-user-login-username"></label>
-                <input type="text" name="name" id="LAY-user-login-username" lay-verify="required"
-                       placeholder="用户名/邮箱/手机号"
+                       for="accountName"></label>
+                <input type="text" name="accountName" id="accountName" lay-verify="required"
+                       placeholder="用户名"
                        class="layui-input">
             </div>
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-password"
-                       for="LAY-user-login-password"></label>
-                <input type="password" name="accountPassword" id="LAY-user-login-password" lay-verify="required"
+                       for="accountPassword"></label>
+                <input type="password" name="accountPassword" id="accountPassword" lay-verify="required"
                        placeholder="密码" class="layui-input">
             </div>
             <!--<div class="layui-form-item">
@@ -73,11 +73,7 @@
     <div class="layui-trans layadmin-user-login-footer">
 
         <p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>
-        <p>
-            <!--<span><a href="http://www.layui.com/admin/#get" target="_blank">获取授权</a></span>
-            <span><a href="http://www.layui.com/admin/pro/" target="_blank">在线演示</a></span>
-            <span><a href="http://www.layui.com/admin/" target="_blank">前往官网</a></span>-->
-        </p>
+
     </div>
 </div>
 </body>
@@ -87,6 +83,7 @@
     layui.use(['element', 'form', 'layer'], function () {
         var form = layui.form;
         var layer = layui.layer;
+
         //登录监听
         form.on('submit(login)', function (data) {
             var datajson = JSON.stringify(data.field);
@@ -94,23 +91,14 @@
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
-                url: "http://localhost:8080/account/login",
+                url: "http://localhost:8080/account/login.json",
                 success: function (result) {
                     if (result.code == 1) {
                         var tokenData = result.data.token;
                         sessionStorage.setItem("token", tokenData);//存储token
                         window.location.href = "/to_index?token=" + tokenData;//进入主页
-
                     } else {
-                        layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 3000,
-                            shade: 0.6,
-                            offset: 'auto',
-                            area: ['200px', '120px']
-                        });
+                    layer.msg(result.message);
                     }
                 },
                 error: function () {

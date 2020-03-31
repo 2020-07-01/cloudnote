@@ -12,7 +12,7 @@ public class AccountPIMData {
     private String createTime;
     private String lastLoginTime;
     private String accountRole;
-    private String isClosed;
+    private String isLocked;
 
 
     public Integer getAccountId() {
@@ -95,11 +95,11 @@ public class AccountPIMData {
         this.accountRole = accountRole;
     }
 
-    public String getIsClosed() {
-        return isClosed;
+    public String getIsLocked() {
+        return isLocked;
     }
 
-    public void setIsClosed(String isClosed) {
-        this.isClosed = isClosed;
+    public void setIsLocked(String isLocked) {
+        this.isLocked = isLocked;
     }
 }
