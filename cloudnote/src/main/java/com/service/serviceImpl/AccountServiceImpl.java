@@ -116,6 +116,12 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
+    @Override
+    public String findAccountId(Condition condition) {
+        Integer accountId = accountMapper.findAccountId(condition);
+        return accountId.toString();
+    }
+
     /**
      * 验证邮箱是否已经注册
      *

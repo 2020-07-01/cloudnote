@@ -100,6 +100,20 @@
         </if>
     </update>
 
+    <select id="findAccountId" parameterType="com.entity.Condition" resultType="java.lang.Integer">
+        select
+        account_id
+        from account
+        where
+        1=1
+        <if test="accountName != '' and accountName != null">
+            and account_name = #{accountName,jdbcType=VARCHAR}
+        </if>
+        <if test="accountPassword != '' and accountPassword != null">
+            and account_password = #{accountPassword,jdbcType=VARCHAR}
+        </if>
+    </select>
+
 
 
 
