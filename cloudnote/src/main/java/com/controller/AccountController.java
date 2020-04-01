@@ -6,6 +6,7 @@ import com.Util.SecurityCode;
 import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cache.CacheService;
 import com.entity.Account;
 import com.entity.Condition;
 import com.mailService.MailServiceImpl;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,6 +49,9 @@ public class AccountController {
 
     @Autowired
     TokenUtils tokenService;
+
+    @Autowired
+    CacheService cacheService;
 
 
     /**
@@ -97,9 +101,9 @@ public class AccountController {
         }
     }
 
-
     /**
      * 用户名登录
+     * 登录时在缓存中添加Map
      *
      * @param jsonParam
      * @param request
@@ -113,6 +117,12 @@ public class AccountController {
             jsonObject = JSON.parseObject(jsonParam);
             Account account = new Account(jsonObject.getString("accountName"), jsonObject.getString("accountPassword"));
             boolean flag = accountService.updateLoginStatus(account);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String lastLoginTime = dateFormat.format(new Date());
+            account.setLastLoginTime(lastLoginTime);
+            account.setIsOnline("ONLINE");
+            account.setLoginCount(1);
+
             if (!flag) {
                 Json.toJson(new Result(false, "用户名或密码错误!"), response);
             } else {
@@ -123,6 +133,9 @@ public class AccountController {
                 String accountId = accountService.findAccountId(condition);
                 String token = tokenService.createToken(accountId);
                 //生成token之后将accountId存储在缓存中
+                HashMap cacheMap = new HashMap();
+                cacheMap.put("accountId", accountId);
+                cacheService.putValue(accountId, cacheMap);
                 HashMap data = new HashMap();
                 data.put("token", token);
                 Json.toJson(new Result(true, "登录成功", data), response);
@@ -180,7 +193,7 @@ public class AccountController {
 */
 
     /**
-     * 发送验证码
+     * 登录时发送验证码
      *
      * @param jsonParam
      * @param request
@@ -354,5 +367,31 @@ public class AccountController {
             Json.toJson(new Result(false, "验证失败!"), response);
         }
     }
+
+    /**
+     * 退出登录操作
+     * 更改login status
+     * 删除缓存
+     *
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/logout.json")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+
+        String token = request.getHeader("token");
+        Integer accountId = tokenService.getAccountIdByToken(token);
+        //删除缓存
+
+        cacheService.deleteValue(String.valueOf(accountId));
+        Account account = new Account();
+        account.setIsOnline("OFFLINE");
+        account.setAccountId(accountId);
+
+        accountService.updateLoginStatus(account);
+
+        Json.toJson(new Result(true, "退出成功!"), response);
+    }
+
 
 }

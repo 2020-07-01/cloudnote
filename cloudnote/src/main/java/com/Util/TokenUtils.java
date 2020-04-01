@@ -4,8 +4,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cache.CacheService;
 import com.entity.Account;
 import com.service.AccountService;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +25,10 @@ import java.util.Map;
 public class TokenUtils {
 
     @Autowired
-    AccountService userService;
+    AccountService serService;
+
+    @Autowired
+    CacheService cacheService;
 
     // 私钥
     private static final String TOKEN_SECRET = "privateKey";
@@ -70,10 +75,13 @@ public class TokenUtils {
             if (accountId == null) {
                 throw new RuntimeException("token校验失败,原因：token中不存在accountId");
             }
-            //验证accountId是否合法
-          /*  if (user == null) {
-                throw new RuntimeException("token校验失败，原因：用户不存在");
-            }*/
+            Map map = cacheService.getValue(accountId);
+            if (map == null) {
+                return false;
+            }
+            if (!map.get("accountId").equals(accountId)) {
+                return false;
+            }
             return true;
         } catch (Exception e) {
             e.toString();

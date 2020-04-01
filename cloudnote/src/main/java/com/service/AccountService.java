@@ -21,13 +21,10 @@ public interface AccountService {
     String findPasswordByAccountId(Integer accountId);
 
     boolean updateAccount(Account account);
-
+    //设置状态
     boolean updateLoginStatus(Account account);
     //查询accountId生成token
     String findAccountId(Condition condition);
-
-    //根据token中的accountId验证用户
-    Account findAccountByAccountId(Integer accountId);
 
 
 }

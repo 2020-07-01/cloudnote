@@ -107,39 +107,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean updateLoginStatus(Account account) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String lastLoginTime = dateFormat.format(new Date());
-            account.setLastLoginTime(lastLoginTime);
-            account.setIsOnline("ONLINE");
+
             accountMapper.updateLoginStatus(account);
             return true;
         } catch (Exception e) {
 
         }
         return false;
-    }
-
-    /**
-     * 根据用户名和密码获取用户的id
-     *
-     * @param condition
-     * @return
-     */
-    @Override
-    public String findAccountId(Condition condition) {
-        Integer accountId = accountMapper.findAccountId(condition);
-        return String.valueOf(accountId);
-    }
-
-    /**
-     * 根据token中的accountId验证用户
-     * @param accountId
-     * @return
-     */
-    @Override
-    public Account findAccountByAccountId(Integer accountId) {
-
-        return null;
     }
 
     /**

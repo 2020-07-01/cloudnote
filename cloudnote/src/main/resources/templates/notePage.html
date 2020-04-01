@@ -506,6 +506,31 @@
             //设置
             $('#noteType').val(data.value);//设置标题
         });
+
+
+        //退出登录
+        function logout() {
+
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/account/logout.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        var selectData = result.data.textValues;
+                        var htmls = '<option value="">请选择类型</option>';
+                        for (var x in selectData) {
+                            htmls += '<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>'
+                        }
+                        htmls += '<option value = "未分类">未分类</option>'
+                        $("#selectNoteTpe").append(htmls);
+                        form.render();
+                    }
+                },
+            })
+        }
     })
 </script>
 </html>
