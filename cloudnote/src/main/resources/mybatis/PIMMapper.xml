@@ -15,6 +15,22 @@
         <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
     </resultMap>
 
+
+    <resultMap id="baseMap1" type="com.entity.AccountPIMData">
+        <id column="account_id" property="accountId" jdbcType="INTEGER"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <result column="city" property="city" jdbcType="VARCHAR"/>
+        <result column="account_name" property="accountName" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="last_login_time" property="LastLoginTime" jdbcType="VARCHAR"/>
+        <result column="account_role" property="accountRole" jdbcType="VARCHAR"/>
+        <result column="is_locked" property="isLocked" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <sql id="base_sql">
         PIM_id,account_id,head_image_url,province,sex,city,remark,birthday
     </sql>
