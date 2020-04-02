@@ -86,10 +86,6 @@ public class AESUtils {
         }
     }
 
-   /* public static void main(String[] args) {
-        String temp = AESUtils.encrypt("123");
-        System.out.println(temp);
-        String temp1 = AESUtils.decrypt(temp);
-        System.out.println(temp1);
-    }*/
+
+
 }

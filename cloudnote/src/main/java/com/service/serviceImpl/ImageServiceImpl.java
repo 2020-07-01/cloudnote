@@ -82,7 +82,7 @@ public class ImageServiceImpl implements ImageService {
             result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>"+"<br><p style=\"text-align: center;font-weight: bold;\">"+ newImageName + "." + imageType+"</p>");
             result.put("cache",newWholeName);
             //将新的文件名存储在缓存中
-            cacheService.putValue(newWholeName,newWholeName);
+            //cacheService.putValue(newWholeName,newWholeName);
         } else {// 如果图片命名不重复
             Image newImage = new Image();
             newImage.setAccountId(accountId);

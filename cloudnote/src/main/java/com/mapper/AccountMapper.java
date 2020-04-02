@@ -16,9 +16,18 @@ public interface AccountMapper {
     int insertAccount(Account account);
 
     Account findAccountByCondition(Condition condition);
+    //获取旧密码
+    String findPasswordByAccountId(Integer accountId);
 
-    String findPasswordByAcoountId(Integer accountId);
-
+    //更改密码
     int updateAccount(Account account);
+
+    //当登录成功时更新is_online login_count  last_login_time三个字段信息
+    int updateLoginStatus(Account account);
+
+    //根据用户名和密码获取用户的id
+    Integer findAccountId(Condition condition);
+
+
 
 }

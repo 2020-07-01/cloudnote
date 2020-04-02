@@ -1,11 +1,14 @@
 package com.service.serviceImpl;
 
+import com.entity.AccountPIMData;
+import com.entity.Condition;
 import com.entity.PIM;
 import com.mapper.PIMMapper;
 import com.service.PIMService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +38,14 @@ public class PIMServiceImpl implements PIMService {
     public boolean updatePIM(PIM pim) {
         pimMapper.updatePIM(pim);
         return true;
+    }
+
+
+    @Override
+    public List<AccountPIMData> getAccountPIMData(Condition condition) {
+
+        List<AccountPIMData> list = pimMapper.selectAccountPIMData(condition);
+        return list;
     }
 
 

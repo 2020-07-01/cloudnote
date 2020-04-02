@@ -2,11 +2,14 @@ package com.service.serviceImpl;
 
 import com.entity.Account;
 import com.entity.Condition;
+import com.entity.PIM;
 import com.mapper.AccountMapper;
 import com.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +24,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountMapper accountMapper;
+
+    @Autowired
+    private PIMServiceImpl pimService;
 
     /**
      * 邮箱注册
@@ -41,6 +47,8 @@ public class AccountServiceImpl implements AccountService {
                 result.put("false", "用户已经存在!");
             } else {
                 accountMapper.insertAccount(account);
+                //存储pim
+
                 result.put("true", "注册成功!");
             }
         } catch (Exception e) {
@@ -50,9 +58,6 @@ public class AccountServiceImpl implements AccountService {
         return result;
     }
 
-    public Account findUserById(Integer id) {
-        return null;
-    }
 
     @Override
     public Map findAccountByCondition(Condition condition) {
@@ -65,10 +70,11 @@ public class AccountServiceImpl implements AccountService {
         else {
             condition.setAccountName(condition.getName());
         }
-        Account user = accountMapper.findAccountByCondition(condition);
-        if (user != null) {
-            result.put("userId", String.valueOf(user.getAccountId()));
+        Account account = accountMapper.findAccountByCondition(condition);
+        if (account != null) {
+            result.put("userId", String.valueOf(account.getAccountId()));
             result.put("true", "登录成功!");
+            result.put("accountId", String.valueOf(account.getAccountId()));
         } else {
             result.put("false", "登录失败!");
         }
@@ -77,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String findPasswordByAccountId(Integer accountId) {
-        String passWord = accountMapper.findPasswordByAcoountId(accountId);
+        String passWord = accountMapper.findPasswordByAccountId(accountId);
         return passWord;
     }
 
@@ -85,11 +91,35 @@ public class AccountServiceImpl implements AccountService {
     public boolean updateAccount(Account account) {
         try {
             accountMapper.updateAccount(account);
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
+    }
+
+    /**
+     * 当登录成功时更新is_online login_count  last_login_time三个字段信息
+     *
+     * @param account
+     * @return
+     */
+    @Override
+    public boolean updateLoginStatus(Account account) {
+        try {
+            Integer row = accountMapper.updateLoginStatus(account);
+            if (row == 1) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
         return false;
+    }
+
+    @Override
+    public String findAccountId(Condition condition) {
+        Integer accountId = accountMapper.findAccountId(condition);
+        return accountId.toString();
     }
 
     /**

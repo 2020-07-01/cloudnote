@@ -1,27 +1,19 @@
 package com.entity;
 
-public class Account {
-
-    public Account() {
-    }
-
-    public Account(String accountName, String accountPassword) {
-        this.accountName = accountName;
-        this.accountPassword = accountPassword;
-    }
+public class AccountPIMData {
 
     private Integer accountId;
+    private String sex;
+    private String province;
+    private String city;
     private String accountName;
-    private String accountPassword;
     private String email;
     private String phone;
     private String createTime;
-    private String updateTime;
-    private String isOnline;
     private String lastLoginTime;
     private String accountRole;
     private String isLocked;
-    private Integer loginCount;
+
 
     public Integer getAccountId() {
         return accountId;
@@ -31,20 +23,36 @@ public class Account {
         this.accountId = accountId;
     }
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getAccountName() {
         return accountName;
     }
 
     public void setAccountName(String accountName) {
         this.accountName = accountName;
-    }
-
-    public String getAccountPassword() {
-        return accountPassword;
-    }
-
-    public void setAccountPassword(String accountPassword) {
-        this.accountPassword = accountPassword;
     }
 
     public String getEmail() {
@@ -71,14 +79,6 @@ public class Account {
         this.createTime = createTime;
     }
 
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public String getLastLoginTime() {
         return lastLoginTime;
     }
@@ -101,21 +101,5 @@ public class Account {
 
     public void setIsLocked(String isLocked) {
         this.isLocked = isLocked;
-    }
-
-    public Integer getLoginCount() {
-        return loginCount;
-    }
-
-    public void setLoginCount(Integer loginCount) {
-        this.loginCount = loginCount;
-    }
-
-    public String getIsOnline() {
-        return isOnline;
-    }
-
-    public void setIsOnline(String isOnline) {
-        this.isOnline = isOnline;
     }
 }

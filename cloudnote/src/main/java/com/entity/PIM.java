@@ -15,6 +15,7 @@ public class PIM {
     private String city;
     private String remark;
     private String updateTime;
+    private String birthday;
 
     public Integer getPIMId() {
         return PIMId;
@@ -78,5 +79,13 @@ public class PIM {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

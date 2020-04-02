@@ -31,7 +31,7 @@
                     <div class="layui-col-xs7">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
                                for="securityCode"></label>
-                        <input type="text" name="securityCode" id="securityCode" lay-verify="required"
+                        <input type="text" name="securityCode"  id="securityCode" lay-verify="required"
                                placeholder="验证码" class="layui-input">
                     </div>
                     <div class="layui-col-xs5">
@@ -47,7 +47,7 @@
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-password"
                        for="accountPassword"></label>
-                <input type="password" name="accountPassword" id="accountPassword" lay-verify="pass" placeholder="密码"
+                <input type="password" name="accountPassword" id="accountPassword" lay-verify="required" placeholder="密码"
                        class="layui-input">
             </div>
             <div class="layui-form-item">
@@ -60,12 +60,9 @@
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-username"
                        for="accountName"></label>
-                <input type="text" name="accountName" id="accountName" lay-verify="nickname" placeholder="昵称"
+                <input type="text" name="accountName" id="accountName" lay-verify="required" placeholder="昵称"
                        class="layui-input">
             </div>
-            <!--  <div class="layui-form-item">
-                  <input type="checkbox" name="agreement" lay-skin="primary" title="同意用户协议" checked>
-              </div>-->
             <div class="layui-form-item">
                 <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register">注 册</button>
             </div>
@@ -104,18 +101,13 @@
          */
         form.on('submit(register)', function (data) {
 
-            var accountPassword = data.field.accountPassword;
-            var confirmPassword = data.field.confirmPassword;
-            var formData = {
-                "accountPassword": accountPassword,
-                "confirmPassword": confirmPassword
-            }
-            var jsonData = JSON.stringify(formData);
+            var jsonData = JSON.stringify(data.field);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 data: jsonData,
-                url: "http://localhost:8080/account/updatePassoword.json",
+                headers: {'Content-Type': 'application/json;charset=utf8', 'tempSecurityCode': tempSecurityCode},
+                url: "http://localhost:8080/account/register.json",
                 error: function (result) {
                     alert("网络出现异常!");
                 },
@@ -127,15 +119,6 @@
                         );
                     } else {
                         layer.msg(result.message);
-                        /* layer.open({
-                             title: '提示',
-                             content: result.message,
-                             btn: [],
-                             time: 1500,
-                             shade: 0.6,
-                             offset: 'auto',
-                             area: ['200px', '120px']
-                         });*/
                     }
                 }
             })
@@ -156,7 +139,7 @@
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
-                url: "http://localhost:8080/account/security_code",
+                url: "http://localhost:8080/account/send_security_code1.json",
                 error: function () {
                     alert("网络出现异常");
                 },
@@ -164,15 +147,6 @@
                     if (result.code == 1) {
                         layer.msg(result.message);
                         tempSecurityCode = result.data.securityCode;
-                        /*layer.open({
-                            title: '提示',
-                            content: result.message,
-                            btn: [],
-                            time: 1500,
-                            shade: 0.6,
-                            offset: 'auto',
-                            area: ['200px', '120px']
-                        });*/
                     } else {
                         layer.msg(result.message);
                     }

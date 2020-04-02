@@ -1,27 +1,31 @@
 package com.entity;
 
-public class Account {
+/**
+ * 发送给前端的实体
+ */
+public class AdminData {
 
-    public Account() {
-    }
-
-    public Account(String accountName, String accountPassword) {
-        this.accountName = accountName;
-        this.accountPassword = accountPassword;
+    public AdminData(AccountPIMData accountPIMData) {
+        this.accountId = accountPIMData.getAccountId();
+        this.accountName = accountPIMData.getAccountName();
+        this.accountRole = accountPIMData.getAccountRole();
+        this.createTime = accountPIMData.getCreateTime();
+        this.phone = accountPIMData.getPhone();
+        this.email = accountPIMData.getEmail();
+        this.isLocked = accountPIMData.getIsLocked();
+        this.lastLoginTime = accountPIMData.getLastLoginTime();
     }
 
     private Integer accountId;
+    private String sex;
+    private String zone;
     private String accountName;
-    private String accountPassword;
     private String email;
     private String phone;
     private String createTime;
-    private String updateTime;
-    private String isOnline;
     private String lastLoginTime;
     private String accountRole;
     private String isLocked;
-    private Integer loginCount;
 
     public Integer getAccountId() {
         return accountId;
@@ -31,20 +35,28 @@ public class Account {
         this.accountId = accountId;
     }
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
+    }
+
     public String getAccountName() {
         return accountName;
     }
 
     public void setAccountName(String accountName) {
         this.accountName = accountName;
-    }
-
-    public String getAccountPassword() {
-        return accountPassword;
-    }
-
-    public void setAccountPassword(String accountPassword) {
-        this.accountPassword = accountPassword;
     }
 
     public String getEmail() {
@@ -71,14 +83,6 @@ public class Account {
         this.createTime = createTime;
     }
 
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public String getLastLoginTime() {
         return lastLoginTime;
     }
@@ -101,21 +105,5 @@ public class Account {
 
     public void setIsLocked(String isLocked) {
         this.isLocked = isLocked;
-    }
-
-    public Integer getLoginCount() {
-        return loginCount;
-    }
-
-    public void setLoginCount(Integer loginCount) {
-        this.loginCount = loginCount;
-    }
-
-    public String getIsOnline() {
-        return isOnline;
-    }
-
-    public void setIsOnline(String isOnline) {
-        this.isOnline = isOnline;
     }
 }

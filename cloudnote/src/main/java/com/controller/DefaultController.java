@@ -126,4 +126,5 @@ public class DefaultController {
         scheduleJob.refresh();
         return "SUCCESS";
     }
+
 }
