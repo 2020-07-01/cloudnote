@@ -83,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String findPasswordByAccountId(Integer accountId) {
-        String passWord = accountMapper.findPasswordByAcoountId(accountId);
+        String passWord = accountMapper.findPasswordByAccountId(accountId);
         return passWord;
     }
 
@@ -106,12 +106,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean updateLoginStatus(Account account) {
         try {
-            accountMapper.updateLoginStatus(account);
+            Integer row = accountMapper.updateLoginStatus(account);
+            if (row == 1) {
+                return true;
+            }
         } catch (Exception e) {
             e.getMessage();
         }
-
-        return true;
+        return false;
     }
 
     @Override

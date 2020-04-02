@@ -39,43 +39,56 @@
     </div>
     <!--左侧导航栏-->
     <div class="layui-side layui-bg-black">
-        <div class="layui-side-scroll">
+        <div class="layui-side-scroll" style="text-align: left;padding-left: 8px">
+
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
                 <li class="layui-nav-item">
-                    <a>我的笔记</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_note_page">查看</a></dd>
+                    <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/to_note_page" ><i class="layui-icon layui-icon-edit"></i> 创建笔记</a>
+                        <dd><a href="/to_note_page" ><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
+                        </dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的资源</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_image_page">图片</a></dd>
-                        <dd><a href="javascript:;">视频</a></dd>
-                        <dd><a href="javascript:;">文档</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">我的日程</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="/to_schedule_page">查看</a>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="/to_schedule_page"><i class="layui-icon layui-icon-form"></i> 查看</a>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;">回收站</a>
-                    <dl class="layui-nav-child" style="text-align: left">
-                        <dd><a href="javascript:;">全部恢复</a></dd>
-                        <dd><a href="javascript:;">全部清空</a></dd>
-                        <dd><a href="javascript:;">查看全部</a></dd>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
+                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 查看全部</a></dd>
+                    </dl>
+                </li>
+            </ul>
+
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item">
+                    <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
+                    <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd><a href="/admin"><i class="layui-icon layui-icon-engine"></i> 后台管理</a></dd>
+                        <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -152,7 +165,7 @@
                             <div class="grid-demo grid-demo-bg1">
                                 <form class="layui-form" action="post">
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">头像</label>
+                                        <label class="layui-form-label">头像:</label>
                                         <div class="layui-input-inline">
                                             <input name="headImageUrl" id="headImageUrl" lay-verify="required"
                                                    placeholder="图片地址"
@@ -169,7 +182,7 @@
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">性别</label>
+                                        <label class="layui-form-label">性别:</label>
                                         <div class="layui-input-block">
                                             <input type="radio" id="man" name="sex" value="男" title="男"
                                                    lay-filter="man"/>
@@ -179,8 +192,15 @@
                                     </div>
 
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">地区</label>
+                                        <label class="layui-form-label">出生日期:</label>
                                         <div class="layui-input-inline">
+                                            <input type="text" class="layui-input" id="birthday" placeholder="年-月-日">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">地区:</label>
+                                        <div class="layui-input-inline" >
                                             <input type="text" name="province" id="province" placeholder="请输入省"
                                                    class="layui-input">
                                         </div>
@@ -191,7 +211,7 @@
                                     </div>
 
                                     <div class="layui-form-item layui-form-text">
-                                        <label class="layui-form-label">备注</label>
+                                        <label class="layui-form-label">备注:</label>
                                         <div class="layui-input-block">
                                 <textarea name="remark" id="remark" placeholder="请输入内容" class="layui-text"
                                           style="height: 50px; width:480px;resize: none;"></textarea>
@@ -221,16 +241,13 @@
                         </div>
                         <div class="layui-col-xs9">
                             <div class="grid-demo grid-demo-bg1">
-
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">当前密码</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" name="currentPassword" id="currentPassword"
-                                               readonly
-                                               class="layui-input">
+                                        <input type="password" name="currentPassword" id="currentPassword"
+                                               autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
-
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">新密码</label>
                                     <div class="layui-input-inline">
@@ -238,7 +255,6 @@
                                                autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
-
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">确认新密码</label>
                                     <div class="layui-input-inline">
@@ -246,11 +262,11 @@
                                                autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
-
                                 <div class="layui-form-item">
                                     <div class="layui-input-block">
-                                        <button type="button" class="layui-btn" id="editPassword">确认修改</button>
-                                        <button type="button" class="layui-btn" id="reset2">重置</button>
+                                        <button type="button" class="layui-btn" id="editPassword">重置密码
+                                        </button>
+                                        <button type="button" class="layui-btn" id="reset">重置</button>
                                     </div>
                                 </div>
                             </div>
@@ -277,40 +293,53 @@
     //设置性别
     var sexValue = "";
 
-    layui.use(['element', 'form'], function () {
+    layui.use(['element', 'form','laydate'], function () {
         var element = layui.element;
         var form = layui.form;
+        var laydate = layui.laydate;
 
         //Hash地址的定位
         var layid = location.hash.replace(/^#tab=/, '');
         element.tabChange('tab', layid);
         //监听选项卡的切换
         element.on('tab(tab)', function (data) {
+
             //如果为修改密码，获取当前用户的密码并进行显示
-            if (data.index == 2) {
-                $.ajax({
-                    type: "post",
-                    contentType: "application/json",
-                    dataType: 'json',
-                    headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                    url: "http://localhost:8080/account/showPassword.json",
-                    success: function (result) {
-                        if (result.code == 1) {
-                            var temp = result.message;
-                            $('#currentPassword').val(temp);
-                        } else {
-                            layer.msg('查询出现错误!');
-                        }
-                    },
-                })
-            }
+            /*     if (data.index == 2) {
+                     $.ajax({
+                         type: "post",
+                         contentType: "application/json",
+                         dataType: 'json',
+                         headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                         url: "http://localhost:8080/account/showPassword.json",
+                         success: function (result) {
+                             if (result.code == 1) {
+                                 var temp = result.message;
+                                 $('#currentPassword').val(temp);
+                             } else {
+                                 layer.msg('查询出现错误!');
+                             }
+                         },
+                     })
+                 }*/
             location.hash = 'tab=' + $(this).attr('lay-id');
         });
 
+        //年月日选择器
+        laydate.render({
+            elem: '#birthday'
+            ,type: 'date'
+            ,trigger: 'click'//呼出事件改成click
+        });
+
+        //重置密码
         $("#editPassword").click(function () {
+
             var accountPassword = $('#accountPassword').val();
             var confirmPassword = $('#confirmPassword').val();
+            var currentPassword = $('#currentPassword').val();
             var formData = {
+                "currentPassword": currentPassword,
                 "accountPassword": accountPassword,
                 "confirmPassword": confirmPassword
             }
@@ -321,10 +350,9 @@
                 dataType: 'json',
                 data: jsonData,
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                url: "http://localhost:8080/account/updatePassword.json",
+                url: "http://localhost:8080/account/update_password.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        $('#currentPassword').val(accountPassword);
                         layer.msg(result.message);
                     } else {
                         layer.msg(result.message);
@@ -333,10 +361,11 @@
             })
         });
 
-        //重置2
-        $("#reset2").click(function () {
+        //重置->清理密码框
+        $("#reset").click(function () {
             $('#accountPassword').val("");
             $('#confirmPassword').val("");
+            $('#currentPassword').val("");
         })
 
         //账号信息

@@ -17,7 +17,7 @@ public interface AccountService {
     Map insert(Account user);
 
     Map findAccountByCondition(Condition condition);
-
+    //获取旧密码
     String findPasswordByAccountId(Integer accountId);
 
     boolean updateAccount(Account account);

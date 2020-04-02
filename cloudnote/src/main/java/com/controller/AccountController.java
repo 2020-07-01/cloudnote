@@ -11,11 +11,13 @@ import com.entity.Account;
 import com.entity.Condition;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.AccountServiceImpl;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +56,6 @@ public class AccountController {
 
     /**
      * 邮箱注册
-     *
      * 添加触发器存储accountId 信息
      *
      * @param jsonParam
@@ -192,14 +193,14 @@ public class AccountController {
 */
 
     /**
-     * 登录时发送验证码
+     * 注册->发送验证码
      *
      * @param jsonParam
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping(value = "security_code")
+    @RequestMapping(value = "send_security_code1.json")
     public void securityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject;
         jsonObject = JSON.parseObject(jsonParam);
@@ -271,42 +272,39 @@ public class AccountController {
     }
 
     /**
-     * 修改密码
+     * 用户信息->修改密码
      *
      * @param jsonString
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/updatePassword.json")
+    @RequestMapping(value = "/update_password.json")
     public void updatePassword(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String token = request.getHeader("token");
+
         Integer accountId = tokenService.getAccountIdByToken(token);
+
+        String currentPassword = jsonObject.getString("currentPassword");
         String accountPassword = jsonObject.getString("accountPassword");
         String confirmPassword = jsonObject.getString("confirmPassword");
-        String email = jsonObject.getString("email");
 
-        //如果首尾包含空格，或者中间包含空格则是不合法
-
+        //获取旧的密码
+        String oldAccountPassword = accountService.findPasswordByAccountId(accountId);
+        if(!oldAccountPassword.equals(currentPassword)){
+            Json.toJson(new Result(false, "密码错误!"), response);
+            return;
+        }
         //判断密码是否一致
         if (!accountPassword.equals(confirmPassword)) {
-            Json.toJson(new Result(false, "密码不一致"), response);
+            Json.toJson(new Result(false, "密码不一致!"), response);
             return;
         }
-
-        //找回密码操作
-        if (email == null) {
-
-        }
-
-
         //判断密码是否重复
-        String oldAccountPassword = accountService.findPasswordByAccountId(accountId);
         if (oldAccountPassword.equals(accountPassword)) {
-            Json.toJson(new Result(false, "新密码不能与原来的密码一致"), response);
+            Json.toJson(new Result(false, "新密码不能与原来的密码一致!"), response);
             return;
         }
-
         Account account = new Account();
         account.setAccountId(accountId);
         account.setAccountPassword(accountPassword);
@@ -315,20 +313,19 @@ public class AccountController {
     }
 
     /**
-     * 修改密码和找回密码时发送验证码
+     * 忘记密码->发送验证码
      */
-    @RequestMapping(value = "/security_code1.json")
+    @RequestMapping(value = "/send_security_code.json")
     public void getSecurityCode(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
         JSONObject jsonObject = JSON.parseObject(jsonString);
-        String emailAddress = jsonObject.getString("emailAddress");
+        String email = jsonObject.getString("email");
 
-        if (emailAddress == null || emailAddress.equals("")) {
+        if (email == null || email.equals("")) {
             Json.toJson(new Result(false, "邮箱不能为空!"), response);
             return;
         }
-
-        Map result = accountService.findUerByEmail(emailAddress);
+        Map result = accountService.findUerByEmail(email);
         if (result.get("true") != null) {
             Json.toJson(new Result(false, "此邮箱不存在!"), response);
         } else {
@@ -336,9 +333,10 @@ public class AccountController {
                 String sender = "2422321558@qq.com";
                 //生成验证码
                 String securityCode = SecurityCode.getSecurityCode();
-                mailService.sendSecurityCode(sender, emailAddress, "验证码", securityCode);
+                mailService.sendSecurityCode(sender, email, "验证码", securityCode);
                 HashMap data = new HashMap();
                 data.put("securityCode", securityCode);
+                data.put("email",email);
                 Json.toJson(new Result(true, "验证码已发送，请查收!", data), response);
             } catch (Exception e) {
                 Json.toJson(new Result(false, "发送失败!"), response);
@@ -346,30 +344,58 @@ public class AccountController {
         }
     }
 
+
     /**
-     * 重置密码
+     * 忘记密码->找回密码时验证已发送的验证码
      *
      * @param jsonString
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/resetPassword.json")
-    public void toResetPassword(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/check_security_code.json")
+    public void checkSecurityCode(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
         JSONObject jsonObject = JSON.parseObject(jsonString);
-        String securityCode = jsonObject.getString("securityCode");
-        String tempSecurityCode = jsonObject.getString("tempSecurityCode");
-        if (securityCode.equals(tempSecurityCode)) {
+        String firstSecurityCode = jsonObject.getString("firstSecurityCode");
+        String secondSecurityCode = jsonObject.getString("secondSecurityCode");
+
+        if (firstSecurityCode.equals(secondSecurityCode)) {
             Json.toJson(new Result(true, "验证通过!"), response);
         } else {
             Json.toJson(new Result(false, "验证失败!"), response);
         }
     }
 
+
     /**
-     * 退出登录操作
-     * 更改login status
-     * 删除缓存
+     * 忘记密码->重置新密码->成功后跳转至登录界面
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/reset_password.json")
+    public void toResetPassword(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+
+        String confirmPassword = jsonObject.getString("confirmPassword");
+        String accountPassword = jsonObject.getString("accountPassword");
+        String email = jsonObject.getString("email2");
+
+        if (!confirmPassword.equals(confirmPassword)) {
+            Json.toJson(new Result(false, "密码不一致!"), response);
+        } else {
+            Account account = new Account();
+            account.setEmail(email);
+            account.setAccountPassword(accountPassword);
+            accountService.updateAccount(account);
+            Json.toJson(new Result(true, "重置密码成功!"), response);
+        }
+    }
+
+    /**
+     * 退出登录->修改改login status->删除缓存->跳转至登录界面
      *
      * @param request
      * @param response
@@ -387,4 +413,7 @@ public class AccountController {
         accountService.updateLoginStatus(account);
         Json.toJson(new Result(true, "注销成功!"), response);
     }
+
+
+
 }

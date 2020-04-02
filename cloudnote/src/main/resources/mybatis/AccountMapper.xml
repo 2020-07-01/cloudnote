@@ -30,8 +30,8 @@
         insert into account (phone,user_name,user_password,create_time)
         value ( #{phone,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR},now())
     </insert>
-
-    <select id="findPasswordByAcoountId" parameterType="java.lang.Integer" resultType="java.lang.String">
+    <!--获取旧密码-->
+    <select id="findPasswordByAccountId" parameterType="java.lang.Integer" resultType="java.lang.String">
         select account_password
         from account
         where account_id = #{accountId,jdbcType=INTEGER}
@@ -63,12 +63,16 @@
             <if test="accountPassword!= null">
                 account_password = #{accountPassword,jdbcType=VARCHAR},
             </if>
-            <if test="loginCount != null">
-                login_count = login_count +1,
-            </if>
             update_time = now()
         </set>
-        where account_id = #{accountId,jdbcType=INTEGER}
+        where
+        1 = 1
+        <if test="email != null and email != ''">
+            and email = #{email,jdbcType=VARCHAR}
+        </if>
+        <if test="accountId != null and accountId != ''">
+            and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
     </update>
 
     <update id="updateLoginStatus" parameterType="com.entity.Account">
