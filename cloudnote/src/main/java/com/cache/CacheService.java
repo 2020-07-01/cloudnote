@@ -46,6 +46,7 @@ public class CacheService implements InitializingBean {
      * 删除缓存
      */
     public void deleteValue(String string) {
+        System.out.println("清除缓存"+string);
         this.cache.invalidate(string);
     }
 

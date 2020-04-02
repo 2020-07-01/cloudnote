@@ -11,7 +11,6 @@ import com.entity.Account;
 import com.entity.Condition;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.AccountServiceImpl;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +52,10 @@ public class AccountController {
     @Autowired
     CacheService cacheService;
 
-
     /**
      * 邮箱注册
+     *
+     * 添加触发器存储accountId 信息
      *
      * @param jsonParam
      * @return
@@ -116,13 +116,12 @@ public class AccountController {
         try {
             jsonObject = JSON.parseObject(jsonParam);
             Account account = new Account(jsonObject.getString("accountName"), jsonObject.getString("accountPassword"));
-            boolean flag = accountService.updateLoginStatus(account);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String lastLoginTime = dateFormat.format(new Date());
             account.setLastLoginTime(lastLoginTime);
             account.setIsOnline("ONLINE");
             account.setLoginCount(1);
-
+            boolean flag = accountService.updateLoginStatus(account);
             if (!flag) {
                 Json.toJson(new Result(false, "用户名或密码错误!"), response);
             } else {
@@ -226,7 +225,6 @@ public class AccountController {
         } else {
             Json.toJson(new Result(false, result.get("false").toString()), response);
         }
-
     }
 
     /* *//**
@@ -382,16 +380,11 @@ public class AccountController {
         String token = request.getHeader("token");
         Integer accountId = tokenService.getAccountIdByToken(token);
         //删除缓存
-
         cacheService.deleteValue(String.valueOf(accountId));
         Account account = new Account();
         account.setIsOnline("OFFLINE");
         account.setAccountId(accountId);
-
         accountService.updateLoginStatus(account);
-
-        Json.toJson(new Result(true, "退出成功!"), response);
+        Json.toJson(new Result(true, "注销成功!"), response);
     }
-
-
 }

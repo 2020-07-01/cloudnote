@@ -19,10 +19,9 @@ public class Account {
     private String updateTime;
     private String isOnline;
     private String lastLoginTime;
-    private String remark;
     private String accountRole;
     private String isLocked;
-    private Integer LoginCount;
+    private Integer loginCount;
 
     public Integer getAccountId() {
         return accountId;
@@ -88,14 +87,6 @@ public class Account {
         this.lastLoginTime = lastLoginTime;
     }
 
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
     public String getAccountRole() {
         return accountRole;
     }
@@ -112,13 +103,12 @@ public class Account {
         this.isLocked = isLocked;
     }
 
-
     public Integer getLoginCount() {
-        return LoginCount;
+        return loginCount;
     }
 
     public void setLoginCount(Integer loginCount) {
-        LoginCount = loginCount;
+        this.loginCount = loginCount;
     }
 
     public String getIsOnline() {

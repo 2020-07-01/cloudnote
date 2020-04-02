@@ -91,11 +91,10 @@ public class AccountServiceImpl implements AccountService {
     public boolean updateAccount(Account account) {
         try {
             accountMapper.updateAccount(account);
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 
     /**
@@ -107,13 +106,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean updateLoginStatus(Account account) {
         try {
-
             accountMapper.updateLoginStatus(account);
-            return true;
         } catch (Exception e) {
-
+            e.getMessage();
         }
-        return false;
+
+        return true;
     }
 
     @Override

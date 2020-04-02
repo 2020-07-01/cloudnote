@@ -50,7 +50,7 @@
                 <dl class="layui-nav-child">
                     <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
                     <dd><a href="">意见反馈</a></dd>
-                    <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
+                    <dd><a href="/account/logout.json"><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
                 </dl>
             </li>
         </ul>
@@ -105,7 +105,7 @@
                     <dl class="layui-nav-child" style="padding-left: 15px">
                         <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
                         <dd><a href="/admin"><i class="layui-icon layui-icon-logout"></i> 后台管理</a></dd>
-                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
+                        <dd><a href="#" id="logout"><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -507,10 +507,8 @@
             $('#noteType').val(data.value);//设置标题
         });
 
-
         //退出登录
-        function logout() {
-
+        $("#logout").click(function () {
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -518,19 +516,17 @@
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 url: "http://localhost:8080/account/logout.json",
                 success: function (result) {
-                    if (result.code == 1) {
-                        var selectData = result.data.textValues;
-                        var htmls = '<option value="">请选择类型</option>';
-                        for (var x in selectData) {
-                            htmls += '<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>'
-                        }
-                        htmls += '<option value = "未分类">未分类</option>'
-                        $("#selectNoteTpe").append(htmls);
-                        form.render();
+                    if(result.code == 1){
+                        layer.msg("退出成功!")
+                        window.location.href = "/login"//进入主页
                     }
                 },
             })
-        }
+        })
+
+
+
+
     })
 </script>
 </html>
