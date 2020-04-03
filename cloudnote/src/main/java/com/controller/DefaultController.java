@@ -115,7 +115,7 @@ public class DefaultController {
         return "resetPassword";
     }
 
-    @RequestMapping(value = "/filePage")
+    @RequestMapping(value = "/file_page")
     public String toFilePage() {
         return "filePage";
     }

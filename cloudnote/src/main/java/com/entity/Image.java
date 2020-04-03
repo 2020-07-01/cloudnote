@@ -9,7 +9,7 @@ public class Image {
 
     // id
     private Integer imageId;
-    // userid
+    // accountId
     private Integer accountId;
     // 名称
     private String imageName;
@@ -25,7 +25,7 @@ public class Image {
     private String imageUrl;
     // 连接失效时间
     private String expireDate;
-
+    //完整的文件名
     private String wholeName;
     // 是否已经删除
     private String isRecycle;
