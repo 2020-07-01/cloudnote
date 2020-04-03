@@ -8,6 +8,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
 import com.entity.Account;
+import com.entity.AccountPIMData;
+import com.entity.AdminData;
 import com.entity.Condition;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.AccountServiceImpl;
@@ -15,17 +17,12 @@ import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author :qiang
@@ -272,7 +269,7 @@ public class AccountController {
     }
 
     /**
-     * 用户信息->修改密码
+     * 修改密码
      *
      * @param jsonString
      * @param request
@@ -413,6 +410,33 @@ public class AccountController {
         accountService.updateLoginStatus(account);
         Json.toJson(new Result(true, "注销成功!"), response);
     }
+
+
+    @RequestMapping(value = "/update_account.json")
+    public void updateAccount(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+
+/*    @RequestMapping(value = "/account_list.json")
+    public Object accountList(@RequestParam(value = "token") String token, HttpServletRequest request, HttpServletResponse response) {
+        Condition condition = new Condition();
+        List<AccountPIMData> accountPIMDataList = pimService.getAccountPIMData(condition);
+        List<AdminData> adminDataList = new ArrayList<>();
+        //封装实体
+        accountPIMDataList.forEach(p -> {
+            AdminData adminData = new AdminData(p);
+            adminData.setZone(p.getProvince() == null ? "" : p.getProvince() + p.getCity() == null ? "" : p.getCity());
+            adminDataList.add(adminData);
+        });
+
+        Map<String, Object> data = new HashMap();
+        data.put("code", "0");
+        data.put("msg", "初始化成功!");
+        data.put("count", accountPIMDataList.size());
+        data.put("data", adminDataList);
+        return data;
+    }*/
 
 
 

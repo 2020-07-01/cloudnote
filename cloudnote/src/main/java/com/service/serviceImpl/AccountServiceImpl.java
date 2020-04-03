@@ -2,14 +2,10 @@ package com.service.serviceImpl;
 
 import com.entity.Account;
 import com.entity.Condition;
-import com.entity.PIM;
 import com.mapper.AccountMapper;
 import com.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +21,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountMapper accountMapper;
 
-    @Autowired
-    private PIMServiceImpl pimService;
 
     /**
      * 邮箱注册
@@ -58,28 +52,6 @@ public class AccountServiceImpl implements AccountService {
         return result;
     }
 
-
-    @Override
-    public Map findAccountByCondition(Condition condition) {
-        Map<String, String> result = new HashMap();
-        //手机号登录
-        if (condition.getName().length() == 11) {
-            condition.setPhone(condition.getName());
-        }
-        //名称登录
-        else {
-            condition.setAccountName(condition.getName());
-        }
-        Account account = accountMapper.findAccountByCondition(condition);
-        if (account != null) {
-            result.put("userId", String.valueOf(account.getAccountId()));
-            result.put("true", "登录成功!");
-            result.put("accountId", String.valueOf(account.getAccountId()));
-        } else {
-            result.put("false", "登录失败!");
-        }
-        return result;
-    }
 
     @Override
     public String findPasswordByAccountId(Integer accountId) {

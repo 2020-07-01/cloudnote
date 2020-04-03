@@ -15,10 +15,17 @@
         <result column="last_login_time" property="lastLoginTime" jdbcType="VARCHAR"/>
         <result column="account_role" property="accountRole" jdbcType="VARCHAR"/>
         <result column="is_locked" property="isLocked" jdbcType="VARCHAR"/>
+        <result column="login_count" property="loginCount" jdbcType="INTEGER"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="head_image_url" property="headImageUrl" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="base_sql">
-        account_id,account_name,account_password,email,phone,create_time,update_time,is_online,last_login_time,account_role,is_locked,login_count
+        account_id,account_name,account_password,email,phone,create_time,update_time,is_online,last_login_time,
+        account_role,is_locked,login_count,birthday,remark,area,head_image_url,sex
     </sql>
 
     <insert id="insertAccount" parameterType="com.entity.Account">
@@ -26,10 +33,6 @@
         value ( #{email,jdbcType=VARCHAR},#{accountName,jdbcType=VARCHAR},#{accountPassword,jdbcType=VARCHAR},now())
     </insert>
 
-    <insert id="insertByPhone" parameterType="com.entity.Account">
-        insert into account (phone,user_name,user_password,create_time)
-        value ( #{phone,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR},now())
-    </insert>
     <!--获取旧密码-->
     <select id="findPasswordByAccountId" parameterType="java.lang.Integer" resultType="java.lang.String">
         select account_password

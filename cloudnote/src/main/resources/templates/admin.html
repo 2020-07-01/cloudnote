@@ -111,34 +111,58 @@
 
     <div class="layui-body">
         <div class="layui-container">
-            <div class="layui-row">
-                <div class="layui-col-xs12">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">登录名</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="loginname" placeholder="请输入" autocomplete="off"
-                                       class="layui-input">
+            <!--检索条件-->
+            <div class="layui-card">
+                <!--       <div class="layui-card-header">卡片面板</div>-->
+                <div class="layui-card-body">
+                    <div class="layui-row">
+                        <div class="layui-col-md3">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">登录名</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="loginname" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">手机</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="telphone" placeholder="请输入" autocomplete="off"
-                                       class="layui-input">
+                        <div class="layui-col-md3">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">邮箱</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="email" placeholder="请输入" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">邮箱</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="email" placeholder="请输入" autocomplete="off"
-                                       class="layui-input">
-                            </div>
+                        <div class="layui-col-md3">
+                            <form class="layui-form" action="post">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">状态</label>
+                                    <div class="layui-input-block">
+                                        <select name="quiz">
+                                            <option value="">登录状态</option>
+                                            <option value="">注销状态</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="layui-inline">
-                            <button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-user-back-search">
-                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                            </button>
+
+                        <div class="layui-col-md2 layui-col-md-offset1" >
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <button class="layui-btn layuiadmin-btn-admin" lay-submit
+                                            lay-filter="LAY-user-back-search">搜索
+                                    </button>
+                                    <button class="layui-btn layuiadmin-btn-admin" lay-submit
+                                            lay-filter="LAY-user-back-search">重置
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -152,10 +176,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="layui-footer layui-bg-black">
-        © layui.com - 底部固定区域
+        <div class="layui-footer layui-bg-black">
+            © layui.com - 底部固定区域
+        </div>
+
     </div>
 
 </div>
@@ -180,6 +205,7 @@
             , url: 'http://localhost:8080/PIM/account_list.json' //默认传递两个参
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , title: '用户数据表'
+            , page: true
             , cols: [[
                 {type: 'checkbox', fixed: 'left'}
                 , {field: 'accountId', title: 'ID', width: 50, fixed: 'left', unresize: true}
@@ -191,6 +217,7 @@
                 , {field: 'createTime', title: '加入时间', width: 160, sort: true, unresize: true}
                 , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200, unresize: true}
             ]]
+
         });
 
         //监听按钮事件
@@ -212,6 +239,24 @@
         function unLock() {
 
         }
+
+
+        //退出登录
+        $("#logout").click(function () {
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/account/logout.json",
+                success: function (result) {
+                    if(result.code == 1){
+                        layer.msg("退出成功!")
+                        window.location.href = "/login"//进入主页
+                    }
+                },
+            })
+        })
     });
 </script>
 

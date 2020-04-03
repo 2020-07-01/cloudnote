@@ -4,6 +4,7 @@ import com.Util.TokenUtils;
 import com.job.ScheduleJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -123,8 +124,13 @@ public class DefaultController {
     @RequestMapping(value = "/refresh")
     @ResponseBody
     public String jobRefresh(){
-        scheduleJob.refresh();
+        scheduleJob.scheduleRemind();
         return "SUCCESS";
+    }
+
+    @RequestMapping(value = "/rest_password")
+    public String toRestPassword(){
+        return "resetPasswordPage";
     }
 
 }

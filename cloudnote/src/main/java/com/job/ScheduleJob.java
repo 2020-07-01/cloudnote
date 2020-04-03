@@ -39,10 +39,11 @@ public class ScheduleJob {
     ScheduleServiceImpl scheduleService;
 
     /**
-     * 2分钟刷新一次
+     * 日程提醒
+     * 2分钟刷新一次 发送邮件
      */
     @Scheduled(cron = "0 */2 * * * ?")
-    public void refresh() {
+    public void scheduleRemind() {
 
         /**
          * 两分钟刷新一次，当前时间点再延迟一分钟
@@ -80,4 +81,14 @@ public class ScheduleJob {
         }
         //scheduleService.updateIsNeedRemind(listScheduleId);
     }
+
+
+    /**
+     * 每天刷新一次，生日祝福
+     */
+    public void birthdayBlessing(){
+
+    }
+
+
 }

@@ -37,21 +37,12 @@
 <div class="layui-layout layui-layout-admin">
 
     <div class="layui-header">
-
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
 
         <ul class="layui-nav layui-layout-right">
-
             <li class="layui-nav-item">
-                <a href="javascript:;">
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    admin
-                </a>
-                <dl class="layui-nav-child">
-                    <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
-                    <dd><a href="">意见反馈</a></dd>
-                    <dd><a href="/account/logout.json"><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
-                </dl>
+                <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                <span>这是用户名</span>
             </li>
         </ul>
     </div>
@@ -186,7 +177,8 @@
                                         </button>
                                         <button type="button" id="star" class="layui-btn layui-btn-primary"
                                                 style="border:none;padding: 0 5px"><i id="ifStar"
-                                                class="layui-icon" style="font-size: 32px;">&#xe600;</i>
+                                                                                      class="layui-icon"
+                                                                                      style="font-size: 32px;">&#xe600;</i>
                                         </button>
                                     </div>
                                 </div>
@@ -275,21 +267,21 @@
         $("#all").click(function () {
             init_select();//初始化标签
             clearEidtSpace();
-            init_table("","","");
+            init_table("", "", "");
         });
 
         //收藏夹
         $("#starList").click(function () {
             init_select();//初始化标签
             clearEidtSpace();
-            init_table("","","1");
+            init_table("", "", "1");
         })
 
         //根据类型刷新笔记列表
-        function init_table(type, key,star) {
+        function init_table(type, key, star) {
             table.render({
                 elem: '#note-list',
-                where: {token: token, type: type, key: key,star:star},//传递token到服务端
+                where: {token: token, type: type, key: key, star: star},//传递token到服务端
                 url: 'http://localhost:8080/note/note_list', //默认传递两个参数
                 cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                 height: 'full-180',
@@ -315,10 +307,10 @@
             showNoteType();//设置标签可见
             //显示是否已经收藏
             var ifStar = obj.data.star;
-            if(ifStar == "1"){
+            if (ifStar == "1") {
                 $('#ifStar').html("&#xe658;");
             }
-            if(ifStar == "0"){
+            if (ifStar == "0") {
                 $('#ifStar').html("&#xe600;");
             }
         });
@@ -326,12 +318,14 @@
         //加星笔记
         $("#star").click(function () {
             var falg = $('#ifStar').val();
-            if(flag == "&#xe658;"){
+            if (flag == "&#xe658;") {
                 layer.msg("已收藏");
-            };
-            if(noteId == ""){
+            }
+            ;
+            if (noteId == "") {
                 return;
-            };
+            }
+            ;
             var data = {
                 "noteId": noteId
             };
@@ -393,7 +387,7 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
-                        init_table("", "","");
+                        init_table("", "", "");
                         hideNoteType();
                         clearEidtSpace();
                         init_select();
@@ -424,7 +418,7 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg('删除成功!');
-                        init_table("", "","");
+                        init_table("", "", "");
                         clearEidtSpace();
                         hideNoteType();
                     }
@@ -435,7 +429,7 @@
         //全文搜索
         $("#search-note").click(function () {
             var key = $("#input-search-note").val();
-            init_table("", key,"");
+            init_table("", key, "");
         })
 
 
@@ -500,7 +494,7 @@
 
         //标签选择事件
         form.on('select(selectNoteTpe)', function (data) {
-            init_table(data.value, "","");
+            init_table(data.value, "", "");
             hideNoteType();
             clearEidtSpace();
             //设置
@@ -516,17 +510,13 @@
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 url: "http://localhost:8080/account/logout.json",
                 success: function (result) {
-                    if(result.code == 1){
+                    if (result.code == 1) {
                         layer.msg("退出成功!")
                         window.location.href = "/login"//进入主页
                     }
                 },
             })
         })
-
-
-
-
     })
 </script>
 </html>
