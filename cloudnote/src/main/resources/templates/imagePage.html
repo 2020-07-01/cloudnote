@@ -8,8 +8,6 @@
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <script src="../static/jquery-3.4.1.min.js"></script>
-    <script src="../static/mouseRightMenu/mouseRightMenu.js"></script>
-
     <style>
 
         .layui-container {
@@ -77,8 +75,8 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
-                        <dd><a href="/imagePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
+                        <dd><a href="/image_page"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="/file_page"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -226,7 +224,7 @@
         var table_reload = table.render({
             elem: '#image-list',
             where: {token: token},//传递token到服务端
-            url: 'http://localhost:8080/image/get_images.json', //默认传递两个参
+            url: 'http://localhost:8080/source/get_images.json', //默认传递两个参
             height: 'full-140',
             cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols:
@@ -248,7 +246,7 @@
                 , size: 0
                 , multiple: true    //设置多图片上传
                 , headers: {token: token}
-                , url: 'http://localhost:8080/image/upload_image.json'
+                , url: 'http://localhost:8080/source/upload_image.json'
                 , accept: 'images'
                 , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
                     obj.preview(function (index, file, result) {
@@ -282,7 +280,7 @@
                                     dataType: 'json',
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                                     data: jsonData,
-                                    url: "http://localhost:8080/image/rename.json",
+                                    url: "http://localhost:8080/source/rename.json",
                                     error: function (result) {
                                         alert("error");
                                     },
@@ -301,7 +299,7 @@
                                     dataType: 'json',
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                                     data: jsonData,
-                                    url: "http://localhost:8080/image/noRename.json",
+                                    url: "http://localhost:8080/source/noRename.json",
                                     error: function (result) {
                                         alert("error");
                                     },
@@ -347,7 +345,7 @@
                     dataType: 'json',
                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                     data: jsonData,
-                    url: "http://localhost:8080/image/get_image_url.json",
+                    url: "http://localhost:8080/source/get_image_url.json",
 
                     success: function (result) {
                         var temp = result.message;
@@ -397,7 +395,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/image/delete_image.json",
+                url: "http://localhost:8080/source/delete_image.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg('删除成功!');
@@ -419,7 +417,7 @@
             var table_reload_temp = table.render({
                 elem: '#image-list',
                 where: {token: token, key: imageKey},//传递token到服务端
-                url: 'http://localhost:8080/image/search_image.json', //默认传递两个参
+                url: 'http://localhost:8080/source/search_image.json', //默认传递两个参
                 height: 'full-140',
                 cols:
                     [[ //标题栏
@@ -434,7 +432,7 @@
                             , size: 0
                             , multiple: true    //设置多图片上传
                             , headers: {token: token}
-                            , url: 'http://localhost:8080/image/upload_image.json'
+                            , url: 'http://localhost:8080/source/upload_image.json'
                             , accept: 'images'   //接受图片
                             , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
                                 obj.preview(function (index, file, result) {
@@ -472,7 +470,7 @@
                                                     'token': token
                                                 },
                                                 data: jsonData,
-                                                url: "http://localhost:8080/image/rename.json",
+                                                url: "http://localhost:8080/source/rename.json",
                                                 error: function (result) {
                                                     alert("error");
                                                 },
@@ -496,7 +494,7 @@
                                                     'token': token
                                                 },
                                                 data: jsonData,
-                                                url: "http://localhost:8080/image/noRename.json",
+                                                url: "http://localhost:8080/source/noRename.json",
                                                 error: function (result) {
                                                     alert("error");
                                                 },

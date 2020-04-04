@@ -32,7 +32,7 @@ public class OSSUtil {
     private OSS ossClient;
 
     /**
-     * 上传单个图片
+     * 上传单个图片/文件
      *
      * @param file
      * @param accountId
@@ -40,30 +40,19 @@ public class OSSUtil {
      */
     public Map putObject(MultipartFile file, String accountId) {
         HashMap<String, Boolean> result = new HashMap<>();
-
-        // 获取文件名
-        String fileName = file.getOriginalFilename();
-        // 获取文件类型
-        String type = fileName.substring(fileName.lastIndexOf(".") + 1);// 获取文件的后缀名
-        // 获取文件的新路径
-        String imagePath = getImagePath(fileName, accountId, type);
+        String wholeName = file.getOriginalFilename();
+        String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀名
+        String imagePath = getImagePath(wholeName, accountId, type);
         PutObjectRequest putObjectRequest = null;
         try {
             putObjectRequest = new PutObjectRequest("001-bucket", imagePath, new ByteArrayInputStream(file.getBytes()));
+            PutObjectResult putResult = ossClient.putObject(putObjectRequest);
             result.put("true", true);
         } catch (IOException e) {
             result.put("false", false);
             e.printStackTrace();
         }
-
-        // 如果需要上传时设置存储类型与访问权限，请参考以下示例代码。
-        // ObjectMetadata metadata = new ObjectMetadata();
-        // metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.Standard.toString());
-        // metadata.setObjectAcl(CannedAccessControlList.Private);
-        // putObjectRequest.setMetadata(metadata);
-        // 上传图片
-        PutObjectResult putResult = ossClient.putObject(putObjectRequest);
-        // ossClient.shutdown();//关闭客户端
+        //ossClient.shutdown();//关闭客户端
         return result;
     }
 
@@ -92,7 +81,7 @@ public class OSSUtil {
     }
 
     /**
-     * 获取图片的url
+     * 获取图片/文件的url
      *
      * @param imagePath
      * @return
@@ -167,8 +156,10 @@ public class OSSUtil {
      */
     private String getImagePath(String sourceFileName, String accountId, String type) {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-        return accountId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
+        return accountId + "/" + "file" + "/" + date + "/" + type + "/" + sourceFileName;
     }
+
+
 
 
 }

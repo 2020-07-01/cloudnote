@@ -186,4 +186,6 @@ public class ImageServiceImpl implements ImageService {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
         return accountId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
     }
+
+
 }
