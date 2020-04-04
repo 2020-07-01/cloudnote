@@ -99,7 +99,7 @@
                         <div class="layui-card-body">
                             <div class="layui-row">
                                 <div class="layui-col-md11 layui-col-md-offset1">
-                                    <form class="layui-form">
+                                    <form class="layui-form" lay-filter="form">
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">用户名</label>
                                             <div class="layui-input-inline">
@@ -119,14 +119,14 @@
                                             <label class="layui-form-label">生日</label>
                                             <div class="layui-input-inline">
                                                 <input type="text" name="birthday" id="birthday" lay-verify="date"
-                                                       placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+                                                       placeholder="YYYY-MM-DD" autocomplete="off" class="layui-input">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">区域</label>
                                             <div class="layui-inline">
                                                 <div class="layui-input-inline">
-                                                    <input type="text" name="area" id="area"
+                                                    <input type="text" name="area" id="area" placeholder="例:江苏省-无锡市"
                                                            autocomplete="off" class="layui-input">
                                                 </div>
                                             </div>
@@ -134,7 +134,8 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">头像</label>
                                             <div class="layui-input-inline">
-                                                <input type="text" name="headImageUrl" lay-verify="required" id="headImageUrl"
+                                                <input type="text" name="headImageUrl" lay-verify="required"
+                                                       id="headImageUrl"
                                                        placeholder="头像地址" value="http://cdn.layui.com/avatar/168.jpg"
                                                        class="layui-input">
                                             </div>
@@ -152,13 +153,14 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">手机</label>
                                             <div class="layui-input-inline">
-                                                <input type="text" name="phone" id="phone" lay-verify="phone" autocomplete="off" class="layui-input">
+                                                <input type="text" name="phone" id="phone" lay-verify="phone"
+                                                       autocomplete="off" class="layui-input">
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">邮箱</label>
                                             <div class="layui-input-inline">
-                                                <input type="text" name="email" readonly lay-verify="email" autocomplete="off" class="layui-input">
+                                                <input type="text" name="email" readonly class="layui-input">
                                             </div>
                                             <div class="layui-form-mid layui-word-aux">不可修改</div>
                                         </div>
@@ -171,7 +173,8 @@
                                         </div>
                                         <div class="layui-form-item">
                                             <div class="layui-input-block">
-                                                <button class="layui-btn" lay-submit lay-filter="userInformation">确认修改</button>
+                                                <button class="layui-btn" lay-submit lay-filter="userInformation">确认修改
+                                                </button>
                                                 <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
                                             </div>
                                         </div>
@@ -210,17 +213,27 @@
             , type: 'date'
             , trigger: 'click'//呼出事件改成click
         });
-
+        //在页面加载完毕后渲染表单数据
+        $(function(){
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "http://localhost:8080/account/get_account.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        form.val("form",result.data.data);
+                    } else {
+                        layer.msg(result.message);
+                    }
+                },
+            })
+        })
 
         //用户信息->确认修改
         form.on('submit(userInformation)', function (data) {
-            alert(JSON.stringify(data.field));
-            var field = JSON.stringify(data.field);
-            var formData = {
-                "sex": sexValue,
-                "field": field
-            }
-            var jsonData = JSON.stringify(formData);
+            var jsonData = JSON.stringify(data.field);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -236,16 +249,6 @@
                     }
                 },
             })
-        });
-
-        //用户信息->监听性别选择
-        form.on('radio(man)', function (data) {
-            sexValue = data.value;
-        });
-
-        //用户信息->监听性别选择
-        form.on('radio(woman)', function (data) {
-            sexValue = data.value;
         });
 
         //注销登录
@@ -265,8 +268,7 @@
             })
         })
 
-        /************************************************用户信息************************************************************* */
-
+        //头像
         var uploadInst = upload.render({
             elem: '#uploadHeadPhoto' //绑定元素
             , url: '/upload/'

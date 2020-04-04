@@ -13,6 +13,7 @@ import com.entity.AdminData;
 import com.entity.Condition;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.AccountServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +110,7 @@ public class AccountController {
      * @return
      */
     @RequestMapping(value = "login.json")
-    public void emailLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+    public void Login(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject;
         try {
             jsonObject = JSON.parseObject(jsonParam);
@@ -288,7 +289,7 @@ public class AccountController {
 
         //获取旧的密码
         String oldAccountPassword = accountService.findPasswordByAccountId(accountId);
-        if(!oldAccountPassword.equals(currentPassword)){
+        if (!oldAccountPassword.equals(currentPassword)) {
             Json.toJson(new Result(false, "密码错误!"), response);
             return;
         }
@@ -333,7 +334,7 @@ public class AccountController {
                 mailService.sendSecurityCode(sender, email, "验证码", securityCode);
                 HashMap data = new HashMap();
                 data.put("securityCode", securityCode);
-                data.put("email",email);
+                data.put("email", email);
                 Json.toJson(new Result(true, "验证码已发送，请查收!", data), response);
             } catch (Exception e) {
                 Json.toJson(new Result(false, "发送失败!"), response);
@@ -411,10 +412,64 @@ public class AccountController {
         Json.toJson(new Result(true, "注销成功!"), response);
     }
 
-
+    /**
+     * 账号设置
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     */
     @RequestMapping(value = "/update_account.json")
     public void updateAccount(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
+        String token = request.getHeader("token");
+        Integer accountId = tokenService.getAccountIdByToken(token);
+
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+
+        Account account = new Account();
+        account.setAccountId(accountId);
+        if (StringUtils.isNotEmpty(jsonObject.getString("sex"))) {
+            account.setSex(jsonObject.getString("sex"));
+        }
+        if (StringUtils.isNotEmpty(jsonObject.getString("birthday"))) {
+            account.setBirthday(jsonObject.getString("birthday"));
+        }
+        if (StringUtils.isNotEmpty(jsonObject.getString("area"))) {
+            account.setArea(jsonObject.getString("area"));
+        }
+        if (StringUtils.isNotEmpty(jsonObject.getString("headImageUrl"))) {
+            account.setHeadImageUrl(jsonObject.getString("headImageUrl"));
+        }
+        if (StringUtils.isNotEmpty(jsonObject.getString("remark"))) {
+            account.setRemark(jsonObject.getString("remark"));
+        }
+        if (StringUtils.isNotEmpty(jsonObject.getString("phone"))) {
+            account.setPhone(jsonObject.getString("phone"));
+        }
+
+        accountService.updateAccount(account);
+
+        Json.toJson(new Result(true, "注销成功!"), response);
+
+    }
+
+    /**
+     * 获取用户信息
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/get_account.json")
+    public void getAccountData(HttpServletRequest request, HttpServletResponse response){
+
+        String token = request.getHeader("token");
+        Integer accountId = tokenService.getAccountIdByToken(token);
+
+        Account account = accountService.getAccountData(accountId);
+
+        Map data = new HashMap();
+        data.put("data",account);
+        Json.toJson(new Result(true, "SUCCESS",data), response);
     }
 
 
@@ -437,6 +492,7 @@ public class AccountController {
         data.put("data", adminDataList);
         return data;
     }*/
+
 
 
 

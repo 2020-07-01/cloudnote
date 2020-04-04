@@ -24,7 +24,8 @@ public interface AccountService {
     boolean updateLoginStatus(Account account);
     //查询accountId生成token
     String findAccountId(Condition condition);
-
+    //获取账号信息
+    Account getAccountData(Integer accountId);
 
 }
 

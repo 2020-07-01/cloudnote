@@ -28,6 +28,8 @@
         account_role,is_locked,login_count,birthday,remark,area,head_image_url,sex
     </sql>
 
+
+
     <insert id="insertAccount" parameterType="com.entity.Account">
         insert into account (email,account_name,account_password,create_time)
         value ( #{email,jdbcType=VARCHAR},#{accountName,jdbcType=VARCHAR},#{accountPassword,jdbcType=VARCHAR},now())
@@ -58,6 +60,9 @@
         <if test="accountPassword != '' and accountPassword != null">
             and account_password = #{accountPassword,jdbcType=VARCHAR}
         </if>
+        <if test="accountId != null and accountId != ''">
+            and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
     </select>
 
     <update id="updateAccount" parameterType="com.entity.Account">
@@ -65,6 +70,24 @@
         <set>
             <if test="accountPassword!= null">
                 account_password = #{accountPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null and birthday != ''">
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null and area != ''">
+                area = #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="headImageUrl != null and headImageUrl != ''">
+                head_image_url = #{headImageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark,jdbcType=VARCHAR},
             </if>
             update_time = now()
         </set>

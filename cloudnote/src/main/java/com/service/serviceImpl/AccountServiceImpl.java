@@ -4,6 +4,7 @@ import com.entity.Account;
 import com.entity.Condition;
 import com.mapper.AccountMapper;
 import com.service.AccountService;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
@@ -59,6 +60,11 @@ public class AccountServiceImpl implements AccountService {
         return passWord;
     }
 
+    /**
+     * 更新账户信息
+     * @param account
+     * @return
+     */
     @Override
     public boolean updateAccount(Account account) {
         try {
@@ -70,6 +76,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 设置账户状态信息
      * 当登录成功时更新is_online login_count  last_login_time三个字段信息
      *
      * @param account
@@ -92,6 +99,20 @@ public class AccountServiceImpl implements AccountService {
     public String findAccountId(Condition condition) {
         Integer accountId = accountMapper.findAccountId(condition);
         return accountId.toString();
+    }
+
+    /**
+     * 获取账号信息
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Account getAccountData(Integer accountId) {
+
+        Condition condition = new Condition();
+        condition.setAccountId(accountId);
+        Account account = accountMapper.findAccountByCondition(condition);
+        return account;
     }
 
     /**
