@@ -64,8 +64,8 @@
                 <li class="layui-nav-item">
                     <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/to_note_page" ><i class="layui-icon layui-icon-edit"></i> 创建笔记</a>
-                        <dd><a href="/to_note_page" ><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
+                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a>
+                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
                         </dd>
                     </dl>
                 </li>
@@ -187,8 +187,7 @@
                         <div class="layui-row">
                             <div class="layui-col-xs12">
                                 <div class="grid-demo grid-demo-bg1">
-                                    <div class="layui-upload-drag"
-                                         style="width: 100%;height: 370px; ">
+                                    <div class="layui-upload-drag" style="width: 100%;height: 430px;padding: 2px;">
                                         <img id="show-image"
                                              style="max-width: 100%;max-height: 100%; top:0;left:0;right: 0;bottom: 0;margin: auto">
                                     </div>
@@ -226,7 +225,7 @@
             where: {token: token},//传递token到服务端
             url: 'http://localhost:8080/source/get_images.json', //默认传递两个参
             height: 'full-140',
-            cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            //cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols:
                 [[ //标题栏
                     {field: 'wholeName', title: '点击上传', unresize: true}
@@ -240,7 +239,7 @@
         })
 
         //加载上传图片功能
-        function init_upload(){
+        function init_upload() {
             upload.render({
                 elem: 'th'
                 , size: 0
@@ -364,19 +363,13 @@
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
         });
 
-        /* //监听行右击事件
-         table.on('mouseRightMenu(table-filter)', function (obj) {
-
-             var index1 = layer.open({
-                 type: 1,
-                 area: ['200px', '400px'], //宽高
-                 content: $("#schedule1")
-             });
-         });
- */
-
         //下载图片
         $("#download-image").click(function () {
+            if(downloadUrl == "")
+            {
+                layer.msg('请先选择图片!');
+                return;
+            }
             location.href = downloadUrl;
             //清空downloadUrl的值
             downloadUrl = "";
@@ -414,7 +407,11 @@
             $('#show-image').attr('src', "");
             $('#image-whole-name').val("");
             //重新将table渲染一次，
-            var table_reload_temp = table.render({
+            table_reload.reload({where: {token: token, key: imageKey}});//刷新数据
+
+
+
+        /*    var table_reload_temp = table.render({
                 elem: '#image-list',
                 where: {token: token, key: imageKey},//传递token到服务端
                 url: 'http://localhost:8080/source/search_image.json', //默认传递两个参
@@ -508,15 +505,15 @@
                             }
                             , error: function () {
                                 //演示失败状态，并实现重传
-                                /* var demoText = $('#demoText');
+                                /!* var demoText = $('#demoText');
                                  demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
                                  demoText.find('.demo-reload').on('click', function () {
                                      uploadInst.upload();
-                                 });*/
+                                 });*!/
                             }
                         });
                     }
-            })
+            })*/
         });
 
         //退出登录
@@ -528,7 +525,7 @@
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 url: "http://localhost:8080/account/logout.json",
                 success: function (result) {
-                    if(result.code == 1){
+                    if (result.code == 1) {
                         layer.msg("退出成功!")
                         window.location.href = "/login"//进入主页
                     }

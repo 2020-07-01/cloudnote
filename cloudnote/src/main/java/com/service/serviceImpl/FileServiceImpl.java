@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class FileServiceImpl implements FileService {
      * @return
      */
     @Override
-    public Map uploadFile(MultipartFile file, Integer accountId) {
+    public Map uploadFile(MultipartFile file, Integer accountId) throws IOException {
 
         HashMap result = new HashMap();
         String wholeName = file.getOriginalFilename();// 获取源文件名
@@ -80,7 +81,7 @@ public class FileServiceImpl implements FileService {
                 cnFile.setAccountId(accountId);
                 cnFile.setAccountId(accountId);
                 cnFile.setFileName(newFileName);
-                if (fileMapper.selectFile(repeatFile) != null) {
+                if (fileMapper.selectFile(cnFile) != null) {
                     i++;
                 } else {
                     p = false;
@@ -90,8 +91,9 @@ public class FileServiceImpl implements FileService {
             String newWholeName = newFileName + "." + fileType;
             // 将文件存储到缓存中
             Map cacheMap = cacheService.getValue(accountId.toString());
-            cacheMap.put(Constant.CACHE_MULTIPARTFILE, file);//存储二进制文件
+            cacheMap.put(Constant.CACHE_BYTE, file.getBytes());//存储二进制文件
             cacheMap.put(Constant.CACHE_NEW_NAME, newWholeName);//存储新的文件名
+            cacheMap.put(Constant.CACHE_SIZE,file.getSize());//存储文件大小
             result.put("false", "文件名重复!");
             result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><p style=\"text-align: center;font-weight: bold;\">" + newFileName + "." + fileType + "</p>");
         }
@@ -119,8 +121,10 @@ public class FileServiceImpl implements FileService {
      * @return
      */
     @Override
-    public List<CNFile> getFileList(CNFile file) {
-        List<CNFile> list = fileMapper.getFileList(file);
+    public List<CNFile> getFileList(Condition condition) {
+
+        List<CNFile> list = fileMapper.getFileList(condition);
+
         return list;
     }
 

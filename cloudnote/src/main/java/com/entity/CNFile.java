@@ -27,6 +27,8 @@ public class CNFile {
     private String wholeName;
     // 是否已经删除
     private String isRecycle;
+    //更新时间
+    private String updateTime;
 
     public Integer getFileId() {
         return fileId;
@@ -106,5 +108,13 @@ public class CNFile {
 
     public void setFileSize(double fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

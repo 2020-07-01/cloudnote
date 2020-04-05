@@ -37,7 +37,7 @@
         now())
     </insert>
     <!--查询文件列表-->
-    <select id="getFileList" parameterType="java.lang.Integer" resultType="com.entity.CNFile" resultMap="baseMap">
+    <select id="getFileList" parameterType="java.lang.Integer" resultType="com.entity.Condition" resultMap="baseMap">
         select file_id,file_name,file_path,whole_name
         from file
         where
@@ -47,6 +47,9 @@
         </if>
         <if test="isRecycle != null and isRecycle != ''">
             and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        </if>
+        <if test="key != null and key != ''">
+            and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
         </if>
     </select>
     <!--查询文件-->
@@ -72,7 +75,13 @@
         <if test="fileUrl != null and fileUrl != ''">
             file_url = #{fileUrl,jdbcType=VARCHAR},
         </if>
-        update_time = now()
+        <if test="isRecycle != null and isRecycle !=''">
+            is_recycle = #{isRecycle,jdbcType=VARCHAR},
+        </if>
+        <if test="fileName != null and fileName !=''">
+            file_name = #{fileName,jdbcType=VARCHAR},
+        </if>
+            update_time = now()
         where
         1 = 1
         <if test="fileId != null and fileId != ''">

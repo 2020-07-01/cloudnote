@@ -6,13 +6,11 @@ import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
-import com.entity.CNFile;
-import com.entity.Condition;
-import com.entity.Constant;
-import com.entity.Image;
+import com.entity.*;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @program: UploadController
@@ -301,20 +296,27 @@ public class UploadController {
         Integer accountId = tokenUtil.getAccountIdByToken(token);
 
         Map cacheMap = cacheService.getValue(accountId.toString());
-        MultipartFile multipartFile = (MultipartFile) cacheMap.get(Constant.CACHE_MULTIPARTFILE);
+        byte[] bytes = (byte[]) cacheMap.get(Constant.CACHE_BYTE);
+        Map<String, String> objectInfo = new HashMap<>();
+        objectInfo.put(Constant.CACHE_SIZE, cacheMap.get(Constant.CACHE_SIZE).toString());
+        objectInfo.put(Constant.CACHE_NEW_NAME, cacheMap.get(Constant.CACHE_NEW_NAME).toString());
+        objectInfo.put(Constant.CACHE_ACCOUNTID, accountId.toString());
+        ossUtil.putObject(bytes, objectInfo);
+
         String newWholeName = cacheMap.get(Constant.CACHE_NEW_NAME).toString();
-        long fileSize = multipartFile.getSize();
         String fileName = newWholeName.substring(0, newWholeName.lastIndexOf("."));// 文件名
         String fileType = newWholeName.substring(newWholeName.lastIndexOf(".") + 1);// 文件类型
         String filePath = getFilePath(newWholeName, accountId.toString(), fileType);
+
         CNFile file = new CNFile();
         file.setFileName(fileName);
         file.setWholeName(newWholeName);
         file.setFileType(fileType);
         file.setAccountId(accountId);
         file.setFilePath(filePath);
-        file.setFileSize(fileSize);
         fileService.insertFile(file);
+
+        //删除缓存
         Result result = new Result(true, "存储成功!");
         Json.toJson(result, response);
     }
@@ -327,8 +329,9 @@ public class UploadController {
 
         //获取缓存中存储的新的文件名
         Map cacheMap = cacheService.getValue(accountId.toString());
-        cacheMap.remove(Constant.CACHE_MULTIPARTFILE);
+        cacheMap.remove(Constant.CACHE_SIZE);
         cacheMap.remove(Constant.CACHE_NEW_NAME);
+        cacheMap.remove(Constant.CACHE_BYTE);
         Json.toJson(new Result(true, "SUCCESS"), response);
     }
 
@@ -341,12 +344,13 @@ public class UploadController {
      * @return
      */
     private String getFilePath(String sourceFileName, String accountId, String type) {
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         return accountId + "/" + "file" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 
     /**
-     * 获取文件列表
+     * 获取文件列表/关键字查询
+     *
      * @param pageno
      * @param pagesize
      * @param token
@@ -356,26 +360,32 @@ public class UploadController {
      */
     @RequestMapping(value = "/file_list.json")
     public Object getFileList(@RequestParam(value = "page") String pageno,
-                            @RequestParam(value = "limit") String pagesize, @RequestParam(value = "token") String token, HttpServletRequest request, HttpServletResponse response) {
+                              @RequestParam(value = "limit") String pagesize, @RequestParam(value = "token") String token, @RequestParam(value = "key") String key, HttpServletRequest request, HttpServletResponse response) {
 
         Integer accountId = tokenUtil.getAccountIdByToken(token);
-        CNFile file = new CNFile();
-        file.setAccountId(accountId);
-        file.setIsRecycle(Constant.RECYCLE_NO);
-        List<CNFile> files = fileService.getFileList(file);
+        Condition condition = new Condition();
+        condition.setAccountId(accountId);
+        condition.setIsRecycle(Constant.RECYCLE_NO);
+        condition.setKey(key);
+
+        List<CNFile> files = fileService.getFileList(condition);
+
+        List<CNFileData> cnFileDataList = new ArrayList<>();
+        files.forEach(p -> {
+            cnFileDataList.add(new CNFileData(p));
+        });
 
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
-        hashMap.put("msg", "ok");
-        hashMap.put("count", files.size());
-        hashMap.put("data", files);
-
+        hashMap.put("msg", "success");
+        hashMap.put("data", cnFileDataList);
         return hashMap;
 
     }
 
     /**
-     * 获取并更新图片的url地址
+     * 获取并更新文件的url地址
+     *
      * @param jsonString
      * @param request
      * @param response
@@ -391,10 +401,51 @@ public class UploadController {
         Map ossData = ossUtil.getUrl(filePath);
         CNFile file = new CNFile();
         file.setFileId(fileId);
-        file.setFileUrl(ossData.get("url").toString());
+        String fileUrl = ossData.get("url").toString();
+        file.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
         fileService.updateFile(file);
         Result result = new Result(true, ossData.get("url").toString());
         Json.toJson(result, response);
     }
 
+    /**
+     * 删除文件
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/delete_file.json")
+    public void deleteFile(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("token");
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        Integer fileId = Integer.parseInt(jsonObject.getString("fileId"));
+        CNFile cnFile = new CNFile();
+        cnFile.setFileId(fileId);
+        cnFile.setIsRecycle(Constant.RECYCLE_YES);
+        fileService.updateFile(cnFile);
+        Result result = new Result(true, "删除成功");
+        Json.toJson(result, response);
+    }
+
+    /**
+     * 更新文件命名
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/update_file.json")
+    public void update(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("token");
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        Integer fileId = Integer.parseInt(jsonObject.getString("fileId"));
+        String fileName = jsonObject.getString("fileName");
+
+        CNFile file = new CNFile();
+        file.setFileId(fileId);
+        file.setFileName(fileName);
+        fileService.updateFile(file);
+        Json.toJson(new Result(true, "更新成功!"),response);
+
+    }
 }

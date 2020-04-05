@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.entity.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,17 @@ import com.aliyun.oss.model.PutObjectResult;
 @Component
 public class OSSUtil {
 
+    public static HashMap<String, String> typeMap = new HashMap();
+
+    static {
+        typeMap.put("doc", "file");
+        typeMap.put("pdf", "file");
+        typeMap.put("txt", "file");
+        typeMap.put("xlsx","file");
+        typeMap.put("png", "image");
+        typeMap.put("jpg", "image");
+    }
+
     @Autowired
     private OSS ossClient;
 
@@ -41,17 +53,58 @@ public class OSSUtil {
     public Map putObject(MultipartFile file, String accountId) {
         HashMap<String, Boolean> result = new HashMap<>();
         String wholeName = file.getOriginalFilename();
-        String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀名
-        String imagePath = getImagePath(wholeName, accountId, type);
+        String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀
+        String typeSwitch = typeMap.get(type);
+        String path = "";
+        switch (typeSwitch) {
+            case "file":
+                path = getFilePath(wholeName, accountId, type);
+                break;
+            case "image":
+                path = getImagePath(wholeName, accountId, type);
+                break;
+        }
         PutObjectRequest putObjectRequest = null;
         try {
-            putObjectRequest = new PutObjectRequest("001-bucket", imagePath, new ByteArrayInputStream(file.getBytes()));
+            putObjectRequest = new PutObjectRequest("001-bucket", path, new ByteArrayInputStream(file.getBytes()));
             PutObjectResult putResult = ossClient.putObject(putObjectRequest);
             result.put("true", true);
         } catch (IOException e) {
             result.put("false", false);
             e.printStackTrace();
         }
+        //ossClient.shutdown();//关闭客户端
+        return result;
+    }
+
+
+    /**
+     * 存储单个图片/文件
+     *
+     * @param bytes
+     * @param objectInfo
+     * @return
+     */
+    public Map putObject(byte[] bytes, Map<String, String> objectInfo) {
+        HashMap<String, Boolean> result = new HashMap<>();
+
+        String wholeName = objectInfo.get(Constant.CACHE_NEW_NAME);
+        String accountId = objectInfo.get("accountId");
+        String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀
+        String typeSwitch = typeMap.get(type);
+        String path = "";
+        switch (typeSwitch) {
+            case "file":
+                path = getFilePath(wholeName, accountId, type);
+                break;
+            case "image":
+                path = getImagePath(wholeName, accountId, type);
+                break;
+        }
+        PutObjectRequest putObjectRequest = null;
+        putObjectRequest = new PutObjectRequest("001-bucket", path, new ByteArrayInputStream(bytes));
+        PutObjectResult putResult = ossClient.putObject(putObjectRequest);
+        result.put("true", true);
         //ossClient.shutdown();//关闭客户端
         return result;
     }
@@ -156,10 +209,21 @@ public class OSSUtil {
      */
     private String getImagePath(String sourceFileName, String accountId, String type) {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
-        return accountId + "/" + "file" + "/" + date + "/" + type + "/" + sourceFileName;
+        return accountId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 
-
+    /**
+     * 获取图片的路径
+     *
+     * @param sourceFileName
+     * @param accountId
+     * @param type
+     * @return
+     */
+    private String getFilePath(String sourceFileName, String accountId, String type) {
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+        return accountId + "/" + "file" + "/" + date + "/" + type + "/" + sourceFileName;
+    }
 
 
 }

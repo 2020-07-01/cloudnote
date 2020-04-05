@@ -14,9 +14,13 @@ public final class Constant {
 
     public final static String RECYCLE_NO = "NO";
     //存储二进制文件
-    public final static String CACHE_MULTIPARTFILE = "multipartFile";
+    public final static String CACHE_BYTE = "byte";
     //新命名
     public final static String CACHE_NEW_NAME = "newWholeName";
+    //图片/文件大小
+    public final static String CACHE_SIZE = "size";
+    //accountId
+    public final static String CACHE_ACCOUNTID = "accountId";
 
 
 

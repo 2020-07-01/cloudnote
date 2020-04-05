@@ -1,6 +1,7 @@
 package com.mapper;
 
 import com.entity.CNFile;
+import com.entity.Condition;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface FileMapper {
     //存储文件
     void insertFile(CNFile cnFile);
     //获取file列表
-    List<CNFile> getFileList(CNFile file);
+    List<CNFile> getFileList(Condition condition);
 
     //更新file
     int updateFile(CNFile file);
