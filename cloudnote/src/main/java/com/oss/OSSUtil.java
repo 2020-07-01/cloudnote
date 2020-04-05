@@ -146,8 +146,6 @@ public class OSSUtil {
         URL url = ossClient.generatePresignedUrl("001-bucket", imagePath, date);
         String urlString = url.toString();
         result.put("url", urlString);
-        String expireDate = DateUtils.parse(date);
-        result.put("expireDate", expireDate);
         return result;
     }
 

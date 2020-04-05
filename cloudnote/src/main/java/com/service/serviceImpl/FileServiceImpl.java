@@ -117,7 +117,7 @@ public class FileServiceImpl implements FileService {
     /**
      * 获取文件列表
      *
-     * @param file
+     * @param condition
      * @return
      */
     @Override
@@ -137,69 +137,6 @@ public class FileServiceImpl implements FileService {
         } else
             return false;
     }
-
-
-   /* @Override
-    public Map deleteImage(Integer imageId) {
-        HashMap result = new HashMap();
-        try {
-            Condition condition = new Condition();
-            condition.setImageId(imageId);
-            condition.setIsRecycle("1");
-            imageMapper.updateIsRecycle(condition);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // result.put("true","删除成功")
-        return result;
-    }
-
-    @Override
-    public List<Image> selectImage(Integer accountId) {
-
-        try {
-            List<Image> images = imageMapper.selectImageList(accountId);
-            return images;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public Map updateExpireDate(String expireDate) {
-        return null;
-    }
-
-    @Override
-    public String selecImageUrl(Integer imageId) {
-        try {
-            String imageUrl = imageMapper.selectImageUrl(imageId);
-            return imageUrl;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public List<Image> selectImageByKey(Condition condition) {
-        List<Image> images = imageMapper.selectImageByKey(condition);
-        return images;
-    }
-
-    *//**
-     * 更新图片的信息
-     *
-     * @param image
-     * @return
-     *//*
-    @Override
-    public Map updateImage(Image image) {
-        imageMapper.updateImage(image);
-        return null;
-    }
-*/
 
     /**
      * 获取文件路径 55/images/png/2020-01-01/1.png

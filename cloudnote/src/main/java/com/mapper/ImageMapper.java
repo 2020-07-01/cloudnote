@@ -10,6 +10,7 @@ import com.entity.Image;
 @Repository
 public interface ImageMapper {
 
+    //存储图片
     void insertImage(Image image);
 
     List<Image> selectImageList(Integer accountId);
@@ -18,9 +19,11 @@ public interface ImageMapper {
 
     String selectImageUrl(Integer imageId);
 
-    Image selectImageByCondition(Condition condition);
-
     void updateIsRecycle(Condition condition);
 
-    List<Image> selectImageByKey(Condition condition);
+    //查询文件
+    Image selectImage(Image image);
+
+    //获取图片列表
+    List<Image> selectImageByCondition(Condition condition);
 }

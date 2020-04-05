@@ -13,7 +13,7 @@
         <result column="account_id" property="accountId" jdbcType="INTEGER"/>
         <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
         <result column="file_type" property="fileType" jdbcType="VARCHAR"/>
-        <result column="file_size" property="fileSize" jdbcType="DOUBLE"/>
+        <result column="file_size" property="fileSize" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
         <result column="file_url" property="fileUrl" jdbcType="VARCHAR"/>
@@ -31,14 +31,14 @@
         #{accountId,jdbcType=INTEGER},
         #{fileName,jdbcType=VARCHAR},
         #{fileType,jdbcType=VARCHAR},
-        #{fileSize,jdbcType=BIGINT},
+        #{fileSize,jdbcType=VARCHAR},
         #{filePath,jdbcType=INTEGER},
         #{wholeName,jdbcType=VARCHAR},
         now())
     </insert>
     <!--查询文件列表-->
-    <select id="getFileList" parameterType="java.lang.Integer" resultType="com.entity.Condition" resultMap="baseMap">
-        select file_id,file_name,file_path,whole_name
+    <select id="getFileList" parameterType="com.entity.Condition" resultType="com.entity.CNFile" resultMap="baseMap">
+        select file_id,file_name,file_path,whole_name,file_url
         from file
         where
         1 = 1

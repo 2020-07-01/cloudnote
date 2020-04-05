@@ -111,7 +111,6 @@
                     </dl>
                 </li>
             </ul>
-
         </div>
     </div>
 
@@ -152,7 +151,7 @@
                             <div class="layui-col-xs9">
                                 <div class="grid-demo">
                                     <div class="layui-input-inline" style="width: 100%;float:left;">
-                                        <input id="image-whole-name" type="text" name="title"
+                                        <input id="image-whole-name" type="text" name="title" readonly
                                                class="layui-input note-title" lay-verify="title"
                                                placeholder="标题">
                                     </div>
@@ -163,12 +162,12 @@
                             <div class="layui-col-xs3">
                                 <div class="grid-demo">
                                     <div class="layui-btn-group" style="float:right">
-                                        <button id="download-image" type="button"
+                                        <button id="downloadImage" type="button"
                                                 class="layui-btn layui-btn-primary"
                                                 style="border:none;padding: 0 5px;"><i
                                                 class="layui-icon layui-icon-download-circle"
                                                 style="font-size: 32px;"></i></button>
-                                        <button id="delete-image" type="button" class="layui-btn layui-btn-primary"
+                                        <button id="deleteImage" type="button" class="layui-btn layui-btn-primary"
                                                 button-space
                                                 style="border:none;padding: 0 5px;" onmouseover="123"><i
                                                 class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
@@ -220,10 +219,12 @@
         var deleteImageId = "";
         var deleteImagePath = "";
 
+        var imageKey = "";
+
         var table_reload = table.render({
             elem: '#image-list',
-            where: {token: token},//传递token到服务端
-            url: 'http://localhost:8080/source/get_images.json', //默认传递两个参
+            where: {token: token,key: imageKey},//传递token到服务端
+            url: 'http://localhost:8080/source/image_list.json', //默认传递两个参
             height: 'full-140',
             //cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols:
@@ -249,19 +250,11 @@
                 , accept: 'images'
                 , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
                     obj.preview(function (index, file, result) {
-                        $('#show-image').attr('src', result); //图片链接（base64）
+                        //$('#show-image').attr('src', result); //图片链接（base64）
                     });
                 }
                 , done: function (result) {//每个文件触发一次，回调一次
-                    if (result.code == 0) {
-                        //成功之后添加数据
-                        var cache = result.data.cache;
-                        var imageSize = result.data.imageSize;
-                        var data = {
-                            "cache": cache,
-                            "imageSize": imageSize
-                        }
-                        var jsonData = JSON.stringify(data);
+                    if (result.code == 0) {//失败，存在重名图片
                         var index = layer.open({
                             type: 1
                             , title: false //不显示标题栏
@@ -278,8 +271,7 @@
                                     contentType: "application/json",
                                     dataType: 'json',
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                                    data: jsonData,
-                                    url: "http://localhost:8080/source/rename.json",
+                                    url: "http://localhost:8080/source/rename_image.json",
                                     error: function (result) {
                                         alert("error");
                                     },
@@ -298,7 +290,7 @@
                                     dataType: 'json',
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                                     data: jsonData,
-                                    url: "http://localhost:8080/source/noRename.json",
+                                    url: "http://localhost:8080/source/no_rename_image.json",
                                     error: function (result) {
                                         alert("error");
                                     },
@@ -327,17 +319,11 @@
         //监听行单击事件（双击事件为：rowDouble）
         table.on('row(table-filter)', function (obj) {
             //单机时获取当前数据，存储在全局变量之中，然后点击删除或者下载按钮，最后清除数据
-            var imagePath = obj.data.imagePath;
-            var imageUrl = obj.data.imageURL;
-            var imageId = obj.data.imageId;
-            deleteImageId = imageId;
-            deleteImagePath = imagePath;
-            if (typeof (imageUrl) == "undefined") {
-                var data = {
-                    "imagePath": imagePath,
-                    "imageId": imageId
-                }
-                var jsonData = JSON.stringify(data);
+            downloadUrl = obj.data.imageUrl;
+            deleteImageId = obj.data.imageId;
+            deleteImagePath = obj.data.imagePath;
+            if (downloadUrl == null) {
+                var jsonData = JSON.stringify(obj.data);
                 $.ajax({
                     type: "post",
                     contentType: "application/json",
@@ -347,14 +333,12 @@
                     url: "http://localhost:8080/source/get_image_url.json",
 
                     success: function (result) {
-                        var temp = result.message;
-                        $('#show-image').attr('src', temp);//图片显示
-                        downloadUrl = temp;
+                        downloadUrl = result.message;
+                        $('#show-image').attr('src', downloadUrl);//图片显示
                     },
                 })
             } else {
-                $('#show-image').attr('src', imageUrl);
-                downloadUrl = imageUrl;
+                $('#show-image').attr('src', downloadUrl);
             }
             var imageWholeName = obj.data.wholeName;
             //显示标题
@@ -364,7 +348,7 @@
         });
 
         //下载图片
-        $("#download-image").click(function () {
+        $("#downloadImage").click(function () {
             if(downloadUrl == "")
             {
                 layer.msg('请先选择图片!');
@@ -376,10 +360,9 @@
         });
 
         //删除图片
-        $("#delete-image").click(function () {
+        $("#deleteImage").click(function () {
             var data = {
-                "imageId": deleteImageId,
-                "imagePath": deleteImageId
+                "imageId": deleteImageId
             }
             var jsonData = JSON.stringify(data);
             $.ajax({
@@ -392,8 +375,8 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg('删除成功!');
-                        $('#image-whole-name').val("");
-                        $('#show-image').attr('src', "");
+                        $('#imageWholeName').val("");
+                        $('#showImage').attr('src', "");
                         table_reload.reload();//刷新数据
                     }
                 },
@@ -409,111 +392,6 @@
             //重新将table渲染一次，
             table_reload.reload({where: {token: token, key: imageKey}});//刷新数据
 
-
-
-        /*    var table_reload_temp = table.render({
-                elem: '#image-list',
-                where: {token: token, key: imageKey},//传递token到服务端
-                url: 'http://localhost:8080/source/search_image.json', //默认传递两个参
-                height: 'full-140',
-                cols:
-                    [[ //标题栏
-                        {field: 'wholeName', title: '点击上传', unresize: true}
-                    ]]
-                , done:
-                    function (res, curr, count) {
-                        //完成数据渲染之后的回调
-                        $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
-                        var uploadInit = upload.render({
-                            elem: 'th'
-                            , size: 0
-                            , multiple: true    //设置多图片上传
-                            , headers: {token: token}
-                            , url: 'http://localhost:8080/source/upload_image.json'
-                            , accept: 'images'   //接受图片
-                            , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
-                                obj.preview(function (index, file, result) {
-                                    $('#show-image').attr('src', result); //图片链接（base64）
-                                });
-                            }
-                            , done: function (result) {//每个文件触发一次，回调一次
-                                if (result.code == 0) {
-                                    //成功之后添加数据
-                                    var message = result.message;
-                                    var imageSize = result.data.imageSize;
-                                    var data = {
-                                        "message": message,
-                                        "imageSize": imageSize
-                                    }
-                                    var jsonData = JSON.stringify(data);
-                                    var index = layer.open({
-                                        type: 1
-                                        , title: false //不显示标题栏
-                                        , closeBtn: false
-                                        , area: '300px;'
-                                        , shade: 0.8
-                                        , id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                                        , btn: ['yes', 'no']
-                                        , btnAlign: 'c'
-                                        , moveType: 1 //拖拽模式，0或者1
-                                        , content: result.message
-                                        , yes: function (index, layero) {
-                                            $.ajax({
-                                                type: "post",
-                                                contentType: "application/json",
-                                                dataType: 'json',
-                                                headers: {
-                                                    'Content-Type': 'application/json;charset=utf8',
-                                                    'token': token
-                                                },
-                                                data: jsonData,
-                                                url: "http://localhost:8080/source/rename.json",
-                                                error: function (result) {
-                                                    alert("error");
-                                                },
-                                                success: function (result) {
-                                                    if (result.code == 1) {
-                                                        table_reload.reload();//刷新数据
-                                                    }
-                                                }
-                                            })
-                                            $('#input-search-image').val("");
-                                            layer.close(index);
-                                        }
-                                        , btn2: function (index, layero) {
-
-                                            $.ajax({
-                                                type: "post",
-                                                contentType: "application/json",
-                                                dataType: 'json',
-                                                headers: {
-                                                    'Content-Type': 'application/json;charset=utf8',
-                                                    'token': token
-                                                },
-                                                data: jsonData,
-                                                url: "http://localhost:8080/source/noRename.json",
-                                                error: function (result) {
-                                                    alert("error");
-                                                },
-                                            })
-                                        }
-                                    });
-                                } else {
-                                    table_reload.reload();//刷新数据
-                                    return layer.msg('上传成功');
-                                }
-                            }
-                            , error: function () {
-                                //演示失败状态，并实现重传
-                                /!* var demoText = $('#demoText');
-                                 demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-                                 demoText.find('.demo-reload').on('click', function () {
-                                     uploadInst.upload();
-                                 });*!/
-                            }
-                        });
-                    }
-            })*/
         });
 
         //退出登录

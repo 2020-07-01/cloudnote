@@ -215,13 +215,13 @@
         //获取token
         var token = sessionStorage.getItem("token");
 
-        var downloadUrl = "";
+        var globalFileUrl = "";
         var globalFileId = "";
         var globalFilePath = "";
         var fileKey = "";
         var table_reload = table.render({
             elem: '#fileList',
-            where: {token: token,key:fileKey},//传递token到服务端
+            where: {token: token, key: fileKey},//传递token到服务端
             url: 'http://localhost:8080/source/file_list.json', //默认传递两个参
             height: 'full-140',
             //cellMinWidth: 380, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
@@ -246,8 +246,8 @@
                 , headers: {token: token}
                 , url: 'http://localhost:8080/source/upload_file.json'
                 , accept: 'file'
-                , acceptMime: 'file/doc,file/pdf'//筛选的文件类型
-                , exts: 'doc|pdf|txt|xlsx'
+                , acceptMime: 'file/txt,file/pdf'//筛选的文件类型
+                , exts: 'pdf'
                 , before: function (obj) {
                     obj.preview(function (index, file, result) {
                         //$('#show-image').attr('src', result); //图片链接（base64）
@@ -319,10 +319,12 @@
         //监听行单击事件（双击事件为：rowDouble）
         table.on('row(table-filter)', function (obj) {
             //单机时获取当前数据，存储在全局变量之中，然后点击删除或者下载按钮，最后清除数据
-            var fileUrl = obj.data.imageURL;
+            globalFileUrl = obj.data.fileUrl;
             globalFileId = obj.data.fileId;
             globalFilePath = obj.data.filePath;
-            if (typeof (fileUrl) == "undefined") {
+
+            if (globalFileUrl == null) {
+                alert("222");
                 var jsonData = JSON.stringify(obj.data);
                 $.ajax({
                     type: "post",
@@ -333,12 +335,11 @@
                     url: "http://localhost:8080/source/get_file_url.json",
                     success: function (result) {
                         $('#showFile').attr('src', result.message);//文件显示
-                        downloadUrl = temp;
+
                     },
                 })
             } else {
-                $('#showFile').attr('src', fileUrl);
-                downloadUrl = fileUrl;
+                $('#showFile').attr('src', globalFileUrl);
             }
             //显示标题
             $('#fileWholeName').val(obj.data.wholeName);
@@ -348,13 +349,11 @@
 
         //下载图片
         $("#downloadFile").click(function () {
-            if (downloadUrl == "") {
+            if (globalFileUrl == "") {
                 layer.msg('请先选择文件!');
                 return;
             }
-            location.href = downloadUrl;
-            //清空downloadUrl的值
-            downloadUrl = "";
+            location.href = globalFileUrl;
         });
 
         //删除图片
@@ -363,7 +362,6 @@
                 layer.msg('请先选择文件!');
                 return;
             }
-
             var data = {
                 "fileId": globalFileId,
                 "filePath": globalFilePath
@@ -398,37 +396,37 @@
             table_reload.reload({where: {token: token, key: fileKey}});
         });
 
-      /*  //获得焦点时发生事件
-        $("#fileWholeName").focus(function () {
-            var fileName = $("#fileWholeName").val();
-            $("#fileWholeName").val(fileName.substr(0, fileName.indexOf(".")))
-        });*/
+        /*  //获得焦点时发生事件
+          $("#fileWholeName").focus(function () {
+              var fileName = $("#fileWholeName").val();
+              $("#fileWholeName").val(fileName.substr(0, fileName.indexOf(".")))
+          });*/
 
         //失去焦点时自动保存
-       /* $("#fileWholeName").blur(function () {
-            var fileName = $("#fileWholeName").val();
-            var formData = {
-                "fileName":fileName,
-                "fileId":globalFileId
-            }
-            var jsonData = JSON.stringify(formData);
-            $.ajax({
-                type: "post",
-                contentType: "application/json",
-                dataType: 'json',
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: jsonData,
-                url: "http://localhost:8080/source/update_file.json",
-                success: function (result) {
-                    if (result.code == 1) {
-                        layer.msg('删除成功!');
-                        $('#fileWholeName').val("");
-                        $('#showFile').attr('src', "");
-                        table_reload.reload();//刷新数据
-                    }
-                },
-            })
-        });*/
+        /* $("#fileWholeName").blur(function () {
+             var fileName = $("#fileWholeName").val();
+             var formData = {
+                 "fileName":fileName,
+                 "fileId":globalFileId
+             }
+             var jsonData = JSON.stringify(formData);
+             $.ajax({
+                 type: "post",
+                 contentType: "application/json",
+                 dataType: 'json',
+                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                 data: jsonData,
+                 url: "http://localhost:8080/source/update_file.json",
+                 success: function (result) {
+                     if (result.code == 1) {
+                         layer.msg('删除成功!');
+                         $('#fileWholeName').val("");
+                         $('#showFile').attr('src', "");
+                         table_reload.reload();//刷新数据
+                     }
+                 },
+             })
+         });*/
     })
 </script>
 </html>
