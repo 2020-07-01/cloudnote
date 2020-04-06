@@ -176,9 +176,7 @@
                                                 class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
                                         </button>
                                         <button type="button" id="star" class="layui-btn layui-btn-primary"
-                                                style="border:none;padding: 0 5px"><i id="ifStar"
-                                                                                      class="layui-icon"
-                                                                                      style="font-size: 32px;">&#xe600;</i>
+                                                style="border:none;padding: 0 5px"><i id="ifStar" class="layui-icon" style="font-size: 32px;">&#xe600;</i>
                                         </button>
                                     </div>
                                 </div>
@@ -201,7 +199,7 @@
                             <div class="layui-col-xs12">
                                 <div class="layui-row">
                                     <div class="layui-col-xs12" style="width: 100%;height: 100%;">
-                                        <textarea name="" id="mytextarea" cols="30" rows="10"></textarea>
+                                        <textarea name="" id="noteContent" cols="30" rows="10"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -223,15 +221,27 @@
     //设置全局token
     var token = sessionStorage.getItem("token");
     //设置全局noteId
-    var noteId = "";
+    var globalNoteId = "";
     //标签点击全局判断
     var flag = true;
 
     //加载编辑插件
     function init_tinymce() {
         tinymce.init({
-            selector: '#mytextarea',
+            selector: '#noteContent',
             height: 415,
+            language:'zh_CN',
+            skin: 'oxide',
+            resize: true,
+            auto_focus: true,
+            theme:'silver',
+            menubar: 'file edit format',
+            contextmenu: "copy ", //右击菜单
+            menu: {
+                edit: {title: '编辑', items: 'undo redo | cut copy  pastetext | selectall'},
+            },
+            // plugins: "wordcount",
+            // toolbar: "wordcount",
         });
     };
 
@@ -300,7 +310,7 @@
         table.on('row(note-filter)', function (obj) {
             var noteContent = obj.data.noteContent;
             var noteTitle = obj.data.noteTitle;
-            noteId = obj.data.noteId;//设置全局笔记id
+            globalNoteId = obj.data.noteId;//设置全局笔记id
             $('#note-title').val(noteTitle);//设置标题
             tinyMCE.activeEditor.setContent(noteContent);
             $('#noteType').val(obj.data.noteType);
@@ -322,12 +332,12 @@
                 layer.msg("已收藏");
             }
             ;
-            if (noteId == "") {
+            if (globalNoteId == "") {
                 return;
             }
             ;
             var data = {
-                "noteId": noteId
+                "noteId": globalNoteId
             };
             var jsonData = JSON.stringify(data);
             $.ajax({
@@ -352,17 +362,15 @@
             })
         });
 
-
-        //创建笔记
+        //清除编辑区
         $("#cleanEditSpace").click(function () {
             $('#note-title').val("");//清除标题
             tinyMCE.activeEditor.setContent("");//清除内容
             $('#noteType').val("");//清除标签
             $('#ifStar').html("&#xe600;");//设置空心收藏
-            noteId = "";//清除全局noteId
+            globalNoteId = "";//清除全局noteId
             showNoteType();//显示标签
         });
-
 
         //保存/更新笔记
         $("#saveNote").click(function () {
@@ -374,7 +382,7 @@
                 "noteTitle": noteTitle,
                 "noteType": noteType,
                 "noteContent": noteContent,
-                "noteId": noteId
+                "noteId": globalNoteId
             }
             var jsonData = JSON.stringify(data);
             $.ajax({
@@ -401,11 +409,11 @@
         //删除笔记
         $("#delete-note").click(function () {
 
-            if (noteId == "") {
+            if (globalNoteId == "") {
                 return;
             }
             var data = {
-                "noteId": noteId
+                "noteId": globalNoteId
             }
             var jsonData = JSON.stringify(data);
             $.ajax({
@@ -465,7 +473,7 @@
             tinyMCE.activeEditor.setContent("");
             $('#noteType').val("");//清除标签
             $('#ifStar').html("&#xe600;");//设置空心收藏
-            noteId = "";
+            globalNoteId = "";
         }
 
         //初始化标签
@@ -500,6 +508,38 @@
             //设置
             $('#noteType').val(data.value);//设置标题
         });
+
+        /*  //获得焦点时发生事件
+          $("#fileWholeName").focus(function () {
+              var fileName = $("#fileWholeName").val();
+              $("#fileWholeName").val(fileName.substr(0, fileName.indexOf(".")))
+          });*/
+
+        //失去焦点时自动保存
+        /* $("#fileWholeName").blur(function () {
+             var fileName = $("#fileWholeName").val();
+             var formData = {
+                 "fileName":fileName,
+                 "fileId":globalFileId
+             }
+             var jsonData = JSON.stringify(formData);
+             $.ajax({
+                 type: "post",
+                 contentType: "application/json",
+                 dataType: 'json',
+                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                 data: jsonData,
+                 url: "http://localhost:8080/source/update_file.json",
+                 success: function (result) {
+                     if (result.code == 1) {
+                         layer.msg('删除成功!');
+                         $('#fileWholeName').val("");
+                         $('#showFile').attr('src', "");
+                         table_reload.reload();//刷新数据
+                     }
+                 },
+             })
+         });*/
 
         //退出登录
         $("#logout").click(function () {

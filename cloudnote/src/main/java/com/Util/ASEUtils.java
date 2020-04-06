@@ -1,4 +1,4 @@
-package com.ase;
+package com.Util;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -36,6 +36,7 @@ public class ASEUtils {
 
         // 创建 AES算法生成器
         KeyGenerator gen = KeyGenerator.getInstance(ALGORITHM);
+
         // 初始化算法生成器
         gen.init(KEY_SIZE, random);
 
@@ -54,18 +55,14 @@ public class ASEUtils {
     public static byte[] encrypt(byte[] plainBytes, byte[] key) throws Exception {
         // 生成密钥对象
         SecretKey secKey = generateKey(key);
-
         // 获取 AES 密码器
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         // 初始化密码器（加密模型）
         cipher.init(Cipher.ENCRYPT_MODE, secKey);
-
         // 加密数据, 返回密文
         byte[] cipherBytes = cipher.doFinal(plainBytes);
-
         return cipherBytes;
     }
-
 
     /**
      * 解密
@@ -77,12 +74,10 @@ public class ASEUtils {
     public static byte[] decrypt(byte[] cipherBytes, byte[] key) throws Exception {
         // 生成密钥对象
         SecretKey secKey = generateKey(key);
-
         // 获取 AES 密码器
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         // 初始化密码器（解密模型）
         cipher.init(Cipher.DECRYPT_MODE, secKey);
-
         // 解密数据, 返回明文
         byte[] plainBytes = cipher.doFinal(cipherBytes);
 
@@ -92,14 +87,18 @@ public class ASEUtils {
 
     public static void main(String[] args) throws Exception {
 
-        String contnet = "中文";
+        StringBuilder c = new StringBuilder();
+        for(int i = 0;i<21845;i++){
+            c = c.append("l");
+        }
+        String contnet = c.toString();
+        System.out.println(contnet.length());
 
-        String key = "1234567890";  //加密的盐
+        String key = "12jljl3";  //加密的盐21856
 
         byte[] encrypt = ASEUtils.encrypt(contnet.getBytes(),key.getBytes());
-        for(int i = 0;i<encrypt.length;i++){
-            System.out.print(encrypt[i]);
-        }
+        System.out.println(encrypt.length);
+
 
         byte[] decrypt = ASEUtils.decrypt(encrypt,key.getBytes());
         System.out.println(new String(decrypt));
