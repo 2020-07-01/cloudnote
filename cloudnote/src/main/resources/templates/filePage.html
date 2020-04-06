@@ -246,8 +246,7 @@
                 , headers: {token: token}
                 , url: 'http://localhost:8080/source/upload_file.json'
                 , accept: 'file'
-                , acceptMime: 'file/txt,file/pdf'//筛选的文件类型
-                , exts: 'pdf'
+                , acceptMime: '.pdf'//筛选的文件类型
                 , before: function (obj) {
                     obj.preview(function (index, file, result) {
                         //$('#show-image').attr('src', result); //图片链接（base64）
@@ -255,14 +254,18 @@
                 }
                 , done: function (result) {//每个文件触发一次，回调一次
                     if (result.code == 0) {
+                        var formData = {
+                            "cacheKey": result.data.cache
+                        }
+                        var jsonData = JSON.stringify(formData);
                         var index = layer.open({
                             type: 1
                             , title: false //不显示标题栏
                             , closeBtn: false
                             , area: '300px;'
-                            , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                             , btn: ['yes', 'no']
                             , btnAlign: 'c'
+                            , shade: 0.5
                             , moveType: 1 //拖拽模式，0或者1
                             , content: result.message
                             , yes: function (index, layero) {
@@ -270,6 +273,7 @@
                                     type: "post",
                                     contentType: "application/json",
                                     dataType: 'json',
+                                    data: jsonData,
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                                     url: "http://localhost:8080/source/rename_file.json",
                                     error: function (result) {
@@ -324,7 +328,6 @@
             globalFilePath = obj.data.filePath;
 
             if (globalFileUrl == null) {
-                alert("222");
                 var jsonData = JSON.stringify(obj.data);
                 $.ajax({
                     type: "post",

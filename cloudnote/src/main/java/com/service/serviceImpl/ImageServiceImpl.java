@@ -81,12 +81,19 @@ public class ImageServiceImpl implements ImageService {
 
             result.put("false", "图片名称重复!");
             result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><p style=\"text-align: center;font-weight: bold;\">" + newImageName + "." + imageType + "</p>");
-            //将新的文件名存储在缓存中
+
             // 将文件存储到缓存中
             Map cacheMap = cacheService.getValue(accountId.toString());
-            cacheMap.put(Constant.CACHE_BYTE, file.getBytes());//存储二进制文件
-            cacheMap.put(Constant.CACHE_NEW_NAME, newWholeName);//存储新的文件名
-            cacheMap.put(Constant.CACHE_SIZE, file.getSize());//存储文件大小
+
+            Map imageMap = new HashMap();
+
+
+            imageMap.put(Constant.CACHE_BYTE, file.getBytes());//存储二进制文件
+            imageMap.put(Constant.CACHE_NEW_NAME, newWholeName);//存储新的文件名
+            imageMap.put(Constant.CACHE_SIZE, file.getSize());//存储文件大小
+
+            cacheMap.put(newWholeName,imageMap);
+            result.put("fail",newWholeName);
         } else {// 如果图片命名不重复
             Image newImage = new Image();
             newImage.setAccountId(accountId);

@@ -18,7 +18,7 @@ public class CNFile {
     // 地址
     private String filePath;
     // 大小
-    private double fileSize;
+    private String fileSize;
     // 创建日期
     private String createTime;
     // url
@@ -102,19 +102,19 @@ public class CNFile {
         this.isRecycle = isRecycle;
     }
 
-    public double getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(double fileSize) {
-        this.fileSize = fileSize;
-    }
-
     public String getUpdateTime() {
         return updateTime;
     }
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
     }
 }
