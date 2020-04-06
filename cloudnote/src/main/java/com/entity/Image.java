@@ -18,17 +18,17 @@ public class Image {
     // 地址
     private String imagePath;
     // 大小
-    private Long imageSize;
+    private String imageSize;
     // 创建日期
     private String createTime;
     // url
     private String imageUrl;
-    // 连接失效时间
-    private String expireDate;
     //完整的文件名
     private String wholeName;
     // 是否已经删除
     private String isRecycle;
+    //更新时间
+    private String updateTime;
 
     public Integer getImageId() {
         return imageId;
@@ -78,14 +78,6 @@ public class Image {
         this.accountId = accountId;
     }
 
-    public Long getImageSize() {
-        return imageSize;
-    }
-
-    public void setImageSize(Long imageSize) {
-        this.imageSize = imageSize;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -94,13 +86,6 @@ public class Image {
         this.imageUrl = imageUrl;
     }
 
-    public String getExpireDate() {
-        return expireDate;
-    }
-
-    public void setExpireDate(String expireDate) {
-        this.expireDate = expireDate;
-    }
 
     public String getWholeName() {
         return wholeName;
@@ -116,5 +101,21 @@ public class Image {
 
     public void setIsRecycle(String isRecycle) {
         this.isRecycle = isRecycle;
+    }
+
+    public String getImageSize() {
+        return imageSize;
+    }
+
+    public void setImageSize(String imageSize) {
+        this.imageSize = imageSize;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

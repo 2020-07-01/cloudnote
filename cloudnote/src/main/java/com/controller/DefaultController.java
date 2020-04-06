@@ -86,7 +86,7 @@ public class DefaultController {
         return "timingTask";
     }
 
-    @RequestMapping(value = "/imagePage")
+    @RequestMapping(value = "/image_page")
     public String toResource() {
         return "imagePage";
     }

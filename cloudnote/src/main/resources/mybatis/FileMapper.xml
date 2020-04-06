@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.mapper.FileMapper">
+
+    <sql id="base_sql">
+        file_id,account_id,file_name,file_type,file_size,create_time,file_path,file_url,whole_name,is_recycle,update_time
+    </sql>
+
+    <resultMap id="baseMap" type="com.entity.CNFile">
+        <id column="file_id" property="fileId" jdbcType="INTEGER"/>
+        <result column="account_id" property="accountId" jdbcType="INTEGER"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="file_type" property="fileType" jdbcType="VARCHAR"/>
+        <result column="file_size" property="fileSize" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+        <result column="file_url" property="fileUrl" jdbcType="VARCHAR"/>
+        <result column="whole_name" property="wholeName" jdbcType="VARCHAR"/>
+        <result column="is_recycle" property="isRecycle" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+
+    <!--存储文件-->
+    <insert id="insertFile" parameterType="com.entity.CNFile" useGeneratedKeys="true" keyProperty="fileId">
+        insert into file(account_id,file_name,file_type,file_size,file_path,whole_name,create_time)
+        value (
+        #{accountId,jdbcType=INTEGER},
+        #{fileName,jdbcType=VARCHAR},
+        #{fileType,jdbcType=VARCHAR},
+        #{fileSize,jdbcType=VARCHAR},
+        #{filePath,jdbcType=INTEGER},
+        #{wholeName,jdbcType=VARCHAR},
+        now())
+    </insert>
+    <!--查询文件列表-->
+    <select id="getFileList" parameterType="com.entity.Condition" resultType="com.entity.CNFile" resultMap="baseMap">
+        select file_id,file_name,file_path,whole_name,file_url
+        from file
+        where
+        1 = 1
+        <if test="accountId != '' and accountId != null">
+            and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
+        <if test="isRecycle != null and isRecycle != ''">
+            and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        </if>
+        <if test="key != null and key != ''">
+            and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
+        </if>
+    </select>
+    <!--查询文件-->
+    <select id="selectFile" parameterType="com.entity.CNFile" resultType="com.entity.CNFile"
+            resultMap="baseMap">
+        select
+        <include refid="base_sql"/>
+        from file
+        where
+        1 = 1
+        <if test="accountId != '' and accountId != null">
+            and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
+        <if test="fileName != '' and fileName != null">
+            and file_name = #{fileName,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <!--更新文件-->
+    <update id="updateFile" parameterType="com.entity.CNFile">
+        update file
+        set
+        <if test="fileUrl != null and fileUrl != ''">
+            file_url = #{fileUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="isRecycle != null and isRecycle !=''">
+            is_recycle = #{isRecycle,jdbcType=VARCHAR},
+        </if>
+        <if test="fileName != null and fileName !=''">
+            file_name = #{fileName,jdbcType=VARCHAR},
+        </if>
+            update_time = now()
+        where
+        1 = 1
+        <if test="fileId != null and fileId != ''">
+            and file_id = #{fileId,jdbcType=INTEGER}
+        </if>
+    </update>
+
+    <!-- <select id="selectImageByKey" parameterType="com.entity.Condition" resultType="com.entity.Image"
+             resultMap="baseMap">
+         select  image_id,image_name,image_path,whole_name
+         from image
+         where account_id = #{accountId,jdbcType=INTEGER} and is_recycle = '0' and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
+     </select>-->
+
+
+</mapper>

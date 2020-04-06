@@ -5,7 +5,7 @@
 <mapper namespace="com.mapper.ImageMapper">
 
     <sql id="base_sql">
-        image_id,account_id,image_name,image_type,image_size,create_time,image_path,image_url,expire_date,whole_name,is_recycle
+        image_id,account_id,image_name,image_type,image_size,create_time,image_path,image_url,whole_name,is_recycle
     </sql>
 
     <resultMap id="baseMap" type="com.entity.Image">
@@ -13,13 +13,13 @@
         <result column="account_id" property="accountId" jdbcType="INTEGER"/>
         <result column="image_name" property="imageName" jdbcType="INTEGER"/>
         <result column="image_type" property="imageType" jdbcType="VARCHAR"/>
-        <result column="image_size" property="imageSize" jdbcType="BIGINT"/>
+        <result column="image_size" property="imageSize" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="image_path" property="imagePath" jdbcType="VARCHAR"/>
         <result column="image_url" property="imageUrl" jdbcType="VARCHAR"/>
-        <result column="expire_date" property="imageDate" jdbcType="VARCHAR"/>
         <result column="whole_name" property="wholeName" jdbcType="VARCHAR"/>
         <result column="is_recycle" property="isRecycle" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
     </resultMap>
 
     <select id="selectImageUrl" parameterType="java.lang.Integer" resultType="java.lang.String">
@@ -28,14 +28,14 @@
          from image
          where image_id = #{imageId,jdbcType=INTEGER}
      </select>
-
+    <!--存储图片-->
     <insert id="insertImage" parameterType="com.entity.Image">
         insert into image(account_id,image_name,image_type,image_size,image_path,whole_name,create_time)
         value (
         #{accountId,jdbcType=INTEGER},
         #{imageName,jdbcType=VARCHAR},
         #{imageType,jdbcType=VARCHAR},
-        #{imageSize,jdbcType=BIGINT},
+        #{imageSize,jdbcType=VARCHAR},
         #{imagePath,jdbcType=INTEGER},
         #{wholeName,jdbcType=VARCHAR},
         now())
@@ -47,47 +47,62 @@
         where account_id = #{accountId,jdbcType=INTEGER} and is_recycle = '0'
     </select>
 
-
+    <!--更新图片-->
     <update id="updateImage" parameterType="com.entity.Image">
          update image
-         set    image_url = #{imageUrl,jdbcType=VARCHAR},
-                expire_date = #{expireDate,jdbcType=VARCHAR}
-         where image_id = #{imageId,jdbcType=INTEGER}
+        set
+        <if test="imageUrl != null and imageUrl != ''">
+            image_url = #{imageUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="isRecycle != null and isRecycle !=''">
+            is_recycle = #{isRecycle,jdbcType=VARCHAR},
+        </if>
+        <if test="imageName != null and imageName !=''">
+            image_name = #{imageName,jdbcType=VARCHAR},
+        </if>
+        update_time = now()
+        where
+        1 = 1
+        <if test="imageId != null and imageId != ''">
+            and image_id = #{imageId,jdbcType=INTEGER}
+        </if>
      </update>
 
-    <select id="selectImageByCondition" parameterType="com.entity.Condition" resultType="com.entity.Image"
-            resultMap="baseMap">
-        select  image_id
+    <!--获取图片列表-->
+    <select id="selectImageByCondition" parameterType="com.entity.Condition" resultType="com.entity.Image" resultMap="baseMap">
+        select image_id,image_path,whole_name,image_url
         from image
-        where account_id = #{accountId,jdbcType=INTEGER} and image_name = #{imageName,jdbcType=VARCHAR} and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        where
+        1 = 1
+        <if test="accountId != '' and accountId != null">
+            and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
+        <if test="isRecycle != null and isRecycle != ''">
+            and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        </if>
+        <if test="key != null and key != ''">
+            and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
+        </if>
+    </select>
+
+    <!--查询图片-->
+    <select id="selectImage" parameterType="com.entity.Image" resultType="com.entity.Image"
+            resultMap="baseMap">
+        select
+        <include refid="base_sql"/>
+        from image
+        where
+        1 = 1
+        <if test="accountId != '' and accountId != null">
+            and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
+        <if test="imageName != '' and imageName != null">
+            and image_name = #{imageName,jdbcType=VARCHAR}
+        </if>
+        <if test="isRecycle != null and isRecycle !=''">
+            is_recycle = #{isRecycle,jdbcType=VARCHAR},
+        </if>
     </select>
 
 
-    <update id="updateIsRecycle" parameterType="com.entity.Condition">
-         update image
-         set is_recycle = #{isRecycle,jdbcType=VARCHAR}
-         where image_id = #{imageId,jdbcType=INTEGER}
-     </update>
-
-    <select id="selectImageByKey" parameterType="com.entity.Condition" resultType="com.entity.Image"
-            resultMap="baseMap">
-        select  image_id,image_name,image_path,whole_name
-        from image
-        where account_id = #{accountId,jdbcType=INTEGER} and is_recycle = '0' and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
-    </select>
-
-    <!--
-         <delete id="deleteNotesById" parameterType="java.util.List">
-             delete from note
-             where note_id in
-             <foreach collection="collection" item="item" open="(" separator="," close=")">
-                 #{item,jdbcType=INTEGER}
-             </foreach>
-         </delete>
-
-         <update id="updateNote" parameterType="com.entity.Note">
-             update note
-             set note_content = #{noteContent,jdbcType=VARCHAR}, update_time = now(),note_title = #{noteTitle,jdbcType=VARCHAR},note_type=#{noteType,jdbcType=INTEGER}
-             where note_id = #{noteId,jdbcType=INTEGER}
-         </update>-->
 </mapper>

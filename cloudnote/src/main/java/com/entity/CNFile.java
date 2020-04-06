@@ -8,7 +8,7 @@ package com.entity;
 public class CNFile {
 
     // id
-    private Integer imageId;
+    private Integer fileId;
     // accountId
     private Integer accountId;
     // 名称
@@ -18,7 +18,7 @@ public class CNFile {
     // 地址
     private String filePath;
     // 大小
-    private Long fileSize;
+    private String fileSize;
     // 创建日期
     private String createTime;
     // url
@@ -27,13 +27,15 @@ public class CNFile {
     private String wholeName;
     // 是否已经删除
     private String isRecycle;
+    //更新时间
+    private String updateTime;
 
-    public Integer getImageId() {
-        return imageId;
+    public Integer getFileId() {
+        return fileId;
     }
 
-    public void setImageId(Integer imageId) {
-        this.imageId = imageId;
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
     }
 
     public Integer getAccountId() {
@@ -68,14 +70,6 @@ public class CNFile {
         this.filePath = filePath;
     }
 
-    public Long getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(Long fileSize) {
-        this.fileSize = fileSize;
-    }
-
     public String getCreateTime() {
         return createTime;
     }
@@ -106,5 +100,21 @@ public class CNFile {
 
     public void setIsRecycle(String isRecycle) {
         this.isRecycle = isRecycle;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
     }
 }
