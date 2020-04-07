@@ -17,7 +17,7 @@ public interface NoteService {
     // 保存信息
     Map insertNote(Note note);
 
-    Map updateNote(Note note);
+    Map updateNote(Note note) throws Exception;
 
     List<Note> selectNoteByCondition(Condition condition);
 }

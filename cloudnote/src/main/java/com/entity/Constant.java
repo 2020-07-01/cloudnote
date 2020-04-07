@@ -6,6 +6,11 @@ package com.entity;
  * @Date 2020/4/2 13:14
  */
 public final class Constant {
+
+    public final static String SUCCESS = "success";
+
+    public final static String FAILURE = "failure";
+
     public final  static String OFFLINE = "OFFLINE";
 
     public final static String ONLINE = "ONLINE";

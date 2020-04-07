@@ -12,22 +12,29 @@ import java.security.SecureRandom;
  **/
 public class ASEUtils {
 
-    /** 密钥长度: 128, 192 or 256 */
+    /**
+     * 密钥长度: 128, 192 or 256
+     */
     private static final int KEY_SIZE = 128;
 
-    /** 加密/解密算法名称 */
+    /**
+     * 加密/解密算法名称
+     */
     private static final String ALGORITHM = "AES";
 
-    /** 随机数生成器（RNG）算法名称 */
+    /**
+     * 随机数生成器（RNG）算法名称
+     */
     private static final String RNG_ALGORITHM = "SHA1PRNG";
 
     /**
      * 数据密钥对象
+     *
      * @param key
      * @return
      * @throws Exception
      */
-    private static SecretKey generateKey(byte[] key) throws Exception{
+    private static SecretKey generateKey(byte[] key) throws Exception {
 
         // 创建安全随机数生成器
         SecureRandom random = SecureRandom.getInstance(RNG_ALGORITHM);
@@ -47,6 +54,7 @@ public class ASEUtils {
 
     /**
      * 加密
+     *
      * @param plainBytes
      * @param key
      * @return
@@ -66,6 +74,7 @@ public class ASEUtils {
 
     /**
      * 解密
+     *
      * @param cipherBytes
      * @param key
      * @return
@@ -88,7 +97,7 @@ public class ASEUtils {
     public static void main(String[] args) throws Exception {
 
         StringBuilder c = new StringBuilder();
-        for(int i = 0;i<21845;i++){
+        for (int i = 0; i < 21845; i++) {
             c = c.append("l");
         }
         String contnet = c.toString();
@@ -96,11 +105,11 @@ public class ASEUtils {
 
         String key = "12jljl3";  //加密的盐21856
 
-        byte[] encrypt = ASEUtils.encrypt(contnet.getBytes(),key.getBytes());
+        byte[] encrypt = ASEUtils.encrypt(contnet.getBytes(), key.getBytes());
         System.out.println(encrypt.length);
 
 
-        byte[] decrypt = ASEUtils.decrypt(encrypt,key.getBytes());
+        byte[] decrypt = ASEUtils.decrypt(encrypt, key.getBytes());
         System.out.println(new String(decrypt));
     }
 

@@ -48,7 +48,7 @@ public class NoteController {
                             @RequestParam(value = "type", defaultValue = "") String type,
                             @RequestParam(value = "isRecycle", defaultValue = "0") String isRecycle,
                             @RequestParam(value = "key", defaultValue = "") String key,
-                            @RequestParam(value = "star",defaultValue = "") String star) {
+                            @RequestParam(value = "star", defaultValue = "") String star) {
 
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
@@ -70,10 +70,6 @@ public class NoteController {
         return hashMap;
     }
 
-    private List<Note> search(Condition condition) {
-        List<Note> list = noteService.selectNoteByCondition(condition);
-        return list;
-    }
 
     /**
      * 保存笔记
@@ -89,25 +85,32 @@ public class NoteController {
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-
         Note note = new Note();
         note.setAccountId(accountId);
-        String noteTitle = jsonObject.getString("noteTitle");
-        if (!noteTitle.equals("")) {
-            note.setNoteTitle(jsonObject.getString("noteTitle"));
+        //标题->字数前端控制100字
+        if (!jsonObject.getString("noteTitle").trim().equals("")) {
+            note.setNoteTitle(jsonObject.getString("noteTitle").trim());
         } else {
             Json.toJson(new Result(false, "标题不能为空!"), response);
+            return;
         }
-        String noteContent = jsonObject.getString("noteContent");
-        if (!noteContent.equals("")) {
-            note.setNoteContent(jsonObject.getString("noteContent"));
+        //内容->字数20000字
+        if (!jsonObject.getString("noteContent").trim().equals("")) {
+            if (jsonObject.getString("noteContent").trim().length() > 20000) {
+                Json.toJson(new Result(false, "内容的大小超过限制!最多可存储20000字"), response);
+                return;
+            } else {
+                note.setNoteContent(jsonObject.getString("noteContent").trim());
+            }
         } else {
             Json.toJson(new Result(false, "内容不能为空!"), response);
+            return;
         }
-        if (jsonObject.getString("noteType").equals("")) {
+        //类型->字数30字 前端控制
+        if (jsonObject.getString("noteType").trim().equals("")) {
             note.setNoteType("未分类");
         } else {
-            note.setNoteType(jsonObject.getString("noteType"));
+            note.setNoteType(jsonObject.getString("noteType").trim());
         }
         String noteId = jsonObject.getString("noteId");
         //如果此笔记存在则进行更新
@@ -125,13 +128,15 @@ public class NoteController {
             result = noteService.insertNote(note);
             if (result.get("true") != null) {
                 Json.toJson(new Result(true, "保存成功!"), response);
+                return;
             } else {
                 Json.toJson(new Result(false, "保存失败!"), response);
+                return;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Json.toJson(new Result(false, "保存失败!"), response);
         }
+        Json.toJson(new Result(false, "保存失败!"), response);
     }
 
     /**
@@ -142,7 +147,6 @@ public class NoteController {
     private boolean updateNote(Note note) {
         try {
             noteService.updateNote(note);
-            return true;
         } catch (Exception e) {
 
         }
@@ -222,6 +226,7 @@ public class NoteController {
 
     /**
      * 加星
+     *
      * @param jsonString
      * @param request
      * @param response

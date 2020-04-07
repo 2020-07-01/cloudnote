@@ -153,12 +153,11 @@
                                 <div class="grid-demo">
                                     <div class="layui-input-inline" style="width: 100%;float:left;">
                                         <input type="text" id="note-title" name="noteTitle"
-                                               class="layui-input note-title"
+                                               class="layui-input note-title" maxlength="100"
                                                placeholder="标题">
                                     </div>
                                 </div>
                             </div>
-
                             <div class="layui-col-xs3">
                                 <div class="grid-demo">
                                     <div class="layui-btn-group" style="float:right">
@@ -176,7 +175,8 @@
                                                 class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
                                         </button>
                                         <button type="button" id="star" class="layui-btn layui-btn-primary"
-                                                style="border:none;padding: 0 5px"><i id="ifStar" class="layui-icon" style="font-size: 32px;">&#xe600;</i>
+                                                style="border:none;padding: 0 5px"><i id="ifStar" class="layui-icon"
+                                                                                      style="font-size: 32px;">&#xe600;</i>
                                         </button>
                                     </div>
                                 </div>
@@ -188,8 +188,8 @@
                             <div class="layui-col-xs12" style="margin: 0;">
                                 <div class="layui-form-item" style="margin-bottom: 0">
                                     <input type="text" id="noteType" name="noteTitle"
-                                           class="layui-input"
-                                           placeholder="此处设置笔记标签">
+                                           class="layui-input" maxlength="30"
+                                           placeholder="笔记标签">
                                 </div>
                             </div>
                         </div>
@@ -230,11 +230,11 @@
         tinymce.init({
             selector: '#noteContent',
             height: 415,
-            language:'zh_CN',
+            language: 'zh_CN',
             skin: 'oxide',
             resize: true,
             auto_focus: true,
-            theme:'silver',
+            theme: 'silver',
             menubar: 'file edit format',
             contextmenu: "copy ", //右击菜单
             menu: {

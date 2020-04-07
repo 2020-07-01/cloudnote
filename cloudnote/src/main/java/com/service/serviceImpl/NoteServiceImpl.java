@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.Util.ASEUtils;
+import com.entity.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,22 +31,35 @@ public class NoteServiceImpl implements NoteService {
     public Map insertNote(Note note) {
         HashMap result = new HashMap();
         try {
-            noteMapper.insertNote(note);
-            result.put("true", "SUCCESS");
+            //内容进行加密
+            note.setNoteContent(ASEUtils.encrypt(note.getNoteContent().getBytes(), note.getAccountId().toString().getBytes()).toString());
+            int row = noteMapper.insertNote(note);
+            if (row == 1) {
+                result.put("true", Constant.SUCCESS);
+            } else {
+                result.put("false", Constant.FAILURE);
+            }
         } catch (Exception e) {
-            result.put("false", "FAILURE");
+            e.getMessage();
+            e.printStackTrace();
         }
         return result;
     }
 
     @Override
-    public Map updateNote(Note note) {
+    public Map updateNote(Note note) throws Exception {
         Map result = new HashMap();
+        //内容加密
+        note.setNoteContent(ASEUtils.decrypt(note.getNoteContent().getBytes(), note.getAccountId().toString().getBytes()).toString());
         try {
-            noteMapper.updateNote(note);
-            result.put("true", "SUCCESS");
+            int row = noteMapper.updateNote(note);
+            if (row == 1) {
+                result.put("true", "SUCCESS");
+            } else {
+                result.put("false", "FAILURE");
+            }
         } catch (Exception e) {
-            result.put("false", "FALIURE");
+            e.getMessage();
         }
         return result;
     }
