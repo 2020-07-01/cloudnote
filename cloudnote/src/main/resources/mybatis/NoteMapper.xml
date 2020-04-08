@@ -13,7 +13,7 @@
         <result column="account_id" property="accountId" jdbcType="INTEGER"/>
         <result column="note_type" property="noteType" jdbcType="VARCHAR"/>
         <result column="note_title" property="noteTitle" jdbcType="VARCHAR"/>
-        <result column="note_content" property="noteContent" jdbcType="VARCHAR"/>
+        <result column="note_content" property="noteContent" jdbcType="BLOB"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
         <result column="is_recycle" property="isRecycle" jdbcType="VARCHAR"/>
@@ -31,7 +31,7 @@
             and note_type = #{type,jdbcType=VARCHAR}
         </if>
         <if test="key != null and key != ''">
-            and note_title like '%' #{key} '%' or note_content like '%' #{key} '%'
+            and note_title like '%' #{key} '%'
         </if>
         <if test="star != null and star !=''">
             and star = #{star,jdbcType=VARCHAR}
@@ -40,14 +40,14 @@
 
     <insert id="insertNote" parameterType="com.entity.Note" useGeneratedKeys="true" keyProperty="noteId">
         insert into note (account_id,note_type,note_title,note_content,create_time)
-     value ( #{accountId,jdbcType=INTEGER},#{noteType,jdbcType=VARCHAR},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=VARCHAR},now())
+     value ( #{accountId,jdbcType=INTEGER},#{noteType,jdbcType=VARCHAR},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=BLOB},now())
     </insert>
 
     <update id="updateNote" parameterType="com.entity.Note">
         update note
         <set>
             <if test="noteContent != null">
-                note_content = #{noteContent,jdbcType=VARCHAR},
+                note_content = #{noteContent,jdbcType=BLOB},
             </if>
             <if test="noteTitle != null">
                 note_title = #{noteTitle,jdbcType=VARCHAR},

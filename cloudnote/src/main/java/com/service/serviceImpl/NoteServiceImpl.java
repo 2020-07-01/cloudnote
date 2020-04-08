@@ -31,8 +31,6 @@ public class NoteServiceImpl implements NoteService {
     public Map insertNote(Note note) {
         HashMap result = new HashMap();
         try {
-            //内容进行加密
-            note.setNoteContent(ASEUtils.encrypt(note.getNoteContent().getBytes(), note.getAccountId().toString().getBytes()).toString());
             int row = noteMapper.insertNote(note);
             if (row == 1) {
                 result.put("true", Constant.SUCCESS);
@@ -49,8 +47,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public Map updateNote(Note note) throws Exception {
         Map result = new HashMap();
-        //内容加密
-        note.setNoteContent(ASEUtils.decrypt(note.getNoteContent().getBytes(), note.getAccountId().toString().getBytes()).toString());
+
         try {
             int row = noteMapper.updateNote(note);
             if (row == 1) {

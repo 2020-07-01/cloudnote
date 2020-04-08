@@ -12,7 +12,7 @@ public class Note {
     private Integer accountId;
     private String noteType;
     private String noteTitle;
-    private String noteContent;
+    private byte[] noteContent;
     private String createTime;
     private String updateTime;
     private String isRecycle;
@@ -42,11 +42,11 @@ public class Note {
         this.noteTitle = noteTitle;
     }
 
-    public String getNoteContent() {
+    public byte[] getNoteContent() {
         return noteContent;
     }
 
-    public void setNoteContent(String noteContent) {
+    public void setNoteContent(byte[] noteContent) {
         this.noteContent = noteContent;
     }
 

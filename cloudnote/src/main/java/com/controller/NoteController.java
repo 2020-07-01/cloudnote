@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.Util.ASEUtils;
 import com.Util.Json;
 import com.Util.Result;
 import com.Util.TokenUtils;
@@ -46,7 +47,7 @@ public class NoteController {
     @RequestMapping(value = "/note_list")
     public Object indexList(@RequestParam(value = "token") String token,
                             @RequestParam(value = "type", defaultValue = "") String type,
-                            @RequestParam(value = "isRecycle", defaultValue = "0") String isRecycle,
+                            @RequestParam(value = "isRecycle", defaultValue = "NO") String isRecycle,
                             @RequestParam(value = "key", defaultValue = "") String key,
                             @RequestParam(value = "star", defaultValue = "") String star) {
 
@@ -62,6 +63,13 @@ public class NoteController {
         }
         List<Note> list = noteService.selectNoteByCondition(condition);
 
+        Note note = list.get(0);
+        try {
+            byte[] a  = ASEUtils.decrypt(note.getNoteContent(),note.getAccountId().toString().getBytes());
+            System.out.println(new String(a));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
         hashMap.put("msg", "1312");
@@ -100,7 +108,12 @@ public class NoteController {
                 Json.toJson(new Result(false, "内容的大小超过限制!最多可存储20000字"), response);
                 return;
             } else {
-                note.setNoteContent(jsonObject.getString("noteContent").trim());
+                try {
+                    byte[] con = ASEUtils.encrypt(jsonObject.getString("noteContent").trim().getBytes("UTF-8"),accountId.toString().getBytes("UTF-8"));
+                    note.setNoteContent(con);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             Json.toJson(new Result(false, "内容不能为空!"), response);
