@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.entity.Condition;
 import com.entity.Note;
+import com.entity.NoteData;
 
 /**
  * @author :qiang
@@ -16,9 +17,11 @@ public interface NoteService {
 
     // 保存信息
     Map insertNote(Note note);
-
+    // 更新笔记
     Map updateNote(Note note) throws Exception;
-
-    List<Note> selectNoteByCondition(Condition condition);
+    // 笔记列表
+    List<NoteData> selectNoteByCondition(Condition condition);
+    // 笔记标签
+    List<String> selectNoteType(Note note);
 }
 

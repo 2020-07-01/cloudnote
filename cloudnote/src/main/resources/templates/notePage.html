@@ -125,10 +125,11 @@
 
                         <div class="layui-row">
                             <div class="layui-col-xs12" style="text-align:center;">
-                                <form class="layui-form" action="post">
+                                <form class="layui-form" lay-filter="formSelectType" action="post">
                                     <div class="layui-form-item" style="margin-bottom: 0">
                                         <div class="layui-input-inline" style="width: 100%">
-                                            <select name="noteType" id="selectNoteTpe" lay-filter="selectNoteTpe">
+                                            <select name="selectNoteType" id="selectNoteType" lay-filter="selectNoteType"
+                                                    lay-search>
                                             </select>
                                         </div>
                                     </div>
@@ -186,11 +187,15 @@
                         <!--类型-->
                         <div class="layui-row" id="showType" style="display: none;">
                             <div class="layui-col-xs12" style="margin: 0;">
-                                <div class="layui-form-item" style="margin-bottom: 0">
-                                    <input type="text" id="noteType" name="noteTitle"
-                                           class="layui-input" maxlength="30"
-                                           placeholder="笔记标签">
-                                </div>
+                                <form class="layui-form" lay-filter="formNoteType" id="1" action="post">
+                                    <div class="layui-form-item" style="margin-bottom: 0">
+                                        <input type="text" id="inputNoteType" name="inputNoteType"
+                                               class="layui-input" autocomplete="off" onkeyup="search()"
+                                               placeholder="笔记标签" style="width: 90%;z-index:2;position:absolute">
+                                        <select name="setNoteType" id="setNoteType" lay-filter="setNoteType" lay-search>
+                                        </select>
+                                    </div>
+                                </form>
                             </div>
                         </div>
 
@@ -199,7 +204,7 @@
                             <div class="layui-col-xs12">
                                 <div class="layui-row">
                                     <div class="layui-col-xs12" style="width: 100%;height: 100%;">
-                                        <textarea name="" id="noteContent" cols="30" rows="10"></textarea>
+                                        <textarea name="noteContent" id="noteContent" cols="30" rows="10" style="border: none"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -225,35 +230,43 @@
     //标签点击全局判断
     var flag = true;
 
-    //加载编辑插件
-    function init_tinymce() {
-        tinymce.init({
-            selector: '#noteContent',
-            height: 415,
-            language: 'zh_CN',
-            skin: 'oxide',
-            resize: true,
-            auto_focus: true,
-            theme: 'silver',
-            menubar: 'file edit format',
-            contextmenu: "copy ", //右击菜单
-            menu: {
-                edit: {title: '编辑', items: 'undo redo | cut copy  pastetext | selectall'},
-            },
-            // plugins: "wordcount",
-            // toolbar: "wordcount",
-        });
-    };
 
-    //页面加载完成前执行
-    $(document).ready(function () {
-        init_tinymce();
-    });
+    /*  //页面加载完成前执行
+      $(document).ready(function () {
+          init_tinymce();
+      });*/
 
     layui.use(['table', 'element', 'form', 'layer'], function () {
+
+        init_tinymce();
+
         var table = layui.table;
         var layer = layui.layer;
         var form = layui.form;
+
+        //加载编辑插件
+        function init_tinymce() {
+            tinymce.init({
+                selector: '#noteContent',
+                height: 415,
+                language: 'zh_CN',
+                skin: 'oxide',
+                resize: true,
+                theme: 'silver',
+                menubar: 'file edit format',
+                contextmenu: "copy ", //右击菜单
+                menu: {
+                    edit: {title: '编辑', items: 'undo redo | cut copy  pastetext | selectall'},
+                },
+                // plugins: "wordcount",
+                // toolbar: "wordcount",
+                setup: function (editor) {
+                    editor.on('focus', function () {
+                        form.render();
+                    });
+                }
+            });
+        };
 
         //初始化列表
         table.render({
@@ -313,7 +326,11 @@
             globalNoteId = obj.data.noteId;//设置全局笔记id
             $('#note-title').val(noteTitle);//设置标题
             tinyMCE.activeEditor.setContent(noteContent);
-            $('#noteType').val(obj.data.noteType);
+
+            form.val("formNoteType", {
+                "inputNoteType": obj.data.noteType
+            });
+
             showNoteType();//设置标签可见
             //显示是否已经收藏
             var ifStar = obj.data.star;
@@ -333,6 +350,7 @@
             }
             ;
             if (globalNoteId == "") {
+                layer.msg("请先选择笔记!");
                 return;
             }
             ;
@@ -350,10 +368,6 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
-                        /*init_table("", "","");
-                        hideNoteType();
-                        clearEidtSpace();
-                        init_select();*/
                         $('#ifStar').html("&#xe658;");//设置为已经收藏
                     } else {
                         layer.msg(result.message);
@@ -364,12 +378,13 @@
 
         //清除编辑区
         $("#cleanEditSpace").click(function () {
-            $('#note-title').val("");//清除标题
+            $('#note-title').val("无标题笔记");//清除标题
             tinyMCE.activeEditor.setContent("");//清除内容
-            $('#noteType').val("");//清除标签
+            $('#inputNoteType').val("");//清除标签
             $('#ifStar').html("&#xe600;");//设置空心收藏
             globalNoteId = "";//清除全局noteId
             showNoteType();//显示标签
+
         });
 
         //保存/更新笔记
@@ -377,7 +392,7 @@
             var noteTitle = $('#note-title').val();
             //获取html内容
             var noteContent = tinyMCE.activeEditor.getContent();
-            var noteType = $('#noteType').val();
+            var noteType = $('#inputNoteType').val();
             var data = {
                 "noteTitle": noteTitle,
                 "noteType": noteType,
@@ -410,6 +425,7 @@
         $("#delete-note").click(function () {
 
             if (globalNoteId == "") {
+                layer.msg("请先选择笔记!");
                 return;
             }
             var data = {
@@ -437,6 +453,15 @@
         //全文搜索
         $("#search-note").click(function () {
             var key = $("#input-search-note").val();
+            if(key == "")
+            {
+                layer.msg("检索字段不能为空!");
+                return;
+            }
+            //清空的标签值
+            form.val("formSelectType", {
+                "selectNoteType": ""
+            });
             init_table("", key, "");
         })
 
@@ -471,14 +496,14 @@
         function clearEidtSpace() {
             $('#note-title').val("");//清除标题
             tinyMCE.activeEditor.setContent("");
-            $('#noteType').val("");//清除标签
+            $('#inputNoteType').val("");//清除标签
             $('#ifStar').html("&#xe600;");//设置空心收藏
             globalNoteId = "";
         }
 
         //初始化标签
         function init_select() {
-            $("#selectNoteTpe").empty();//先对类型进行清空
+            $("#selectNoteType").empty();//先对类型进行清空
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -488,26 +513,57 @@
                 success: function (result) {
                     if (result.code == 1) {
                         var selectData = result.data.textValues;
-                        var htmls = '<option value="">请选择类型</option>';
+                        $("#selectNoteType").append('<option value="">请选择标签类型</option>');
+                        $("#setNoteType").append('<option value="">请选择标签类型</option>');
                         for (var x in selectData) {
-                            htmls += '<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>'
+                            $("#selectNoteType").append('<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>');
+                            $("#setNoteType").append('<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>');
                         }
-                        htmls += '<option value = "未分类">未分类</option>'
-                        $("#selectNoteTpe").append(htmls);
                         form.render();
                     }
                 },
             })
         };
 
-        //标签选择事件
-        form.on('select(selectNoteTpe)', function (data) {
+        //右侧标签选择事件
+        form.on('select(setNoteType)', function (data) {
+            alert(data.value);
+            //赋值input
+            $('#inputNoteType').val(data.value);
+            $("#setNoteType").next().find("dl").css({"display": "none"});
+            form.render();
+        });
+
+        window.search = function () {
+            var value = $("#inputNoteType").val();
+            $("#setNoteType").val(value);
+            form.render();
+            $("#setNoteType").next().find("dl").css({"display": "block"});
+            var dl = $("#setNoteType").next().find("dl").children();
+            var j = -1;
+            for (var i = 0; i < dl.length; i++) {
+                if (dl[i].innerHTML.indexOf(value) <= -1) {
+                    dl[i].style.display = "none";
+                    j++;
+                }
+                if (j == dl.length - 1) {
+                    $("#setNoteType").next().find("dl").css({"display": "none"});
+                }
+            }
+
+        }
+
+        //左侧选择事件
+        form.on('select(selectNoteType)', function (data) {
             init_table(data.value, "", "");
             hideNoteType();
             clearEidtSpace();
-            //设置
-            $('#noteType').val(data.value);//设置标题
         });
+
+        //失去焦点时重新渲染
+        $('#inputNoteType').blur(function () {
+            form.render();
+        })
 
         /*  //获得焦点时发生事件
           $("#fileWholeName").focus(function () {

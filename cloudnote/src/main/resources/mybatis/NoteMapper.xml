@@ -66,4 +66,13 @@
         where note_id = #{noteId,jdbcType=INTEGER}
     </update>
 
+    <select id="selectNoteType" resultType="java.lang.String" parameterType="com.entity.Note">
+        select note_type
+        from note
+        where account_id = #{accountId,jdbcType = INTEGER}
+        <if test="isRecycle != null and isRecycle != ''">
+            and is_recycle = #{isRecycle,jdbcType = VARCHAR}
+        </if>
+        group by note_type
+    </select>
 </mapper>

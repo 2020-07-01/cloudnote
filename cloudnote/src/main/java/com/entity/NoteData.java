@@ -1,31 +1,29 @@
 package com.entity;
 
 /**
- * @author :qiang
- * @date :2019/12/3 下午10:10
- * @description :笔记信息类
- * @other :
+ * @Description 返回实体
+ * @Author yq
+ * @Date 2020/4/9 19:45
  */
-public class Note {
+public class NoteData {
 
     private Integer noteId;
     private Integer accountId;
     private String noteType;
     private String noteTitle;
-    private byte[] noteContent;
+    private String noteContent;
     private String createTime;
     private String updateTime;
     private String isRecycle;
     private String star;
 
-    public Note() {
-
+    public NoteData(Note note){
+        this.accountId = note.getAccountId();
+        this.noteId  = note.getNoteId();
+        this.noteTitle = note.getNoteTitle();
+        this.star = note.getStar();
+        this.noteType = note.getNoteType();
     }
-
-    public Note(Integer accountId) {
-        this.accountId = accountId;
-    }
-
     public Integer getNoteId() {
         return noteId;
     }
@@ -42,6 +40,14 @@ public class Note {
         this.accountId = accountId;
     }
 
+    public String getNoteType() {
+        return noteType;
+    }
+
+    public void setNoteType(String noteType) {
+        this.noteType = noteType;
+    }
+
     public String getNoteTitle() {
         return noteTitle;
     }
@@ -50,11 +56,11 @@ public class Note {
         this.noteTitle = noteTitle;
     }
 
-    public byte[] getNoteContent() {
+    public String getNoteContent() {
         return noteContent;
     }
 
-    public void setNoteContent(byte[] noteContent) {
+    public void setNoteContent(String noteContent) {
         this.noteContent = noteContent;
     }
 
@@ -80,14 +86,6 @@ public class Note {
 
     public void setIsRecycle(String isRecycle) {
         this.isRecycle = isRecycle;
-    }
-
-    public String getNoteType() {
-        return noteType;
-    }
-
-    public void setNoteType(String noteType) {
-        this.noteType = noteType;
     }
 
     public String getStar() {

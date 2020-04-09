@@ -19,10 +19,12 @@ public interface NoteMapper {
     // 保存笔记信息
     int insertNote(Note note);
 
-    //
+    // 笔记列表
     List<Note> selectNoteByCondition(Condition condition);
 
     // 更新笔记
     int updateNote(Note note);
 
+    //笔记标签
+    List<String> selectNoteType(Note note);
 }

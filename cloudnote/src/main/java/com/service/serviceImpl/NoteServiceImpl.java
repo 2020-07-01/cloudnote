@@ -1,11 +1,13 @@
 package com.service.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.Util.ASEUtils;
 import com.entity.Constant;
+import com.entity.NoteData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,9 +64,31 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<Note> selectNoteByCondition(Condition condition) {
+    public List<NoteData> selectNoteByCondition(Condition condition) {
         List<Note> notes = noteMapper.selectNoteByCondition(condition);
-        return notes;
+        List<NoteData> noteDatas = new ArrayList<>();
+        notes.forEach(p->{
+            NoteData noteData = new NoteData(p);
+            try {
+                noteData.setNoteContent(new String(ASEUtils.decrypt(p.getNoteContent(),p.getAccountId().toString().getBytes("UTF-8"))));
+                noteDatas.add(noteData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        });
+
+        return noteDatas;
+    }
+
+    @Override
+    public List<String> selectNoteType(Note note) {
+        List<String> noteTypes = noteMapper.selectNoteType(note);
+        if(noteTypes != null){
+            return noteTypes;
+        }else {
+            return null;
+        }
     }
 
 }

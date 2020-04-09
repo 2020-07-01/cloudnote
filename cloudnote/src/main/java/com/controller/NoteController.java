@@ -6,9 +6,7 @@ import com.Util.Result;
 import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.entity.Condition;
-import com.entity.Note;
-import com.entity.TextValue;
+import com.entity.*;
 import com.service.serviceImpl.NoteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,20 +59,12 @@ public class NoteController {
             condition.setKey(key);
             condition.setType("");
         }
-        List<Note> list = noteService.selectNoteByCondition(condition);
-
-        Note note = list.get(0);
-        try {
-            byte[] a  = ASEUtils.decrypt(note.getNoteContent(),note.getAccountId().toString().getBytes());
-            System.out.println(new String(a));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        List<NoteData> noteDataList = noteService.selectNoteByCondition(condition);
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
-        hashMap.put("msg", "1312");
-        hashMap.put("count", list.size());
-        hashMap.put("data", list);
+        hashMap.put("msg", "success");
+        hashMap.put("count", noteDataList.size());
+        hashMap.put("data", noteDataList);
         return hashMap;
     }
 
@@ -109,7 +99,7 @@ public class NoteController {
                 return;
             } else {
                 try {
-                    byte[] con = ASEUtils.encrypt(jsonObject.getString("noteContent").trim().getBytes("UTF-8"),accountId.toString().getBytes("UTF-8"));
+                    byte[] con = ASEUtils.encrypt(jsonObject.getString("noteContent").trim().getBytes("UTF-8"), accountId.toString().getBytes("UTF-8"));
                     note.setNoteContent(con);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -189,7 +179,7 @@ public class NoteController {
         try {
             Note note = new Note();
             note.setNoteId(noteId);
-            note.setIsRecycle("1");
+            note.setIsRecycle(Constant.RECYCLE_YES);
             Map map = noteService.updateNote(note);
             if (map.get("true") != null) {
                 Json.toJson(new Result(true, "删除成功!"), response);
@@ -209,27 +199,17 @@ public class NoteController {
      */
     @RequestMapping(value = "/init_noteType.json")
     public void initNoteType(HttpServletRequest request, HttpServletResponse response) {
+
         String token = request.getHeader("token");
-        int accountId = tokenUtil.getAccountIdByToken(token);
-        Condition condition = new Condition();
-        condition.setAccountId(accountId);
-        condition.setIsRecycle("0");
-        List<Note> notes = noteService.selectNoteByCondition(condition);
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        Note note = new Note();
+        note.setAccountId(accountId);
+        note.setIsRecycle(Constant.RECYCLE_NO);
+        List<String> noteTypes = noteService.selectNoteType(note);
         HashMap data = new HashMap();
         ArrayList<TextValue> textValues = new ArrayList<>();
-        HashMap repeatHashMap = new HashMap();
-        for (Note note : notes) {
-            if (repeatHashMap.get(note.getNoteType()) != null) {
-                continue;
-            }
-            if (note.getNoteType().equals("未分类")) {
-                continue;
-            }
-            TextValue textValue = new TextValue();
-            textValue.setKey(note.getNoteType());
-            textValue.setValue(note.getNoteType());
-            repeatHashMap.put(note.getNoteType(), note.getNoteType());
-            //此处进行去重
+        for (String item : noteTypes) {
+            TextValue textValue = new TextValue(item, item);
             textValues.add(textValue);
         }
         data.put("textValues", textValues);
@@ -254,7 +234,7 @@ public class NoteController {
         String noteId = jsonObject.getString("noteId");
 
         Note note = new Note();
-        note.setStar("1");
+        note.setStar(Constant.RECYCLE_YES);
         note.setNoteId(Integer.parseInt(noteId));
         try {
             updateNote(note);
