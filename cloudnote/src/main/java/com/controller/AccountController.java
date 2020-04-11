@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
 import com.entity.Account;
 import com.entity.Condition;
+import com.interceptor.PassToken;
+import com.interceptor.UserLoginToken;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.AccountServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -99,9 +101,12 @@ public class AccountController {
      * @param response
      * @return
      */
+    @PassToken
     @RequestMapping(value = "login.json")
     public void Login(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject;
+        Result result = null;
+        String accountId = "";
         try {
             jsonObject = JSON.parseObject(jsonParam);
             Account account = new Account(jsonObject.getString("accountName"), jsonObject.getString("accountPassword"));
@@ -112,26 +117,32 @@ public class AccountController {
             account.setLoginCount(1);
             boolean flag = accountService.updateLoginStatus(account);
             if (!flag) {
-                Json.toJson(new Result(false, "用户名或密码错误!"), response);
+                result = new Result(false, "用户名或密码错误!");
+                log.info("账户：" + accountId + "登录失败!");
             } else {
                 //获取accountId生成token
                 Condition condition = new Condition();
                 condition.setAccountName(jsonObject.getString("accountName"));
                 condition.setAccountPassword(jsonObject.getString("accountPassword"));
-                String accountId = accountService.findAccountId(condition);
+                accountId = accountService.findAccountId(condition);
+                //生成token并存储在缓存中
                 String token = tokenService.createToken(accountId);
-                //生成token之后将accountId存储在缓存中
                 HashMap cacheMap = new HashMap();
                 cacheMap.put("accountId", accountId);
                 cacheService.putValue(accountId, cacheMap);
+
                 HashMap data = new HashMap();
                 data.put("token", token);
-                Json.toJson(new Result(true, "登录成功", data), response);
+                result = new Result(true, "登录成功!", data);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Json.toJson(new Result(false, "出现异常"), response);
+            result = new Result(false, "登录失败");
+            log.info("账户：" + accountId + "登录异常!");
         }
+
+        Json.toJson(result, response);
+        log.info("账户：" + accountId + "登录成功!");
     }
 
     /*  *//**
@@ -388,6 +399,7 @@ public class AccountController {
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/logout.json")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
 
@@ -446,11 +458,12 @@ public class AccountController {
 
     /**
      * 获取用户信息
+     *
      * @param request
      * @param response
      */
     @RequestMapping(value = "/get_account.json")
-    public void getAccountData(HttpServletRequest request, HttpServletResponse response){
+    public void getAccountData(HttpServletRequest request, HttpServletResponse response) {
 
         String token = request.getHeader("token");
         Integer accountId = tokenService.getAccountIdByToken(token);
@@ -458,8 +471,8 @@ public class AccountController {
         Account account = accountService.getAccountData(accountId);
 
         Map data = new HashMap();
-        data.put("data",account);
-        Json.toJson(new Result(true, "SUCCESS",data), response);
+        data.put("data", account);
+        Json.toJson(new Result(true, "SUCCESS", data), response);
     }
 
 
@@ -482,8 +495,6 @@ public class AccountController {
         data.put("data", adminDataList);
         return data;
     }*/
-
-
 
 
 }

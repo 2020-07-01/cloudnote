@@ -70,12 +70,16 @@ public class TokenUtils {
     public boolean verifyToken(String token) {
 
         try {
+            if (token == null) {
+                return false;
+            }
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("yq").build();
             DecodedJWT jwt = verifier.verify(token);
             String accountId = jwt.getAudience().get(0);
             if (accountId == null) {
                 log.info("token验证失败:token中不存在账户ID");
+                return false;
             }
             Map map = cacheService.getValue(accountId);
             if (map == null) {
@@ -84,11 +88,10 @@ public class TokenUtils {
             if (!map.get("accountId").equals(accountId)) {
                 return false;
             }
-            return true;
         } catch (Exception e) {
             e.toString();
         }
-        return false;
+        return true;
     }
 
     /**

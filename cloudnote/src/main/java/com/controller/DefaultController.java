@@ -1,6 +1,8 @@
 package com.controller;
 
 import com.Util.TokenUtils;
+import com.interceptor.PassToken;
+import com.interceptor.UserLoginToken;
 import com.job.ScheduleJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author :qiang
@@ -43,30 +47,14 @@ public class DefaultController {
      *
      * @return
      */
+    @PassToken
     @RequestMapping(value = "login")
     public String toEmailLogin() {
         return "login";
     }
 
-    /**
-     * 动态验证登录
-     *
-     * @return
-     */
-    @RequestMapping(value = "to_dynamicLogin")
-    public String toPhoneLogin() {
-        return "dynamicLogin";
-    }
-
-    @RequestMapping("to_index")
-    public String toIndex(HttpServletRequest request) {
-        String token = request.getParameter("token");
-        // 对token进行验证
-        tokenUtil.verifyToken(token);
-        return "notePage";
-    }
-
     @RequestMapping("/to_note_page")
+    @UserLoginToken
     public String toNotePage() {
         return "notePage";
     }

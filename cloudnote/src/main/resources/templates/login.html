@@ -11,7 +11,6 @@
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
-
 </head>
 <body>
 
@@ -78,7 +77,7 @@
                     if (result.code == 1) {
                         var tokenData = result.data.token;
                         sessionStorage.setItem("token", tokenData);//存储token
-                        window.location.href = "/to_index?token=" + tokenData;//进入主页
+                        window.location.href = "/to_note_page?token=" + tokenData;//进入主页
                     } else {
                         layer.msg(result.message);
                     }

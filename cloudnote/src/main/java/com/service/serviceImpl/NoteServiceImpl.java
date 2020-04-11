@@ -47,30 +47,27 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Map updateNote(Note note) throws Exception {
-        Map result = new HashMap();
+    public boolean updateNote(Note note) throws Exception {
 
         try {
             int row = noteMapper.updateNote(note);
             if (row == 1) {
-                result.put("true", "SUCCESS");
-            } else {
-                result.put("false", "FAILURE");
+                return true;
             }
         } catch (Exception e) {
             e.getMessage();
         }
-        return result;
+        return false;
     }
 
     @Override
     public List<NoteData> selectNoteByCondition(Condition condition) {
         List<Note> notes = noteMapper.selectNoteByCondition(condition);
         List<NoteData> noteDatas = new ArrayList<>();
-        notes.forEach(p->{
+        notes.forEach(p -> {
             NoteData noteData = new NoteData(p);
             try {
-                noteData.setNoteContent(new String(ASEUtils.decrypt(p.getNoteContent(),p.getAccountId().toString().getBytes("UTF-8"))));
+                noteData.setNoteContent(new String(ASEUtils.decrypt(p.getNoteContent(), p.getAccountId().toString().getBytes("UTF-8"))));
                 noteDatas.add(noteData);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -84,9 +81,9 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public List<String> selectNoteType(Note note) {
         List<String> noteTypes = noteMapper.selectNoteType(note);
-        if(noteTypes != null){
+        if (noteTypes != null) {
             return noteTypes;
-        }else {
+        } else {
             return null;
         }
     }

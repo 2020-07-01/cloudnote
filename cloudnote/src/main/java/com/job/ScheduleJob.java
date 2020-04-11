@@ -42,7 +42,7 @@ public class ScheduleJob {
      * 日程提醒
      * 2分钟刷新一次 发送邮件
      */
-    @Scheduled(cron = "0 */2 * * * ?")
+    //@Scheduled(cron = "0 */2 * * * ?")
     public void scheduleRemind() {
 
         /**
