@@ -8,15 +8,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
 import com.entity.Account;
-import com.entity.AccountPIMData;
-import com.entity.AdminData;
 import com.entity.Condition;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.AccountServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +27,10 @@ import java.util.*;
  * @description :
  * @other :
  */
+@Slf4j
 @RequestMapping(value = "/account")
 @RestController
 public class AccountController {
-
-    /**
-     * 日志
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
 
     @Autowired
     private AccountServiceImpl accountService;
@@ -65,9 +57,7 @@ public class AccountController {
         String tempSecurityCode = request.getHeader("tempSecurityCode");
         try {
             JSONObject jsonObject = JSON.parseObject(jsonParam);
-
             String confirmSecurityCode = jsonObject.getString("securityCode");
-
             if (!tempSecurityCode.equals(confirmSecurityCode)) {
                 Json.toJson(new Result(false, "验证码错误"), response);
                 return;
@@ -102,7 +92,7 @@ public class AccountController {
 
     /**
      * 用户名登录
-     * 登录时在缓存中添加Map
+     * 登陆成功后在缓存中创建私有Map
      *
      * @param jsonParam
      * @param request

@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cache.CacheService;
 import com.entity.Account;
 import com.service.AccountService;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @description :
  * @other :
  */
+@Slf4j
 @Component
 public class TokenUtils {
 
@@ -47,7 +49,7 @@ public class TokenUtils {
                 // 添加头部信息
                 .withHeader(header)
                 // 设置签发者
-                .withIssuer("admin")
+                .withIssuer("yq")
                 // 设置用户信息
                 .withAudience(accountId)
                 // 设置创建时间
@@ -69,11 +71,11 @@ public class TokenUtils {
 
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
-            JWTVerifier verifier = JWT.require(algorithm).withIssuer("admin").build();
+            JWTVerifier verifier = JWT.require(algorithm).withIssuer("yq").build();
             DecodedJWT jwt = verifier.verify(token);
             String accountId = jwt.getAudience().get(0);
             if (accountId == null) {
-                throw new RuntimeException("token校验失败,原因：token中不存在accountId");
+                log.info("token验证失败:token中不存在账户ID");
             }
             Map map = cacheService.getValue(accountId);
             if (map == null) {
@@ -98,7 +100,7 @@ public class TokenUtils {
     public Integer getAccountIdByToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
-            JWTVerifier verifier = JWT.require(algorithm).withIssuer("admin").build();
+            JWTVerifier verifier = JWT.require(algorithm).withIssuer("yq").build();
             DecodedJWT jwt = verifier.verify(token);// 进行验证
             String accountId = jwt.getAudience().get(0);
             if (accountId != null) {

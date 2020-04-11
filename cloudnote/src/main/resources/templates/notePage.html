@@ -223,21 +223,17 @@
 
 <script th:inline="none">
 
-    //设置全局token
+    //设置全局数据
     var token = sessionStorage.getItem("token");
-    //设置全局noteId
     var globalNoteId = "";
-    //标签点击全局判断
     var flag = true;
 
-
-    /*  //页面加载完成前执行
-      $(document).ready(function () {
-          init_tinymce();
-      });*/
+    var oldNoteTitle = "";
+    var oldNoteContent = "";
+    var oldNoteType = "";
 
     layui.use(['table', 'element', 'form', 'layer'], function () {
-
+        //初始化编辑器
         init_tinymce();
 
         var table = layui.table;
@@ -258,17 +254,20 @@
                 menu: {
                     edit: {title: '编辑', items: 'undo redo | cut copy  pastetext | selectall'},
                 },
-                // plugins: "wordcount",
-                // toolbar: "wordcount",
                 setup: function (editor) {
+                    //焦点移入事件
                     editor.on('focus', function () {
                         form.render();
+                    });
+                    //焦点移出事件
+                    editor.on('blur', function () {
+                        alert("1");
                     });
                 }
             });
         };
-
-        //初始化列表
+        init_table("","","");
+        /*//初始化列表
         table.render({
             elem: '#note-list',
             where: {token: token},//传递token到服务端
@@ -284,7 +283,7 @@
                     $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
                     init_select();//初始化标签
                 }
-        })
+        })*/
 
         //所有笔记
         $("#all").click(function () {
@@ -315,6 +314,7 @@
                 , done:
                     function (res, curr, count) {
                         $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
+                        init_select();//初始化标签
                     }
             })
         }

@@ -1,6 +1,7 @@
 package com.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @description :拦截器配置类
  * @other :
  */
-//@Configuration
+@Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
     @Autowired
@@ -30,9 +31,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         //不拦截的路径
         List<String> list = new ArrayList<>();
         list.add("/register");
-        list.add("/phoneRegister");
         list.add("/login");
-        list.add("/to_dynamicLogin");
         list.add("/findPassword");
         list.add("/static/**");
 
