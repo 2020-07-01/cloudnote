@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
 import com.entity.*;
+import com.interceptor.UserLoginToken;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
@@ -148,6 +149,7 @@ public class UploadController {
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/image_list.json")
     public Object getImageList(@RequestParam(value = "page") String pageno,
                                @RequestParam(value = "limit") String pagesize, @RequestParam(value = "token") String token, @RequestParam(value = "key") String key,

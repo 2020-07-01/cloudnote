@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -145,7 +146,7 @@ public class AccountController {
         log.info("账户：" + accountId + "登录成功!");
     }
 
-    /*  *//**
+    /**
      * 动态登录 手机号/邮箱登录/验证码进行登录
      *
      * @param jsonParam
@@ -403,7 +404,7 @@ public class AccountController {
     @RequestMapping(value = "/logout.json")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
 
-        String token = request.getHeader("token");
+        String token = request.getParameter("token");
         Integer accountId = tokenService.getAccountIdByToken(token);
         //删除缓存
         cacheService.deleteValue(String.valueOf(accountId));
@@ -411,7 +412,13 @@ public class AccountController {
         account.setIsOnline("OFFLINE");
         account.setAccountId(accountId);
         accountService.updateLoginStatus(account);
-        Json.toJson(new Result(true, "注销成功!"), response);
+
+        try {
+            response.sendRedirect("/login");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Json.toJson(new Result(true, "注销成功!"), response);
     }
 
     /**

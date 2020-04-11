@@ -31,6 +31,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         //不拦截的路径
         List<String> list = new ArrayList<>();
         list.add("/static/**");//静态资源
+        list.add("/js/*");//静态资源
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**").excludePathPatterns(list);
     }

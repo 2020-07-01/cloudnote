@@ -42,11 +42,6 @@ public class DefaultController {
         return "phoneRegister";
     }
 
-    /**
-     * 用户名登录
-     *
-     * @return
-     */
     @PassToken
     @RequestMapping(value = "login")
     public String toEmailLogin() {
@@ -59,51 +54,49 @@ public class DefaultController {
         return "notePage";
     }
 
+
     @RequestMapping(value = "to_editPassword")
     public String toEditPassword() {
         return "editPassword";
     }
 
-    @RequestMapping(value = "to_schedule_page")
+    @UserLoginToken
+    @RequestMapping(value = "schedule_page")
     public String toTask() {
         return "schedulePage";
     }
 
-    @RequestMapping(value = "to_timing_task")
-    public String toTimingTask() {
-        return "timingTask";
-    }
-
     @RequestMapping(value = "/image_page")
+    @UserLoginToken
     public String toResource() {
         return "imagePage";
     }
 
-    @RequestMapping(value = "to_userInformation")
-    public String touserInformation() {
-        return "userInformation";
-    }
-
+    @UserLoginToken
     @RequestMapping(value = "information")
     public String toInformation() {
         return "information";
     }
 
+    @UserLoginToken
     @RequestMapping(value = "/admin")
     public String toAdmin() {
         return "admin";
     }
 
+    @PassToken
     @RequestMapping(value = "/findPassword")
     public String toFindPassword() {
         return "findPassword";
     }
 
+    @UserLoginToken
     @RequestMapping(value = "/resetPassword")
     public String toResetPassword() {
-        return "resetPassword";
+        return "resetPasswordPage";
     }
 
+    @UserLoginToken
     @RequestMapping(value = "/file_page")
     public String toFilePage() {
         return "filePage";
@@ -111,13 +104,13 @@ public class DefaultController {
 
     @RequestMapping(value = "/refresh")
     @ResponseBody
-    public String jobRefresh(){
+    public String jobRefresh() {
         scheduleJob.scheduleRemind();
         return "SUCCESS";
     }
 
     @RequestMapping(value = "/rest_password")
-    public String toRestPassword(){
+    public String toRestPassword() {
         return "resetPasswordPage";
     }
 
