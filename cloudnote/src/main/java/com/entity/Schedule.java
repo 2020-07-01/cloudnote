@@ -2,7 +2,7 @@ package com.entity;
 
 /**
  * @program: ScheduleService
- * @description:
+ * @description: 日尘实体类
  * @create: 2020-01-30 13:08
  **/
 public class Schedule {

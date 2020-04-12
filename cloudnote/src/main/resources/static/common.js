@@ -33,6 +33,13 @@ function toResetPasswordPage(token) {
     window.location.href = "/resetPassword?token=" + token;
 }
 
+//回收站页面验证
+function toRecycleBinPage(token) {
+    window.location.href = "/recycle_bin?token=" + token;
+}
+
+
+
 
 
 

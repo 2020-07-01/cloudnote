@@ -1,6 +1,8 @@
 package com.entity;
 
-
+/**
+ * 需要发送邮件的实体类
+ */
 public class TaskData {
 
     private Integer scheduleId;

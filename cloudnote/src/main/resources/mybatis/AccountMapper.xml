@@ -28,8 +28,6 @@
         account_role,is_locked,login_count,birthday,remark,area,head_image_url,sex
     </sql>
 
-
-
     <insert id="insertAccount" parameterType="com.entity.Account">
         insert into account (email,account_name,account_password,create_time)
         value ( #{email,jdbcType=VARCHAR},#{accountName,jdbcType=VARCHAR},#{accountPassword,jdbcType=VARCHAR},now())

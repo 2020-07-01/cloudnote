@@ -114,4 +114,10 @@ public class DefaultController {
         return "resetPasswordPage";
     }
 
+    @UserLoginToken
+    @RequestMapping(value = "/recycle_bin")
+    public String toRecycleBin(){
+        return "recycleBin";
+    }
+
 }

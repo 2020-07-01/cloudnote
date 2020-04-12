@@ -1,7 +1,7 @@
 package com.entity;
 
 /**
- * 发送给前端的实体
+ * 信息返回实体类
  */
 public class AdminData {
 

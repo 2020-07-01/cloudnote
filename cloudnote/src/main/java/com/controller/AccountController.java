@@ -146,51 +146,7 @@ public class AccountController {
         log.info("账户：" + accountId + "登录成功!");
     }
 
-    /**
-     * 动态登录 手机号/邮箱登录/验证码进行登录
-     *
-     * @param jsonParam
-     * @param request
-     * @param response
-     * @return
-     *//*
-    @RequestMapping(value = "phone_login")
-    public String phoneLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
-        String result;
-        JSONObject jsonObject;
-        try {
-            jsonObject = JSON.parseObject(jsonParam);
-            result = "登录成功!";
-        } catch (Exception e) {
-            result = "登录失败!";
-        }
-        return result;
-    }
 
-    *//**
-     * 用户名/邮箱地址/手机号/密码登录
-     *
-     * @param jsonParam
-     * @param request
-     * @param response
-     * @return
-     *//*
-    @RequestMapping(value = "username_login")
-    public String userNameLogin(@RequestBody String jsonParam, HttpServletRequest request,
-                                HttpServletResponse response) {
-        String result;
-        JSONObject jsonObject;
-        try {
-            jsonObject = JSON.parseObject(jsonParam);
-
-            result = "登录成功!";
-
-        } catch (Exception e) {
-            result = "登录失败!";
-        }
-        return result;
-    }
-*/
 
     /**
      * 注册->发送验证码
@@ -228,34 +184,7 @@ public class AccountController {
         }
     }
 
-    /* *//**
-     * 手机号进行注册
-     *
-     * @param jsonParam
-     * @param request
-     * @param response
-     *//*
-    @RequestMapping(value = "phone")
-    public void phoneRegister(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
-        Result result = null;
-        JSONObject jsonObject;
-        try {
 
-            jsonObject = JSON.parseObject(jsonParam);
-            Account user = new Account();
-            user.setAccountName(jsonObject.getString("userName"));
-            user.setPhone(jsonObject.getString("phone"));
-            user.setAccountPassword(jsonObject.getString("userPassword"));
-
-        } catch (Exception e) {
-            result = new Result(false, "请检查您的网络是否稳定!");
-        }
-
-        try {
-            Json.toJson(result, response);
-        } catch (Exception e) {
-        }
-    }*/
 
     /**
      * 查询密码
@@ -418,7 +347,6 @@ public class AccountController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // Json.toJson(new Result(true, "注销成功!"), response);
     }
 
     /**
@@ -481,27 +409,4 @@ public class AccountController {
         data.put("data", account);
         Json.toJson(new Result(true, "SUCCESS", data), response);
     }
-
-
-/*    @RequestMapping(value = "/account_list.json")
-    public Object accountList(@RequestParam(value = "token") String token, HttpServletRequest request, HttpServletResponse response) {
-        Condition condition = new Condition();
-        List<AccountPIMData> accountPIMDataList = pimService.getAccountPIMData(condition);
-        List<AdminData> adminDataList = new ArrayList<>();
-        //封装实体
-        accountPIMDataList.forEach(p -> {
-            AdminData adminData = new AdminData(p);
-            adminData.setZone(p.getProvince() == null ? "" : p.getProvince() + p.getCity() == null ? "" : p.getCity());
-            adminDataList.add(adminData);
-        });
-
-        Map<String, Object> data = new HashMap();
-        data.put("code", "0");
-        data.put("msg", "初始化成功!");
-        data.put("count", accountPIMDataList.size());
-        data.put("data", adminDataList);
-        return data;
-    }*/
-
-
 }

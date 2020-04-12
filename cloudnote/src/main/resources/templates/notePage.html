@@ -84,9 +84,10 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
+                        <dd><a href="javascript:;" id="toRecycleBinPage"><i class="layui-icon layui-icon-logout"></i>
+                            查看全部</a></dd>
                         <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
                         <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 查看全部</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -679,6 +680,9 @@
             toResetPasswordPage(token);
         })
 
+        $("#toRecycleBinPage").click(function () {
+            toRecycleBinPage(token);
+        })
 
     })
 </script>
