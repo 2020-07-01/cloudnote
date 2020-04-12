@@ -88,4 +88,15 @@ public class NoteServiceImpl implements NoteService {
         }
     }
 
+    /**
+     * 查询总数
+     * @param condition
+     * @return
+     */
+    @Override
+    public Integer selectCountByCondition(Condition condition) {
+
+        return noteMapper.selectCountByCondition(condition);
+    }
+
 }

@@ -72,7 +72,7 @@
                 type: "post",
                 contentType: "application/json",
                 data: datajson,
-                url: "http://localhost:8080/account/login.json",
+                url: "/account/login.json",
                 success: function (result) {
                     if (result.code == 1) {
                         var tokenData = result.data.token;

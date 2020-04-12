@@ -45,7 +45,9 @@ public class NoteController {
      */
     @UserLoginToken
     @RequestMapping(value = "/note_list.json")
-    public Object indexList(@RequestParam(value = "type", defaultValue = "") String type,
+    public Object indexList(@RequestParam(value = "page", defaultValue = "1") String page,
+                            @RequestParam(value = "limit", defaultValue = "8") String limit,
+                            @RequestParam(value = "type", defaultValue = "") String type,
                             @RequestParam(value = "isRecycle", defaultValue = "NO") String isRecycle,
                             @RequestParam(value = "key", defaultValue = "") String key,
                             @RequestParam(value = "star", defaultValue = "") String star, HttpServletRequest request, HttpServletResponse response) {
@@ -56,15 +58,18 @@ public class NoteController {
         condition.setType(type);
         condition.setIsRecycle(isRecycle);
         condition.setStar(star);
+        condition.setPage(Integer.parseInt(page));
+        condition.setLimit(Integer.parseInt(limit));
         if (!key.equals("")) {
             condition.setKey(key);
             condition.setType("");
         }
         List<NoteData> noteDataList = noteService.selectNoteByCondition(condition);
+        Integer count = noteService.selectCountByCondition(condition);
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
         hashMap.put("msg", "success");
-        hashMap.put("count", noteDataList.size());
+        hashMap.put("count", count);
         hashMap.put("data", noteDataList);
         return hashMap;
     }

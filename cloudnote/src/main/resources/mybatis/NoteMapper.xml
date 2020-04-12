@@ -36,6 +36,10 @@
         <if test="star != null and star !=''">
             and star = #{star,jdbcType=VARCHAR}
         </if>
+        <if test="startNumber != null and endNumber != ''">
+            ORDER BY create_time desc
+            limit #{startNumber},#{endNumber};
+        </if>
     </select>
 
     <insert id="insertNote" parameterType="com.entity.Note" useGeneratedKeys="true" keyProperty="noteId">
@@ -75,4 +79,23 @@
         </if>
         group by note_type
     </select>
+
+    <!--查询总数-->
+    <select id="selectCountByCondition" parameterType="com.entity.Condition" resultType="java.lang.Integer">
+        select
+        count(note_id)
+        from note
+        where account_id = #{accountId,jdbcType=INTEGER}
+        and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        <if test="type != null and type != ''">
+            and note_type = #{type,jdbcType=VARCHAR}
+        </if>
+        <if test="key != null and key != ''">
+            and note_title like '%' #{key} '%'
+        </if>
+        <if test="star != null and star !=''">
+            and star = #{star,jdbcType=VARCHAR}
+        </if>
+    </select>
+
 </mapper>

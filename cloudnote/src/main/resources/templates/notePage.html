@@ -16,13 +16,6 @@
             border: none;
         }
 
-        .layui-container {
-            width: 100%;
-            height: 100%;
-            padding: 0 0;
-            overflow: hidden;
-        }
-
         .layui-table, .layui-table-view {
             margin: 0 0;
         }
@@ -108,15 +101,14 @@
     </div>
 
     <div class="layui-body">
-        <div class="layui-container">
-            <div class="layui-row">
-                <!--笔记列表-->
-                <div class="layui-col-xs3">
-                    <div class="grid-demo grid-demo-bg1">
-                        <div class="layui-row">
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space5">
+                <div class="layui-col-sm12 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-card">
                             <div class="layui-col-xs9">
                                 <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
-                                       class="layui-input"
+                                       class="layui-input" maxlength="12"
                                        style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
                             </div>
                             <div class="layui-col-xs3" style="text-align:center">
@@ -127,31 +119,30 @@
                             </div>
                         </div>
 
-                        <div class="layui-row">
-                            <div class="layui-col-xs12" style="text-align:center;">
-                                <form class="layui-form" lay-filter="formSelectType" id="2" action="post">
-                                    <div class="layui-form-item" style="margin-bottom: 0">
-                                        <div class="layui-input-inline" style="width: 100%">
-                                            <select name="selectNoteType" id="selectNoteType"
-                                                    lay-filter="selectNoteType"
-                                                    lay-search>
-                                            </select>
-                                        </div>
+                        <div class="layui-col-sm12" style="text-align:center;">
+                            <form class="layui-form" lay-filter="formSelectType" id="2" action="post">
+                                <div class="layui-form-item" style="margin-bottom: 0">
+                                    <div class="layui-input-inline" style="width: 100%">
+                                        <select name="selectNoteType" id="selectNoteType"
+                                                lay-filter="selectNoteType" maxlength="10"
+                                                lay-search>
+                                        </select>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div class="layui-row">
-                            <div class="layui-col-xs12">
-                                <table class="" lay-skin="ngb" id="note-list"
-                                       lay-filter="note-filter"></table>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
+
+                    <div class="layui-row">
+                        <div class="layui-col-xs12">
+                            <table lay-skin="ngb" id="note-list"
+                                   lay-filter="note-filter"></table>
+                        </div>
+                    </div>
+
                 </div>
                 <!--笔记编辑区-->
-                <div class="layui-col-xs9">
+                <div class="layui-col-sm12 layui-col-md9">
                     <div class="grid-demo">
                         <!--标题区-->
                         <div class="layui-row">
@@ -159,7 +150,7 @@
                                 <div class="grid-demo">
                                     <div class="layui-input-inline" style="width: 100%;float:left;">
                                         <input type="text" id="note-title" name="noteTitle"
-                                               class="layui-input note-title" maxlength="100"
+                                               class="layui-input note-title" maxlength="30" style="font-size: 16px"
                                                placeholder="标题">
                                     </div>
                                 </div>
@@ -191,12 +182,12 @@
 
                         <!--类型-->
                         <div class="layui-row" id="showType" style="display: none;">
-                            <div class="layui-col-xs12" style="margin: 0;">
+                            <div class="layui-col-md12">
                                 <form class="layui-form" lay-filter="formNoteType" id="1" action="post">
                                     <div class="layui-form-item" style="margin-bottom: 0">
                                         <input type="text" id="inputNoteType" name="inputNoteType"
                                                class="layui-input" autocomplete="off" onkeyup="search()"
-                                               placeholder="笔记标签"
+                                               placeholder="笔记标签" maxlength="10"
                                                style="width: 90%;z-index:2;position:absolute;border-bottom: none;">
                                         <select type="text" name="setNoteType" id="setNoteType" autocomplete="off"
                                                 lay-filter="setNoteType" lay-search>
@@ -208,23 +199,21 @@
 
                         <!--编辑区-->
                         <div class="layui-row">
-                            <div class="layui-col-xs12">
-                                <div class="layui-row">
-                                    <div class="layui-col-xs12" style="width: 100%;height: 100%;">
+
+                            <div class="layui-col-md12" style="width: 100%;height: 100%;">
                                         <textarea name="noteContent" id="noteContent" cols="30" rows="10"
                                                   style="border: none"></textarea>
-                                    </div>
-                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="layui-footer layui-bg-black">
-            © layui.com - 底部固定区域
-        </div>
+    <div class="layui-footer layui-bg-black">
+        © layui.com - 底部固定区域
     </div>
 </div>
 </body>
@@ -252,7 +241,7 @@
         function init_tinymce() {
             tinymce.init({
                 selector: '#noteContent',
-                height: 415,
+                height: 435,
                 language: 'zh_CN',
                 skin: 'oxide',
                 resize: true,
@@ -309,13 +298,22 @@
                 elem: '#note-list',
                 where: {token: token, type: type, key: key, star: star},//传递token到服务端
                 type: "get",
-                url: 'http://localhost:8080/note/note_list.json', //默认传递两个参数
+                url: '/note/note_list.json', //默认传递两个参数
                 headers: {'token': token},
                 cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                height: 'full-180',
+                page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                    layout: ['prev', 'next', 'skip'] //自定义分页布局
+                    , curr: 1 //设定初始在第 5 页
+                    , groups: 1 //只显示 1 个连续页码
+                    , first: false //不显示首页
+                    , last: false //不显示尾页
+                    , limit: 8
+
+                },
+                loading: true,
                 cols:
                     [[ //标题栏
-                        {field: 'showTitle', title: '笔记列表', unresize: true}
+                        {field: 'noteTitle', title: '笔记列表', unresize: true}
                     ]]
                 , done:
                     function (res, curr, count) {
@@ -372,7 +370,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/note/set_star.json",
+                url: "/note/set_star.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
@@ -423,7 +421,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/note/save_note.json",
+                url: "/note/save_note.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
@@ -456,7 +454,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/note/delete_note.json",
+                url: "/note/delete_note.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg('删除成功!');
@@ -530,7 +528,7 @@
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                url: "http://localhost:8080/note/init_noteType.json",
+                url: "/note/init_noteType.json",
                 success: function (result) {
                     if (result.code == 1) {
                         var selectData = result.data.textValues;
@@ -638,7 +636,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/note/save_note.json",
+                url: "/note/save_note.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);

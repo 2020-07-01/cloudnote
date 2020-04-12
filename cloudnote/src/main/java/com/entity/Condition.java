@@ -27,6 +27,42 @@ public class Condition {
     private String startTime;
     private String endTime;
     private String isNeedRemind;
+    private Integer page;
+    private Integer limit;
+    private Integer startNumber;
+    private Integer endNumber;
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getStartNumber() {
+        return (this.getPage() - 1) * this.getLimit();
+    }
+
+    public void setStartNumber(Integer startNumber) {
+        this.startNumber = startNumber;
+    }
+
+    public Integer getEndNumber() {
+        return this.getPage() * this.getLimit();
+    }
+
+    public void setEndNumber(Integer endNumber) {
+        this.endNumber = endNumber;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
 
     public String getKey() {
         return key;

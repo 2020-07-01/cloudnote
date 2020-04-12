@@ -21,7 +21,6 @@ public class NoteData {
         this.noteTitle = note.getNoteTitle();
         this.star = note.getStar();
         this.noteType = note.getNoteType();
-        this.showTitle = note.getNoteTitle().length() > 18 ? note.getNoteTitle().substring(0, 16) + "..." : note.getNoteTitle();
     }
 
     public Integer getNoteId() {
