@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.AdminMapper">
+
+    <!--用户信息列表实体-->
+    <resultMap id="baseMap1" type="com.entity.admin.AdminData">
+        <id column="account_id" property="accountId" jdbcType="INTEGER"/>
+        <result column="account_name" property="accountName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="is_online" property="isOnline" jdbcType="VARCHAR"/>
+        <result column="last_login_time" property="lastLoginTime" jdbcType="VARCHAR"/>
+        <result column="is_locked" property="isLocked" jdbcType="VARCHAR"/>
+        <result column="login_count" property="loginCount" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="base_sql1">
+        account_id,account_name,email,phone,create_time,is_online,
+        is_locked,login_count,birthday,area,sex,last_login_time
+    </sql>
+
+    <!--
+        <insert id="insertAccount" parameterType="com.entity.Account">
+            insert into account (email,account_name,account_password,create_time)
+            value ( #{email,jdbcType=VARCHAR},#{accountName,jdbcType=VARCHAR},#{accountPassword,jdbcType=VARCHAR},now())
+        </insert>
+
+        &lt;!&ndash;获取旧密码&ndash;&gt;
+        <select id="findPasswordByAccountId" parameterType="java.lang.Integer" resultType="java.lang.String">
+            select account_password
+            from account
+            where account_id = #{accountId,jdbcType=INTEGER}
+        </select>
+    -->
+
+    <select id="getAccountList" parameterType="com.entity.Condition" resultMap="baseMap1">
+        select
+        <include refid="base_sql1"/>
+        from account
+        where
+        1=1
+        <if test="accountName != '' and accountName != null">
+            and account_name = #{accountName,jdbcType=VARCHAR}
+        </if>
+        <if test="email != '' and email != null">
+            and email = #{email,jdbcType=VARCHAR}
+        </if>
+        <if test="phone != '' and phone != null">
+            and phone = #{phone,jdbcType=VARCHAR}
+        </if>
+        <if test="startNumber != null and endNumber != ''">
+            ORDER BY create_time desc
+            limit #{startNumber},#{endNumber};
+        </if>
+    </select>
+
+    <!--查询总数-->
+    <select id="getAccountCount" parameterType="com.entity.Condition" resultType="java.lang.Integer">
+        select
+        count(account_id)
+        from account
+        <!--where
+        1 = 1
+        <if test="type != null and type != ''">
+            and note_type = #{type,jdbcType=VARCHAR}
+        </if>
+        <if test="key != null and key != ''">
+            and note_title like '%' #{key} '%'
+        </if>
+        <if test="star != null and star !=''">
+            and star = #{star,jdbcType=VARCHAR}
+        </if>-->
+    </select>
+
+    <!--<update id="updateAccount" parameterType="com.entity.Account">
+        update account
+        <set>
+            <if test="accountPassword!= null">
+                account_password = #{accountPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null and birthday != ''">
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null and area != ''">
+                area = #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="headImageUrl != null and headImageUrl != ''">
+                head_image_url = #{headImageUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            update_time = now()
+        </set>
+        where
+        1 = 1
+        <if test="email != null and email != ''">
+            and email = #{email,jdbcType=VARCHAR}
+        </if>
+        <if test="accountId != null and accountId != ''">
+            and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
+    </update>
+
+    <update id="updateLoginStatus" parameterType="com.entity.Account">
+        update account
+        <set>
+            <if test="isOnline!= null">
+                is_online = #{isOnline,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime,jdbcType=VARCHAR},
+            </if>
+            <if test="loginCount != null and loginCount != ''">
+                login_count = login_count + 1,
+            </if>
+            update_time = now()
+        </set>
+        where
+        1 = 1
+        <if test="accountName != null and accountName != ''">
+            and account_name = #{accountName,jdbcType=VARCHAR}
+        </if>
+        <if test="accountPassword != null and accountPassword != ''">
+            and account_password = #{accountPassword,jdbcType=VARCHAR}
+        </if>
+        <if test="accountId != null and accountId != ''">
+            and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
+    </update>-->
+
+</mapper>

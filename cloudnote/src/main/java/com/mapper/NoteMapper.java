@@ -28,5 +28,6 @@ public interface NoteMapper {
     //笔记标签
     List<String> selectNoteType(Note note);
 
+    //获取笔记总数
     Integer selectCountByCondition(Condition condition);
 }

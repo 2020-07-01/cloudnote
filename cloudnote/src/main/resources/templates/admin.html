@@ -31,8 +31,7 @@
 <div class="layui-layout layui-layout-admin">
 
     <div class="layui-header">
-
-        <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
+        <div><a class="layui-logo">云笔记平台</a></div>
 
         <ul class="layui-nav layui-layout-right">
 
@@ -171,7 +170,7 @@
                         <div class="layui-card">
                             <div class="layui-card-header">用户信息列表</div>
                             <div class="layui-card-body">
-                                <table class="layui-table layuiadmin-page-table" id="accountList" lay-skin="line">
+                                <table class="layui-table" id="accountList" lay-skin="line">
                                 </table>
                             </div>
                         </div>
@@ -225,10 +224,17 @@
         table.render({
             elem: '#accountList'
             , where: {token: token}//传递token到服务端
-            , url: 'http://localhost:8080/PIM/account_list.json' //默认传递两个参
+            , url: '/admin/account_list.json' //默认传递两个参
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , title: '用户数据表'
-            , page: true
+            , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['prev', 'next', 'skip'] //自定义分页布局
+                , curr: 1 //设定初始在第 5 页
+                , groups: 1 //只显示 1 个连续页码
+                , first: false //不显示首页
+                , last: false //不显示尾页
+                , limit: 8
+             }
             , cols: [[
                 {type: 'checkbox', fixed: 'left'}
                 , {field: 'accountId', title: 'ID', width: 50, fixed: 'left', unresize: true}
@@ -236,14 +242,7 @@
                 , {field: 'sex', title: '性别', width: 70, unresize: true}
                 , {field: 'email', title: '邮箱', width: 200, unresize: true}
                 , {field: 'phone', title: '手机', width: 160, unresize: true}
-                , {field: 'zone', title: '区域', width: 100, unresize: true}
-                , {field: '', title: '登录次数', width: 100, unresize: true}
-                , {field: 'zone', title: '最近活跃', width: 100, unresize: true}
-                , {field: 'zone', title: '是否在线', width: 100, unresize: true}
-                , {field: 'createTime', title: '加入时间', width: 160, sort: true, unresize: true}
-                , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 200, unresize: true}
             ]]
-
         });
 
         //监听按钮事件
@@ -265,7 +264,7 @@
         function unLock() {
 
         }
-
+/*
 
         //退出登录
         $("#logout").click(function () {
@@ -282,7 +281,7 @@
                     }
                 },
             })
-        })
+        })*/
     });
 </script>
 
