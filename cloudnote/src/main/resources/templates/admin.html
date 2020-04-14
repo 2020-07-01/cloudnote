@@ -106,7 +106,6 @@
                             <span class="layui-badge layui-bg-orange layuiadmin-badge">月</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
-
                             <p class="layuiadmin-big-font">66,666</p>
                             <p>
                                 最近一个月
@@ -116,6 +115,38 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="layui-col-sm12 layui-col-md12">
+                    <div class="layui-row layui-col-space15">
+
+                        <div class="layui-card">
+                            <div class="layui-card-header">用户信息列表</div>
+                            <div class="layui-card-body">
+                                <!--点击行展示数据-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-sm12 layui-col-md12">
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-card">
+                            <div class="layui-card-header">账户数据列表</div>
+                            <div class="layui-card-body">
+                                <div class="layui-row layui-col-space15">
+                                    <div class="layui-col-sm4">
+                                        <table class="layui-table layuiadmin-page-table" lay-skin="line">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="layui-col-sm12">
                     <div class="layui-card">
@@ -128,15 +159,16 @@
                         </div>
                         <div class="layui-card-body">
                             <div class="layui-row">
-                                <div class="layui-col-sm8">
-                                    <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade"
-                                         lay-filter="LAY-index-pagetwo">
-                                        <div carousel-item id="LAY-index-pagetwo">
-                                            <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
+
+
                                 <div class="layui-col-sm4">
+                                    <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
+                                           class="layui-input" maxlength="12"
+                                           style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
+
+                                </div>
+
+                                <div class="layui-col-sm8">
                                     <div class="layuiadmin-card-list">
                                         <p class="layuiadmin-normal-font">月访问数</p>
                                         <span>同上期增长</span>
@@ -164,39 +196,9 @@
                     </div>
                 </div>
 
-                <div class="layui-col-sm12">
-                    <div class="layui-row layui-col-space15">
 
-                        <div class="layui-card">
-                            <div class="layui-card-header">用户信息列表</div>
-                            <div class="layui-card-body">
-                                <table class="layui-table" id="accountList" lay-skin="line">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-sm12">
-                    <div class="layui-row layui-col-space15">
-                        <div class="layui-card">
-                            <div class="layui-card-header">用户数据列表</div>
-                            <div class="layui-card-body">
-                                <div class="layui-row layui-col-space15">
-                                    <div class="layui-col-sm4">
-                                        <table class="layui-table layuiadmin-page-table" lay-skin="line">
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
-
     </div>
 
     <div class="layui-footer1 layui-bg-black">
@@ -226,62 +228,38 @@
             , where: {token: token}//传递token到服务端
             , url: '/admin/account_list.json' //默认传递两个参
             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            , title: '用户数据表'
-            , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
-                layout: ['prev', 'next', 'skip'] //自定义分页布局
-                , curr: 1 //设定初始在第 5 页
-                , groups: 1 //只显示 1 个连续页码
-                , first: false //不显示首页
-                , last: false //不显示尾页
-                , limit: 8
-             }
+            , loading: true
+            , text: ''
             , cols: [[
                 {type: 'checkbox', fixed: 'left'}
-                , {field: 'accountId', title: 'ID', width: 50, fixed: 'left', unresize: true}
-                , {field: 'accountName', title: '用户名', width: 120, unresize: true}
-                , {field: 'sex', title: '性别', width: 70, unresize: true}
-                , {field: 'email', title: '邮箱', width: 200, unresize: true}
-                , {field: 'phone', title: '手机', width: 160, unresize: true}
+                , {field: 'accountId', title: 'ID', align: 'center', width: 50, fixed: 'left', unresize: true}
+                , {field: 'accountName', title: '用户名', align: 'center', width: 145, unresize: false}
+                , {field: 'sex', title: '性别', width: 60, align: 'center', unresize: true}
+                , {field: 'birthday', title: '出生日期', align: 'center', width: 110, unresize: true}
+                , {field: 'area', title: '区域', align: 'center', width: 120, unresize: false}
+                , {field: 'email', title: '邮箱', align: 'center', width: 180, unresize: false}
+                , {field: 'phone', title: '手机', align: 'center', width: 130, unresize: true}
+                , {field: 'isOnline', title: '是否在线', align: 'center', width: 100, unresize: true}
+                , {field: 'isLocked', title: '是否锁定', align: 'center', width: 100, unresize: true}
+                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo', width: 150}
             ]]
+            , page: true
         });
 
-        //监听按钮事件
-        table.on('tool(test)', function (obj) {
+
+
+        //监听行单击事件（双击事件为：rowDouble）
+        table.on('row(test)', function(obj){
             var data = obj.data;
-            if (obj.event === 'lock') {
 
-            } else if (obj.event === 'unLock') {
-            }
+            layer.alert(JSON.stringify(data), {
+                title: '当前行数据：'
+            });
+
+            //标注选中样式
+            obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
         });
 
-        //锁定账户
-        function lock() {
-
-        }
-
-
-        //解锁账户
-        function unLock() {
-
-        }
-/*
-
-        //退出登录
-        $("#logout").click(function () {
-            $.ajax({
-                type: "post",
-                contentType: "application/json",
-                dataType: 'json',
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                url: "http://localhost:8080/account/logout.json",
-                success: function (result) {
-                    if (result.code == 1) {
-                        layer.msg("退出成功!")
-                        window.location.href = "/login"//进入主页
-                    }
-                },
-            })
-        })*/
     });
 </script>
 

@@ -36,7 +36,7 @@ public class AdminController {
     @UserLoginToken
     @RequestMapping("/account_list.json")
     public Object getAccountList(@RequestParam(value = "page", defaultValue = "1") String page,
-                                 @RequestParam(value = "limit", defaultValue = "8") String limit,
+                                 @RequestParam(value = "limit", defaultValue = "10") String limit,
                                  HttpServletRequest request, HttpServletResponse response) {
 
         Condition condition = new Condition();
@@ -44,8 +44,9 @@ public class AdminController {
         condition.setLimit(Integer.parseInt(limit));
         List<AdminData> adminDataList = adminService.getAccountList(condition);
         Integer count = adminService.getAccountCount(condition);
+
         Map<String, Object> responseMap = new HashMap();
-        responseMap.put("code", "1");
+        responseMap.put("code", "0");
         responseMap.put("msg", "success");
         responseMap.put("count", count);
         responseMap.put("data", adminDataList);
