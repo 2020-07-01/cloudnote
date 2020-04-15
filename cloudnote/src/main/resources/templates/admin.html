@@ -4,8 +4,9 @@
 <head>
     <meta charset='utf-8'>
     <title>cloudNote</title>
-    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
+    <script src="../static/layui-v2.5.5/layui/admin.js"></script>
+    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <style>
 
         .layui-body {
@@ -23,6 +24,57 @@
             background-color: #eee
         }
 
+        .layuiadmin-card-list p.layuiadmin-big-font {
+            font-size: 36px;
+            color: #666;
+            line-height: 36px;
+            padding: 5px 0 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-all;
+            white-space: nowrap
+        }
+
+        .layuiadmin-badge {
+            top: 50%;
+            margin-top: -9px;
+            color: #01AAED
+        }
+
+        .layuiadmin-badge, .layuiadmin-btn-group, .layuiadmin-span-color {
+            position: absolute;
+            right: 15px
+        }
+
+        .layadmin-carousel {
+            height: 185px !important;
+            background-color: #fff
+        }
+        .layadmin-backlog .layadmin-backlog-body {
+            display: block;
+            padding: 10px 15px;
+            background-color: #f8f8f8;
+            color: #999;
+            border-radius: 2px;
+            transition: all .3s;
+            -webkit-transition: all .3s
+        }
+
+
+        .layadmin-backlog .layadmin-backlog-body {
+            display: block;
+            padding: 10px 15px;
+            background-color: #f8f8f8;
+            color: #999;
+            border-radius: 2px;
+            transition: all .3s;
+            -webkit-transition: all .3s
+        }
+
+        .layadmin-backlog-body h3 {
+            padding-bottom: 10px;
+            font-size: 12px
+        }
     </style>
 </head>
 
@@ -54,14 +106,14 @@
                     <div class="layui-card">
                         <div class="layui-card-header">
                             用户总数
-                            <span class="layui-badge layui-bg-blue layuiadmin-badge">周</span>
+                            <span class="layui-badge layui-bg-green layuiadmin-badge">ALL</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
                             <p class="layuiadmin-big-font">9,999,666</p>
                             <p>
-                                总计访问量
+                                活跃用户
                                 <span class="layuiadmin-span-color">88万 <i
-                                        class="layui-inline layui-icon layui-icon-flag"></i></span>
+                                        class="layui-inline layui-icon layui-icon-user"></i></span>
                             </p>
                         </div>
                     </div>
@@ -69,14 +121,31 @@
                 <div class="layui-col-sm6 layui-col-md3">
                     <div class="layui-card">
                         <div class="layui-card-header">
-                            下载
-                            <span class="layui-badge layui-bg-cyan layuiadmin-badge">月</span>
+                            笔记总数
+                            <span class="layui-badge layui-bg-blue layuiadmin-badge">ALL</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
-                            <p class="layuiadmin-big-font">33,555</p>
+                            <p class="layuiadmin-big-font">33,55</p>
                             <p>
-                                新下载
-                                <span class="layuiadmin-span-color">10% <i
+                                今日新创建
+                                <span class="layuiadmin-span-color">100 <i
+                                        class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-sm6 layui-col-md3">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            图片总数
+                            <span class="layui-badge layui-bg-cyan layuiadmin-badge">ALL</span>
+                        </div>
+                        <div class="layui-card-body layuiadmin-card-list">
+                            <p class="layuiadmin-big-font">33,55</p>
+                            <p>
+                                今日新创建
+                                <span class="layuiadmin-span-color">100 <i
                                         class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
                             </p>
                         </div>
@@ -85,68 +154,68 @@
                 <div class="layui-col-sm6 layui-col-md3">
                     <div class="layui-card">
                         <div class="layui-card-header">
-                            收入
-                            <span class="layui-badge layui-bg-green layuiadmin-badge">年</span>
+                            文档总数
+                            <span class="layui-badge layui-bg-orange layuiadmin-badge">ALL</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
 
-                            <p class="layuiadmin-big-font">999,666</p>
-                            <p>
-                                总收入
-                                <span class="layuiadmin-span-color">*** <i
-                                        class="layui-inline layui-icon layui-icon-dollar"></i></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-sm6 layui-col-md3">
-                    <div class="layui-card">
-                        <div class="layui-card-header">
-                            活跃用户
-                            <span class="layui-badge layui-bg-orange layuiadmin-badge">月</span>
-                        </div>
-                        <div class="layui-card-body layuiadmin-card-list">
                             <p class="layuiadmin-big-font">66,666</p>
                             <p>
-                                最近一个月
-                                <span class="layuiadmin-span-color">15% <i
-                                        class="layui-inline layui-icon layui-icon-user"></i></span>
+                                今日新创建
+                                <span class="layuiadmin-span-color">15% <i class="layui-inline layui-icon layui-icon-user"></i></span>
                             </p>
                         </div>
                     </div>
                 </div>
-
                 <div class="layui-col-sm12 layui-col-md12">
                     <div class="layui-row layui-col-space15">
-
                         <div class="layui-card">
                             <div class="layui-card-header">用户信息列表</div>
                             <div class="layui-card-body">
-                                <!--点击行展示数据-->
+                                <table id="accountList" class="layui-table layuiadmin-page-table" lay-skin="line"
+                                       lay-filter="accountList"></table>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="layui-col-sm12 layui-col-md12">
-                    <div class="layui-row layui-col-space15">
-                        <div class="layui-card">
-                            <div class="layui-card-header">账户数据列表</div>
-                            <div class="layui-card-body">
-                                <div class="layui-row layui-col-space15">
-                                    <div class="layui-col-sm4">
-                                        <table class="layui-table layuiadmin-page-table" lay-skin="line">
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">详细数据</div>
+                        <div class="layui-card-body">
+                            <div class="layadmin-carousel layadmin-backlog">
+                                <div carousel-item>
+                                    <ul class="layui-row layui-col-space10">
+                                        <li class="layui-col-xs6">
+                                            <a class="layadmin-backlog-body">
+                                                <h3>待审评论</h3>
+                                                <p layuiadmin-big-font></p>66</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a class="layadmin-backlog-body">
+                                                <h3>待审帖子</h3>
+                                                <p layuiadmin-big-font></p>66</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a  class="layadmin-backlog-body">
+                                                <h3>待审商品</h3>
+                                                <p layuiadmin-big-font></p>66</cite></p>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs6">
+                                            <a class="layadmin-backlog-body">
+                                                <h3>待发货</h3>
+                                                <p layuiadmin-big-font></p>66</cite></p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
 
                 <div class="layui-col-sm12">
                     <div class="layui-card">
@@ -195,8 +264,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -210,16 +277,20 @@
 </div>
 </body>
 
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="unLock">解锁</a>
-
+<script type="text/html" id="operate">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="lock">锁定</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="unLock">解锁</a>
+    <a class="layui-btn layui-btn-xs" lay-event="showDetail">详情</a>
 </script>
 
 <script th:inline="none">
 
     //设置全局token
     var token = sessionStorage.getItem("token");
+
+
+    //初始化概况信息
+
 
     layui.use(['table', 'element', 'form', 'layer'], function () {
         var table = layui.table;
@@ -233,32 +304,53 @@
             , cols: [[
                 {type: 'checkbox', fixed: 'left'}
                 , {field: 'accountId', title: 'ID', align: 'center', width: 50, fixed: 'left', unresize: true}
-                , {field: 'accountName', title: '用户名', align: 'center', width: 145, unresize: false}
+                , {field: 'accountName', title: '用户名', align: 'center', width: 140, unresize: false}
                 , {field: 'sex', title: '性别', width: 60, align: 'center', unresize: true}
-                , {field: 'birthday', title: '出生日期', align: 'center', width: 110, unresize: true}
+                , {field: 'birthday', title: '出生日期', align: 'center', width: 105, unresize: true}
                 , {field: 'area', title: '区域', align: 'center', width: 120, unresize: false}
-                , {field: 'email', title: '邮箱', align: 'center', width: 180, unresize: false}
-                , {field: 'phone', title: '手机', align: 'center', width: 130, unresize: true}
-                , {field: 'isOnline', title: '是否在线', align: 'center', width: 100, unresize: true}
-                , {field: 'isLocked', title: '是否锁定', align: 'center', width: 100, unresize: true}
-                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo', width: 150}
+                , {field: 'email', title: '邮箱', align: 'center', width: 170, unresize: false}
+                , {field: 'phone', title: '手机', align: 'center', width: 120, unresize: true}
+                , {field: 'isOnline', title: '是否在线', align: 'center', width: 90, unresize: true}
+                , {field: 'isLocked', title: '是否锁定', align: 'center', width: 90, unresize: true}
+                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#operate', width: 200}
             ]]
             , page: true
         });
 
-
-
-        //监听行单击事件（双击事件为：rowDouble）
-        table.on('row(test)', function(obj){
+        //监听操作
+        table.on('tool(accountList)', function (obj) {
             var data = obj.data;
+            if (obj.event === 'showDetail') {
 
-            layer.alert(JSON.stringify(data), {
-                title: '当前行数据：'
-            });
-
-            //标注选中样式
-            obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+                showDetail(obj.data);
+            } else if (obj.event === 'unLock') {
+                layer.confirm('确定要解锁吗？', function (index) {
+                    lock(obj.data);
+                    layer.close(index);
+                });
+            } else if (obj.event === 'lock') {
+                layer.confirm('确定要锁定该用户吗？', function (index) {
+                    unLock(obj.data);
+                    layer.close(index);
+                });
+            }
         });
+
+        //锁定用户
+        function lock(data) {
+
+        }
+
+        //解锁用户
+        function unLock(data) {
+
+        }
+
+        //查看详细信息
+        function showDetail(data) {
+
+        }
+
 
     });
 </script>

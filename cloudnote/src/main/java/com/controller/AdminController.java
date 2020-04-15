@@ -28,17 +28,14 @@ import java.util.Map;
 @Slf4j
 public class AdminController {
 
-
     @Autowired
     AdminServiceImpl adminService;
-
 
     @UserLoginToken
     @RequestMapping("/account_list.json")
     public Object getAccountList(@RequestParam(value = "page", defaultValue = "1") String page,
                                  @RequestParam(value = "limit", defaultValue = "10") String limit,
                                  HttpServletRequest request, HttpServletResponse response) {
-
         Condition condition = new Condition();
         condition.setPage(Integer.parseInt(page));
         condition.setLimit(Integer.parseInt(limit));
