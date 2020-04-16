@@ -9,12 +9,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
 import com.entity.Account;
 import com.entity.Condition;
+import com.entity.Constant;
 import com.interceptor.PassToken;
 import com.interceptor.UserLoginToken;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.AccountServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -118,8 +120,20 @@ public class AccountController {
             account.setLoginCount(1);
             boolean flag = accountService.updateLoginStatus(account);
             if (!flag) {
-                result = new Result(false, "用户名或密码错误!");
-                log.info("账户：" + accountId + "登录失败!");
+                //判断是否被锁定
+                Condition condition = new Condition();
+                condition.setAccountName(jsonObject.getString("accountName"));
+                condition.setAccountPassword(jsonObject.getString("accountPassword"));
+                Account account1 = accountService.getAccountData(condition);
+                if(account1 != null){
+                    if (account1.getIsLocked().equals(Constant.LOCK_YES)) {
+                        result = new Result(false, "账户被锁，请联系管理员!");
+                        log.info("账户：" + accountId + "被锁定!");
+                    }
+                }else {
+                    result = new Result(false, "用户名或密码错误!");
+                    log.info("账户：" + accountId + "登录失败!");
+                }
             } else {
                 //获取accountId生成token
                 Condition condition = new Condition();
@@ -131,14 +145,16 @@ public class AccountController {
                 HashMap cacheMap = new HashMap();
                 cacheMap.put("accountId", accountId);
                 cacheService.putValue(accountId, cacheMap);
-
                 HashMap data = new HashMap();
                 data.put("token", token);
-                result = new Result(true, "登录成功!", data);
+                if(jsonObject.getString("accountName").equals("admin")){
+                    result = new Result("000", "登录成功!", data);
+                }else {
+                    result = new Result(true, "登录成功!", data);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = new Result(false, "登录失败");
             log.info("账户：" + accountId + "登录异常!");
         }
 
@@ -207,6 +223,7 @@ public class AccountController {
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/update_password.json")
     public void updatePassword(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject = JSON.parseObject(jsonString);
@@ -397,14 +414,15 @@ public class AccountController {
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/get_account.json")
     public void getAccountData(HttpServletRequest request, HttpServletResponse response) {
 
         String token = request.getHeader("token");
         Integer accountId = tokenService.getAccountIdByToken(token);
-
-        Account account = accountService.getAccountData(accountId);
-
+        Condition condition = new Condition();
+        condition.setAccountId(accountId);
+        Account account = accountService.getAccountData(condition);
         Map data = new HashMap();
         data.put("data", account);
         Json.toJson(new Result(true, "SUCCESS", data), response);

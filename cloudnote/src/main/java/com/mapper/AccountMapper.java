@@ -13,8 +13,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccountMapper {
 
+    //存储账户
     int insertAccount(Account account);
-
+    //获取账户信息
     Account findAccountByCondition(Condition condition);
     //获取旧密码
     String findPasswordByAccountId(Integer accountId);

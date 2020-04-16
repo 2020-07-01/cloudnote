@@ -53,6 +53,7 @@
         <if test="phone != '' and phone != null">
             and phone = #{phone,jdbcType=VARCHAR}
         </if>
+        and account_name != 'admin'
         <if test="startNumber != null and endNumber != ''">
             ORDER BY create_time desc
             limit #{startNumber},#{endNumber};

@@ -25,7 +25,7 @@ public interface AccountService {
     //查询accountId生成token
     String findAccountId(Condition condition);
     //获取账号信息
-    Account getAccountData(Integer accountId);
+    Account getAccountData(Condition condition);
 
 }
 

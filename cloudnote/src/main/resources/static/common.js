@@ -18,11 +18,6 @@ function toSchedulePage(token) {
     window.location.href = "/schedule_page?token=" + token;
 }
 
-//后台管理页面验证
-function toAdminPage(token) {
-    window.location.href = "/admin?token=" + token;
-}
-
 //个人信息页面验证
 function toInformationPage(token) {
     window.location.href = "/information?token=" + token;

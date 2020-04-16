@@ -7,6 +7,8 @@
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <script src="../static/layui-v2.5.5/layui/admin.js"></script>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
+    <!--引入jquery-->
+    <script src="../static/jquery-3.4.1.min.js"></script>
     <style>
 
         .layui-body {
@@ -83,7 +85,7 @@
 <div class="layui-layout layui-layout-admin">
 
     <div class="layui-header">
-        <div><a class="layui-logo">云笔记平台</a></div>
+        <div><a href="" class="layui-logo">云笔记平台</a></div>
 
         <ul class="layui-nav layui-layout-right">
 
@@ -109,7 +111,7 @@
                             <span class="layui-badge layui-bg-green layuiadmin-badge">ALL</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
-                            <p class="layuiadmin-big-font">9,999,666</p>
+                            <p class="layuiadmin-big-font" id="accountCount">9,999,666</p>
                             <p>
                                 活跃用户
                                 <span class="layuiadmin-span-color">88万 <i
@@ -179,7 +181,38 @@
                     </div>
                 </div>
 
-                <div class="layui-col-md6">
+        <!--        <div class="layui-row layui-col-space15">
+                    <div class="layui-card">
+                        <div class="layui-card-header">邮件服务</div>
+                        <div class="layui-card-body">
+
+                            <div class="layui-col-sm6">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">邮件内容</div>
+                                    <div class="layui-card-body">
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-sm6">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">选择用户</div>
+                                    <div class="layui-card-body">
+                                        <div class="layui-tab-content">
+                                            <div class="layui-tab-item layui-show">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- <div class="layui-col-md6">
                     <div class="layui-card">
                         <div class="layui-card-header">详细数据</div>
                         <div class="layui-card-body">
@@ -215,9 +248,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
-                <div class="layui-col-sm12">
+              <!--  <div class="layui-col-sm12">
                     <div class="layui-card">
                         <div class="layui-card-header">
                             访问量
@@ -263,7 +296,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
@@ -288,63 +321,91 @@
     //设置全局token
     var token = sessionStorage.getItem("token");
 
-
     //初始化概况信息
+
 
 
     layui.use(['table', 'element', 'form', 'layer'], function () {
         var table = layui.table;
-        table.render({
-            elem: '#accountList'
-            , where: {token: token}//传递token到服务端
-            , url: '/admin/account_list.json' //默认传递两个参
-            , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            , loading: true
-            , text: ''
-            , cols: [[
-                {type: 'checkbox', fixed: 'left'}
-                , {field: 'accountId', title: 'ID', align: 'center', width: 50, fixed: 'left', unresize: true}
-                , {field: 'accountName', title: '用户名', align: 'center', width: 140, unresize: false}
-                , {field: 'sex', title: '性别', width: 60, align: 'center', unresize: true}
-                , {field: 'birthday', title: '出生日期', align: 'center', width: 105, unresize: true}
-                , {field: 'area', title: '区域', align: 'center', width: 120, unresize: false}
-                , {field: 'email', title: '邮箱', align: 'center', width: 170, unresize: false}
-                , {field: 'phone', title: '手机', align: 'center', width: 120, unresize: true}
-                , {field: 'isOnline', title: '是否在线', align: 'center', width: 90, unresize: true}
-                , {field: 'isLocked', title: '是否锁定', align: 'center', width: 90, unresize: true}
-                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#operate', width: 200}
-            ]]
-            , page: true
-        });
 
+        init_accountList();
+
+        //初始化账户列表
+        function init_accountList(){
+            table.render({
+                elem: '#accountList'
+                , where: {token: token}//传递token到服务端
+                , url: '/admin/account_list.json' //默认传递两个参
+                , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                , loading: true
+                , text: ''
+                , cols: [[
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'accountId', title: 'ID', align: 'center', width: 50, fixed: 'left', unresize: true}
+                    , {field: 'accountName', title: '用户名', align: 'center', width: 140, unresize: false}
+                    , {field: 'sex', title: '性别', width: 60, align: 'center', unresize: true}
+                    , {field: 'birthday', title: '出生日期', align: 'center', width: 105, unresize: true}
+                    , {field: 'area', title: '区域', align: 'center', width: 120, unresize: false}
+                    , {field: 'email', title: '邮箱', align: 'center', width: 170, unresize: false}
+                    , {field: 'phone', title: '手机', align: 'center', width: 120, unresize: true}
+                    , {field: 'isOnline', title: '是否在线', align: 'center', width: 90, unresize: true}
+                    , {field: 'isLocked', title: '是否锁定', align: 'center', width: 90, unresize: true}
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#operate', width: 200}
+                ]]
+                , page: true
+            });
+        }
         //监听操作
         table.on('tool(accountList)', function (obj) {
-            var data = obj.data;
             if (obj.event === 'showDetail') {
-
                 showDetail(obj.data);
+
             } else if (obj.event === 'unLock') {
-                layer.confirm('确定要解锁吗？', function (index) {
-                    lock(obj.data);
-                    layer.close(index);
-                });
+                if (obj.data.isLocked == "UNLOCK"){
+                    layer.msg("不支持该操作!");
+                }else {
+                    layer.confirm('确定要解锁吗？', function (index) {
+                        lock(obj.data,'UNLOCK');
+                        layer.close(index);
+                    });
+                }
+
             } else if (obj.event === 'lock') {
-                layer.confirm('确定要锁定该用户吗？', function (index) {
-                    unLock(obj.data);
-                    layer.close(index);
-                });
+                if (obj.data.isLocked == "LOCK") {
+                    layer.msg("不支持该操作!");
+                } else {
+                    layer.confirm('确定要锁定该用户吗？', function (index) {
+                        lock(obj.data, 'LOCK');
+                        layer.close(index);
+                    });
+                }
             }
         });
 
-        //锁定用户
-        function lock(data) {
-
+        //锁定/解锁用户
+        function lock(data,flag) {
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                data: jsonData,
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token,'isLock':flag},
+                url: "/admin/lock_unlock.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message);
+                        init_accountList();
+                    } else {
+                        layer.msg(result.message);
+                    }
+                },
+                error: function () {
+                    alert("网络出现异常!");
+                }
+            });
         }
 
-        //解锁用户
-        function unLock(data) {
 
-        }
 
         //查看详细信息
         function showDetail(data) {

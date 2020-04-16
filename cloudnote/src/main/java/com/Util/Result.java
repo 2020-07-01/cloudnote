@@ -35,6 +35,13 @@ public final class Result {
         this.data = data;
     }
 
+
+    public Result(String code, String message, Object data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
+
     public String getCode() {
         return code;
     }

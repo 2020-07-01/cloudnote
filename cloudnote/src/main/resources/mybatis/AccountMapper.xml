@@ -40,6 +40,7 @@
         where account_id = #{accountId,jdbcType=INTEGER}
     </select>
 
+    <!--获取账户信息-->
     <select id="findAccountByCondition" parameterType="com.entity.Condition" resultMap="baseMap">
         select
         <include refid="base_sql"/>
@@ -63,6 +64,7 @@
         </if>
     </select>
 
+    <!--更新账户信息-->
     <update id="updateAccount" parameterType="com.entity.Account">
         update account
         <set>
@@ -87,6 +89,9 @@
             <if test="remark != null and remark != ''">
                 remark = #{remark,jdbcType=VARCHAR},
             </if>
+            <if test="isLocked != null and isLocked != ''">
+                is_locked = #{isLocked,jdbcType=VARCHAR},
+            </if>
             update_time = now()
         </set>
         where
@@ -99,6 +104,7 @@
         </if>
     </update>
 
+    <!--更新账户状态-->
     <update id="updateLoginStatus" parameterType="com.entity.Account">
         update account
         <set>
@@ -124,6 +130,7 @@
         <if test="accountId != null and accountId != ''">
             and account_id = #{accountId,jdbcType=INTEGER}
         </if>
+        and is_locked = "UNLOCK"
     </update>
 
     <select id="findAccountId" parameterType="com.entity.Condition" resultType="java.lang.Integer">

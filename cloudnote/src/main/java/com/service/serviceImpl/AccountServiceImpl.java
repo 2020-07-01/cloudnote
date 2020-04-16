@@ -42,8 +42,6 @@ public class AccountServiceImpl implements AccountService {
                 result.put("false", "用户已经存在!");
             } else {
                 accountMapper.insertAccount(account);
-                //存储pim
-
                 result.put("true", "注册成功!");
             }
         } catch (Exception e) {
@@ -103,14 +101,11 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 获取账号信息
-     * @param accountId
+     * @param condition
      * @return
      */
     @Override
-    public Account getAccountData(Integer accountId) {
-
-        Condition condition = new Condition();
-        condition.setAccountId(accountId);
+    public Account getAccountData(Condition condition) {
         Account account = accountMapper.findAccountByCondition(condition);
         return account;
     }

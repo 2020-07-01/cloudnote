@@ -92,7 +92,6 @@
                         <dd><a href="#" id="toInformationPage"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
                         <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a>
                         </dd>
-                        <dd><a href="#" id="toAdminPage"><i class="layui-icon layui-icon-engine"></i> 后台管理</a></dd>
                         <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>
                 </li>
@@ -668,10 +667,6 @@
 
         $("#toInformationPage").click(function () {
             toInformationPage(token);
-        })
-
-        $("#toAdminPage").click(function () {
-            toAdminPage(token);
         })
 
         $("#toResetPasswordPage").click(function () {
