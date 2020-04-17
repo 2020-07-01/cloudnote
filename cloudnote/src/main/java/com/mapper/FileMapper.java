@@ -1,6 +1,6 @@
 package com.mapper;
 
-import com.entity.CNFile;
+import com.entity.file.CNFile;
 import com.entity.Condition;
 import org.springframework.stereotype.Repository;
 

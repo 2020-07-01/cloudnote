@@ -15,7 +15,9 @@ import com.interceptor.UserLoginToken;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.AccountServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -124,13 +126,13 @@ public class AccountController {
                 Condition condition = new Condition();
                 condition.setAccountName(jsonObject.getString("accountName"));
                 condition.setAccountPassword(jsonObject.getString("accountPassword"));
-                Account account1 = accountService.getAccountData(condition);
-                if(account1 != null){
-                    if (account1.getIsLocked().equals(Constant.LOCK_YES)) {
+                List<Account> accountList = accountService.getAccountByCondition(condition);
+                if (CollectionUtils.isNotEmpty(accountList)) {
+                    if (accountList.get(0).getIsLocked().equals(Constant.LOCK_YES)) {
                         result = new Result(false, "账户被锁，请联系管理员!");
                         log.info("账户：" + accountId + "被锁定!");
                     }
-                }else {
+                } else {
                     result = new Result(false, "用户名或密码错误!");
                     log.info("账户：" + accountId + "登录失败!");
                 }
@@ -147,9 +149,9 @@ public class AccountController {
                 cacheService.putValue(accountId, cacheMap);
                 HashMap data = new HashMap();
                 data.put("token", token);
-                if(jsonObject.getString("accountName").equals("admin")){
+                if (jsonObject.getString("accountName").equals("admin")) {
                     result = new Result("000", "登录成功!", data);
-                }else {
+                } else {
                     result = new Result(true, "登录成功!", data);
                 }
             }
@@ -161,7 +163,6 @@ public class AccountController {
         Json.toJson(result, response);
         log.info("账户：" + accountId + "登录成功!");
     }
-
 
 
     /**
@@ -199,7 +200,6 @@ public class AccountController {
             Json.toJson(new Result(false, result.get("false").toString()), response);
         }
     }
-
 
 
     /**
@@ -422,9 +422,11 @@ public class AccountController {
         Integer accountId = tokenService.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
-        Account account = accountService.getAccountData(condition);
+        List<Account> accountList = accountService.getAccountByCondition(condition);
         Map data = new HashMap();
-        data.put("data", account);
+        if (CollectionUtils.isNotEmpty(accountList)) {
+            data.put("data", accountList.get(0));
+        }
         Json.toJson(new Result(true, "SUCCESS", data), response);
     }
 }

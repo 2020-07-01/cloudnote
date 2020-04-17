@@ -20,29 +20,4 @@ import java.util.List;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-    @Autowired
-    AdminMapper adminMapper;
-
-    /**
-     * 获取账户列表
-     *
-     * @param collection
-     * @return
-     */
-    @Override
-    public List<AdminData> getAccountList(Condition collection) {
-        List<AdminData> adminDataList = adminMapper.getAccountList(collection);
-        return adminDataList;
-    }
-
-    /**
-     * 获取账户总数
-     * @param condition
-     * @return
-     */
-    @Override
-    public Integer getAccountCount(Condition condition) {
-        Integer count = adminMapper.getAccountCount(condition);
-        return count;
-    }
 }

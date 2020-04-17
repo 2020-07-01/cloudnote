@@ -4,6 +4,7 @@ import com.entity.Account;
 import com.entity.Condition;
 import org.checkerframework.checker.units.qual.A;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,6 +14,7 @@ import java.util.Map;
  * @other :
  */
 public interface AccountService {
+
 
     Map insert(Account user);
 
@@ -25,7 +27,8 @@ public interface AccountService {
     //查询accountId生成token
     String findAccountId(Condition condition);
     //获取账号信息
-    Account getAccountData(Condition condition);
+    List<Account> getAccountByCondition(Condition condition);
+
 
 }
 

@@ -11,7 +11,7 @@ import lombok.Data;
 public class GeneralData {
 
     //用户总数
-    private Integer accountCout;
+    private Integer accountCount;
 
     //活跃用户数
     private Integer aliveAccountCount;

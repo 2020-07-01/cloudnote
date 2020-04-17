@@ -149,8 +149,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<Image> getImageByCondition(Condition condition) {
-        List<Image> images = imageMapper.selectImageByCondition(condition);
+    public List<Image> findImageByCondition(Condition condition) {
+        List<Image> images = imageMapper.findImageByCondition(condition);
         return images;
     }
 

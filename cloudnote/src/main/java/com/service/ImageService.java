@@ -23,7 +23,7 @@ public interface ImageService {
     Map insertImage(Image image);
 
     // 根据key搜索图片
-    List<Image> getImageByCondition(Condition condition);
+    List<Image> findImageByCondition(Condition condition);
 
     //更新图片
     Map updateImage(Image image);

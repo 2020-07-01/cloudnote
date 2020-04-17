@@ -4,10 +4,13 @@ import com.entity.Account;
 import com.entity.Condition;
 import com.mapper.AccountMapper;
 import com.service.AccountService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 更新账户信息
+     *
      * @param account
      * @return
      */
@@ -101,13 +105,14 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 获取账号信息
+     *
      * @param condition
      * @return
      */
     @Override
-    public Account getAccountData(Condition condition) {
-        Account account = accountMapper.findAccountByCondition(condition);
-        return account;
+    public List<Account> getAccountByCondition(Condition condition) {
+        List<Account> accountList = accountMapper.findAccountByCondition(condition);
+        return accountList;
     }
 
     /**
@@ -121,12 +126,12 @@ public class AccountServiceImpl implements AccountService {
         try {
             Condition condition = new Condition();
             condition.setEmail(email);
-            Account user = accountMapper.findAccountByCondition(condition);
-            if (user == null) {
-                result.put("true", "此邮箱不存在");
+            List<Account> accountList = accountMapper.findAccountByCondition(condition);
+            if (CollectionUtils.isNotEmpty(accountList)) {
+                result.put("false", "此邮箱已注册!");
                 return result;
             } else {
-                result.put("false", "此邮箱已注册!");
+                result.put("true", "此邮箱不存在");
                 return result;
             }
         } catch (Exception e) {

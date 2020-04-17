@@ -64,7 +64,20 @@ public class NoteController {
             condition.setKey(key);
             condition.setType("");
         }
-        List<NoteData> noteDataList = noteService.selectNoteByCondition(condition);
+        List<Note> noteList = noteService.findNoteByCondition(condition);
+
+        List<NoteData> noteDataList = new ArrayList<>();
+        noteList.forEach(p -> {
+            NoteData noteData = new NoteData(p);
+            try {
+                noteData.setNoteContent(new String(ASEUtils.decrypt(p.getNoteContent(), p.getAccountId().toString().getBytes("UTF-8"))));
+                noteDataList.add(noteData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        });
+
         Integer count = noteService.selectCountByCondition(condition);
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");

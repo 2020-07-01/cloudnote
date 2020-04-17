@@ -4,6 +4,8 @@ import com.entity.Account;
 import com.entity.Condition;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author :qiang
  * @date :2019/12/7 下午7:27
@@ -16,7 +18,7 @@ public interface AccountMapper {
     //存储账户
     int insertAccount(Account account);
     //获取账户信息
-    Account findAccountByCondition(Condition condition);
+    List<Account> findAccountByCondition(Condition condition);
     //获取旧密码
     String findPasswordByAccountId(Integer accountId);
     //更新账户信息

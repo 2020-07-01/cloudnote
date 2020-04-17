@@ -1,6 +1,6 @@
 package com.service;
 
-import com.entity.CNFile;
+import com.entity.file.CNFile;
 import com.entity.Condition;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +17,7 @@ public interface FileService {
     Map insertFile(CNFile file);
 
     //获取所有file列表/key
-    List<CNFile> getFileList(Condition condition);
+    List<CNFile> findFileList(Condition condition);
 
     //更新file
     boolean updateFile(CNFile file);

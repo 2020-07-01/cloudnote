@@ -9,6 +9,7 @@
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="../static/common.js"></script>
     <style>
 
         .layui-body {
@@ -92,10 +93,10 @@
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    admin
+                    <span>admin</span>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="/admin"><i class="layui-icon layui-icon-close"></i> 注销登录</a></dd>
+                    <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                 </dl>
             </li>
         </ul>
@@ -321,12 +322,13 @@
     //设置全局token
     var token = sessionStorage.getItem("token");
 
-    //初始化概况信息
 
+    //初始化概况信息
 
 
     layui.use(['table', 'element', 'form', 'layer'], function () {
         var table = layui.table;
+
 
         init_accountList();
 
@@ -342,15 +344,16 @@
                 , cols: [[
                     {type: 'checkbox', fixed: 'left'}
                     , {field: 'accountId', title: 'ID', align: 'center', width: 50, fixed: 'left', unresize: true}
-                    , {field: 'accountName', title: '用户名', align: 'center', width: 140, unresize: false}
+                    , {field: 'accountName', title: '用户名', align: 'center', width: 140, unresize: false,fixed: 'left'}
                     , {field: 'sex', title: '性别', width: 60, align: 'center', unresize: true}
                     , {field: 'birthday', title: '出生日期', align: 'center', width: 105, unresize: true}
                     , {field: 'area', title: '区域', align: 'center', width: 120, unresize: false}
                     , {field: 'email', title: '邮箱', align: 'center', width: 170, unresize: false}
                     , {field: 'phone', title: '手机', align: 'center', width: 120, unresize: true}
+                    , {field: 'level', title: '等级', align: 'center', width: 100, unresize: false}
                     , {field: 'isOnline', title: '是否在线', align: 'center', width: 90, unresize: true}
                     , {field: 'isLocked', title: '是否锁定', align: 'center', width: 90, unresize: true}
-                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#operate', width: 200}
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#operate', width: 160}
                 ]]
                 , page: true
             });
@@ -412,8 +415,58 @@
 
         }
 
+        //获取头部概况数据
+        function headData(){
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "/admin/get_head_data.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message);
+                        init_accountList();
+                    } else {
+                        layer.msg(result.message);
+                    }
+                },
+                error: function () {
+                    alert("网络出现异常!");
+                }
+            });
+        };
+
+        $("#logout").click(function () {
+            logout(token);
+        })
 
     });
+
+
+
+
+    //初始化用户名
+    function init_accountName(){
+        $.ajax({
+            type: "post",
+            contentType: "application/json",
+            data: jsonData,
+            headers: {'Content-Type': 'application/json;charset=utf8', 'token': token,'isLock':flag},
+            url: "/admin/lock_unlock.json",
+            success: function (result) {
+                if (result.code == 1) {
+                    layer.msg(result.message);
+                    init_accountList();
+                } else {
+                    layer.msg(result.message);
+                }
+            },
+            error: function () {
+                alert("网络出现异常!");
+            }
+        });
+
+    };
 </script>
 
 </html>

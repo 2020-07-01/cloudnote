@@ -69,7 +69,7 @@
      </update>
 
     <!--获取图片列表-->
-    <select id="selectImageByCondition" parameterType="com.entity.Condition" resultType="com.entity.Image" resultMap="baseMap">
+    <select id="findImageByCondition" parameterType="com.entity.Condition" resultType="com.entity.Image" resultMap="baseMap">
         select image_id,image_path,whole_name,image_url
         from image
         where
@@ -82,6 +82,13 @@
         </if>
         <if test="key != null and key != ''">
             and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
+        </if>
+        <if test="currentDay != null and currentDay !=''">
+            and create_time like #{currentDay} '%'
+        </if>
+        <if test="startNumber != null and endNumber != ''">
+            ORDER BY create_time desc
+            limit #{startNumber},#{endNumber};
         </if>
     </select>
 

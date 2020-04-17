@@ -41,7 +41,7 @@
     </select>
 
     <!--获取账户信息-->
-    <select id="findAccountByCondition" parameterType="com.entity.Condition" resultMap="baseMap">
+    <select id="findAccountByCondition" parameterType="com.entity.Condition" resultType="com.entity.Account" resultMap="baseMap">
         select
         <include refid="base_sql"/>
         from account
@@ -61,6 +61,13 @@
         </if>
         <if test="accountId != null and accountId != ''">
             and account_id = #{accountId,jdbcType=INTEGER}
+        </if>
+        <if test="currentDay != null and currentDay !=''">
+            and create_time like #{currentDay} '%'
+        </if>
+        <if test="startNumber != null and endNumber != ''">
+            ORDER BY create_time desc
+            limit #{startNumber},#{endNumber};
         </if>
     </select>
 

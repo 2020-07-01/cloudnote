@@ -61,21 +61,9 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<NoteData> selectNoteByCondition(Condition condition) {
+    public List<Note> findNoteByCondition(Condition condition) {
         List<Note> notes = noteMapper.selectNoteByCondition(condition);
-        List<NoteData> noteDatas = new ArrayList<>();
-        notes.forEach(p -> {
-            NoteData noteData = new NoteData(p);
-            try {
-                noteData.setNoteContent(new String(ASEUtils.decrypt(p.getNoteContent(), p.getAccountId().toString().getBytes("UTF-8"))));
-                noteDatas.add(noteData);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        });
-
-        return noteDatas;
+        return notes;
     }
 
     @Override

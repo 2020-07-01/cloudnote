@@ -7,6 +7,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
 import com.entity.*;
+import com.entity.file.CNFile;
+import com.entity.file.CNFileData;
 import com.interceptor.UserLoginToken;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
@@ -23,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.atomic.DoubleAccumulator;
 
 /**
  * @program: UploadController
@@ -161,7 +162,7 @@ public class UploadController {
         condition.setIsRecycle(Constant.RECYCLE_NO);
         condition.setKey(key);
 
-        List<Image> images = imageService.getImageByCondition(condition);
+        List<Image> images = imageService.findImageByCondition(condition);
 
         List<ImageData> imageDataList = new ArrayList<>();
         images.forEach(p -> {
@@ -339,7 +340,7 @@ public class UploadController {
         condition.setIsRecycle(Constant.RECYCLE_NO);
         condition.setKey(key);
 
-        List<CNFile> files = fileService.getFileList(condition);
+        List<CNFile> files = fileService.findFileList(condition);
 
         List<CNFileData> cnFileDataList = new ArrayList<>();
         files.forEach(p -> {

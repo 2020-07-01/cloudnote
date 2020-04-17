@@ -22,7 +22,7 @@ public interface NoteService {
     // 更新笔记
     boolean updateNote(Note note) throws Exception;
     // 笔记列表
-    List<NoteData> selectNoteByCondition(Condition condition);
+    List<Note> findNoteByCondition(Condition condition);
     // 笔记标签
     List<String> selectNoteType(Note note);
     //查询总数

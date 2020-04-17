@@ -25,5 +25,5 @@ public interface ImageMapper {
     Image selectImage(Image image);
 
     //获取图片列表
-    List<Image> selectImageByCondition(Condition condition);
+    List<Image> findImageByCondition(Condition condition);
 }

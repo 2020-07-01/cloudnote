@@ -1,4 +1,6 @@
-package com.entity;
+package com.entity.file;
+
+import com.entity.file.CNFile;
 
 /**
  * @Description file列表返回实体

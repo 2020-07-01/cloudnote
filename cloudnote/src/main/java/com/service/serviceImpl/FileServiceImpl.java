@@ -1,7 +1,7 @@
 package com.service.serviceImpl;
 
 import com.cache.CacheService;
-import com.entity.CNFile;
+import com.entity.file.CNFile;
 import com.entity.Condition;
 import com.entity.Constant;
 import com.mapper.FileMapper;
@@ -126,7 +126,7 @@ public class FileServiceImpl implements FileService {
      * @return
      */
     @Override
-    public List<CNFile> getFileList(Condition condition) {
+    public List<CNFile> findFileList(Condition condition) {
 
         List<CNFile> list = fileMapper.getFileList(condition);
 

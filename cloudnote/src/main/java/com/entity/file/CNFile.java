@@ -1,4 +1,4 @@
-package com.entity;
+package com.entity.file;
 
 /**
  * @Description 文件实体类

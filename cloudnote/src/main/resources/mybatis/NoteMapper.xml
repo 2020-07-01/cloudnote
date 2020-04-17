@@ -36,6 +36,9 @@
         <if test="star != null and star !=''">
             and star = #{star,jdbcType=VARCHAR}
         </if>
+        <if test="currentDay != null and currentDay !=''">
+            and create_time like #{currentDay} '%'
+        </if>
         <if test="startNumber != null and endNumber != ''">
             ORDER BY create_time desc
             limit #{startNumber},#{endNumber};

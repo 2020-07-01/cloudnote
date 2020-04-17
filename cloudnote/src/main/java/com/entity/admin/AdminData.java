@@ -1,5 +1,6 @@
 package com.entity.admin;
 
+import com.entity.Account;
 import lombok.Data;
 
 /**
@@ -7,6 +8,20 @@ import lombok.Data;
  */
 @Data
 public class AdminData {
+
+    public AdminData(Account account) {
+        this.accountId = account.getAccountId();
+        this.accountName = account.getAccountName();
+        this.area = account.getArea();
+        this.birthday = account.getBirthday();
+        this.sex = account.getSex();
+        this.email = account.getEmail();
+        this.isLocked = account.getIsLocked();
+        this.isOnline = account.getIsOnline();
+        this.phone = account.getPhone();
+        this.createTime = account.getCreateTime();
+
+    }
 
     private Integer accountId;
     private String accountName;
@@ -17,8 +32,6 @@ public class AdminData {
     private String phone;
     private String createTime;
     private String isOnline;
-    private String lastLoginTime;
     private String isLocked;
-    private String loginCount;
 
 }

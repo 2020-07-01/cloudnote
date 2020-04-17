@@ -8,7 +8,7 @@
         file_id,account_id,file_name,file_type,file_size,create_time,file_path,file_url,whole_name,is_recycle,update_time
     </sql>
 
-    <resultMap id="baseMap" type="com.entity.CNFile">
+    <resultMap id="baseMap" type="com.entity.file.CNFile">
         <id column="file_id" property="fileId" jdbcType="INTEGER"/>
         <result column="account_id" property="accountId" jdbcType="INTEGER"/>
         <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
@@ -25,7 +25,7 @@
 
 
     <!--存储文件-->
-    <insert id="insertFile" parameterType="com.entity.CNFile" useGeneratedKeys="true" keyProperty="fileId">
+    <insert id="insertFile" parameterType="com.entity.file.CNFile" useGeneratedKeys="true" keyProperty="fileId">
         insert into file(account_id,file_name,file_type,file_size,file_path,whole_name,create_time)
         value (
         #{accountId,jdbcType=INTEGER},
@@ -37,7 +37,7 @@
         now())
     </insert>
     <!--查询文件列表-->
-    <select id="getFileList" parameterType="com.entity.Condition" resultType="com.entity.CNFile" resultMap="baseMap">
+    <select id="getFileList" parameterType="com.entity.Condition" resultType="com.entity.file.CNFile" resultMap="baseMap">
         select file_id,file_name,file_path,whole_name,file_url
         from file
         where
@@ -51,9 +51,16 @@
         <if test="key != null and key != ''">
             and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
         </if>
+        <if test="startNumber != null and endNumber != ''">
+            ORDER BY create_time desc
+            limit #{startNumber},#{endNumber};
+        </if>
+        <if test="currentDay != null and currentDay !=''">
+            and create_time like #{currentDay} '%'
+        </if>
     </select>
     <!--查询文件-->
-    <select id="selectFile" parameterType="com.entity.CNFile" resultType="com.entity.CNFile"
+    <select id="selectFile" parameterType="com.entity.file.CNFile" resultType="com.entity.file.CNFile"
             resultMap="baseMap">
         select
         <include refid="base_sql"/>
@@ -69,7 +76,7 @@
     </select>
 
     <!--更新文件-->
-    <update id="updateFile" parameterType="com.entity.CNFile">
+    <update id="updateFile" parameterType="com.entity.file.CNFile">
         update file
         set
         <if test="fileUrl != null and fileUrl != ''">
@@ -89,12 +96,7 @@
         </if>
     </update>
 
-    <!-- <select id="selectImageByKey" parameterType="com.entity.Condition" resultType="com.entity.Image"
-             resultMap="baseMap">
-         select  image_id,image_name,image_path,whole_name
-         from image
-         where account_id = #{accountId,jdbcType=INTEGER} and is_recycle = '0' and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
-     </select>-->
+
 
 
 </mapper>
