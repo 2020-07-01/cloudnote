@@ -31,6 +31,8 @@ public final class Constant {
 
     public final static String UNLOCK_NO = "UNLOCK";
 
+    public final static String FILE_IMAGE_URL = "fileOrImageUrl";
+
 
 
 }

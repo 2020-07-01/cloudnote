@@ -9,15 +9,14 @@ import com.cache.CacheService;
 import com.entity.*;
 import com.entity.file.CNFile;
 import com.entity.file.CNFileData;
+import com.interceptor.PassToken;
 import com.interceptor.UserLoginToken;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,12 +57,12 @@ public class UploadController {
      * @param response
      * @throws IOException
      */
+    @UserLoginToken
     @RequestMapping(value = "/upload_image.json")
     public void uploadImage(@RequestParam(value = "file", required = false) MultipartFile uploadImage,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
-        Map serviceData = imageService.uploadImage(uploadImage, accountId);
+
+        Map serviceData = imageService.uploadImage(uploadImage, 63);
         if (serviceData.get("true") != null) {
             Result result = new Result(true, "上传成功!");
             Json.toJson(result, response);
@@ -191,13 +190,17 @@ public class UploadController {
         String filePath = jsonObject.getString("imagePath");
         Integer imageId = Integer.parseInt(jsonObject.getString("imageId"));
 
-        Map ossData = ossUtil.getUrl(filePath);
-        Image image = new Image();
-        image.setImageId(imageId);
-        String imageUrl = ossData.get("url").toString();
-        image.setImageUrl(imageUrl.substring(0, imageUrl.lastIndexOf("?")));
-        imageService.updateImage(image);
-        Json.toJson(new Result(true, ossData.get("url").toString()), response);
+        String imageUrl = ossUtil.getUrl(filePath);
+        if (StringUtils.isNotEmpty(imageUrl)) {
+            Image image = new Image();
+            image.setImageId(imageId);
+            image.setImageUrl(imageUrl.substring(0, imageUrl.lastIndexOf("?")));
+            imageService.updateImage(image);
+            Json.toJson(new Result(true, imageUrl), response);
+        } else {
+            Json.toJson(new Result(false, "获取图片URL失败!"), response);
+        }
+
     }
 
     /**
@@ -231,6 +234,7 @@ public class UploadController {
      * @param response
      * @throws IOException
      */
+    @UserLoginToken
     @RequestMapping(value = "/upload_file.json")
     public void uploadFile(@RequestParam(value = "file", required = false) MultipartFile uploadFile,
                            HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -330,6 +334,7 @@ public class UploadController {
      * @param response
      * @return
      */
+    @UserLoginToken
     @RequestMapping(value = "/file_list.json")
     public Object getFileList(@RequestParam(value = "page") String pageno,
                               @RequestParam(value = "limit") String pagesize, @RequestParam(value = "token") String token, @RequestParam(value = "key") String key, HttpServletRequest request, HttpServletResponse response) {
@@ -369,14 +374,17 @@ public class UploadController {
 
         String filePath = jsonObject.getString("filePath");
         Integer fileId = Integer.parseInt(jsonObject.getString("fileId"));
-
-        Map ossData = ossUtil.getUrl(filePath);
-        CNFile file = new CNFile();
-        file.setFileId(fileId);
-        String fileUrl = ossData.get("url").toString();
-        file.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
-        fileService.updateFile(file);
-        Result result = new Result(true, ossData.get("url").toString());
+        String fileUrl = ossUtil.getUrl(filePath);
+        Result result = null;
+        if (StringUtils.isNotEmpty(filePath)) {
+            CNFile file = new CNFile();
+            file.setFileId(fileId);
+            file.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
+            fileService.updateFile(file);
+            result = new Result(true, fileUrl);
+        } else {
+            result = new Result(false, "获取文件路径失败!");
+        }
         Json.toJson(result, response);
     }
 

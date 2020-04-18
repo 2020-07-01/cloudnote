@@ -116,6 +116,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * 获取活跃用户
+     * @param condition
+     * @return
+     */
+    @Override
+    public Integer findAliveAccountByCondintion(Condition condition) {
+        Integer aliveCount = accountMapper.findAliveAccountByCondition(condition);
+        return aliveCount;
+    }
+
+    /**
      * 验证邮箱是否已经注册
      *
      * @param email

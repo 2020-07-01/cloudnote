@@ -62,7 +62,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public List<Note> findNoteByCondition(Condition condition) {
-        List<Note> notes = noteMapper.selectNoteByCondition(condition);
+        List<Note> notes = noteMapper.findNoteByCondition(condition);
         return notes;
     }
 

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.Util.DateUtils;
 import com.cache.CacheService;
 import com.entity.Constant;
 import javafx.collections.ObservableMap;
@@ -84,9 +85,7 @@ public class ImageServiceImpl implements ImageService {
 
             // 将文件存储到缓存中
             Map cacheMap = cacheService.getValue(accountId.toString());
-
             Map imageMap = new HashMap();
-
 
             imageMap.put(Constant.CACHE_BYTE, file.getBytes());//存储二进制文件
             imageMap.put(Constant.CACHE_NEW_NAME, newWholeName);//存储新的文件名
@@ -176,7 +175,7 @@ public class ImageServiceImpl implements ImageService {
      * @return
      */
     private String getImagePath(String sourceFileName, String accountId, String type) {
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+        String date = DateUtils.CurrentDay();
         return accountId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 

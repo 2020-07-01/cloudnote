@@ -8,12 +8,16 @@
 
     <!--引入layui-->
     <link rel='stylesheet' type='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../static/cropper/cropper.css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
-    <!--引入jquery-->
+    <script src="../static/cropper/cropper.js"></script>
+    <script src="../static/cropper/croppers.js"></script>
     <script src="../static/jquery-3.4.1.min.js"></script>
 
     <style>
-
+        .layuiadmin-card-list {
+            padding: 10px
+        }
     </style>
 </head>
 
@@ -24,7 +28,7 @@
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                <img src="https://001-bucket.oss-cn-shanghai.aliyuncs.com/63/image/2020-04-18/jpg/head.jpg" class="layui-nav-img">
                 <span>这是用户名</span>
             </li>
         </ul>
@@ -99,53 +103,70 @@
                             <div class="layui-row">
                                 <div class="layui-col-md11 layui-col-md-offset1">
                                     <form class="layui-form" lay-filter="form">
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">用户名</label>
-                                            <div class="layui-input-inline">
-                                                <input type="text" name="accountName" id="accountName" readonly
-                                                       class="layui-input">
-                                            </div>
-                                            <div class="layui-form-mid layui-word-aux">不可修改</div>
-                                        </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">性别</label>
-                                            <div class="layui-input-block">
-                                                <input type="radio" name="sex" value="男" title="男">
-                                                <input type="radio" name="sex" value="女" title="女" checked>
-                                            </div>
-                                        </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">生日</label>
-                                            <div class="layui-input-inline">
-                                                <input type="text" name="birthday" id="birthday" lay-verify="date"
-                                                       placeholder="YYYY-MM-DD" autocomplete="off" class="layui-input">
-                                            </div>
-                                        </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">区域</label>
-                                            <div class="layui-inline">
-                                                <div class="layui-input-inline">
-                                                    <input type="text" name="area" id="area" placeholder="例:江苏省-无锡市"
-                                                           autocomplete="off" class="layui-input">
+                                        <div class="layui-row">
+                                            <div class="layui-col-sm12 layui-col-md7">
+                                                <div class="layui-form-item">
+                                                    <label class="layui-form-label">用户名</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" name="accountName" id="accountName" readonly
+                                                               class="layui-input">
+                                                    </div>
+                                                    <div class="layui-form-mid layui-word-aux">不可修改</div>
                                                 </div>
+                                                <div class="layui-form-item">
+                                                    <label class="layui-form-label">性别</label>
+                                                    <div class="layui-input-block">
+                                                        <input type="radio" name="sex" value="男" title="男">
+                                                        <input type="radio" name="sex" value="女" title="女" checked>
+                                                    </div>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label class="layui-form-label">生日</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" name="birthday" id="birthday"
+                                                               lay-verify="date"
+                                                               placeholder="YYYY-MM-DD" autocomplete="off"
+                                                               class="layui-input">
+                                                    </div>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label class="layui-form-label">区域</label>
+                                                    <div class="layui-inline">
+                                                        <div class="layui-input-inline">
+                                                            <input type="text" name="area" id="area"
+                                                                   placeholder="例:江苏省-无锡市"
+                                                                   autocomplete="off" class="layui-input">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="layui-col-sm12 layui-col-md5">
+                                                <div class="layui-card">
+                                                    <div class="layui-card-header">
+                                                        图片预览
+                                                    </div>
+                                                    <div class="layui-card-body layuiadmin-card-list">
+                                                        <div style="top:0;left:0;right: 0;bottom: 0;margin: auto">
+                                                            <img id="headImagePreview" style="width: 150px;height: 150px" src="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">头像</label>
                                             <div class="layui-input-inline">
                                                 <input type="text" name="headImageUrl" lay-verify="required"
-                                                       id="headImageUrl"
-                                                       placeholder="头像地址" value="http://cdn.layui.com/avatar/168.jpg"
+                                                       id="headImageUrl" readonly
+                                                       placeholder="头像地址"
                                                        class="layui-input">
                                             </div>
                                             <div class="layui-input-inline layui-btn-container" style="width: auto;">
                                                 <button type="button" class="layui-btn layui-btn-primary"
-                                                        id="LAY_avatarUpload">
+                                                        id="editimg">
                                                     <i class="layui-icon">&#xe67c;</i>上传图片
-                                                </button>
-                                                <button class="layui-btn layui-btn-primary"
-                                                        layadmin-event="avartatPreview">
-                                                    查看图片
                                                 </button>
                                             </div>
                                         </div>
@@ -172,7 +193,8 @@
                                         </div>
                                         <div class="layui-form-item">
                                             <div class="layui-input-block">
-                                                <button class="layui-btn" lay-submit lay-filter="userInformation">确认修改
+                                                <button class="layui-btn" lay-submit lay-filter="accountInformation">
+                                                    确认修改
                                                 </button>
                                                 <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
                                             </div>
@@ -200,11 +222,12 @@
     //设置性别
     var sexValue = "";
 
-    layui.use(['element', 'form', 'laydate', 'upload'], function () {
+    layui.use(['element', 'form', 'laydate', 'upload', 'croppers'], function () {
         var element = layui.element;
         var form = layui.form;
         var laydate = layui.laydate;
         var upload = layui.upload;
+        var croppers = layui.croppers
 
         //年月日选择器
         laydate.render({
@@ -213,7 +236,7 @@
             , trigger: 'click'//呼出事件改成click
         });
         //在页面加载完毕后渲染表单数据
-        $(function(){
+        $(function () {
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -222,16 +245,34 @@
                 url: "/account/get_account.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        form.val("form",result.data.data);
+                        form.val("form", result.data.data);
                     } else {
                         layer.msg(result.message);
                     }
                 },
             })
-        })
+        });
+
+        //创建头像上传组件
+        croppers.render({
+            elem: '#editimg'
+            , headers: {token: token}
+            , saveW: 150    //保存宽度
+            , saveH: 150
+            , mark: 1 / 1    //选取比例
+            , url: "/account/upload_image.json"
+            , done: function (result) { //上传完毕回调
+                if(result.code == 1){
+                    $('#headImagePreview').attr('src', result.data);
+                    $('#headImageUrl').val(result.data);
+                }else {
+                    layer.msg(result.message);
+                }
+            }
+        });
 
         //用户信息->确认修改
-        form.on('submit(userInformation)', function (data) {
+        form.on('submit(accountInformation)', function (data) {
             var jsonData = JSON.stringify(data.field);
             $.ajax({
                 type: "post",

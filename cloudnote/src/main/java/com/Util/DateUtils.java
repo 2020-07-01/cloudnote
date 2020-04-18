@@ -1,17 +1,23 @@
 package com.Util;
 
+import org.apache.commons.codec.language.bm.Languages;
+import org.checkerframework.checker.units.qual.C;
+import org.springframework.dao.DataAccessException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
 /**
  * @program: DateUtils
- * @description: 日期转换工具
+ * @description:
  * @create: 2020-02-01 16:06
  **/
 public class DateUtils {
 
+    public static final String DATE_FORAT = "yyyy-MM-dd";
     public static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
@@ -47,10 +53,6 @@ public class DateUtils {
     }
 
 
-    public static String getCurrentDate() {
-        return format.format(new Date());
-    }
-
     public static String parse(Long hour, Long minute, String executeTime) {
         try {
             Date date = format.parse(executeTime);
@@ -66,9 +68,35 @@ public class DateUtils {
 
     /**
      * Date转换为字符串
+     *
      * @return
      */
-    public static String parse(Date date){
+    public static String parse(Date date) {
         return format.format(date);
     }
+
+
+    /**
+     * 获得N天前日期
+     *
+     * @param days
+     * @return
+     */
+    public static String getBeforeDay(int days) {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORAT);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, days);
+        return format.format(calendar.getTime());
+    }
+
+    /**
+     * 获取当天日期 yyyy-MM-dd
+     * @return
+     */
+    public static String CurrentDay() {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORAT);
+        return format.format(new Date());
+    }
+
+
 }

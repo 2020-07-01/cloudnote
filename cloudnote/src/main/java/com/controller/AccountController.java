@@ -13,6 +13,7 @@ import com.entity.Constant;
 import com.interceptor.PassToken;
 import com.interceptor.UserLoginToken;
 import com.mailService.MailServiceImpl;
+import com.oss.OSSUtil;
 import com.service.serviceImpl.AccountServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -21,6 +22,7 @@ import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;;
@@ -50,6 +52,9 @@ public class AccountController {
 
     @Autowired
     CacheService cacheService;
+
+    @Autowired
+    OSSUtil ossUtil;
 
     /**
      * 邮箱注册
@@ -373,6 +378,7 @@ public class AccountController {
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/update_account.json")
     public void updateAccount(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
@@ -428,5 +434,32 @@ public class AccountController {
             data.put("data", accountList.get(0));
         }
         Json.toJson(new Result(true, "SUCCESS", data), response);
+    }
+
+    /**
+     * 上传头像:返回头像的url连接
+     *
+     * @param headImage
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/upload_image.json")
+    public void uploadHeadImage(@RequestParam(value = "file", required = false) MultipartFile headImage,
+                                HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String token = request.getHeader("token");
+        Integer accountId = tokenService.getAccountIdByToken(token);
+        String wholeName = headImage.getOriginalFilename();// 获取源文件名
+        String headPath = accountId + "/" + "headImage" + "/" + wholeName;
+        Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
+        if (StringUtils.isNotEmpty(ossMap.get(Constant.FILE_IMAGE_URL))) {
+            String url = ossMap.get(Constant.FILE_IMAGE_URL);
+            Result result = new Result(true, "上传成功!",url);
+            Json.toJson(result, response);
+        } else {
+            Result result = new Result(false, "上传失败!");
+            Json.toJson(result, response);
+        }
     }
 }

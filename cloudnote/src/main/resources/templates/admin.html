@@ -86,7 +86,7 @@
 <div class="layui-layout layui-layout-admin">
 
     <div class="layui-header">
-        <div><a href="" class="layui-logo">云笔记平台</a></div>
+        <div><a href="javascript:location.reload();" class="layui-logo">云笔记平台</a></div>
 
         <ul class="layui-nav layui-layout-right">
 
@@ -112,10 +112,10 @@
                             <span class="layui-badge layui-bg-green layuiadmin-badge">ALL</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
-                            <p class="layuiadmin-big-font" id="accountCount">9,999,666</p>
+                            <p class="layuiadmin-big-font" id="accountCount"></p>
                             <p>
                                 活跃用户
-                                <span class="layuiadmin-span-color">88万 <i
+                                <span id="aliveAccountCount" class="layuiadmin-span-color"><i
                                         class="layui-inline layui-icon layui-icon-user"></i></span>
                             </p>
                         </div>
@@ -128,10 +128,10 @@
                             <span class="layui-badge layui-bg-blue layuiadmin-badge">ALL</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
-                            <p class="layuiadmin-big-font">33,55</p>
+                            <p id="noteCount" class="layuiadmin-big-font"></p>
                             <p>
                                 今日新创建
-                                <span class="layuiadmin-span-color">100 <i
+                                <span  id="currentDayNoteCount" class="layuiadmin-span-color"><i
                                         class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
                             </p>
                         </div>
@@ -145,10 +145,10 @@
                             <span class="layui-badge layui-bg-cyan layuiadmin-badge">ALL</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
-                            <p class="layuiadmin-big-font">33,55</p>
+                            <p id="imageCount" class="layuiadmin-big-font"></p>
                             <p>
                                 今日新创建
-                                <span class="layuiadmin-span-color">100 <i
+                                <span id="currentDayImageCount" class="layuiadmin-span-color"><i
                                         class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
                             </p>
                         </div>
@@ -162,10 +162,10 @@
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
 
-                            <p class="layuiadmin-big-font">66,666</p>
+                            <p id="fileCount" class="layuiadmin-big-font"></p>
                             <p>
                                 今日新创建
-                                <span class="layuiadmin-span-color">15% <i class="layui-inline layui-icon layui-icon-user"></i></span>
+                                <span id="currentDayFileCount" class="layuiadmin-span-color"><i class="layui-inline layui-icon layui-icon-user"></i></span>
                             </p>
                         </div>
                     </div>
@@ -322,15 +322,12 @@
     //设置全局token
     var token = sessionStorage.getItem("token");
 
-
-    //初始化概况信息
-
-
     layui.use(['table', 'element', 'form', 'layer'], function () {
         var table = layui.table;
 
 
         init_accountList();
+        initHeadData();
 
         //初始化账户列表
         function init_accountList(){
@@ -416,7 +413,7 @@
         }
 
         //获取头部概况数据
-        function headData(){
+        function initHeadData(){
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -424,8 +421,7 @@
                 url: "/admin/get_head_data.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg(result.message);
-                        init_accountList();
+                        setHeadData(result.data);
                     } else {
                         layer.msg(result.message);
                     }
@@ -436,37 +432,22 @@
             });
         };
 
+        //头部数据赋值
+        function setHeadData(obj){
+            $('#accountCount').text(obj.accountCount);
+            $('#aliveAccountCount').html(obj.aliveAccountCount);
+            $('#noteCount').text(obj.noteCount);
+            $('#currentDayNoteCount').html(obj.currentDayNoteCount);
+            $('#imageCount').text(obj.imageCount);
+            $('#currentDayImageCount').html(obj.currentDayImageCount);
+            $('#fileCount').text(obj.fileCount);
+            $('#currentDayFileCount').html(obj.currentDayFileCount);
+        }
+
         $("#logout").click(function () {
             logout(token);
         })
-
     });
-
-
-
-
-    //初始化用户名
-    function init_accountName(){
-        $.ajax({
-            type: "post",
-            contentType: "application/json",
-            data: jsonData,
-            headers: {'Content-Type': 'application/json;charset=utf8', 'token': token,'isLock':flag},
-            url: "/admin/lock_unlock.json",
-            success: function (result) {
-                if (result.code == 1) {
-                    layer.msg(result.message);
-                    init_accountList();
-                } else {
-                    layer.msg(result.message);
-                }
-            },
-            error: function () {
-                alert("网络出现异常!");
-            }
-        });
-
-    };
 </script>
 
 </html>

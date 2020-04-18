@@ -20,13 +20,19 @@
         <result column="star" property="star" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <select id="selectNoteByCondition" parameterType="com.entity.Condition" resultType="com.entity.Note"
+    <select id="findNoteByCondition" parameterType="com.entity.Condition" resultType="com.entity.Note"
             resultMap="baseMap">
         select
         <include refid="base_sql"/>
         from note
-        where account_id = #{accountId,jdbcType=INTEGER}
-        and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        where
+         1 = 1
+         <if test="accountId != null and accountId != ''">
+            and account_id = #{accountId,jdbcType=INTEGER}
+         </if>
+        <if test="isRecycle != null and isRecycle != ''">
+            and is_recycle = #{isRecycle,jdbcType=VARCHAR}
+        </if>
         <if test="type != null and type != ''">
             and note_type = #{type,jdbcType=VARCHAR}
         </if>

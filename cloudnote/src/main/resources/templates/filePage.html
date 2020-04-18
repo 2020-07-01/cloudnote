@@ -222,7 +222,7 @@
         var table_reload = table.render({
             elem: '#fileList',
             where: {token: token, key: fileKey},//传递token到服务端
-            url: 'http://localhost:8080/source/file_list.json', //默认传递两个参
+            url: '/source/file_list.json', //默认传递两个参
             height: 'full-140',
             //cellMinWidth: 380, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             cols:
@@ -244,7 +244,7 @@
                 , size: 0
                 , multiple: true    //设置多文件上传
                 , headers: {token: token}
-                , url: 'http://localhost:8080/source/upload_file.json'
+                , url: '/source/upload_file.json'
                 , accept: 'file'
                 , acceptMime: '.pdf'//筛选的文件类型
                 , before: function (obj) {
@@ -275,7 +275,7 @@
                                     dataType: 'json',
                                     data: jsonData,
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                                    url: "http://localhost:8080/source/rename_file.json",
+                                    url: "/source/rename_file.json",
                                     error: function (result) {
                                         alert("error");
                                     },
@@ -294,7 +294,7 @@
                                     dataType: 'json',
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                                     data: jsonData,
-                                    url: "http://localhost:8080/source/no_rename_file.json",
+                                    url: "/source/no_rename_file.json",
                                     error: function (result) {
                                         alert("error");
                                     },
@@ -335,7 +335,7 @@
                     dataType: 'json',
                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                     data: jsonData,
-                    url: "http://localhost:8080/source/get_file_url.json",
+                    url: "/source/get_file_url.json",
                     success: function (result) {
                         $('#showFile').attr('src', result.message);//文件显示
 
@@ -376,7 +376,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/source/delete_file.json",
+                url: "/source/delete_file.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg('删除成功!');

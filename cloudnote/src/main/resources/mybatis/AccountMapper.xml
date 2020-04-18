@@ -41,7 +41,8 @@
     </select>
 
     <!--获取账户信息-->
-    <select id="findAccountByCondition" parameterType="com.entity.Condition" resultType="com.entity.Account" resultMap="baseMap">
+    <select id="findAccountByCondition" parameterType="com.entity.Condition" resultType="com.entity.Account"
+            resultMap="baseMap">
         select
         <include refid="base_sql"/>
         from account
@@ -63,7 +64,7 @@
             and account_id = #{accountId,jdbcType=INTEGER}
         </if>
         <if test="currentDay != null and currentDay !=''">
-            and create_time like #{currentDay} '%'
+            and like #{currentDay} '%'
         </if>
         <if test="startNumber != null and endNumber != ''">
             ORDER BY create_time desc
@@ -152,5 +153,13 @@
         <if test="accountPassword != '' and accountPassword != null">
             and account_password = #{accountPassword,jdbcType=VARCHAR}
         </if>
+    </select>
+
+    <!--获取活跃用户-->
+    <select id="findAliveAccountByCondition" parameterType="com.entity.Condition" resultType="java.lang.Integer">
+        select count(a.account_id)
+        from account a
+        where
+        DATEDIFF(a.last_login_time,a.create_time) > a.login_count
     </select>
 </mapper>

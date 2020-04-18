@@ -35,7 +35,7 @@ public class OSSUtil {
         typeMap.put("doc", "file");
         typeMap.put("pdf", "file");
         typeMap.put("txt", "file");
-        typeMap.put("xlsx","file");
+        typeMap.put("xlsx", "file");
         typeMap.put("png", "image");
         typeMap.put("jpg", "image");
     }
@@ -109,59 +109,41 @@ public class OSSUtil {
         return result;
     }
 
-    /**
-     * 存储临时文件
-     *
-     * @param file
-     * @param accountId
-     * @param newImageName
-     */
-    public void putObjectTemp(MultipartFile file, String accountId, String newImageName) {
 
-        // 获取文件名
-        String wholeName = file.getOriginalFilename();
-        // 获取文件类型
-        String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀名
-        // 获取文件的新路径
-        String imagePath = accountId + "/temp/" + newImageName;
-        PutObjectRequest putObjectRequest = null;
-        try {
-            putObjectRequest = new PutObjectRequest("001-bucket", imagePath, new ByteArrayInputStream(file.getBytes()));
-            ossClient.putObject(putObjectRequest);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    /**
+     * 存储的头像
+     *
+     * @param headImage
+     * @param path
+     * @return
+     */
+    public Map putObject(byte[] headImage, String path) {
+
+        Map response = new HashMap();
+        PutObjectRequest putObjectRequest = new PutObjectRequest("001-bucket", path, new ByteArrayInputStream(headImage));
+        PutObjectResult putResult = ossClient.putObject(putObjectRequest);
+        String url = this.getUrl(path);
+        response.put(Constant.FILE_IMAGE_URL, url);
+        //ossClient.shutdown();//关闭客户端
+        return response;
     }
+
 
     /**
      * 获取图片/文件的url
      *
-     * @param imagePath
+     * @param path
      * @return
      */
-    public Map getUrl(String imagePath) {
+    public String getUrl(String path) {
         HashMap result = new HashMap();
         // 设置图片url的有效期为10年
         Date date = new Date(new Date().getTime() + 36000 * 1000 * 24 * 365 * 10);
-        URL url = ossClient.generatePresignedUrl("001-bucket", imagePath, date);
+        URL url = ossClient.generatePresignedUrl("001-bucket", path, date);
         String urlString = url.toString();
-        result.put("url", urlString);
-        return result;
+        return urlString;
     }
 
-    /**
-     * 流式下载图片
-     *
-     * @param wholeName
-     * @return
-     */
-    public Map downImage(String wholeName) {
-        HashMap result = new HashMap();
-        GetObjectRequest getObjectRequest = new GetObjectRequest("001-bucket", wholeName);
-        File file = new File("D:\\毕业设计");
-        ossClient.getObject(getObjectRequest, file);
-        return result;
-    }
 
     /**
      * 删除文件
@@ -188,7 +170,6 @@ public class OSSUtil {
         String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀名
         // 目标路径
         String destinationKey = getImagePath(wholeName, accountId, type);
-
         // 源路径
         String sourceKey = accountId + "/temp/" + wholeName;
         CopyObjectResult copyObjectResult = ossClient.copyObject("001-bucket", sourceKey, "001-bucket", destinationKey);
@@ -211,7 +192,7 @@ public class OSSUtil {
     }
 
     /**
-     * 获取图片的路径
+     * 获取文件的路径
      *
      * @param sourceFileName
      * @param accountId

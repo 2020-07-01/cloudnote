@@ -20,7 +20,7 @@ public interface NoteMapper {
     int insertNote(Note note);
 
     // 笔记列表
-    List<Note> selectNoteByCondition(Condition condition);
+    List<Note> findNoteByCondition(Condition condition);
 
     // 更新笔记
     int updateNote(Note note);

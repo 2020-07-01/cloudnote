@@ -28,6 +28,8 @@ public interface AccountService {
     String findAccountId(Condition condition);
     //获取账号信息
     List<Account> getAccountByCondition(Condition condition);
+    //获取活跃用户
+    Integer findAliveAccountByCondintion(Condition condition);
 
 
 }

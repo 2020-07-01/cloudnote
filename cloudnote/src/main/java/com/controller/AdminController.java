@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.Util.DateUtils;
 import com.Util.Json;
 import com.Util.Result;
 import com.Util.TokenUtils;
@@ -83,8 +84,8 @@ public class AdminController {
 
         List<Account> accountList = accountService.getAccountByCondition(condition);
         List<AdminData> adminDataList = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(accountList)){
-            accountList.forEach(p->{
+        if (CollectionUtils.isNotEmpty(accountList)) {
+            accountList.forEach(p -> {
                 adminDataList.add(new AdminData(p));
             });
         }
@@ -125,12 +126,13 @@ public class AdminController {
 
     /**
      * 获取头部概况数据
+     *
      * @param request
      * @param response
      */
     @UserLoginToken
-    @RequestMapping(value = "get_head_data.json")
-    public void getHeadData(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value = "/get_head_data.json")
+    public void getHeadData(HttpServletRequest request, HttpServletResponse response) {
 
         List<Account> accountList = accountService.getAccountByCondition(new Condition());
         List<Note> noteList = noteService.findNoteByCondition(new Condition());
@@ -144,14 +146,20 @@ public class AdminController {
         generalData.setNoteCount(noteList.size());
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String currentDay =  format.format(new Date());
-        List<Account> CurrentDayaccountList = accountService.getAccountByCondition(new Condition(currentDay));
-        List<Note> CurrentDaynoteList = noteService.findNoteByCondition(new Condition(currentDay));
-        List<Image> CurrentDayimageList = imageService.findImageByCondition(new Condition(currentDay));
-        List<CNFile> CurrentDaycnFileList = fileService.findFileList(new Condition(currentDay));
+        String currentDay = format.format(new Date());
 
+        //活月用户:
+        Integer aliveCount = accountService.findAliveAccountByCondintion(new Condition());
+        List<Note> currentDayNoteList = noteService.findNoteByCondition(new Condition(currentDay));
+        List<Image> currentDayImageList = imageService.findImageByCondition(new Condition(currentDay));
+        List<CNFile> currentDayCnFileList = fileService.findFileList(new Condition(currentDay));
 
-
+        generalData.setCurrentDayFileCount(currentDayCnFileList.size());
+        generalData.setCurrentDayImageCount(currentDayImageList.size());
+        generalData.setCurrentDayNoteCount(currentDayNoteList.size());
+        generalData.setAliveAccountCount(aliveCount);
+        Result result = new Result(true, "SUCCESS", generalData);
+        Json.toJson(result, response);
     }
 
 }

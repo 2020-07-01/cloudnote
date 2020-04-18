@@ -28,6 +28,9 @@ public interface AccountMapper {
     //根据用户名和密码获取用户的id
     Integer findAccountId(Condition condition);
 
+    //获取活跃用户
+    Integer findAliveAccountByCondition(Condition condition);
+
 
 
 

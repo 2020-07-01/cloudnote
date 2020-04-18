@@ -246,7 +246,7 @@
                 , size: 0
                 , multiple: true    //设置多图片上传
                 , headers: {token: token}
-                , url: 'http://localhost:8080/source/upload_image.json'
+                , url: '/source/upload_image.json'
                 , accept: 'images'
                 , acceptMime: 'image/jpg, image/png'
                 , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
@@ -279,7 +279,7 @@
                                     dataType: 'json',
                                     data: jsonData,
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                                    url: "http://localhost:8080/source/rename_image.json",
+                                    url: "/source/rename_image.json",
                                     error: function (result) {
                                         alert("error");
                                     },
