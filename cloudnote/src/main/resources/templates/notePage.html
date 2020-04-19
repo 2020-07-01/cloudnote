@@ -75,18 +75,6 @@
 
             <ul class="layui-nav layui-nav-tree">
                 <li class="layui-nav-item">
-                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
-                    <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="javascript:;" id="toRecycleBinPage"><i class="layui-icon layui-icon-logout"></i>
-                            查看全部</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
-                    </dl>
-                </li>
-            </ul>
-
-            <ul class="layui-nav layui-nav-tree">
-                <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
                         <dd><a href="#" id="toInformationPage"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
@@ -101,10 +89,11 @@
 
     <div class="layui-body">
         <div class="layui-fluid">
+            <br>
             <div class="layui-row layui-col-space5">
                 <div class="layui-col-sm12 layui-col-md3">
                     <div class="layui-row">
-                        <div class="layui-card">
+
                             <div class="layui-col-xs9">
                                 <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
                                        class="layui-input" maxlength="12"
@@ -116,7 +105,7 @@
                                         class="layui-icon layui-icon-search" style="font-size: 32px;"></i>
                                 </button>
                             </div>
-                        </div>
+
 
                         <div class="layui-col-sm12" style="text-align:center;">
                             <form class="layui-form" lay-filter="formSelectType" id="2" action="post">
@@ -142,68 +131,66 @@
                 </div>
                 <!--笔记编辑区-->
                 <div class="layui-col-sm12 layui-col-md9">
-                    <div class="grid-demo">
-                        <!--标题区-->
-                        <div class="layui-row">
-                            <div class="layui-col-xs9">
-                                <div class="grid-demo">
-                                    <div class="layui-input-inline" style="width: 100%;float:left;">
-                                        <input type="text" id="note-title" name="noteTitle"
-                                               class="layui-input note-title" maxlength="30" style="font-size: 16px"
-                                               placeholder="标题">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="layui-col-xs3">
-                                <div class="grid-demo">
-                                    <div class="layui-btn-group" style="float:right">
-                                        <button id="saveNote" type="button" class="layui-btn layui-btn-primary"
-                                                style="border:none;padding: 0 5px;"><i
-                                                class="layui-icon layui-icon-add-1" style="font-size: 32px;"></i>
-                                        </button>
-                                        <button type="button" id="setType" class="layui-btn layui-btn-primary"
-                                                style="border:none;padding: 0 5px"><i
-                                                class="layui-icon layui-icon-note" style="font-size: 32px;"></i>
-                                        </button>
-                                        <button id="delete-note" type="button" class="layui-btn layui-btn-primary"
-                                                button-space
-                                                style="border:none;padding: 0 5px;" onmouseover="123"><i
-                                                class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
-                                        </button>
-                                        <button type="button" id="star" class="layui-btn layui-btn-primary"
-                                                style="border:none;padding: 0 5px"><i id="ifStar" class="layui-icon"
-                                                                                      style="font-size: 32px;">&#xe600;</i>
-                                        </button>
-                                    </div>
+
+                    <!--标题区-->
+                    <div class="layui-row">
+                        <div class="layui-col-xs9">
+                            <div class="grid-demo">
+                                <div class="layui-input-inline" style="width: 100%;float:left;">
+                                    <input type="text" id="note-title" name="noteTitle"
+                                           class="layui-input note-title" maxlength="30" style="font-size: 16px"
+                                           placeholder="标题">
                                 </div>
                             </div>
                         </div>
-
-                        <!--类型-->
-                        <div class="layui-row" id="showType" style="display: none;">
-                            <div class="layui-col-md12">
-                                <form class="layui-form" lay-filter="formNoteType" id="1" action="post">
-                                    <div class="layui-form-item" style="margin-bottom: 0">
-                                        <input type="text" id="inputNoteType" name="inputNoteType"
-                                               class="layui-input" autocomplete="off" onkeyup="search()"
-                                               placeholder="笔记标签" maxlength="10"
-                                               style="width: 90%;z-index:2;position:absolute;border-bottom: none;">
-                                        <select type="text" name="setNoteType" id="setNoteType" autocomplete="off"
-                                                lay-filter="setNoteType" lay-search>
-                                        </select>
-                                    </div>
-                                </form>
+                        <div class="layui-col-xs3">
+                            <div class="grid-demo">
+                                <div class="layui-btn-group" style="float:right">
+                                    <button id="saveNote" type="button" class="layui-btn layui-btn-primary"
+                                            style="border:none;padding: 0 5px;"><i
+                                            class="layui-icon layui-icon-add-1" style="font-size: 32px;"></i>
+                                    </button>
+                                    <button type="button" id="setType" class="layui-btn layui-btn-primary"
+                                            style="border:none;padding: 0 5px"><i
+                                            class="layui-icon layui-icon-note" style="font-size: 32px;"></i>
+                                    </button>
+                                    <button id="delete-note" type="button" class="layui-btn layui-btn-primary"
+                                            button-space
+                                            style="border:none;padding: 0 5px;" onmouseover="123"><i
+                                            class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
+                                    </button>
+                                    <button type="button" id="star" class="layui-btn layui-btn-primary"
+                                            style="border:none;padding: 0 5px"><i id="ifStar" class="layui-icon"
+                                                                                  style="font-size: 32px;">&#xe600;</i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!--编辑区-->
-                        <div class="layui-row">
+                    <!--类型-->
+                    <div class="layui-row" id="showType" style="display: none;">
+                        <div class="layui-col-md12">
+                            <form class="layui-form" lay-filter="formNoteType" id="1" action="post">
+                                <div class="layui-form-item" style="margin-bottom: 0">
+                                    <input type="text" id="inputNoteType" name="inputNoteType"
+                                           class="layui-input" autocomplete="off" onkeyup="search()"
+                                           placeholder="笔记标签" maxlength="10"
+                                           style="width: 90%;z-index:2;position:absolute;border-bottom: none;">
+                                    <select type="text" name="setNoteType" id="setNoteType" autocomplete="off"
+                                            lay-filter="setNoteType" lay-search>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
-                            <div class="layui-col-md12" style="width: 100%;height: 100%;">
+                    <!--编辑区-->
+                    <div class="layui-row">
+
+                        <div class="layui-col-md12" style="width: 100%;height: 100%;">
                                         <textarea name="noteContent" id="noteContent" cols="30" rows="10"
                                                   style="border: none"></textarea>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -240,13 +227,15 @@
         function init_tinymce() {
             tinymce.init({
                 selector: '#noteContent',
-                height: 435,
+                height: 459,
+                max_height: 1000,
                 language: 'zh_CN',
                 skin: 'oxide',
                 resize: true,
                 theme: 'silver',
                 menubar: 'file edit format',
                 contextmenu: "copy ", //右击菜单
+
                 menu: {
                     edit: {title: '编辑', items: 'undo redo | cut copy  pastetext | selectall'},
                 },
@@ -291,7 +280,7 @@
             init_table("", "", "YES", false);
         })
 
-        //根据类型刷新笔记列表
+        //根据不同的条件刷新笔记页面
         function init_table(type, key, star, refreshTypeFlag) {
             table.render({
                 elem: '#note-list',
@@ -302,12 +291,11 @@
                 cellMinWidth: 240, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                 page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
                     layout: ['prev', 'next', 'skip'] //自定义分页布局
-                    , curr: 1 //设定初始在第 5 页
+                    , curr: 1 //设置初始页
                     , groups: 1 //只显示 1 个连续页码
                     , first: false //不显示首页
                     , last: false //不显示尾页
-                    , limit: 8
-
+                    , pageSize: 10 //每页显示数量
                 },
                 loading: true,
                 cols:
@@ -676,7 +664,6 @@
         $("#toRecycleBinPage").click(function () {
             toRecycleBinPage(token);
         })
-
     })
 </script>
 </html>

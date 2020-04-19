@@ -68,7 +68,7 @@ public class AdminController {
      * 获取用户列表
      *
      * @param page
-     * @param limit
+     * @param pageSize
      * @param request
      * @param response
      * @return
@@ -76,11 +76,11 @@ public class AdminController {
     @UserLoginToken
     @RequestMapping("/account_list.json")
     public Object getAccountList(@RequestParam(value = "page", defaultValue = "1") String page,
-                                 @RequestParam(value = "limit", defaultValue = "10") String limit,
+                                 @RequestParam(value = "pageSize", defaultValue = "10") String pageSize,
                                  HttpServletRequest request, HttpServletResponse response) {
         Condition condition = new Condition();
-        condition.setPage(Integer.parseInt(page));
-        condition.setLimit(Integer.parseInt(limit));
+        condition.setStartNumber(getStartNumber(Integer.parseInt(page),Integer.parseInt(pageSize)));
+        condition.setPageSize(Integer.parseInt(pageSize));
 
         List<Account> accountList = accountService.getAccountByCondition(condition);
         List<AdminData> adminDataList = new ArrayList<>();
@@ -89,13 +89,16 @@ public class AdminController {
                 adminDataList.add(new AdminData(p));
             });
         }
-
         Map<String, Object> responseMap = new HashMap();
         responseMap.put("code", "0");
         responseMap.put("msg", "success");
         responseMap.put("count", accountList.size());
         responseMap.put("data", adminDataList);
         return responseMap;
+    }
+
+    private Integer getStartNumber(Integer page,Integer pageSize){
+        return  page == 1 ? 0 : ((page - 1 )* pageSize) ;
     }
 
     /**

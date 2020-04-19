@@ -39,8 +39,6 @@ public class Condition {
     private String startTime;
     private String endTime;
     private String isNeedRemind;
-    private Integer page;
-    private Integer limit;
     private Integer startNumber;
-    private Integer endNumber;
+    private Integer pageSize;
 }

@@ -46,7 +46,7 @@ public class NoteController {
     @UserLoginToken
     @RequestMapping(value = "/note_list.json")
     public Object indexList(@RequestParam(value = "page", defaultValue = "1") String page,
-                            @RequestParam(value = "limit", defaultValue = "8") String limit,
+                            @RequestParam(value = "pageSize", defaultValue = "10") String pageSize,
                             @RequestParam(value = "type", defaultValue = "") String type,
                             @RequestParam(value = "isRecycle", defaultValue = "NO") String isRecycle,
                             @RequestParam(value = "key", defaultValue = "") String key,
@@ -58,8 +58,8 @@ public class NoteController {
         condition.setType(type);
         condition.setIsRecycle(isRecycle);
         condition.setStar(star);
-        condition.setPage(Integer.parseInt(page));
-        condition.setLimit(Integer.parseInt(limit));
+        condition.setStartNumber(getStartNumber(Integer.parseInt(page),Integer.parseInt(pageSize)));
+        condition.setPageSize(Integer.parseInt(pageSize));
         if (!key.equals("")) {
             condition.setKey(key);
             condition.setType("");
@@ -87,6 +87,9 @@ public class NoteController {
         return hashMap;
     }
 
+    private Integer getStartNumber(Integer page,Integer pageSize){
+        return  page == 1 ? 0 : ((page - 1 )* pageSize) ;
+    }
 
     /**
      * 保存笔记

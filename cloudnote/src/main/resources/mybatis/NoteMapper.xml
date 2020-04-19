@@ -20,6 +20,7 @@
         <result column="star" property="star" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!--数据列表-->
     <select id="findNoteByCondition" parameterType="com.entity.Condition" resultType="com.entity.Note"
             resultMap="baseMap">
         select
@@ -45,9 +46,9 @@
         <if test="currentDay != null and currentDay !=''">
             and create_time like #{currentDay} '%'
         </if>
-        <if test="startNumber != null and endNumber != ''">
+        <if test="startNumber != null and pageSize != null">
             ORDER BY create_time desc
-            limit #{startNumber},#{endNumber};
+            limit #{startNumber},#{pageSize};
         </if>
     </select>
 
