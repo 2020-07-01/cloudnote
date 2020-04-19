@@ -13,7 +13,7 @@
     <script src="../static/cropper/cropper.js"></script>
     <script src="../static/cropper/croppers.js"></script>
     <script src="../static/jquery-3.4.1.min.js"></script>
-
+    <script type="text/javascript" src="../static/common.js"></script>
     <style>
         .layuiadmin-card-list {
             padding: 10px
@@ -25,11 +25,11 @@
 <div class="layui-layout layui-layout-admin">
     <!--头部导航栏-->
     <div class="layui-header">
-        <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
+        <div><a href="javascript:location.reload();" class="layui-logo">云笔记平台</a></div>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <img src="https://001-bucket.oss-cn-shanghai.aliyuncs.com/63/image/2020-04-18/jpg/head.jpg" class="layui-nav-img">
-                <span>这是用户名</span>
+                <img id="headImage" src="" class="layui-nav-img">
+                <span id="headAccountName"></span>
             </li>
         </ul>
     </div>
@@ -53,8 +53,8 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/image_page"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
-                        <dd><a href="/file_page"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
+                        <dd><a a href="#" id="toImagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a a href="#" id="toFilePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -63,7 +63,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/to_schedule_page"><i class="layui-icon layui-icon-form"></i> 查看</a>
+                        <dd><a a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 查看</a>
                     </dl>
                 </li>
             </ul>
@@ -83,8 +83,8 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
-                        <dd><a href="/rest_password"><i class="layui-icon layui-icon-password"></i> 修改密码</a></dd>
+                        <dd><a href="javascript:location.reload();"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a></dd>
                         <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>
                 </li>
@@ -102,9 +102,9 @@
                         <div class="layui-card-body">
                             <div class="layui-row">
                                 <div class="layui-col-md11 layui-col-md-offset1">
-                                    <form class="layui-form" lay-filter="form">
+                                    <form class="layui-form" lay-filter="form" action="">
                                         <div class="layui-row">
-                                            <div class="layui-col-sm12 layui-col-md7">
+                                            <div class="layui-col-sm7 layui-col-md7">
                                                 <div class="layui-form-item">
                                                     <label class="layui-form-label">用户名</label>
                                                     <div class="layui-input-inline">
@@ -140,14 +140,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="layui-col-sm12 layui-col-md5">
+                                            <div class="layui-col-sm7 layui-col-md3">
                                                 <div class="layui-card">
                                                     <div class="layui-card-header">
                                                         图片预览
                                                     </div>
                                                     <div class="layui-card-body layuiadmin-card-list">
-                                                        <div style="top:0;left:0;right: 0;bottom: 0;margin: auto">
-                                                            <img id="headImagePreview" style="width: 150px;height: 150px" src="">
+                                                        <div>
+                                                            <img id="headImagePreview"
+                                                                 style="width: 150px;height: 150px" src="">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -193,7 +194,8 @@
                                         </div>
                                         <div class="layui-form-item">
                                             <div class="layui-input-block">
-                                                <button class="layui-btn" lay-submit lay-filter="accountInformation">
+                                                <button type="button" class="layui-btn" lay-submit
+                                                        lay-filter="accountInformation">
                                                     确认修改
                                                 </button>
                                                 <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
@@ -218,10 +220,6 @@
 
     //设置全局token
     var token = sessionStorage.getItem("token");
-
-    //设置性别
-    var sexValue = "";
-
     layui.use(['element', 'form', 'laydate', 'upload', 'croppers'], function () {
         var element = layui.element;
         var form = layui.form;
@@ -229,14 +227,16 @@
         var upload = layui.upload;
         var croppers = layui.croppers
 
+        init();
+
         //年月日选择器
         laydate.render({
             elem: '#birthday'
             , type: 'date'
             , trigger: 'click'//呼出事件改成click
         });
-        //在页面加载完毕后渲染表单数据
-        $(function () {
+
+        function init() {
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -245,13 +245,16 @@
                 url: "/account/get_account.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        form.val("form", result.data.data);
+                        form.val("form", result.data);
+                        $('#headImagePreview').attr('src', result.data.headImageUrl);
+                        $('#headImage').attr('src', result.data.headImageUrl);
+                        $('#headAccountName').attr('src', result.data.accountName);
                     } else {
                         layer.msg(result.message);
                     }
                 },
             })
-        });
+        };
 
         //创建头像上传组件
         croppers.render({
@@ -262,10 +265,11 @@
             , mark: 1 / 1    //选取比例
             , url: "/account/upload_image.json"
             , done: function (result) { //上传完毕回调
-                if(result.code == 1){
+                if (result.code == 1) {
                     $('#headImagePreview').attr('src', result.data);
                     $('#headImageUrl').val(result.data);
-                }else {
+                    sessionStorage.setItem("headImageUrl", result.data);
+                } else {
                     layer.msg(result.message);
                 }
             }
@@ -284,6 +288,7 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
+                        $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
                     } else {
                         layer.msg(result.message);
                     }
@@ -291,38 +296,29 @@
             })
         });
 
-        //注销登录
         $("#logout").click(function () {
-            $.ajax({
-                type: "post",
-                contentType: "application/json",
-                dataType: 'json',
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                url: "/account/logout.json",
-                success: function (result) {
-                    if (result.code == 1) {
-                        layer.msg("退出成功!")
-                        window.location.href = "/login"//进入主页
-                    }
-                },
-            })
+            logout(token);
         })
 
-        //头像
-        var uploadInst = upload.render({
-            elem: '#uploadHeadPhoto' //绑定元素
-            , url: '/upload/'
-            , accept: 'images'
-            , headers: {token: token}
-            , multiple: false
-            , number: 1
-            , done: function (res) {
-                //上传完毕回调
-            }
-            , error: function () {
-                //请求异常回调
-            }
-        });
+        $("#toImagePage").click(function () {
+            toImagePage(token);
+        })
+
+        $("#toFilePage").click(function () {
+            toFilePage(token);
+        })
+
+        $("#toSchedulePage").click(function () {
+            toSchedulePage(token);
+        })
+
+        $("#toResetPasswordPage").click(function () {
+            toResetPasswordPage(token);
+        })
+
+        $("#toRecycleBinPage").click(function () {
+            toRecycleBinPage(token);
+        })
 
     });
 

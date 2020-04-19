@@ -410,7 +410,7 @@ public class AccountController {
 
         accountService.updateAccount(account);
 
-        Json.toJson(new Result(true, "注销成功!"), response);
+        Json.toJson(new Result(true, "设置成功!"), response);
 
     }
 
@@ -423,17 +423,16 @@ public class AccountController {
     @UserLoginToken
     @RequestMapping(value = "/get_account.json")
     public void getAccountData(HttpServletRequest request, HttpServletResponse response) {
-
+        Result result = null;
         String token = request.getHeader("token");
         Integer accountId = tokenService.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
         List<Account> accountList = accountService.getAccountByCondition(condition);
-        Map data = new HashMap();
         if (CollectionUtils.isNotEmpty(accountList)) {
-            data.put("data", accountList.get(0));
+            result = new Result(true, "SUCCESS", accountList.get(0));
         }
-        Json.toJson(new Result(true, "SUCCESS", data), response);
+        Json.toJson(result, response);
     }
 
     /**
@@ -450,16 +449,32 @@ public class AccountController {
                                 HttpServletRequest request, HttpServletResponse response) throws IOException {
         String token = request.getHeader("token");
         Integer accountId = tokenService.getAccountIdByToken(token);
-        String wholeName = headImage.getOriginalFilename();// 获取源文件名
-        String headPath = accountId + "/" + "headImage" + "/" + wholeName;
+        String headName = random(5);
+        String headPath = accountId + "/" + "headImage" + "/" + headName;
         Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
         if (StringUtils.isNotEmpty(ossMap.get(Constant.FILE_IMAGE_URL))) {
-            String url = ossMap.get(Constant.FILE_IMAGE_URL);
-            Result result = new Result(true, "上传成功!",url);
+            String url = ossMap.get(Constant.FILE_IMAGE_URL).substring(0, ossMap.get(Constant.FILE_IMAGE_URL).lastIndexOf("?"));
+            Result result = new Result(true, "上传成功!", url);
             Json.toJson(result, response);
         } else {
             Result result = new Result(false, "上传失败!");
             Json.toJson(result, response);
         }
+    }
+
+
+    /**
+     * 获取随机数
+     *
+     * @param n
+     * @return
+     */
+    private String random(int n) {
+        Random random = new Random();
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < n; i++) {
+            stringBuffer.append(random.nextInt(10));
+        }
+        return stringBuffer.toString();
     }
 }
