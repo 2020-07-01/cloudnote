@@ -62,15 +62,8 @@
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <a href="javascript:;">
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    admin
-                </a>
-                <dl class="layui-nav-child">
-                    <dd><a href="information">账号设置</a></dd>
-                    <dd><a href="">意见反馈</a></dd>
-                    <dd><a href="">注销登录</a></dd>
-                </dl>
+                <img id="headImage" src="" class="layui-nav-img">
+                <span id="headAccountName"></span>
             </li>
         </ul>
 
@@ -282,6 +275,10 @@
     //获取token
     var token = sessionStorage.getItem("token");
 
+    //设置表头
+    $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
+    $('#headAccountName').html(sessionStorage.getItem("headAccountName"));
+
     //加载页面日历模块
     layui.use(['layer', 'form', 'laydate', 'element'], function () {
         var layer = layui.layer;
@@ -345,7 +342,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/schedule/is_pass.json",
+                url: "/schedule/is_pass.json",
                 error: function (result) {
                     alert("123");
                 },
@@ -449,7 +446,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "http://localhost:8080/schedule/save_task.json",
+                url: "/schedule/save_task.json",
                 error: function (result) {
 
                 },
@@ -516,7 +513,7 @@
                 dataType: 'json',
                 data: jsonData,
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                url: "http://localhost:8080/schedule/init_executeTime.json",
+                url: "/schedule/init_executeTime.json",
                 success: function (result) {
                     if (result.code == 1) {
                         var selectData = result.data.textValues;
@@ -547,7 +544,7 @@
                 dataType: 'json',
                 data: jsonData,
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                url: "http://localhost:8080/schedule/get_schedule.json",
+                url: "/schedule/get_schedule.json",
                 success: function (result) {
                     if (result.code == 1) {
                         //回显标题
@@ -573,7 +570,7 @@
             dataType: 'json',
             async: false,
             headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-            url: "http://localhost:8080/schedule/schedule_list.json",
+            url: "/schedule/schedule_list.json",
             error: function (result) {
 
             },

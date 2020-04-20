@@ -45,15 +45,8 @@
         <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <a href="javascript:;">
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    admin
-                </a>
-                <dl class="layui-nav-child">
-                    <dd><a href="information">账号设置</a></dd>
-                    <dd><a href="">意见反馈</a></dd>
-                    <dd><a href="">注销登录</a></dd>
-                </dl>
+                <img id="headImage" src="" class="layui-nav-img">
+                <span id="headAccountName"></span>
             </li>
         </ul>
     </div>
@@ -206,6 +199,7 @@
 
 <script th:inline="none">
 
+
     //预先加载模块
     layui.use(['element', 'form', 'layer', 'upload', 'table'], function () {
         var form = layui.form;
@@ -215,6 +209,12 @@
 
         //获取token
         var token = sessionStorage.getItem("token");
+        //设置表头
+        $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
+        $('#headAccountName').html(sessionStorage.getItem("headAccountName"));
+
+
+
         var downloadUrl = "";
         var deleteImageId = "";
         var deleteImagePath = "";

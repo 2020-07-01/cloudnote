@@ -88,6 +88,8 @@ public class AccountController {
             account.setAccountName(accountName);
             account.setAccountPassword(accountPassword);
             account.setEmail(email);
+            //设置默认头像
+            account.setHeadImageUrl("http://t.cn/RCzsdCq");
 
             Map result = accountService.insert(account);
 
@@ -477,4 +479,33 @@ public class AccountController {
         }
         return stringBuffer.toString();
     }
+
+    /**
+     * 获取头部数据x
+     */
+    @RequestMapping(value = "/getHeadData.json")
+    @UserLoginToken
+    public void getHeadData(HttpServletRequest request, HttpServletResponse response) {
+        Result result = null;
+        Map<String, String> data = new HashMap<>();
+        String token = request.getHeader("token");
+        Integer accountId = tokenService.getAccountIdByToken(token);
+        Condition condition = new Condition();
+        condition.setAccountId(accountId);
+        List<Account> accountList = accountService.getAccountByCondition(condition);
+        if (CollectionUtils.isNotEmpty(accountList)) {
+            if (StringUtils.isNotEmpty(accountList.get(0).getHeadImageUrl())) {
+                data.put("headImageUrl", accountList.get(0).getHeadImageUrl());
+            }
+            if (StringUtils.isNotEmpty(accountList.get(0).getAccountName())) {
+                data.put("accountName", accountList.get(0).getAccountName());
+            }
+            result = new Result(true, "SUCCESS", data);
+        } else {
+            result = new Result(false, "FAILURE", data);
+        }
+        Json.toJson(result, response);
+    }
+
+
 }

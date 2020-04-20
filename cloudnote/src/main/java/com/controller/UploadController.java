@@ -182,6 +182,7 @@ public class UploadController {
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/get_image_url.json")
     public void getImageUrl(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");

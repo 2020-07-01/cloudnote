@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
 import com.entity.*;
+import com.interceptor.UserLoginToken;
 import com.service.serviceImpl.ScheduleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -160,7 +161,14 @@ public class ScheduleController {
         return (HashMap) cacheService.getValue(key);
     }
 
+
+    /**
+     * 日程列表
+     * @param request
+     * @param response
+     */
     @RequestMapping(value = "/schedule_list.json")
+    @UserLoginToken
     public void scheduleList(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);

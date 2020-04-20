@@ -32,7 +32,6 @@
 
     <div class="layui-header">
         <div><a class="layui-logo" href="javascript:location.reload();">云笔记平台</a></div>
-
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <img id="headImage" src="" class="layui-nav-img">
@@ -50,6 +49,7 @@
                         <dd><a href="#" id="cleanEditSpace"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a></dd>
                         <dd><a href="#" id="all"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
                         <dd><a href="#" id="starList"><i class="layui-icon layui-icon-star-fill"> 收藏夹</i></a></dd>
+                        <dd><a href="#" id="recycled"><i class="layui-icon layui-icon-delete"> 回收站</i></a></dd>
                     </dl>
                 </li>
             </ul>
@@ -94,17 +94,17 @@
                 <div class="layui-col-sm12 layui-col-md3">
                     <div class="layui-row">
 
-                            <div class="layui-col-xs9">
-                                <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
-                                       class="layui-input" maxlength="12"
-                                       style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
-                            </div>
-                            <div class="layui-col-xs3" style="text-align:center">
-                                <button id="search-note" type="button" class="layui-btn layui-btn-primary"
-                                        style="border:none;padding: 0 0"><i
-                                        class="layui-icon layui-icon-search" style="font-size: 32px;"></i>
-                                </button>
-                            </div>
+                        <div class="layui-col-xs9">
+                            <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
+                                   class="layui-input" maxlength="12"
+                                   style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
+                        </div>
+                        <div class="layui-col-xs3" style="text-align:center">
+                            <button id="search-note" type="button" class="layui-btn layui-btn-primary"
+                                    style="border:none;padding: 0 0"><i
+                                    class="layui-icon layui-icon-search" style="font-size: 32px;"></i>
+                            </button>
+                        </div>
 
 
                         <div class="layui-col-sm12" style="text-align:center;">
@@ -134,37 +134,43 @@
 
                     <!--标题区-->
                     <div class="layui-row">
-                        <div class="layui-col-xs9">
-                            <div class="grid-demo">
-                                <div class="layui-input-inline" style="width: 100%;float:left;">
-                                    <input type="text" id="note-title" name="noteTitle"
-                                           class="layui-input note-title" maxlength="30" style="font-size: 16px"
-                                           placeholder="标题">
-                                </div>
+                        <div class="layui-col-md8 layui-col-sm8">
+                            <div class="layui-input-inline" style="width: 100%;float:left;">
+                                <input type="text" id="noteTitle" name="noteTitle"
+                                       class="layui-input note-title" maxlength="30" style="font-size: 16px"
+                                       placeholder="标题">
                             </div>
                         </div>
-                        <div class="layui-col-xs3">
-                            <div class="grid-demo">
-                                <div class="layui-btn-group" style="float:right">
-                                    <button id="saveNote" type="button" class="layui-btn layui-btn-primary"
-                                            style="border:none;padding: 0 5px;"><i
-                                            class="layui-icon layui-icon-add-1" style="font-size: 32px;"></i>
-                                    </button>
-                                    <button type="button" id="setType" class="layui-btn layui-btn-primary"
-                                            style="border:none;padding: 0 5px"><i
-                                            class="layui-icon layui-icon-note" style="font-size: 32px;"></i>
-                                    </button>
-                                    <button id="delete-note" type="button" class="layui-btn layui-btn-primary"
-                                            button-space
-                                            style="border:none;padding: 0 5px;" onmouseover="123"><i
-                                            class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
-                                    </button>
-                                    <button type="button" id="star" class="layui-btn layui-btn-primary"
-                                            style="border:none;padding: 0 5px"><i id="ifStar" class="layui-icon"
-                                                                                  style="font-size: 32px;">&#xe600;</i>
-                                    </button>
-                                </div>
+                        <div class="layui-col-md4 layui-col-sm4" style="text-align: center">
+                            <div id="buttonGroup" class="layui-btn-group" style="display: block">
+                                <button id="saveNote" type="button" class="layui-btn layui-btn-primary"
+                                        style="border:none;padding: 0 5px;"><i
+                                        class="layui-icon layui-icon-add-1" style="font-size: 32px;"></i>
+                                </button>
+                                <button type="button" id="setType" class="layui-btn layui-btn-primary"
+                                        style="border:none;padding: 0 5px"><i
+                                        class="layui-icon layui-icon-note" style="font-size: 32px;"></i>
+                                </button>
+                                <button id="deleteNote" type="button" class="layui-btn layui-btn-primary"
+                                        style="border:none;padding: 0 5px;"><i
+                                        class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
+                                </button>
+                                <button type="button" id="star" class="layui-btn layui-btn-primary"
+                                        style="border:none;padding: 0 5px"><i id="ifStar" class="layui-icon"
+                                                                              style="font-size: 32px;">&#xe600;</i>
+                                </button>
                             </div>
+
+                            <div id="recycleButton" style="display: none;">
+                                <button id="revertNote" type="button"
+                                        style="font-size: 16px;height: 40px; line-height: 40px;"
+                                        class="layui-btn layui-btn-primary layui-btn-radius">恢复笔记
+                                </button>
+                                <button type="completelyRemove" style="font-size: 16px;height: 40px; line-height: 40px;"
+                                        class="layui-btn layui-btn-primary layui-btn-radius">彻底删除
+                                </button>
+                            </div>
+
                         </div>
                     </div>
 
@@ -176,7 +182,7 @@
                                     <input type="text" id="inputNoteType" name="inputNoteType"
                                            class="layui-input" autocomplete="off" onkeyup="search()"
                                            placeholder="笔记标签" maxlength="10"
-                                           style="width: 90%;z-index:2;position:absolute;border-bottom: none;">
+                                           style="width: 90%;z-index:2;position:absolute;border-bottom: none;border-right: none">
                                     <select type="text" name="setNoteType" id="setNoteType" autocomplete="off"
                                             lay-filter="setNoteType" lay-search>
                                     </select>
@@ -209,15 +215,19 @@
     //设置全局数据
     var token = sessionStorage.getItem("token");
     var globalNoteId = "";
-    var flag = true;
+    let showTypeFlag = true;
+    let disableFlag = true;
 
     var oldNoteTitle = "";
     var oldNoteContent = "";
     var oldNoteType = "";
 
+
     layui.use(['table', 'element', 'form', 'layer'], function () {
         //初始化编辑器
         init_tinymce();
+        //初始化用户名和头像
+        init_head();
 
         var table = layui.table;
         var layer = layui.layer;
@@ -263,11 +273,36 @@
             });
         };
 
+        function init_head() {
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "/account/getHeadData.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        sessionStorage.setItem("headAccountName", result.data.accountName);
+                        sessionStorage.setItem("headImageUrl", result.data.headImageUrl)
+
+                        $('#headImage').attr('src', result.data.headImageUrl);
+                        $('#headAccountName').html(result.data.accountName);
+
+                    } else {
+                        layer.msg(result.message);
+                    }
+                },
+            })
+        };
+
         //初始化列表 type, key, star
         init_table("", "", "", true);
 
         //所有笔记
         $("#all").click(function () {
+            if (!disableFlag) {
+                disabledTrue();
+            }
             init_select();//初始化标签
             clearEidtSpace();
             init_table("", "", "", false);
@@ -275,16 +310,28 @@
 
         //收藏夹
         $("#starList").click(function () {
+            if (!disableFlag) {
+                disabledTrue();
+            }
             init_select();//初始化标签
             clearEidtSpace();
             init_table("", "", "YES", false);
         })
 
+        //回收站
+        $("#recycled").click(function () {
+            //设置不能编辑
+            disabledFalse();
+            showNoteType();//展示标签
+            clearEidtSpace();
+            init_table("", "", "", false, "YES");
+        })
+
         //根据不同的条件刷新笔记页面
-        function init_table(type, key, star, refreshTypeFlag) {
+        function init_table(type, key, star, refreshTypeFlag, isRecycle) {
             table.render({
                 elem: '#note-list',
-                where: {token: token, type: type, key: key, star: star},//传递token到服务端
+                where: {token: token, type: type, key: key, star: star, isRecycle: isRecycle},//传递token到服务端
                 type: "get",
                 url: '/note/note_list.json', //默认传递两个参数
                 headers: {'token': token},
@@ -315,7 +362,7 @@
         //点击标题
         table.on('row(note-filter)', function (obj) {
             oldNoteTitle = obj.data.noteTitle;
-            $('#note-title').val(obj.data.noteTitle);
+            $('#noteTitle').val(obj.data.noteTitle);
             oldNoteContent = obj.data.noteContent;
             tinyMCE.activeEditor.setContent(obj.data.noteContent);
             oldNoteType = obj.data.noteType;
@@ -337,7 +384,7 @@
 
         //加星笔记
         $("#star").click(function () {
-            var falg = $('#ifStar').val();
+            let flag = $('#ifStar').val();
             if (flag == "&#xe658;") {
                 layer.msg("已收藏");
             }
@@ -371,7 +418,14 @@
 
         //清除编辑区
         $("#cleanEditSpace").click(function () {
-            $('#note-title').val("无标题笔记");//清除标题
+
+
+            if (!disableFlag) {
+                disabledTrue();
+            }
+
+
+            $('#noteTitle').val("无标题笔记");//清除标题
             tinyMCE.activeEditor.setContent("");//清除内容
             $('#inputNoteType').val("");//清除标签
             $('#ifStar').html("&#xe600;");//设置空心收藏
@@ -392,7 +446,7 @@
             if (globalNoteId != "") {
                 return;
             }
-            var noteTitle = $('#note-title').val();
+            var noteTitle = $('#noteTitle').val();
             var noteContent = tinyMCE.activeEditor.getContent();
             var noteType = $('#inputNoteType').val();
 
@@ -425,7 +479,65 @@
 
 
         //删除笔记
-        $("#delete-note").click(function () {
+        $("#deleteNote").click(function () {
+
+            if (globalNoteId == "") {
+                layer.msg("请先选择笔记!");
+                return;
+            }
+            var data = {
+                "noteId": globalNoteId
+            }
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "/note/delete_note.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg('删除成功!');
+                        init_table("", "", "", false);
+                        clearEidtSpace();
+                        hideNoteType();
+                    }
+                },
+            })
+        });
+
+        //恢复笔记
+        $("#deleteNote").click(function () {
+
+            if (globalNoteId == "") {
+                layer.msg("请先选择笔记!");
+                return;
+            }
+            var data = {
+                "noteId": globalNoteId
+            }
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "/note/delete_note.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg('删除成功!');
+                        init_table("", "", "", false);
+                        clearEidtSpace();
+                        hideNoteType();
+                    }
+                },
+            })
+        });
+
+        //彻底删除
+        $("#deleteNote").click(function () {
 
             if (globalNoteId == "") {
                 layer.msg("请先选择笔记!");
@@ -455,29 +567,23 @@
 
         //全文搜索
         $("#search-note").click(function () {
-            var key = $("#input-search-note").val();
-            /* if (key == "") {
-                 layer.msg("检索字段不能为空!");
-                 return;
-             }*/
-            //清空的标签值
+            let key = $("#input-search-note").val();
             form.val("formSelectType", {
                 "selectNoteType": ""
             });
             init_table("", key, "", false);
         })
 
-
         //设置标签是否可见
         $("#setType").click(function () {
-            if (flag == true) {
+            if (showTypeFlag == true) {
                 $('#showType').css({'display': 'block'});
-                flag = false;
+                showTypeFlag = false;
                 return;
             }
-            if (flag == false) {
+            if (showTypeFlag == false) {
                 $('#showType').css({'display': 'none'});
-                flag = true;
+                showTypeFlag = true;
                 return;
             }
         });
@@ -485,18 +591,18 @@
         //隐藏标签
         function hideNoteType() {
             $('#showType').css({'display': 'none'});
-            flag = true;
+            showTypeFlag = true;
         };
 
         //显示标签
         function showNoteType() {
             $('#showType').css({'display': 'block'});
-            flag = false;
+            showTypeFlag = false;
         }
 
         //清除编辑区
         function clearEidtSpace() {
-            $('#note-title').val("");//清除标题
+            $('#noteTitle').val("");//清除标题
             tinyMCE.activeEditor.setContent("");
             $('#inputNoteType').val("");//清除标签
             $('#ifStar').html("&#xe600;");//设置空心收藏
@@ -505,6 +611,45 @@
             oldNoteType = "";
             oldNoteContent = "";
         }
+
+        //设置不可编辑
+        function disabledFalse() {
+            disableFlag = false;
+
+            $('#buttonGroup').css({'display': 'none'});
+            $('#recycleButton').css({'display': 'block'});
+            $('#noteTitle').attr("disabled", "disabled");
+            $('#inputNoteType').attr("disabled", "disabled");
+            $('#inputNoteType').attr("disabled", "disabled");
+            $('#setNoteType').attr("disabled", "disabled");
+            $('#selectNoteType').attr("disabled", "disabled");
+            $('#noteContent').attr("disabled", "disabled");
+
+            tinymce.activeEditor.getBody().setAttribute('contenteditable', false);
+
+            form.render('select');
+        }
+
+
+        //设置可编辑
+        function disabledTrue() {
+            disableFlag = true;
+            $('#recycleButton').css({'display': 'none'});
+            $('#buttonGroup').css({'display': 'block'});
+            $('#noteTitle').removeAttr("disabled");
+            $('#inputNoteType').removeAttr("disabled");
+            $('#inputNoteType').removeAttr("disabled");
+            $('#setNoteType').removeAttr("disabled");
+            $('#selectNoteType').removeAttr("disabled");
+            $('#noteContent').removeAttr("disabled");
+            form.render();
+            tinymce.activeEditor.getBody().setAttribute('contenteditable', true);
+
+
+        }
+
+        //设置可以编辑
+
 
         //初始化标签
         function init_select() {
@@ -518,10 +663,9 @@
                 url: "/note/init_noteType.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        var selectData = result.data.textValues;
+                        let selectData = result.data.textValues;
                         $("#selectNoteType").append('<option value="">请选择标签类型</option>');
-                        // $("#setNoteType").append('<option value="">请选择标签类型</option>');
-                        for (var x in selectData) {
+                        for (let x in selectData) {
                             $("#selectNoteType").append('<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>');
                             $("#setNoteType").append('<option value = "' + selectData[x].key + '">' + selectData[x].value + '</option>');
                         }
@@ -554,13 +698,13 @@
 
 
         window.search = function () {
-            var value = $("#inputNoteType").val();
+            let value = $("#inputNoteType").val();
             $("#setNoteType").val(value);
             form.render();
             $("#setNoteType").next().find("dl").css({"display": "block"});
-            var dl = $("#setNoteType").next().find("dl").children();
-            var j = -1;
-            for (var i = 0; i < dl.length; i++) {
+            let dl = $("#setNoteType").next().find("dl").children();
+            let j = -1;
+            for (let i = 0; i < dl.length; i++) {
                 if (dl[i].innerHTML.indexOf(value) <= -1) {
                     dl[i].style.display = "none";
                     j++;
@@ -582,12 +726,12 @@
         //类型失去焦点-》判断是否进行更新
         $('#inputNoteType').blur(function () {
             form.render();
-            var noteType = $('#inputNoteType').val();
+            let noteType = $('#inputNoteType').val();
             if (globalNoteId == "") {
                 return;
             }
             if (noteType != oldNoteTitle) {
-                var data = {
+                let data = {
                     "noteType": noteType,
                     "noteId": globalNoteId
                 }
@@ -598,13 +742,13 @@
 
 
         //标题失去焦点时-》判断是否更新
-        $('#note-title').blur(function () {
-            var noteTitle = $('#note-title').val();
+        $('#noteTitle').blur(function () {
+            let noteTitle = $('#noteTitle').val();
             if (globalNoteId == "") {
                 return;
             }
             if (noteTitle != oldNoteTitle) {
-                var data = {
+                let data = {
                     "noteTitle": noteTitle,
                     "noteId": globalNoteId
                 }
@@ -616,7 +760,7 @@
 
         //更新数据
         function update(data, refreshTypeFlag) {
-            var jsonData = JSON.stringify(data);
+            let jsonData = JSON.stringify(data);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -664,6 +808,8 @@
         $("#toRecycleBinPage").click(function () {
             toRecycleBinPage(token);
         })
+
+
     })
 </script>
 </html>

@@ -220,6 +220,13 @@
 
     //设置全局token
     var token = sessionStorage.getItem("token");
+
+
+    //初始化表头
+    $('#headImagePreview').attr('src', sessionStorage.getItem("headImageUrl"));
+    $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
+    $('#headAccountName').html(sessionStorage.getItem("headAccountName"));
+
     layui.use(['element', 'form', 'laydate', 'upload', 'croppers'], function () {
         var element = layui.element;
         var form = layui.form;
@@ -236,6 +243,7 @@
             , trigger: 'click'//呼出事件改成click
         });
 
+        //初始化表单
         function init() {
             $.ajax({
                 type: "post",
@@ -246,9 +254,6 @@
                 success: function (result) {
                     if (result.code == 1) {
                         form.val("form", result.data);
-                        $('#headImagePreview').attr('src', result.data.headImageUrl);
-                        $('#headImage').attr('src', result.data.headImageUrl);
-                        $('#headAccountName').attr('src', result.data.accountName);
                     } else {
                         layer.msg(result.message);
                     }
