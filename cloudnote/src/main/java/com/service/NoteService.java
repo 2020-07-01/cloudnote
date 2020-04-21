@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.entity.Condition;
-import com.entity.Constant;
-import com.entity.Note;
-import com.entity.NoteData;
-import org.checkerframework.checker.units.qual.C;
+import com.entity.note.Note;
+
 
 /**
  * @author :qiang
@@ -18,13 +16,17 @@ import org.checkerframework.checker.units.qual.C;
 public interface NoteService {
 
     // 保存信息
-    Map insertNote(Note note);
+    Map insertNote(Note Note);
+
     // 更新笔记
-    boolean updateNote(Note note) throws Exception;
+    Map updateNote(Note note) throws Exception;
+
     // 笔记列表
     List<Note> findNoteByCondition(Condition condition);
+
     // 笔记标签
     List<String> selectNoteType(Note note);
+
     //查询总数
     Integer selectCountByCondition(Condition condition);
 }

@@ -1,5 +1,7 @@
 package com.Util;
 
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -60,7 +62,7 @@ public class ASEUtils {
      * @return
      * @throws Exception
      */
-    public static byte[] encrypt(byte[] plainBytes, byte[] key) throws Exception {
+    public static String encrypt(byte[] plainBytes, byte[] key) throws Exception {
         // 生成密钥对象
         SecretKey secKey = generateKey(key);
         // 获取 AES 密码器
@@ -69,7 +71,8 @@ public class ASEUtils {
         cipher.init(Cipher.ENCRYPT_MODE, secKey);
         // 加密数据, 返回密文
         byte[] cipherBytes = cipher.doFinal(plainBytes);
-        return cipherBytes;
+
+        return Base64.encode(cipherBytes);
     }
 
     /**
@@ -94,23 +97,6 @@ public class ASEUtils {
     }
 
 
-    public static void main(String[] args) throws Exception {
 
-        StringBuilder c = new StringBuilder();
-        for (int i = 0; i < 21845; i++) {
-            c = c.append("l");
-        }
-        String contnet = c.toString();
-        System.out.println(contnet.length());
-
-        String key = "12jljl3";  //加密的盐21856
-
-        byte[] encrypt = ASEUtils.encrypt(contnet.getBytes(), key.getBytes());
-        System.out.println(encrypt.length);
-
-
-        byte[] decrypt = ASEUtils.decrypt(encrypt, key.getBytes());
-        System.out.println(new String(decrypt));
-    }
 
 }

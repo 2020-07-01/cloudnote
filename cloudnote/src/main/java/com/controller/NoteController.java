@@ -4,11 +4,15 @@ import com.Util.ASEUtils;
 import com.Util.Json;
 import com.Util.Result;
 import com.Util.TokenUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.*;
+import com.entity.note.Note;
+
 import com.interceptor.UserLoginToken;
 import com.service.serviceImpl.NoteServiceImpl;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.commons.lang3.StringUtils;
+import org.omg.PortableInterceptor.ServerRequestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,7 +62,7 @@ public class NoteController {
         condition.setType(type);
         condition.setIsRecycle(isRecycle);
         condition.setStar(star);
-        condition.setStartNumber(getStartNumber(Integer.parseInt(page),Integer.parseInt(pageSize)));
+        condition.setStartNumber(getStartNumber(Integer.parseInt(page), Integer.parseInt(pageSize)));
         condition.setPageSize(Integer.parseInt(pageSize));
         if (!key.equals("")) {
             condition.setKey(key);
@@ -66,155 +70,53 @@ public class NoteController {
         }
         List<Note> noteList = noteService.findNoteByCondition(condition);
 
-        List<NoteData> noteDataList = new ArrayList<>();
-        noteList.forEach(p -> {
-            NoteData noteData = new NoteData(p);
-            try {
-                noteData.setNoteContent(new String(ASEUtils.decrypt(p.getNoteContent(), p.getAccountId().toString().getBytes("UTF-8"))));
-                noteDataList.add(noteData);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        });
-
         Integer count = noteService.selectCountByCondition(condition);
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
         hashMap.put("msg", "success");
         hashMap.put("count", count);
-        hashMap.put("data", noteDataList);
+        hashMap.put("data", noteList);
         return hashMap;
     }
 
-    private Integer getStartNumber(Integer page,Integer pageSize){
-        return  page == 1 ? 0 : ((page - 1 )* pageSize) ;
+    //获取分页数据
+    private Integer getStartNumber(Integer page, Integer pageSize) {
+        return page == 1 ? 0 : ((page - 1) * pageSize);
     }
 
     /**
      * 保存笔记
      *
-     * @param jsonString
+     * @param noteVo
      * @param request
      * @param response
      * @return
      */
     @UserLoginToken
     @RequestMapping(value = "/save_note.json")
-    public void insertNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+    public void insertNote(@RequestBody Note noteVo, HttpServletRequest request, HttpServletResponse response) {
+
         Result result = null;
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        Note note = new Note();
-        note.setAccountId(accountId);
-        String noteId = jsonObject.getString("noteId");
-
-        //如果此笔记存在则进行更新
-        if (noteId != null) {
-            note.setNoteId(Integer.parseInt(noteId));
-            if (jsonObject.getString("noteTitle") != null) {
-                if (!jsonObject.getString("noteTitle").trim().equals("")) {
-                    note.setNoteTitle(jsonObject.getString("noteTitle").trim());
-                    if (updateNote(note)) {
-                        result = new Result(true, "标题更新成功!");
-                    } else {
-                        result = new Result(false, "标题更新失败!");
-                    }
-                    Json.toJson(result, response);
-                    return;
-                } else {
-                    result = new Result(false, "标题不能为空!");
-                    Json.toJson(result, response);
-                    return;
-                }
-            }
-            if (jsonObject.getString("noteContent") != null) {
-                if (!jsonObject.getString("noteContent").trim().equals("")) {
-                    if (jsonObject.getString("noteContent").trim().length() < 20000) {
-                        try {
-                            byte[] con = ASEUtils.encrypt(jsonObject.getString("noteContent").trim().getBytes("UTF-8"), accountId.toString().getBytes("UTF-8"));
-                            note.setNoteContent(con);
-                            if (updateNote(note)) {
-                                Json.toJson(new Result(true, "内容更新成功!"), response);
-                                return;
-                            } else {
-                                Json.toJson(new Result(false, "内容更新失败!"), response);
-                                return;
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Json.toJson(new Result(false, "内容的大小超过限制!最多可存储20000字"), response);
-                        return;
-                    }
-                } else {
-                    Json.toJson(new Result(false, "内容不能为空!"), response);
-                    return;
-                }
-            }
-
-            //类型->字数30字 前端控制
-            if (jsonObject.getString("noteType") != null) {
-                if (!jsonObject.getString("noteType").trim().equals("")) {
-                    note.setNoteType(jsonObject.getString("noteType").trim());
-                } else {
-                    note.setNoteType("未分类");
-                }
-                if (updateNote(note)) {
-                    Json.toJson(new Result(true, "类型更新成功!"), response);
-                    return;
-                } else {
-                    Json.toJson(new Result(false, "类型更新失败!"), response);
-                    return;
-                }
+        noteVo.setAccountId(accountId);
+        if (StringUtils.isEmpty(noteVo.getNoteId())) {
+            Map<Boolean, String> map = noteService.insertNote(noteVo);//存储笔记
+            if (StringUtils.isNotEmpty(map.get(true))) {
+                result = new Result(true, map.get(true));
+            } else {
+                result = new Result(false, map.get(false));
             }
         } else {
-            //标题->字数前端控制100字
-            if (!jsonObject.getString("noteTitle").trim().equals("")) {
-                note.setNoteTitle(jsonObject.getString("noteTitle").trim());
+            //更新笔记
+            Map<Boolean, String> map = updateNote(noteVo);
+            if (StringUtils.isNotEmpty(map.get(true))) {
+                result = new Result(true, "SUCCESS");
             } else {
-                Json.toJson(new Result(false, "标题不能为空!"), response);
-                return;
-            }
-            //内容->字数20000字
-            if (!jsonObject.getString("noteContent").trim().equals("")) {
-                if (jsonObject.getString("noteContent").trim().length() > 20000) {
-                    Json.toJson(new Result(false, "内容的大小超过限制!最多可存储20000字"), response);
-                    return;
-                } else {
-                    try {
-                        byte[] con = ASEUtils.encrypt(jsonObject.getString("noteContent").trim().getBytes("UTF-8"), accountId.toString().getBytes("UTF-8"));
-                        note.setNoteContent(con);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                Json.toJson(new Result(false, "内容不能为空!"), response);
-                return;
-            }
-            //类型->字数30字 前端控制
-            if (jsonObject.getString("noteType").trim().equals("")) {
-                note.setNoteType("未分类");
-            } else {
-                note.setNoteType(jsonObject.getString("noteType").trim());
-            }
-            try {
-                Map resultdata = noteService.insertNote(note);
-                if (resultdata.get("true") != null) {
-                    Json.toJson(new Result(true, "保存成功!"), response);
-                    return;
-                } else {
-                    Json.toJson(new Result(false, "保存失败!"), response);
-                    return;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                result = new Result(false, map.get(false));
             }
         }
-        Json.toJson(new Result(false, "保存失败!"), response);
+        Json.toJson(result, response);
     }
 
     /**
@@ -222,15 +124,9 @@ public class NoteController {
      *
      * @return
      */
-    private boolean updateNote(Note note) {
-        try {
-            if (noteService.updateNote(note)) {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+    private Map updateNote(Note noteVo) {
+        Map map = noteService.updateNote(noteVo);
+        return map;
     }
 
     /**
@@ -246,26 +142,20 @@ public class NoteController {
     public void deleteNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         Result result = null;
         String token = request.getHeader("token");
-        try {
-            tokenUtil.verifyToken(token);
-        } catch (Exception e) {
-            result = new Result(false, "用户验证失败，请重新登录!");
-        }
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        Integer noteId = Integer.parseInt(jsonObject.getString("noteId"));
 
-        try {
-            Note note = new Note();
-            note.setNoteId(noteId);
-            note.setIsRecycle(Constant.RECYCLE_YES);
-            if (noteService.updateNote(note)) {
-                Json.toJson(new Result(true, "删除成功!"), response);
-            } else {
-                Json.toJson(new Result(false, "删除失败!"), response);
-            }
-        } catch (Exception e) {
-            // 此处应该打印日志
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        String noteId = jsonObject.getString("noteId");
+        Note note = new Note();
+        note.setNoteId(noteId);
+        note.setIsRecycle(Constant.RECYCLE_YES);
+        Map<Boolean, String> map = updateNote(note);
+        if (StringUtils.isNotEmpty(map.get(true))) {
+            result = new Result(true, "SUCCESS");
+        } else {
+            result = new Result(false, map.get(false));
         }
+        Json.toJson(result, response);
+
     }
 
     /**
@@ -306,7 +196,7 @@ public class NoteController {
     @RequestMapping(value = "/set_star.json")
     public void setStar(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
-        String token = request.getHeader("token");
+   /*     String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
 
         JSONObject jsonObject = JSON.parseObject(jsonString);
@@ -320,7 +210,7 @@ public class NoteController {
             Json.toJson(new Result(true, "收藏成功!"), response);
         } catch (Exception e) {
             Json.toJson(new Result(false, "收藏失败!"), response);
-        }
+        }*/
     }
 
 }

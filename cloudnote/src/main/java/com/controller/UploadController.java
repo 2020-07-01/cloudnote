@@ -5,6 +5,7 @@ import com.Util.Result;
 import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.BaiDuUtils;
 import com.cache.CacheService;
 import com.entity.*;
 import com.entity.file.CNFile;
@@ -49,6 +50,8 @@ public class UploadController {
     @Autowired
     FileServiceImpl fileService;
 
+@Autowired
+    BaiDuUtils baiDuUtils;
 
     /**
      * 上传图片
@@ -61,6 +64,8 @@ public class UploadController {
     @RequestMapping(value = "/upload_image.json")
     public void uploadImage(@RequestParam(value = "file", required = false) MultipartFile uploadImage,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        org.json.JSONObject jsonObject = baiDuUtils.checkImage(uploadImage.getBytes());
 
         Map serviceData = imageService.uploadImage(uploadImage, 63);
         if (serviceData.get("true") != null) {

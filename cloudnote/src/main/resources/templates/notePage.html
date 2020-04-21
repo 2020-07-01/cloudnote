@@ -260,6 +260,11 @@
                         if (globalNoteId == "") {
                             return;
                         }
+
+                        if(noteContent == ""){
+                            layer.msg("内容不能为空!");
+                            return;
+                        }
                         if (noteContent != oldNoteContent) {
                             var data = {
                                 "noteContent": noteContent,
@@ -727,6 +732,9 @@
         $('#inputNoteType').blur(function () {
             form.render();
             let noteType = $('#inputNoteType').val();
+            if (noteType == "") {
+
+            }
             if (globalNoteId == "") {
                 return;
             }
@@ -744,6 +752,11 @@
         //标题失去焦点时-》判断是否更新
         $('#noteTitle').blur(function () {
             let noteTitle = $('#noteTitle').val();
+            if (noteTitle == "") {
+                $('#noteTitle').focus();
+                layer.msg("标题不能为空!");
+                return;
+            }
             if (globalNoteId == "") {
                 return;
             }

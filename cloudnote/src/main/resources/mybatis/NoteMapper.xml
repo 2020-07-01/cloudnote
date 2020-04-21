@@ -8,8 +8,8 @@
         note_id,account_id,note_type,note_title,note_content,create_time,update_time,is_recycle,star
     </sql>
 
-    <resultMap id="baseMap" type="com.entity.Note">
-        <id column="note_id" property="noteId" jdbcType="INTEGER"/>
+    <resultMap id="baseMap" type="com.entity.note.Note">
+        <id column="note_id" property="noteId" jdbcType="VARCHAR"/>
         <result column="account_id" property="accountId" jdbcType="INTEGER"/>
         <result column="note_type" property="noteType" jdbcType="VARCHAR"/>
         <result column="note_title" property="noteTitle" jdbcType="VARCHAR"/>
@@ -21,16 +21,16 @@
     </resultMap>
 
     <!--数据列表-->
-    <select id="findNoteByCondition" parameterType="com.entity.Condition" resultType="com.entity.Note"
+    <select id="findNoteByCondition" parameterType="com.entity.Condition" resultType="com.entity.note.Note"
             resultMap="baseMap">
         select
         <include refid="base_sql"/>
         from note
         where
-         1 = 1
-         <if test="accountId != null and accountId != ''">
+        1 = 1
+        <if test="accountId != null and accountId != ''">
             and account_id = #{accountId,jdbcType=INTEGER}
-         </if>
+        </if>
         <if test="isRecycle != null and isRecycle != ''">
             and is_recycle = #{isRecycle,jdbcType=VARCHAR}
         </if>
@@ -52,12 +52,13 @@
         </if>
     </select>
 
-    <insert id="insertNote" parameterType="com.entity.Note" useGeneratedKeys="true" keyProperty="noteId">
-        insert into note (account_id,note_type,note_title,note_content,create_time)
-     value ( #{accountId,jdbcType=INTEGER},#{noteType,jdbcType=VARCHAR},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=BLOB},now())
+    <!--存储笔记-->
+    <insert id="insertNote" parameterType="com.entity.note.Note">
+        insert into note (note_id,account_id,note_type,note_title,note_content,create_time)
+     value ( #{noteId,jdbcType=VARCHAR},#{accountId,jdbcType=INTEGER},#{noteType,jdbcType=VARCHAR},#{noteTitle,jdbcType=VARCHAR},#{noteContent,jdbcType=BLOB},now())
     </insert>
 
-    <update id="updateNote" parameterType="com.entity.Note">
+    <update id="updateNote" parameterType="com.entity.note.Note">
         update note
         <set>
             <if test="noteContent != null">
@@ -80,7 +81,7 @@
         where note_id = #{noteId,jdbcType=INTEGER}
     </update>
 
-    <select id="selectNoteType" resultType="java.lang.String" parameterType="com.entity.Note">
+    <select id="selectNoteType" resultType="java.lang.String" parameterType="com.entity.note.Note">
         select note_type
         from note
         where account_id = #{accountId,jdbcType = INTEGER}

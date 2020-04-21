@@ -11,7 +11,7 @@ public final class Constant {
 
     public final static String FAILURE = "failure";
 
-    public final  static String OFFLINE = "OFFLINE";
+    public final static String OFFLINE = "OFFLINE";
 
     public final static String ONLINE = "ONLINE";
 
@@ -33,6 +33,13 @@ public final class Constant {
 
     public final static String FILE_IMAGE_URL = "fileOrImageUrl";
 
+    public final static String CONCLUSION_1 = "合规";
+
+    public final static String CONCLUSION_2 = "不合规";
+
+    public final static String CONCLUSION_3 = "疑似";
+
+    public final static String CONCLUSION_4 = "审核失败";
 
 
 }

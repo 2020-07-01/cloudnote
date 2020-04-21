@@ -42,14 +42,12 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("请求url：" + request.getRequestURL());
-        log.info("请求参数MAP：" + JSON.toJSONString(request.getParameterMap()));
-
         String token = request.getHeader("token");
         if (token == null) {
             token = request.getParameter("token");
         }
         Method method = ((HandlerMethod) handler).getMethod();
-        //检查是否有passtoken注释，有则跳过认证
+        //检查是否有passToken注释，有则跳过认证
         if (method.isAnnotationPresent(PassToken.class)) {
             PassToken passToken = method.getAnnotation(PassToken.class);
             if (passToken.required()) {

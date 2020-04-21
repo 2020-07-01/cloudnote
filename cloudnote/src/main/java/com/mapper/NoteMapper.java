@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.entity.Condition;
-import com.entity.Note;
+import com.entity.note.Note;
 
 /**
  * @author :qiang
