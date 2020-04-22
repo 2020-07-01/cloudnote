@@ -87,25 +87,23 @@ public class NoteServiceImpl implements NoteService {
     }
 
     /**
-     * 文本审核-》笔记内容
+     * 文本审核->笔记内容
      *
      * @param note
      * @return
      */
     private Map<Boolean, String> check(Note note) {
         Map<Boolean, String> result = new HashMap<>();
-
         JSONObject jsonObject = baiDuUtils.checkTextContent(note.getNoteContent());
-        StringBuffer stringBuffer = new StringBuffer();
+        //StringBuffer stringBuffer = new StringBuffer();
         if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
             JSONArray dataJSONArray = jsonObject.getJSONArray("data");
             String msg = dataJSONArray.getJSONObject(0).getString("msg");
-
-            JSONArray jsonArray = dataJSONArray.getJSONObject(0).getJSONArray("hits");
+           /* JSONArray jsonArray = dataJSONArray.getJSONObject(0).getJSONArray("hits");
             JSONObject jsonObjectHits = jsonArray.getJSONObject(0);
             String words = jsonObjectHits.getJSONArray("words").getString(0);
-            stringBuffer.append(msg+":"+words);
-            result.put(false, stringBuffer.toString());
+            stringBuffer.append(msg+":"+words);*/
+            result.put(false, msg);
         } else {
             result.put(true, "文本审核通过!");
         }
@@ -123,9 +121,9 @@ public class NoteServiceImpl implements NoteService {
         Map<Object, String> result = new HashMap();
         int row = 0;
         if (StringUtils.isNotEmpty(noteVo.getStar())) {
-            row = noteMapper.updateNote(noteVo);
+            row = noteMapper.updateNote(noteVo);//设置是否收藏
         } else if (StringUtils.isNotEmpty(noteVo.getIsRecycle())) {
-            row = noteMapper.updateNote(noteVo);
+            row = noteMapper.updateNote(noteVo);//设置是否回收
         } else if (StringUtils.isNotBlank(noteVo.getNoteTitle())) {
             row = noteMapper.updateNote(noteVo);
         } else if (StringUtils.isNotBlank(noteVo.getNoteContent()) && noteVo.getNoteContent().trim().length() < 20000) {
@@ -198,5 +196,12 @@ public class NoteServiceImpl implements NoteService {
 
         return noteMapper.selectCountByCondition(condition);
     }
+
+    @Override
+    public Boolean deleteNoteByNoteId(String noteId) {
+        noteMapper.deleteNote(noteId);
+        return null;
+    }
+
 
 }

@@ -47,7 +47,7 @@
                     <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
                         <dd><a href="#" id="cleanEditSpace"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a></dd>
-                        <dd><a href="#" id="all"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
+                        <dd><a href="#" id="all"><i class="layui-icon layui-icon-form"></i> 所有笔记</a></dd>
                         <dd><a href="#" id="starList"><i class="layui-icon layui-icon-star-fill"> 收藏夹</i></a></dd>
                         <dd><a href="#" id="recycled"><i class="layui-icon layui-icon-delete"> 回收站</i></a></dd>
                     </dl>
@@ -163,10 +163,10 @@
 
                             <div id="recycleButton" style="display: none;">
                                 <button id="revertNote" type="button"
-                                        style="font-size: 16px;height: 40px; line-height: 40px;"
+                                        style="font-size: 16px; "
                                         class="layui-btn layui-btn-primary layui-btn-radius">恢复笔记
                                 </button>
-                                <button type="completelyRemove" style="font-size: 16px;height: 40px; line-height: 40px;"
+                                <button id="completelyRemove" type="button" style="font-size: 16px;"
                                         class="layui-btn layui-btn-primary layui-btn-radius">彻底删除
                                 </button>
                             </div>
@@ -214,9 +214,11 @@
 
     //设置全局数据
     var token = sessionStorage.getItem("token");
-    var globalNoteId = "";
+    let globalNoteId = "";
     let showTypeFlag = true;
     let disableFlag = true;
+    //导航栏识别
+    let sideId = "all";
 
     var oldNoteTitle = "";
     var oldNoteContent = "";
@@ -228,7 +230,8 @@
         init_tinymce();
         //初始化用户名和头像
         init_head();
-
+        //初始化标签
+        init_select("NO", "");
         var table = layui.table;
         var layer = layui.layer;
         var form = layui.form;
@@ -261,7 +264,7 @@
                             return;
                         }
 
-                        if(noteContent == ""){
+                        if (noteContent == "") {
                             layer.msg("内容不能为空!");
                             return;
                         }
@@ -271,13 +274,17 @@
                                 "noteId": globalNoteId
                             }
                             oldNoteContent = noteContent;
-                            update(data, false);
+                            update(data, "NO");
                         }
                     });
                 }
             });
         };
 
+        //初始化列表 type, key, star，recycle
+        init_table("", "", "", "NO");
+
+        //初始化头部
         function init_head() {
             $.ajax({
                 type: "post",
@@ -300,17 +307,16 @@
             })
         };
 
-        //初始化列表 type, key, star
-        init_table("", "", "", true);
-
         //所有笔记
         $("#all").click(function () {
             if (!disableFlag) {
                 disabledTrue();
             }
-            init_select();//初始化标签
+            //设置sideId
+            sideId = "all";
+            init_select("NO", "");//初始化标签
             clearEidtSpace();
-            init_table("", "", "", false);
+            init_table("", "", "", "NO");
         });
 
         //收藏夹
@@ -318,22 +324,23 @@
             if (!disableFlag) {
                 disabledTrue();
             }
-            init_select();//初始化标签
+            //设置sideId
+            sideId = "star";
+            init_select("NO", "YES");//初始化标签
             clearEidtSpace();
-            init_table("", "", "YES", false);
+            init_table("", "", "YES", "No");
         })
 
         //回收站
         $("#recycled").click(function () {
-            //设置不能编辑
-            disabledFalse();
+            disabledFalse();//设置不能编辑
             showNoteType();//展示标签
-            clearEidtSpace();
-            init_table("", "", "", false, "YES");
+            clearEidtSpace();//清空编辑区
+            init_table("", "", "", "YES");
         })
 
-        //根据不同的条件刷新笔记页面
-        function init_table(type, key, star, refreshTypeFlag, isRecycle) {
+        //初始化笔记列表
+        function init_table(type, key, star, isRecycle) {
             table.render({
                 elem: '#note-list',
                 where: {token: token, type: type, key: key, star: star, isRecycle: isRecycle},//传递token到服务端
@@ -357,9 +364,6 @@
                 , done:
                     function (res, curr, count) {
                         $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
-                        if (refreshTypeFlag) {
-                            init_select();//初始化标签
-                        }
                     }
             })
         }
@@ -389,47 +393,50 @@
 
         //加星笔记
         $("#star").click(function () {
-            let flag = $('#ifStar').val();
-            if (flag == "&#xe658;") {
-                layer.msg("已收藏");
-            }
-            ;
             if (globalNoteId == "") {
                 layer.msg("请先选择笔记!");
                 return;
             }
             ;
-            var data = {
-                "noteId": globalNoteId
-            };
-            var jsonData = JSON.stringify(data);
+
+            var flag = $('#ifStar').val();
+            alert(flag);
+            //如果已收藏
+            if (flag == "&#xe658;") {
+                setStar(globalNoteId, "NO");
+            } else {//如果未收藏
+                setStar(globalNoteId, "YES");
+            }
+        });
+
+        function setStar(noteId, star) {
             $.ajax({
-                type: "post",
+                type: "get",
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: jsonData,
+                data: {noteId: noteId, star: star},
                 url: "/note/set_star.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
-                        $('#ifStar').html("&#xe658;");//设置为已经收藏
+                        if (star == "YES") {
+                            $('#ifStar').html("&#xe658;");
+                        } else {
+                            $('#ifStar').html("&#xe600;");
+                        }
                     } else {
                         layer.msg(result.message);
                     }
                 },
             })
-        });
+        }
 
         //清除编辑区
         $("#cleanEditSpace").click(function () {
-
-
             if (!disableFlag) {
                 disabledTrue();
             }
-
-
             $('#noteTitle').val("无标题笔记");//清除标题
             tinyMCE.activeEditor.setContent("");//清除内容
             $('#inputNoteType').val("");//清除标签
@@ -471,10 +478,15 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
-                        init_table("", "", "");
+                        if (sideId == "star") {
+                            //init_table("", "", "", "NO");
+                            init_select("NO", "YES");
+                        } else {
+                            init_table("", "", "", "NO");
+                            init_select("NO", "");
+                        }
                         hideNoteType();
                         clearEidtSpace();
-                        init_select();
                     } else {
                         layer.msg(result.message);
                     }
@@ -504,7 +516,13 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg('删除成功!');
-                        init_table("", "", "", false);
+                        if (sideId == "star") {
+                            init_table("", "", "YES", "NO");
+                            init_select("NO", "YES");
+                        } else {
+                            init_table("", "", "", "NO");
+                            init_select("NO", "");
+                        }
                         clearEidtSpace();
                         hideNoteType();
                     }
@@ -513,27 +531,22 @@
         });
 
         //恢复笔记
-        $("#deleteNote").click(function () {
-
+        $("#revertNote").click(function () {
             if (globalNoteId == "") {
                 layer.msg("请先选择笔记!");
                 return;
             }
-            var data = {
-                "noteId": globalNoteId
-            }
-            var jsonData = JSON.stringify(data);
             $.ajax({
-                type: "post",
+                type: "get",
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: jsonData,
-                url: "/note/delete_note.json",
+                data: {noteId: globalNoteId},
+                url: "/note/revert_note.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg('删除成功!');
-                        init_table("", "", "", false);
+                        layer.msg(result.message);
+                        init_table("", "", "", "YES");
                         clearEidtSpace();
                         hideNoteType();
                     }
@@ -542,29 +555,22 @@
         });
 
         //彻底删除
-        $("#deleteNote").click(function () {
-
+        $("#completelyRemove").click(function () {
             if (globalNoteId == "") {
                 layer.msg("请先选择笔记!");
                 return;
             }
-            var data = {
-                "noteId": globalNoteId
-            }
-            var jsonData = JSON.stringify(data);
             $.ajax({
-                type: "post",
+                type: "get",
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: jsonData,
-                url: "/note/delete_note.json",
+                data: {noteId: globalNoteId},
+                url: "/note/completely_remove_note.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg('删除成功!');
-                        init_table("", "", "", false);
-                        clearEidtSpace();
-                        hideNoteType();
+                        layer.msg(result.message);
+                        init_table("", "", "", "YES");
                     }
                 },
             })
@@ -576,7 +582,7 @@
             form.val("formSelectType", {
                 "selectNoteType": ""
             });
-            init_table("", key, "", false);
+            init_table("", key, "", "No");
         })
 
         //设置标签是否可见
@@ -653,19 +659,17 @@
 
         }
 
-        //设置可以编辑
-
-
         //初始化标签
-        function init_select() {
+        function init_select(isRecycle, isStar) {
             $("#selectNoteType").empty();//先对类型进行清空
             $("#setNoteType").empty();//先对类型进行清空
             $.ajax({
-                type: "post",
+                type: "get",
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 url: "/note/init_noteType.json",
+                data: {recycle: isRecycle, star: isStar},
                 success: function (result) {
                     if (result.code == 1) {
                         let selectData = result.data.textValues;
@@ -682,7 +686,6 @@
 
         //右侧标签选择事件
         form.on('select(setNoteType)', function (data) {
-            alert("3333");
             //赋值input
             $('#inputNoteType').val(data.value);
             $("#setNoteType").next().find("dl").css({"display": "none"});
@@ -697,7 +700,7 @@
                     "noteId": globalNoteId
                 }
                 oldNoteType = data.value;
-                update(data1, true);
+                update(data1, "YES");
             }
         });
 
@@ -723,7 +726,11 @@
 
         //左侧选择事件
         form.on('select(selectNoteType)', function (data) {
-            init_table(data.value, "", "");
+            if (sideId == "star") {
+                init_table(data.value, "", "YES", "NO");
+            } else {
+                init_table(data.value, "", "", "NO");
+            }
             hideNoteType();
             clearEidtSpace();
         });
@@ -744,7 +751,7 @@
                     "noteId": globalNoteId
                 }
                 oldNoteType = noteType;
-                update(data, true);
+                update(data, "YES");
             }
         })
 
@@ -766,13 +773,12 @@
                     "noteId": globalNoteId
                 }
                 oldNoteTitle = noteTitle;
-                update(data, false);
+                update(data, "NO");
             }
         })
 
-
         //更新数据
-        function update(data, refreshTypeFlag) {
+        function update(data, refreshType) {
             let jsonData = JSON.stringify(data);
             $.ajax({
                 type: "post",
@@ -784,7 +790,18 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
-                        init_table("", "", "", refreshTypeFlag);
+                        if (sideId == "star") {
+                            init_table("", "", "YES", "NO");
+                            if (refreshType == "YES") {
+                                init_select("NO", "YES");
+                            }
+                        } else {
+                            init_table("", "", "", "NO");
+                            if (refreshType == "YES") {
+                                init_select("NO", "");
+                            }
+                        }
+
                     } else {
                         layer.msg(result.message);
                     }

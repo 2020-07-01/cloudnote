@@ -30,4 +30,7 @@ public interface NoteMapper {
 
     //获取笔记总数
     Integer selectCountByCondition(Condition condition);
+
+    //删除笔记
+    Integer deleteNote(String noteId);
 }

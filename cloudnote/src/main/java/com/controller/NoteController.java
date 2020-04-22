@@ -4,15 +4,15 @@ import com.Util.ASEUtils;
 import com.Util.Json;
 import com.Util.Result;
 import com.Util.TokenUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.*;
 import com.entity.note.Note;
-
 import com.interceptor.UserLoginToken;
 import com.service.serviceImpl.NoteServiceImpl;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.omg.PortableInterceptor.ServerRequestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +32,7 @@ import java.util.Map;
  * @description :
  * @other :
  */
+@Slf4j
 @RestController
 @RequestMapping(value = "/note")
 public class NoteController {
@@ -58,18 +59,16 @@ public class NoteController {
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
+
         condition.setAccountId(accountId);
         condition.setType(type);
         condition.setIsRecycle(isRecycle);
         condition.setStar(star);
         condition.setStartNumber(getStartNumber(Integer.parseInt(page), Integer.parseInt(pageSize)));
         condition.setPageSize(Integer.parseInt(pageSize));
-        if (!key.equals("")) {
-            condition.setKey(key);
-            condition.setType("");
-        }
-        List<Note> noteList = noteService.findNoteByCondition(condition);
+        condition.setKey(key);
 
+        List<Note> noteList = noteService.findNoteByCondition(condition);
         Integer count = noteService.selectCountByCondition(condition);
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
@@ -147,7 +146,7 @@ public class NoteController {
         String noteId = jsonObject.getString("noteId");
         Note note = new Note();
         note.setNoteId(noteId);
-        note.setIsRecycle(Constant.RECYCLE_YES);
+        note.setIsRecycle(Constant.YES);
         Map<Boolean, String> map = updateNote(note);
         if (StringUtils.isNotEmpty(map.get(true))) {
             result = new Result(true, "SUCCESS");
@@ -166,13 +165,18 @@ public class NoteController {
      */
     @UserLoginToken
     @RequestMapping(value = "/init_noteType.json")
-    public void initNoteType(HttpServletRequest request, HttpServletResponse response) {
-
+    public void initNoteType(@RequestParam(value = "star", defaultValue = "") String star,
+                             @RequestParam(value = "recycle", defaultValue = "") String recycle,
+                             HttpServletRequest request,
+                             HttpServletResponse response) {
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         Note note = new Note();
         note.setAccountId(accountId);
-        note.setIsRecycle(Constant.RECYCLE_NO);
+        //是否删除
+        note.setIsRecycle(recycle);
+        note.setStar(star);
+
         List<String> noteTypes = noteService.selectNoteType(note);
         HashMap data = new HashMap();
         ArrayList<TextValue> textValues = new ArrayList<>();
@@ -184,33 +188,75 @@ public class NoteController {
         Json.toJson(new Result(true, "SUCCESS", data), response);
     }
 
-
     /**
-     * 加星
+     * 收藏/取消收藏
      *
-     * @param jsonString
+     * @param noteId
+     * @param star
      * @param request
      * @param response
      */
     @UserLoginToken
     @RequestMapping(value = "/set_star.json")
-    public void setStar(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-
-   /*     String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
-
-        JSONObject jsonObject = JSON.parseObject(jsonString);
-        String noteId = jsonObject.getString("noteId");
-
+    public void setStar(String noteId, String star, HttpServletRequest request, HttpServletResponse response) {
+        Result result = null;
         Note note = new Note();
-        note.setStar(Constant.RECYCLE_YES);
-        note.setNoteId(Integer.parseInt(noteId));
+        if (StringUtils.isNotEmpty(noteId)) {
+            note.setNoteId(noteId);
+        }
+        if (StringUtils.isNotEmpty(star)) {
+            note.setStar(star);
+        }
         try {
-            updateNote(note);
-            Json.toJson(new Result(true, "收藏成功!"), response);
+            Map<Boolean, String> map = updateNote(note);
+            if (StringUtils.isNotEmpty(map.get(true))) {
+                result = new Result(true, "SUCCESS!");
+            } else {
+                result = new Result(false, "FAILURE!");
+            }
         } catch (Exception e) {
-            Json.toJson(new Result(false, "收藏失败!"), response);
-        }*/
+            result = new Result(false, "FAILURE!");
+            log.info("set_star.json" + "FAILURE", new Throwable(e));
+        }
+        Json.toJson(result, response);
+    }
+
+    /**
+     * 恢复笔记
+     *
+     * @param response
+     * @return
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/revert_note.json")
+    public void revertNote(String noteId, HttpServletRequest request, HttpServletResponse response) {
+        Result result = null;
+        Note note = new Note();
+        note.setNoteId(noteId);
+        note.setIsRecycle(Constant.NO);
+        Map<Boolean, String> map = updateNote(note);
+        if (StringUtils.isNotEmpty(map.get(true))) {
+            result = new Result(true, "SUCCESS");
+        } else {
+            result = new Result(false, map.get(false));
+        }
+        Json.toJson(result, response);
+    }
+
+
+    /**
+     * 彻底删除笔记
+     *
+     * @param response
+     * @return
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/completely_remove_note.json")
+    public void completelyRemoveNote(String noteId, HttpServletRequest request, HttpServletResponse response) {
+        Result result = null;
+        noteService.deleteNoteByNoteId(noteId);
+        result = new Result(true, "SUCCESS");
+        Json.toJson(result, response);
     }
 
 }

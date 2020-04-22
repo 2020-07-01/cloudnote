@@ -15,9 +15,9 @@ public final class Constant {
 
     public final static String ONLINE = "ONLINE";
 
-    public final static String RECYCLE_YES = "YES";
+    public final static String YES = "YES";
 
-    public final static String RECYCLE_NO = "NO";
+    public final static String NO = "NO";
     //存储二进制文件
     public final static String CACHE_BYTE = "byte";
     //新命名

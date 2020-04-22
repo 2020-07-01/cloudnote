@@ -6,6 +6,7 @@ import com.Util.SecurityCode;
 import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.BaiDuUtils;
 import com.cache.CacheService;
 import com.entity.Account;
 import com.entity.Condition;
@@ -20,6 +21,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,9 +58,11 @@ public class AccountController {
     @Autowired
     OSSUtil ossUtil;
 
+    @Autowired
+    BaiDuUtils baiDuUtils;
+
     /**
      * 邮箱注册
-     * 添加触发器存储accountId 信息
      *
      * @param jsonParam
      * @return
@@ -90,7 +94,6 @@ public class AccountController {
             account.setEmail(email);
             //设置默认头像
             account.setHeadImageUrl("http://t.cn/RCzsdCq");
-
             Map result = accountService.insert(account);
 
             if (result.get("true") != null) {
@@ -449,19 +452,29 @@ public class AccountController {
     @RequestMapping(value = "/upload_image.json")
     public void uploadHeadImage(@RequestParam(value = "file", required = false) MultipartFile headImage,
                                 HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String token = request.getHeader("token");
-        Integer accountId = tokenService.getAccountIdByToken(token);
-        String headName = random(5);
-        String headPath = accountId + "/" + "headImage" + "/" + headName;
-        Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
-        if (StringUtils.isNotEmpty(ossMap.get(Constant.FILE_IMAGE_URL))) {
-            String url = ossMap.get(Constant.FILE_IMAGE_URL).substring(0, ossMap.get(Constant.FILE_IMAGE_URL).lastIndexOf("?"));
-            Result result = new Result(true, "上传成功!", url);
-            Json.toJson(result, response);
+
+        Result result = null;
+        //图片审核
+        org.json.JSONObject jsonObject = baiDuUtils.checkImage(headImage.getBytes());
+        //如果不合规
+        if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
+            JSONArray dataJSONArray = jsonObject.getJSONArray("data");
+            String msg = dataJSONArray.getJSONObject(0).getString("msg");
+            result = new Result(false, msg);
         } else {
-            Result result = new Result(false, "上传失败!");
-            Json.toJson(result, response);
+            String token = request.getHeader("token");
+            Integer accountId = tokenService.getAccountIdByToken(token);
+            String headName = random(5);
+            String headPath = accountId + "/" + "headImage" + "/" + headName;
+            Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
+            if (StringUtils.isNotEmpty(ossMap.get(Constant.FILE_IMAGE_URL))) {
+                String url = ossMap.get(Constant.FILE_IMAGE_URL).substring(0, ossMap.get(Constant.FILE_IMAGE_URL).lastIndexOf("?"));
+                result = new Result(true, "上传成功!", url);
+            } else {
+                result = new Result(false, "上传失败!");
+            }
         }
+        Json.toJson(result, response);
     }
 
 
@@ -481,7 +494,7 @@ public class AccountController {
     }
 
     /**
-     * 获取头部数据x
+     * 获取头部数据
      */
     @RequestMapping(value = "/getHeadData.json")
     @UserLoginToken

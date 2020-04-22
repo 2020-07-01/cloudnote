@@ -29,5 +29,8 @@ public interface NoteService {
 
     //查询总数
     Integer selectCountByCondition(Condition condition);
+
+    //彻底删除笔记
+    Boolean deleteNoteByNoteId(String noteId);
 }
 

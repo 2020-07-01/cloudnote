@@ -10,12 +10,12 @@ import com.cache.CacheService;
 import com.entity.*;
 import com.entity.file.CNFile;
 import com.entity.file.CNFileData;
-import com.interceptor.PassToken;
 import com.interceptor.UserLoginToken;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +50,7 @@ public class UploadController {
     @Autowired
     FileServiceImpl fileService;
 
-@Autowired
+    @Autowired
     BaiDuUtils baiDuUtils;
 
     /**
@@ -64,19 +64,25 @@ public class UploadController {
     @RequestMapping(value = "/upload_image.json")
     public void uploadImage(@RequestParam(value = "file", required = false) MultipartFile uploadImage,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        Result result = null;
+        //图片审核
         org.json.JSONObject jsonObject = baiDuUtils.checkImage(uploadImage.getBytes());
-
-        Map serviceData = imageService.uploadImage(uploadImage, 63);
-        if (serviceData.get("true") != null) {
-            Result result = new Result(true, "上传成功!");
-            Json.toJson(result, response);
+        //如果不合规
+        if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
+            JSONArray dataJSONArray = jsonObject.getJSONArray("data");
+            String msg = dataJSONArray.getJSONObject(0).getString("msg");
+            result = new Result(false, msg);
         } else {
-            Map<String, String> data = new HashMap<>();
-            data.put("cache", serviceData.get("fail").toString());
-            Result result = new Result(false, serviceData.get("message").toString(), data);
-            Json.toJson(result, response);
+            Map serviceData = imageService.uploadImage(uploadImage, 63);
+            if (serviceData.get("true") != null) {
+                result = new Result(true, "上传成功!");
+            } else {
+                Map<String, String> data = new HashMap<>();
+                data.put("cache", serviceData.get("fail").toString());
+                result = new Result(false, serviceData.get("message").toString(), data);
+            }
         }
+        Json.toJson(result, response);
     }
 
     /**
@@ -125,7 +131,7 @@ public class UploadController {
      * 不重命名文件
      */
     @RequestMapping(value = "/no_rename_image.json")
-    public void noReanme(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+    public void noRename(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
@@ -163,7 +169,7 @@ public class UploadController {
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
-        condition.setIsRecycle(Constant.RECYCLE_NO);
+        condition.setIsRecycle(Constant.NO);
         condition.setKey(key);
 
         List<Image> images = imageService.findImageByCondition(condition);
@@ -190,7 +196,6 @@ public class UploadController {
     @UserLoginToken
     @RequestMapping(value = "/get_image_url.json")
     public void getImageUrl(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
         JSONObject jsonObject = JSON.parseObject(jsonString);
 
         String filePath = jsonObject.getString("imagePath");
@@ -206,7 +211,6 @@ public class UploadController {
         } else {
             Json.toJson(new Result(false, "获取图片URL失败!"), response);
         }
-
     }
 
     /**
@@ -348,7 +352,7 @@ public class UploadController {
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
-        condition.setIsRecycle(Constant.RECYCLE_NO);
+        condition.setIsRecycle(Constant.NO);
         condition.setKey(key);
 
         List<CNFile> files = fileService.findFileList(condition);
@@ -363,7 +367,6 @@ public class UploadController {
         hashMap.put("msg", "success");
         hashMap.put("data", cnFileDataList);
         return hashMap;
-
     }
 
     /**
@@ -408,7 +411,7 @@ public class UploadController {
         Integer fileId = Integer.parseInt(jsonObject.getString("fileId"));
         CNFile cnFile = new CNFile();
         cnFile.setFileId(fileId);
-        cnFile.setIsRecycle(Constant.RECYCLE_YES);
+        cnFile.setIsRecycle(Constant.YES);
         fileService.updateFile(cnFile);
         Result result = new Result(true, "删除成功");
         Json.toJson(result, response);
