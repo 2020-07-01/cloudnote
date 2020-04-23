@@ -9,7 +9,7 @@
     </sql>
 
     <resultMap id="baseMap" type="com.entity.file.CNFile">
-        <id column="file_id" property="fileId" jdbcType="INTEGER"/>
+        <id column="file_id" property="fileId" jdbcType="VARCHAR"/>
         <result column="account_id" property="accountId" jdbcType="INTEGER"/>
         <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
         <result column="file_type" property="fileType" jdbcType="VARCHAR"/>
@@ -23,21 +23,23 @@
     </resultMap>
 
 
-
     <!--存储文件-->
-    <insert id="insertFile" parameterType="com.entity.file.CNFile" useGeneratedKeys="true" keyProperty="fileId">
-        insert into file(account_id,file_name,file_type,file_size,file_path,whole_name,create_time)
+    <insert id="insertFile" parameterType="com.entity.file.CNFile">
+        insert into file(file_id,account_id,file_name,file_type,file_size,file_path,whole_name,file_url,create_time)
         value (
+        #{fileId,jdbcType=VARCHAR},
         #{accountId,jdbcType=INTEGER},
         #{fileName,jdbcType=VARCHAR},
         #{fileType,jdbcType=VARCHAR},
         #{fileSize,jdbcType=VARCHAR},
         #{filePath,jdbcType=INTEGER},
         #{wholeName,jdbcType=VARCHAR},
+        #{fileUrl,jdbcType=VARCHAR},
         now())
     </insert>
     <!--查询文件列表-->
-    <select id="getFileList" parameterType="com.entity.Condition" resultType="com.entity.file.CNFile" resultMap="baseMap">
+    <select id="getFileList" parameterType="com.entity.Condition" resultType="com.entity.file.CNFile"
+            resultMap="baseMap">
         select file_id,file_name,file_path,whole_name,file_url
         from file
         where
@@ -49,7 +51,7 @@
             and is_recycle = #{isRecycle,jdbcType=VARCHAR}
         </if>
         <if test="key != null and key != ''">
-            and whole_name  like  "%"#{key,jdbcType=VARCHAR}"%"
+            and whole_name like "%"#{key,jdbcType=VARCHAR}"%"
         </if>
         <if test="startNumber != null and endNumber != ''">
             ORDER BY create_time desc
@@ -59,6 +61,7 @@
             and create_time like #{currentDay} '%'
         </if>
     </select>
+
     <!--查询文件-->
     <select id="selectFile" parameterType="com.entity.file.CNFile" resultType="com.entity.file.CNFile"
             resultMap="baseMap">
@@ -88,15 +91,21 @@
         <if test="fileName != null and fileName !=''">
             file_name = #{fileName,jdbcType=VARCHAR},
         </if>
-            update_time = now()
+        update_time = now()
         where
         1 = 1
         <if test="fileId != null and fileId != ''">
-            and file_id = #{fileId,jdbcType=INTEGER}
+            and file_id = #{fileId,jdbcType=VARCHAR}
         </if>
     </update>
 
 
+    <!--删除文件-->
+    <delete id="deleteFile" parameterType="java.lang.String">
+        delete
+        from file
+        where file_id = #{fileId,jdbcType=VARCHAR}
+    </delete>
 
 
 </mapper>

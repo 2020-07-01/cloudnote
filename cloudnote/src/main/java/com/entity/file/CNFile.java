@@ -8,7 +8,7 @@ package com.entity.file;
 public class CNFile {
 
     // id
-    private Integer fileId;
+    private String fileId;
     // accountId
     private Integer accountId;
     // 名称
@@ -30,11 +30,11 @@ public class CNFile {
     //更新时间
     private String updateTime;
 
-    public Integer getFileId() {
+    public String getFileId() {
         return fileId;
     }
 
-    public void setFileId(Integer fileId) {
+    public void setFileId(String fileId) {
         this.fileId = fileId;
     }
 

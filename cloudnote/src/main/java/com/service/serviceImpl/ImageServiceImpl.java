@@ -112,7 +112,7 @@ public class ImageServiceImpl implements ImageService {
 
             String imageUrl = ossUtil.getUrl(imagePath);
             if (StringUtils.isNotEmpty(imageUrl)) {
-                newImage.setImageUrl(imageUrl);
+                newImage.setImageUrl(imageUrl.substring(0,imageUrl.lastIndexOf("?")));
             } else {
                 newImage.setImageUrl("");
             }
@@ -186,7 +186,7 @@ public class ImageServiceImpl implements ImageService {
         Map<Boolean, String> map = new HashMap<>();
         try {
             int row = imageMapper.deleteImage(image.getImageId());
-            boolean flag = ossUtil.deleteImage(image.getImagePath());
+            boolean flag = ossUtil.deleteProject(image.getImagePath());
             if (flag && row == 1) {
                 map.put(true, "SUCCESS");
             } else {

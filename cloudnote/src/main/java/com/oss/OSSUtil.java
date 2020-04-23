@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aliyun.oss.model.*;
 import com.entity.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Util.DateUtils;
 import com.aliyun.oss.OSS;
-import com.aliyun.oss.model.CopyObjectResult;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.PutObjectResult;
 
 /**
  * @program: OSSUtil
@@ -103,10 +100,12 @@ public class OSSUtil {
                 break;
         }
         PutObjectRequest putObjectRequest = null;
+       /* ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentEncoding("UTF-8");
+        putObjectRequest.setMetadata(objectMetadata);*/
         putObjectRequest = new PutObjectRequest("001-bucket", path, new ByteArrayInputStream(bytes));
         PutObjectResult putResult = ossClient.putObject(putObjectRequest);
         result.put("true", true);
-        //ossClient.shutdown();//关闭客户端
         return result;
     }
 
@@ -152,7 +151,7 @@ public class OSSUtil {
      * @param path
      * @return
      */
-    public boolean deleteImage(String path) {
+    public boolean deleteProject(String path) {
         boolean flag;
         try {
             ossClient.deleteObject("001-bucket", path);

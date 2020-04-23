@@ -39,8 +39,8 @@
         #{imageType,jdbcType=VARCHAR},
         #{imageSize,jdbcType=VARCHAR},
         #{imagePath,jdbcType=VARCHAR},
-        #{imageUrl,jdbcType=VARCHAR},
         #{wholeName,jdbcType=VARCHAR},
+        #{imageUrl,jdbcType=VARCHAR},
         now())
     </insert>
 

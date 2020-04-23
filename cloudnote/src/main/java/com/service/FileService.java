@@ -20,11 +20,10 @@ public interface FileService {
     List<CNFile> findFileList(Condition condition);
 
     //更新file
-    boolean updateFile(CNFile file);
+    Map updateFile(CNFile file);
 
-
-
-
+    //删除文件
+    Map deleteFile(CNFile file);
 
 
 }

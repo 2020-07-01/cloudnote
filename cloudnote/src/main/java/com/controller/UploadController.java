@@ -10,14 +10,12 @@ import com.baidu.BaiDuUtils;
 import com.cache.CacheService;
 import com.entity.*;
 import com.entity.file.CNFile;
-import com.entity.file.CNFileData;
 import com.interceptor.UserLoginToken;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-import org.omg.CORBA.OMGVMCID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -94,6 +92,7 @@ public class UploadController {
      * @param response
      */
     @RequestMapping(value = "/rename_image.json")
+    @UserLoginToken
     public void renameImage(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
@@ -103,6 +102,7 @@ public class UploadController {
         Map cacheMap = cacheService.getValue(accountId.toString());
         Map imageCache = (Map) cacheMap.get(cacheKey);
         byte[] bytes = (byte[]) imageCache.get(Constant.CACHE_BYTE);
+
         String newWholeName = imageCache.get(Constant.CACHE_NEW_NAME).toString();
         String imageName = newWholeName.substring(0, newWholeName.lastIndexOf("."));// 文件名
         String imageType = newWholeName.substring(newWholeName.lastIndexOf(".") + 1);// 文件类型
@@ -127,21 +127,20 @@ public class UploadController {
 
         String imageUrl = ossUtil.getUrl(imagePath);
         if (StringUtils.isNotEmpty(imageUrl)) {
-            image.setImageUrl(imageUrl);
+            image.setImageUrl(imageUrl.substring(0, imageUrl.lastIndexOf("?")));
         } else {
             image.setImageUrl("");
         }
-
         imageService.insertImage(image);
-
         //删除缓存
         cacheMap.remove(cacheKey);
-        Json.toJson(new Result(true, "重命名成功!"), response);
+        Json.toJson(new Result(true, "SUCCESS!"), response);
     }
 
     /**
      * 不重命名文件
      */
+    @UserLoginToken
     @RequestMapping(value = "/no_rename_image.json")
     public void noRename(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
@@ -189,15 +188,10 @@ public class UploadController {
 
         List<Image> images = imageService.findImageByCondition(condition);
 
-        List<ImageData> imageDataList = new ArrayList<>();
-        images.forEach(p -> {
-            imageDataList.add(new ImageData(p));
-        });
-
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
         hashMap.put("msg", "success");
-        hashMap.put("data", imageDataList);
+        hashMap.put("data", images);
         return hashMap;
     }
 
@@ -228,7 +222,7 @@ public class UploadController {
      */
     @UserLoginToken
     @RequestMapping(value = "/completely_remove_image.json")
-    public void completelyRemoveNote(String imageId, String imagePath, HttpServletRequest request, HttpServletResponse response) {
+    public void completelyRemoveImage(String imageId, String imagePath, HttpServletRequest request, HttpServletResponse response) {
         Result result = null;
         Image image = new Image();
         image.setImagePath(imagePath);
@@ -244,6 +238,7 @@ public class UploadController {
 
     /**
      * 恢复图片
+     *
      * @param imageId
      * @param request
      * @param response
@@ -299,6 +294,7 @@ public class UploadController {
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/rename_file.json")
     public void renameFile(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
@@ -324,14 +320,21 @@ public class UploadController {
         ossUtil.putObject(bytes, objectInfo);
 
         CNFile file = new CNFile();
+        file.setFileId(UUIDUtils.getUUID());
         file.setFileName(fileName);
         file.setWholeName(newWholeName);
         file.setFileType(fileType);
         file.setAccountId(accountId);
         file.setFilePath(filePath);
         file.setFileSize(fileSize);
-        fileService.insertFile(file);
 
+        String fileUrl = ossUtil.getUrl(filePath);
+        if (StringUtils.isNotEmpty(fileUrl)) {
+            file.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
+        } else {
+            file.setFileUrl("");
+        }
+        fileService.insertFile(file);
         //删除缓存
         cacheMap.remove(cacheKey);
         Result result = new Result(true, "存储成功!");
@@ -339,6 +342,14 @@ public class UploadController {
     }
 
 
+    /**
+     * 不重命名文件
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @UserLoginToken
     @RequestMapping(value = "/no_rename_file.json")
     public void noRenameFile(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
@@ -368,7 +379,7 @@ public class UploadController {
     /**
      * 获取文件列表/关键字查询
      *
-     * @param pageno
+     * @param page
      * @param pagesize
      * @param token
      * @param request
@@ -377,69 +388,41 @@ public class UploadController {
      */
     @UserLoginToken
     @RequestMapping(value = "/file_list.json")
-    public Object getFileList(@RequestParam(value = "page") String pageno,
-                              @RequestParam(value = "limit") String pagesize, @RequestParam(value = "token") String token, @RequestParam(value = "key") String key, HttpServletRequest request, HttpServletResponse response) {
+    public Object getFileList(@RequestParam(value = "page") String page,
+                              @RequestParam(value = "limit") String pagesize,
+                              @RequestParam(value = "token") String token,
+                              @RequestParam(value = "key", defaultValue = "") String key,
+                              @RequestParam(value = "recycle", defaultValue = "NO") String recycle,
+                              HttpServletRequest request,
+                              HttpServletResponse response) {
 
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
-        condition.setIsRecycle(Constant.NO);
+        condition.setIsRecycle(recycle);
         condition.setKey(key);
 
         List<CNFile> files = fileService.findFileList(condition);
 
-        List<CNFileData> cnFileDataList = new ArrayList<>();
-        files.forEach(p -> {
-            cnFileDataList.add(new CNFileData(p));
-        });
-
         Map<String, Object> hashMap = new HashMap();
         hashMap.put("code", "0");
         hashMap.put("msg", "success");
-        hashMap.put("data", cnFileDataList);
+        hashMap.put("data", files);
         return hashMap;
     }
 
-    /**
-     * 获取并更新文件的url地址
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/get_file_url.json")
-    public void getFileUrl(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        JSONObject jsonObject = JSON.parseObject(jsonString);
-
-        String filePath = jsonObject.getString("filePath");
-        Integer fileId = Integer.parseInt(jsonObject.getString("fileId"));
-        String fileUrl = ossUtil.getUrl(filePath);
-        Result result = null;
-        if (StringUtils.isNotEmpty(filePath)) {
-            CNFile file = new CNFile();
-            file.setFileId(fileId);
-            file.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
-            fileService.updateFile(file);
-            result = new Result(true, fileUrl);
-        } else {
-            result = new Result(false, "获取文件路径失败!");
-        }
-        Json.toJson(result, response);
-    }
 
     /**
      * 删除文件
      *
-     * @param jsonString
+     * @param fileId
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/delete_file.json")
-    public void deleteFile(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        JSONObject jsonObject = JSON.parseObject(jsonString);
-        Integer fileId = Integer.parseInt(jsonObject.getString("fileId"));
+    public void deleteFile(String fileId, HttpServletRequest request, HttpServletResponse response) {
+
         CNFile cnFile = new CNFile();
         cnFile.setFileId(fileId);
         cnFile.setIsRecycle(Constant.YES);
@@ -457,9 +440,9 @@ public class UploadController {
      */
     @RequestMapping(value = "/update_file.json")
     public void update(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
+
         JSONObject jsonObject = JSON.parseObject(jsonString);
-        Integer fileId = Integer.parseInt(jsonObject.getString("fileId"));
+        String fileId = jsonObject.getString("fileId");
         String fileName = jsonObject.getString("fileName");
 
         CNFile file = new CNFile();
@@ -467,6 +450,52 @@ public class UploadController {
         file.setFileName(fileName);
         fileService.updateFile(file);
         Json.toJson(new Result(true, "更新成功!"), response);
-
     }
+
+
+    /**
+     * 彻底删除文件
+     *
+     * @param response
+     * @return
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/completely_remove_file.json")
+    public void completelyRemoveFile(String fileId, String filePath, HttpServletRequest request, HttpServletResponse response) {
+        Result result = null;
+        CNFile file = new CNFile();
+        file.setFileId(fileId);
+        file.setFilePath(filePath);
+        Map<Boolean, String> map = fileService.deleteFile(file);
+        if (StringUtils.isNotEmpty(map.get(true))) {
+            result = new Result(true, "SUCCESS");
+        } else {
+            result = new Result(false, "FAILURE");
+        }
+        Json.toJson(result, response);
+    }
+
+    /**
+     * 恢复图片
+     *
+     * @param fileId
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/revert_file.json")
+    @UserLoginToken
+    public void revertFile(String fileId, HttpServletRequest request, HttpServletResponse response) {
+        Result result ;
+        CNFile file = new CNFile();
+        file.setFileId(fileId);
+        file.setIsRecycle(Constant.NO);
+        Map<Boolean, String> map = fileService.updateFile(file);
+        if (StringUtils.isNotEmpty(map.get(true))) {
+            result = new Result(true, "SUCCESS");
+        } else {
+            result = new Result(false, "FAILURE");
+        }
+        Json.toJson(result, response);
+    }
+
 }

@@ -7,6 +7,7 @@
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <script src="../static/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="../static/common.js"></script>
     <style>
 
         .layui-container {
@@ -49,7 +50,7 @@
 <body>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div><a class="layui-logo" id="cloudNote" href="/to_index">云笔记平台</a></div>
+        <div><a class="layui-logo" id="cloudNote" href="javascript:location.reload();">云笔记平台</a></div>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <img id="headImage" src="" class="layui-nav-img">
@@ -64,19 +65,19 @@
                 <li class="layui-nav-item">
                     <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a>
-                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
+                        <dd><a href="#" id="toNotePage"><i class="layui-icon layui-icon-edit"></i> 所有笔记</a>
                         </dd>
                     </dl>
                 </li>
             </ul>
 
             <ul class="layui-nav layui-nav-tree">
-                <li class="layui-nav-item">
+                <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/image_page"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
-                        <dd><a href="/file_page"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
+                        <dd><a href="#" id="toImagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="#" id="all"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
+                        <dd><a href="#" id="recycle"><i class="layui-icon layui-icon-file-b"></i> 回收站</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -85,18 +86,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/to_schedule_page"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
-                    </dl>
-                </li>
-            </ul>
-
-            <ul class="layui-nav layui-nav-tree">
-                <li class="layui-nav-item">
-                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
-                    <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 查看全部</a></dd>
+                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 所有日程</a>
                     </dl>
                 </li>
             </ul>
@@ -105,9 +95,10 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
-                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 意见反馈</a></dd>
-                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
+                        <dd><a href="#" id="toInformationPage"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a>
+                        </dd>
+                        <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -148,33 +139,40 @@
                     <div class="grid-demo">
                         <!--标题区-->
                         <div class="layui-row">
-                            <div class="layui-col-xs9">
-                                <div class="grid-demo">
-                                    <div class="layui-input-inline" style="width: 100%;float:left;">
-                                        <input id="fileWholeName" type="text" name="title"
-                                               class="layui-input note-title" lay-verify="title" readonly
-                                               placeholder="标题">
-                                    </div>
+                            <div class="layui-col-xs8 layui-col-sm8">
+                                <div class="layui-input-inline" style="width: 100%;float:left;">
+                                    <input id="fileWholeName" type="text" name="title"
+                                           class="layui-input note-title" lay-verify="title" readonly
+                                           placeholder="标题">
                                 </div>
                             </div>
 
-                            <div class="layui-col-xs3">
-                                <div class="grid-demo">
-                                    <div class="layui-btn-group" style="float:right">
-                                        <button id="downloadFile" type="button"
-                                                class="layui-btn layui-btn-primary"
-                                                style="border:none;padding: 0 5px;"><i
-                                                class="layui-icon layui-icon-download-circle"
-                                                style="font-size: 32px;"></i></button>
-                                        <button id="deleteFile" type="button" class="layui-btn layui-btn-primary"
-                                                button-space style="border:none;padding: 0 5px;"><i
-                                                class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
-                                        </button>
-                                        <button type="button" class="layui-btn layui-btn-primary"
-                                                style="border:none;padding: 0 5px;"><i
-                                                class="layui-icon layui-icon-about" style="font-size: 32px;"></i>
-                                        </button>
-                                    </div>
+                            <div class="layui-col-md4 layui-col-sm4" style="text-align: center">
+                                <div id="buttonGroup" class="layui-btn-group" style="display: block">
+                                    <button id="downloadFile" type="button"
+                                            class="layui-btn layui-btn-primary"
+                                            style="border:none;padding: 0 5px;"><i
+                                            class="layui-icon layui-icon-download-circle"
+                                            style="font-size: 32px;"></i></button>
+                                    <button id="deleteFile" type="button" class="layui-btn layui-btn-primary"
+                                            button-space style="border:none;padding: 0 5px;"><i
+                                            class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
+                                    </button>
+                                    <button type="button" class="layui-btn layui-btn-primary"
+                                            style="border:none;padding: 0 5px;"><i
+                                            class="layui-icon layui-icon-about" style="font-size: 32px;"></i>
+                                    </button>
+                                </div>
+
+
+                                <div id="recycleButton" style="display: none;">
+                                    <button id="revertFile" type="button"
+                                            style="font-size: 16px; "
+                                            class="layui-btn layui-btn-primary layui-btn-radius">恢复文件
+                                    </button>
+                                    <button id="completelyRemove" type="button" style="font-size: 16px;"
+                                            class="layui-btn layui-btn-primary layui-btn-radius">彻底删除
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -211,27 +209,31 @@
         $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
         $('#headAccountName').html(sessionStorage.getItem("headAccountName"));
 
-        var globalFileUrl = "";
-        var globalFileId = "";
-        var globalFilePath = "";
-        var fileKey = "";
-        var table_reload = table.render({
-            elem: '#fileList',
-            where: {token: token, key: fileKey},//传递token到服务端
-            url: '/source/file_list.json', //默认传递两个参
-            height: 'full-140',
-            //cellMinWidth: 380, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            cols:
-                [[ //标题栏
-                    {field: 'showName', title: '点击上传', unresize: true}
-                ]]
-            , done:
-                function (res, curr, count) {
-                    $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
-                    //完成数据渲染之后的回调
-                    init_upload();
-                }
-        })
+        var sideId = "all";
+        var globalFile = "";
+
+        initFileist("", "NO");
+
+        //初始化文件列表
+        function initFileist(key, recycle) {
+            table.render({
+                elem: '#fileList',
+                where: {token: token, key: key, recycle: recycle},//传递token到服务端
+                url: '/source/file_list.json', //默认传递两个参
+                height: 'full-140',
+                //cellMinWidth: 380, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                cols:
+                    [[ //标题栏
+                        {field: 'wholeName', title: '点击上传', unresize: true}
+                    ]]
+                , done:
+                    function (res, curr, count) {
+                        $('th').css({'text-align': 'center', 'font-size': '17px', 'letter-spacing': '8px'});
+                        //完成数据渲染之后的回调
+                        init_upload();
+                    }
+            })
+        }
 
         //加载上传图片功能
         function init_upload() {
@@ -242,10 +244,10 @@
                 , headers: {token: token}
                 , url: '/source/upload_file.json'
                 , accept: 'file'
-                , acceptMime: '.pdf'//筛选的文件类型
+                , acceptMime: '.pdf,.txt'//筛选的文件类型
                 , before: function (obj) {
                     obj.preview(function (index, file, result) {
-                        //$('#show-image').attr('src', result); //图片链接（base64）
+
                     });
                 }
                 , done: function (result) {//每个文件触发一次，回调一次
@@ -277,7 +279,7 @@
                                     },
                                     success: function (result) {
                                         if (result.code == 1) {
-                                            table_reload.reload();//刷新数据
+                                            initFileist("", "NO")
                                         }
                                     }
                                 })
@@ -301,7 +303,7 @@
                             }
                         });
                     } else {
-                        table_reload.reload();//刷新数据
+                        initFileist("", "NO");
                         return layer.msg(result.message);
                     }
                 }
@@ -318,114 +320,158 @@
 
         //监听行单击事件（双击事件为：rowDouble）
         table.on('row(table-filter)', function (obj) {
-            //单机时获取当前数据，存储在全局变量之中，然后点击删除或者下载按钮，最后清除数据
-            globalFileUrl = obj.data.fileUrl;
-            globalFileId = obj.data.fileId;
-            globalFilePath = obj.data.filePath;
-
-            if (globalFileUrl == null) {
-                var jsonData = JSON.stringify(obj.data);
-                $.ajax({
-                    type: "post",
-                    contentType: "application/json",
-                    dataType: 'json',
-                    headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                    data: jsonData,
-                    url: "/source/get_file_url.json",
-                    success: function (result) {
-                        $('#showFile').attr('src', result.message);//文件显示
-
-                    },
-                })
-            } else {
-                $('#showFile').attr('src', globalFileUrl);
-            }
-            //显示标题
+            globalFile = obj.data;
+            $('#showFile').attr('src', obj.data.fileUrl);
             $('#fileWholeName').val(obj.data.wholeName);
-            //标注选中样式
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
         });
 
-        //下载图片
+        //放大图片
         $("#downloadFile").click(function () {
-            if (globalFileUrl == "") {
+            if (globalFile == "") {
                 layer.msg('请先选择文件!');
                 return;
             }
-            location.href = globalFileUrl;
+            window.location.href = globalFile.fileUrl;
         });
 
         //删除图片
         $("#deleteFile").click(function () {
-            if (globalFileId == "") {
+            if (globalFile == "") {
                 layer.msg('请先选择文件!');
                 return;
             }
-            var data = {
-                "fileId": globalFileId,
-                "filePath": globalFilePath
-            }
-            var jsonData = JSON.stringify(data);
             $.ajax({
-                type: "post",
+                type: "get",
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: jsonData,
+                data: {fileId: globalFile.fileId},
                 url: "/source/delete_file.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg('删除成功!');
                         $('#fileWholeName').val("");
                         $('#showFile').attr('src', "");
-                        table_reload.reload();//刷新数据
+                        initFileist("", "NO");
+                        globalFile = "";
+                        layer.msg('删除成功!');
+                    }
+                },
+            })
+        });
+
+        //查询文件
+        $("#searchFile").click(function () {
+            let key = $("#inputSearchFile").val();
+            if (sideId == "all") {
+                initFileist(key, "NO");
+            } else {
+                initFileist(key, "YES");
+            }
+        });
+
+        //所有文件
+        $("#all").click(function () {
+            $('#fileWholeName').val("");
+            $('#showFile').attr('src', "");
+            globalFile = "";
+            initFileist("", "NO");
+            $('#buttonGroup').css({'display': 'block'});
+            $('#recycleButton').css({'display': 'none'});
+        });
+
+        //回收站
+        $("#recycle").click(function () {
+            sideId = "recycle";
+            initFileist("", "YES");
+            //清空右侧区域
+            $('#fileWholeName').val("");
+            $('#showFile').attr('src', "");
+            $('#buttonGroup').css({'display': 'none'});
+            $('#recycleButton').css({'display': 'block'});
+            globalFile = "";
+        })
+
+        //恢复文件
+        $("#revertFile").click(function () {
+            if (globalFile == "") {
+                layer.msg("请先选择文件!");
+                return;
+            }
+            $.ajax({
+                type: "get",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: {fileId: globalFile.fileId},
+                url: "/source/revert_file.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message);
+                        $('#fileWholeName').val("");
+                        $('#showFile').attr('src', "");
+                        initFileist("", "NO");
+                        globalFile = "";
+                    } else {
+                        layer.msg(result.message);
+                    }
+                },
+            })
+        });
+
+        //彻底删除
+        $("#completelyRemove").click(function () {
+            if (globalFile == "") {
+                layer.msg("请先选择文件!");
+                return;
+            }
+            $.ajax({
+                type: "get",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: {fileId: globalFile.fileId, filePath: globalFile.filePath},
+                url: "/source/completely_remove_file.json",
+                success: function (result) {
+                    if (result.code == 1) {
+                        initFileist("", "YES");
+                        layer.msg(result.message);
+                        //清空右侧区域
+                        $('#fileWholeName').val("");
+                        $('#showFile').attr('src', "");
+                        globalFile = "";
+
+                    } else {
+                        layer.msg(result.message);
                     }
                 },
             })
         });
 
 
-        //查询文件
-        $("#searchFile").click(function () {
-            fileKey = $("#inputSearchFile").val();
-            //清空右侧区域
-            $('#showFile').attr('src', "");
-            $('#fileWholeName').val("");
-            //重新将table渲染一次
-            table_reload.reload({where: {token: token, key: fileKey}});
-        });
+        $("#toNotePage").click(function () {
+            toNotePage(token);
+        })
 
-        /*  //获得焦点时发生事件
-          $("#fileWholeName").focus(function () {
-              var fileName = $("#fileWholeName").val();
-              $("#fileWholeName").val(fileName.substr(0, fileName.indexOf(".")))
-          });*/
+        $("#toImagePage").click(function () {
+            toImagePage(token);
+        })
 
-        //失去焦点时自动保存
-        /* $("#fileWholeName").blur(function () {
-             var fileName = $("#fileWholeName").val();
-             var formData = {
-                 "fileName":fileName,
-                 "fileId":globalFileId
-             }
-             var jsonData = JSON.stringify(formData);
-             $.ajax({
-                 type: "post",
-                 contentType: "application/json",
-                 dataType: 'json',
-                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                 data: jsonData,
-                 url: "http://localhost:8080/source/update_file.json",
-                 success: function (result) {
-                     if (result.code == 1) {
-                         layer.msg('删除成功!');
-                         $('#fileWholeName').val("");
-                         $('#showFile').attr('src', "");
-                         table_reload.reload();//刷新数据
-                     }
-                 },
-             })
-         });*/
+        $("#toSchedulePage").click(function () {
+            toSchedulePage(token);
+        })
+
+        $("#toInformationPage").click(function () {
+            toInformationPage(token);
+        })
+
+        $("#toResetPasswordPage").click(function () {
+            toResetPasswordPage(token);
+        })
+
+        $("#toRecycleBinPage").click(function () {
+            toRecycleBinPage(token);
+        })
     })
 </script>
 </html>
