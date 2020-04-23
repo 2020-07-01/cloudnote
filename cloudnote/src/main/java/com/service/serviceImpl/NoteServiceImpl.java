@@ -3,15 +3,13 @@ package com.service.serviceImpl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import com.Util.ASEUtils;
 import com.Util.UUIDUtils;
 import com.baidu.BaiDuUtils;
 import com.entity.Constant;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,6 +38,9 @@ public class NoteServiceImpl implements NoteService {
     @Autowired
     BaiDuUtils baiDuUtils;
 
+    @Autowired
+    ASEUtils aseUtils;
+
     /**
      * 存储笔记
      *
@@ -64,7 +65,7 @@ public class NoteServiceImpl implements NoteService {
             if (StringUtils.isNotEmpty(map.get(true))) {
                 try {
                     //进行加密
-                    String noteContent = ASEUtils.encrypt(noteVo.getNoteContent().trim().getBytes("UTF-8"), noteVo.getAccountId().toString().getBytes("UTF-8"));
+                    String noteContent = aseUtils.encrypt(noteVo.getNoteContent().trim().getBytes("UTF-8"), noteVo.getAccountId().toString().getBytes("UTF-8"));
                     noteVo.setNoteContent(noteContent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -131,7 +132,7 @@ public class NoteServiceImpl implements NoteService {
             if (StringUtils.isNotEmpty(map.get(true))) {
                 try {
                     //进行加密
-                    String noteContent = ASEUtils.encrypt(noteVo.getNoteContent().trim().getBytes("UTF-8"), noteVo.getAccountId().toString().getBytes("UTF-8"));
+                    String noteContent = aseUtils.encrypt(noteVo.getNoteContent().trim().getBytes("UTF-8"), noteVo.getAccountId().toString().getBytes("UTF-8"));
                     noteVo.setNoteContent(noteContent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -167,7 +168,7 @@ public class NoteServiceImpl implements NoteService {
         noteList.forEach(p -> {
             try {
                 //解密
-                p.setNoteContent(new String(ASEUtils.decrypt(Base64.decode(p.getNoteContent()), p.getAccountId().toString().getBytes("UTF-8"))));
+                p.setNoteContent(new String(aseUtils.decrypt(Base64.decodeBase64(p.getNoteContent()), p.getAccountId().toString().getBytes("UTF-8"))));
             } catch (Exception e) {
                 e.printStackTrace();
             }

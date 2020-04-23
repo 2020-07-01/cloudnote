@@ -1,6 +1,7 @@
 package com.Util;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -12,6 +13,7 @@ import java.security.SecureRandom;
  * @description: ase加密解密算法工具类
  * @create: 2020-01-16 11:11
  **/
+@Component
 public class ASEUtils {
 
     /**
@@ -62,7 +64,7 @@ public class ASEUtils {
      * @return
      * @throws Exception
      */
-    public static String encrypt(byte[] plainBytes, byte[] key) throws Exception {
+    public  String encrypt(byte[] plainBytes, byte[] key) throws Exception {
         // 生成密钥对象
         SecretKey secKey = generateKey(key);
         // 获取 AES 密码器
@@ -72,7 +74,7 @@ public class ASEUtils {
         // 加密数据, 返回密文
         byte[] cipherBytes = cipher.doFinal(plainBytes);
 
-        return Base64.encode(cipherBytes);
+        return Base64.encodeBase64String(cipherBytes);
     }
 
     /**
@@ -83,7 +85,7 @@ public class ASEUtils {
      * @return
      * @throws Exception
      */
-    public static byte[] decrypt(byte[] cipherBytes, byte[] key) throws Exception {
+    public  byte[] decrypt(byte[] cipherBytes, byte[] key) throws Exception {
         // 生成密钥对象
         SecretKey secKey = generateKey(key);
         // 获取 AES 密码器

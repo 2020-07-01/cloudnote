@@ -10,7 +10,6 @@ import com.entity.*;
 import com.entity.note.Note;
 import com.interceptor.UserLoginToken;
 import com.service.serviceImpl.NoteServiceImpl;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,21 +98,12 @@ public class NoteController {
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         noteVo.setAccountId(accountId);
-        if (StringUtils.isEmpty(noteVo.getNoteId())) {
-            Map<Boolean, String> map = noteService.insertNote(noteVo);//存储笔记
-            if (StringUtils.isNotEmpty(map.get(true))) {
-                result = new Result(true, map.get(true));
-            } else {
-                result = new Result(false, map.get(false));
-            }
+
+        Map<Boolean, String> map = noteService.insertNote(noteVo);//存储笔记
+        if (StringUtils.isNotEmpty(map.get(true))) {
+            result = new Result(true, map.get(true));
         } else {
-            //更新笔记
-            Map<Boolean, String> map = updateNote(noteVo);
-            if (StringUtils.isNotEmpty(map.get(true))) {
-                result = new Result(true, "SUCCESS");
-            } else {
-                result = new Result(false, map.get(false));
-            }
+            result = new Result(false, map.get(false));
         }
         Json.toJson(result, response);
     }
@@ -121,11 +111,25 @@ public class NoteController {
     /**
      * 更新笔记
      *
+     * @param noteVo
+     * @param request
+     * @param response
      * @return
      */
-    private Map updateNote(Note noteVo) {
-        Map map = noteService.updateNote(noteVo);
-        return map;
+    @UserLoginToken
+    @RequestMapping(value = "/update_note.json")
+    public void updateNote(@RequestBody Note noteVo, HttpServletRequest request, HttpServletResponse response) {
+        Result result = null;
+        String token = request.getHeader("token");
+        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        noteVo.setAccountId(accountId);
+        Map<Boolean,String> map = noteService.updateNote(noteVo);
+        if (StringUtils.isNotEmpty(map.get(true))) {
+            result = new Result(true, map.get(true));
+        } else {
+            result = new Result(false, map.get(false));
+        }
+        Json.toJson(result, response);
     }
 
     /**
@@ -147,7 +151,7 @@ public class NoteController {
         Note note = new Note();
         note.setNoteId(noteId);
         note.setIsRecycle(Constant.YES);
-        Map<Boolean, String> map = updateNote(note);
+        Map<Boolean, String> map = noteService.updateNote(note);
         if (StringUtils.isNotEmpty(map.get(true))) {
             result = new Result(true, "SUCCESS");
         } else {
@@ -208,7 +212,7 @@ public class NoteController {
             note.setStar(star);
         }
         try {
-            Map<Boolean, String> map = updateNote(note);
+            Map<Boolean, String> map = noteService.updateNote(note);
             if (StringUtils.isNotEmpty(map.get(true))) {
                 result = new Result(true, "SUCCESS!");
             } else {
@@ -234,7 +238,7 @@ public class NoteController {
         Note note = new Note();
         note.setNoteId(noteId);
         note.setIsRecycle(Constant.NO);
-        Map<Boolean, String> map = updateNote(note);
+        Map<Boolean, String> map = noteService.updateNote(note);
         if (StringUtils.isNotEmpty(map.get(true))) {
             result = new Result(true, "SUCCESS");
         } else {

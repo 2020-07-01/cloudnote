@@ -90,7 +90,7 @@
             and is_recycle = #{isRecycle,jdbcType = VARCHAR}
         </if>
         <if test="star != null and star != ''">
-            and star = #{isRecycle,jdbcType = VARCHAR}
+            and star = #{star,jdbcType = VARCHAR}
         </if>
         group by note_type
     </select>

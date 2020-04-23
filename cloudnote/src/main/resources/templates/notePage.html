@@ -156,7 +156,7 @@
                                         class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
                                 </button>
                                 <button type="button" id="star" class="layui-btn layui-btn-primary"
-                                        style="border:none;padding: 0 5px"><i id="ifStar" class="layui-icon"
+                                        style="border:none;padding: 0 5px"><i id="starIcon" class="layui-icon"
                                                                               style="font-size: 32px;">&#xe600;</i>
                                 </button>
                             </div>
@@ -212,9 +212,12 @@
 
 <script th:inline="none">
 
-    //设置全局数据
+
     var token = sessionStorage.getItem("token");
-    let globalNoteId = "";
+
+    var globalNote = "";
+
+    /*let globalNoteId = "";*/
     let showTypeFlag = true;
     let disableFlag = true;
     //导航栏识别
@@ -248,7 +251,6 @@
                 theme: 'silver',
                 menubar: 'file edit format',
                 contextmenu: "copy ", //右击菜单
-
                 menu: {
                     edit: {title: '编辑', items: 'undo redo | cut copy  pastetext | selectall'},
                 },
@@ -260,20 +262,19 @@
                     //焦点移出事件
                     editor.on('blur', function () {
                         var noteContent = tinyMCE.activeEditor.getContent();
-                        if (globalNoteId == "") {
+                        if (globalNote == "") {
                             return;
                         }
-
                         if (noteContent == "") {
                             layer.msg("内容不能为空!");
                             return;
                         }
-                        if (noteContent != oldNoteContent) {
+                        if (noteContent != globalNote.noteContent) {
                             var data = {
                                 "noteContent": noteContent,
-                                "noteId": globalNoteId
+                                "noteId": globalNote.noteId
                             }
-                            oldNoteContent = noteContent;
+                            globalNote.noteContent = noteContent;//替换新的内容
                             update(data, "NO");
                         }
                     });
@@ -296,10 +297,8 @@
                     if (result.code == 1) {
                         sessionStorage.setItem("headAccountName", result.data.accountName);
                         sessionStorage.setItem("headImageUrl", result.data.headImageUrl)
-
                         $('#headImage').attr('src', result.data.headImageUrl);
                         $('#headAccountName').html(result.data.accountName);
-
                     } else {
                         layer.msg(result.message);
                     }
@@ -315,8 +314,8 @@
             //设置sideId
             sideId = "all";
             init_select("NO", "");//初始化标签
-            clearEidtSpace();
             init_table("", "", "", "NO");
+            clearEidtSpace();
         });
 
         //收藏夹
@@ -324,11 +323,10 @@
             if (!disableFlag) {
                 disabledTrue();
             }
-            //设置sideId
             sideId = "star";
             init_select("NO", "YES");//初始化标签
+            init_table("", "", "YES", "NO");
             clearEidtSpace();
-            init_table("", "", "YES", "No");
         })
 
         //回收站
@@ -370,7 +368,7 @@
 
         //点击标题
         table.on('row(note-filter)', function (obj) {
-            oldNoteTitle = obj.data.noteTitle;
+            globalNote = obj.data;
             $('#noteTitle').val(obj.data.noteTitle);
             oldNoteContent = obj.data.noteContent;
             tinyMCE.activeEditor.setContent(obj.data.noteContent);
@@ -379,33 +377,25 @@
                 "inputNoteType": obj.data.noteType
             });
             showNoteType();//设置标签可见
-            globalNoteId = obj.data.noteId;//设置全局笔记id
-
-            //显示是否已经收藏
-            var ifStar = obj.data.star;
-            if (ifStar == "YES") {
-                $('#ifStar').html("&#xe658;");
+            if (obj.data.star == "YES") {
+                $('#starIcon').html("&#xe658;");
             }
-            if (ifStar == "NO") {
-                $('#ifStar').html("&#xe600;");
+            if (obj.data.star == "NO") {
+                $('#starIcon').html("&#xe600;");
             }
         });
 
         //加星笔记
         $("#star").click(function () {
-            if (globalNoteId == "") {
+            if (globalNote == "") {
                 layer.msg("请先选择笔记!");
                 return;
-            }
-            ;
-
-            var flag = $('#ifStar').val();
-            alert(flag);
-            //如果已收藏
-            if (flag == "&#xe658;") {
-                setStar(globalNoteId, "NO");
-            } else {//如果未收藏
-                setStar(globalNoteId, "YES");
+            } else if (globalNote.star == "YES") {
+                setStar(globalNote.noteId, "NO");
+            } else if (globalNote.star == "NO") {
+                setStar(globalNote.noteId, "YES");
+            } else {
+                return;
             }
         });
 
@@ -420,10 +410,11 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
+                        globalNote.star = star;
                         if (star == "YES") {
-                            $('#ifStar').html("&#xe658;");
+                            $('#starIcon').html("&#xe658;");
                         } else {
-                            $('#ifStar').html("&#xe600;");
+                            $('#starIcon').html("&#xe600;");
                         }
                     } else {
                         layer.msg(result.message);
@@ -432,32 +423,26 @@
             })
         }
 
-        //清除编辑区
+        //新建笔记
         $("#cleanEditSpace").click(function () {
             if (!disableFlag) {
                 disabledTrue();
             }
-            $('#noteTitle').val("无标题笔记");//清除标题
-            tinyMCE.activeEditor.setContent("");//清除内容
-            $('#inputNoteType').val("");//清除标签
-            $('#ifStar').html("&#xe600;");//设置空心收藏
+            //初始化内容
+            $('#noteTitle').val("无标题笔记");
+            tinyMCE.activeEditor.setContent("<p>编辑内容。。。。。。</p>");
+            $('#inputNoteType').val("");
+            $('#starIcon').html("&#xe600;");
             showNoteType();//显示标签
-            clearOld();
-            globalNoteId = "";
+            globalNote = "";
         });
-
-        //清空old值
-        function clearOld() {
-            oldNoteContent = "";
-            oldNoteTitle = "";
-            oldNoteType = "";
-        }
 
         //保存
         $("#saveNote").click(function () {
-            if (globalNoteId != "") {
+            if (globalNote != "") {
                 return;
             }
+            globalNote = "temp"
             var noteTitle = $('#noteTitle').val();
             var noteContent = tinyMCE.activeEditor.getContent();
             var noteType = $('#inputNoteType').val();
@@ -479,7 +464,6 @@
                     if (result.code == 1) {
                         layer.msg(result.message);
                         if (sideId == "star") {
-                            //init_table("", "", "", "NO");
                             init_select("NO", "YES");
                         } else {
                             init_table("", "", "", "NO");
@@ -488,6 +472,7 @@
                         hideNoteType();
                         clearEidtSpace();
                     } else {
+                        globalNote = "";
                         layer.msg(result.message);
                     }
                 },
@@ -498,12 +483,12 @@
         //删除笔记
         $("#deleteNote").click(function () {
 
-            if (globalNoteId == "") {
+            if (globalNote == "") {
                 layer.msg("请先选择笔记!");
                 return;
             }
             var data = {
-                "noteId": globalNoteId
+                "noteId": globalNote.noteId
             }
             var jsonData = JSON.stringify(data);
             $.ajax({
@@ -532,7 +517,7 @@
 
         //恢复笔记
         $("#revertNote").click(function () {
-            if (globalNoteId == "") {
+            if (globalNote == "") {
                 layer.msg("请先选择笔记!");
                 return;
             }
@@ -541,14 +526,15 @@
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: {noteId: globalNoteId},
+                data: {noteId: globalNote.noteId},
                 url: "/note/revert_note.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
                         init_table("", "", "", "YES");
                         clearEidtSpace();
-                        hideNoteType();
+                    } else {
+                        layer.msg(result.message);
                     }
                 },
             })
@@ -556,7 +542,7 @@
 
         //彻底删除
         $("#completelyRemove").click(function () {
-            if (globalNoteId == "") {
+            if (globalNote == "") {
                 layer.msg("请先选择笔记!");
                 return;
             }
@@ -565,12 +551,15 @@
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: {noteId: globalNoteId},
+                data: {noteId: globalNote.noteId},
                 url: "/note/completely_remove_note.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
                         init_table("", "", "", "YES");
+                        clearEidtSpace();
+                    } else {
+                        layer.msg(result.message);
                     }
                 },
             })
@@ -616,11 +605,8 @@
             $('#noteTitle').val("");//清除标题
             tinyMCE.activeEditor.setContent("");
             $('#inputNoteType').val("");//清除标签
-            $('#ifStar').html("&#xe600;");//设置空心收藏
-            globalNoteId = "";
-            oldNoteTitle = "";
-            oldNoteType = "";
-            oldNoteContent = "";
+            $('#starIcon').html("&#xe600;");//设置空心收藏
+            globalNote = "";
         }
 
         //设置不可编辑
@@ -655,8 +641,6 @@
             $('#noteContent').removeAttr("disabled");
             form.render();
             tinymce.activeEditor.getBody().setAttribute('contenteditable', true);
-
-
         }
 
         //初始化标签
@@ -691,19 +675,18 @@
             $("#setNoteType").next().find("dl").css({"display": "none"});
             form.render();
 
-            if (globalNoteId == "") {
+            if (globalNote == "") {
                 return;
             }
-            if (data.value != oldNoteTitle) {
+            if (data.value != globalNote.noteType) {
                 var data1 = {
                     "noteType": data.value,
-                    "noteId": globalNoteId
+                    "noteId": globalNote.noteId
                 }
-                oldNoteType = data.value;
+                globalNote.noteType = data.value;
                 update(data1, "YES");
             }
         });
-
 
         window.search = function () {
             let value = $("#inputNoteType").val();
@@ -739,40 +722,36 @@
         $('#inputNoteType').blur(function () {
             form.render();
             let noteType = $('#inputNoteType').val();
-            if (noteType == "") {
-
-            }
-            if (globalNoteId == "") {
+            if (globalNote == "") {
                 return;
             }
-            if (noteType != oldNoteTitle) {
+            if (noteType != globalNote.noteType) {
                 let data = {
                     "noteType": noteType,
-                    "noteId": globalNoteId
+                    "noteId": globalNote.noteId
                 }
-                oldNoteType = noteType;
+                globalNote.noteType = noteType;
                 update(data, "YES");
             }
         })
 
-
         //标题失去焦点时-》判断是否更新
         $('#noteTitle').blur(function () {
+            if (globalNote == "") {
+                return;
+            }
             let noteTitle = $('#noteTitle').val();
             if (noteTitle == "") {
                 $('#noteTitle').focus();
                 layer.msg("标题不能为空!");
                 return;
             }
-            if (globalNoteId == "") {
-                return;
-            }
-            if (noteTitle != oldNoteTitle) {
+            if (noteTitle != globalNote.noteTitle) {
                 let data = {
                     "noteTitle": noteTitle,
-                    "noteId": globalNoteId
+                    "noteId": globalNote.noteId
                 }
-                oldNoteTitle = noteTitle;
+                globalNote.noteTitle = noteTitle;
                 update(data, "NO");
             }
         })
@@ -786,7 +765,7 @@
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 data: jsonData,
-                url: "/note/save_note.json",
+                url: "/note/update_note.json",
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
@@ -801,7 +780,6 @@
                                 init_select("NO", "");
                             }
                         }
-
                     } else {
                         layer.msg(result.message);
                     }
@@ -811,6 +789,10 @@
 
 
         $("#logout").click(function () {
+            //清空sessionStorage
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("headAccountName");
+            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 
@@ -838,8 +820,6 @@
         $("#toRecycleBinPage").click(function () {
             toRecycleBinPage(token);
         })
-
-
     })
 </script>
 </html>
