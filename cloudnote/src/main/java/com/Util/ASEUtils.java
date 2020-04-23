@@ -64,7 +64,7 @@ public class ASEUtils {
      * @return
      * @throws Exception
      */
-    public  String encrypt(byte[] plainBytes, byte[] key) throws Exception {
+    public String encrypt(byte[] plainBytes, byte[] key) throws Exception {
         // 生成密钥对象
         SecretKey secKey = generateKey(key);
         // 获取 AES 密码器
@@ -85,7 +85,7 @@ public class ASEUtils {
      * @return
      * @throws Exception
      */
-    public  byte[] decrypt(byte[] cipherBytes, byte[] key) throws Exception {
+    public byte[] decrypt(byte[] cipherBytes, byte[] key) throws Exception {
         // 生成密钥对象
         SecretKey secKey = generateKey(key);
         // 获取 AES 密码器
@@ -97,8 +97,6 @@ public class ASEUtils {
 
         return plainBytes;
     }
-
-
 
 
 }
