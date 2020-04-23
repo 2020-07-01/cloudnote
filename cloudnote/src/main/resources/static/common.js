@@ -3,6 +3,12 @@ function logout(token) {
     window.location.href = "/account/logout.json?token=" + token;
 };
 
+
+//笔记页面验证
+function toNotePage(token) {
+    window.location.href = "/to_note_page?token=" + token;
+}
+
 //图片页面验证
 function toImagePage(token) {
     window.location.href = "/image_page?token=" + token;

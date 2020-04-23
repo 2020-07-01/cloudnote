@@ -1,10 +1,13 @@
 package com.entity;
 
+import lombok.Data;
+
 /**
  * @Description
  * @Author yq
  * @Date 2020/4/5 20:54
  */
+@Data
 public class ImageData {
 
     public ImageData(Image image) {
@@ -16,7 +19,7 @@ public class ImageData {
     }
 
     // id
-    private Integer imageId;
+    private String imageId;
     // url
     private String imageUrl;
     //完整的图片名
@@ -26,43 +29,5 @@ public class ImageData {
     //路径
     private String imagePath;
 
-    public Integer getImageId() {
-        return imageId;
-    }
 
-    public void setImageId(Integer imageId) {
-        this.imageId = imageId;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getWholeName() {
-        return wholeName;
-    }
-
-    public void setWholeName(String wholeName) {
-        this.wholeName = wholeName;
-    }
-
-    public String getShowName() {
-        return showName;
-    }
-
-    public void setShowName(String showName) {
-        this.showName = showName;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
 }

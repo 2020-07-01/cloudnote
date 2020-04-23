@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.entity.Constant;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ import com.aliyun.oss.model.PutObjectResult;
  * @create: 2020-02-03 22:25
  **/
 @Component
+@Slf4j
 public class OSSUtil {
 
     public static HashMap<String, String> typeMap = new HashMap();
@@ -73,7 +75,6 @@ public class OSSUtil {
             result.put("false", false);
             e.printStackTrace();
         }
-        //ossClient.shutdown();//关闭客户端
         return result;
     }
 
@@ -148,36 +149,21 @@ public class OSSUtil {
     /**
      * 删除文件
      *
-     * @param key
+     * @param path
      * @return
      */
-    public Map deleteImage(String key) {
-        HashMap result = new HashMap();
-        ossClient.deleteObject("001-bucket", key);
-        return result;
+    public boolean deleteImage(String path) {
+        boolean flag;
+        try {
+            ossClient.deleteObject("001-bucket", path);
+            flag = true;
+        } catch (Exception e) {
+            flag = false;
+            log.error(e.getMessage(), new Throwable(e));
+        }
+        return flag;
     }
 
-    /**
-     * 复制源文件到目标文件，成功后删除源文件
-     *
-     * @param wholeName
-     * @param accountId
-     * @return
-     */
-    public Map copy_delete_Image(String wholeName, String accountId) {
-        HashMap result = new HashMap();
-        // 目标
-        String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀名
-        // 目标路径
-        String destinationKey = getImagePath(wholeName, accountId, type);
-        // 源路径
-        String sourceKey = accountId + "/temp/" + wholeName;
-        CopyObjectResult copyObjectResult = ossClient.copyObject("001-bucket", sourceKey, "001-bucket", destinationKey);
-
-        this.deleteImage(sourceKey);
-        return result;
-
-    }
 
     /**
      * 获取图片路径 55/images/png/2020-01-01/1.png
@@ -187,7 +173,7 @@ public class OSSUtil {
      * @return
      */
     private String getImagePath(String sourceFileName, String accountId, String type) {
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         return accountId + "/" + "image" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 
@@ -200,7 +186,7 @@ public class OSSUtil {
      * @return
      */
     private String getFilePath(String sourceFileName, String accountId, String type) {
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         return accountId + "/" + "file" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 

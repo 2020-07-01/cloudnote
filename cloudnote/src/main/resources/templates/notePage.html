@@ -43,13 +43,13 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll" style="text-align: left;padding-left: 8px">
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
-                <li class="layui-nav-item">
+                <li class="layui-nav-item layui-nav-itemed">
                     <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
                         <dd><a href="#" id="cleanEditSpace"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a></dd>
                         <dd><a href="#" id="all"><i class="layui-icon layui-icon-form"></i> 所有笔记</a></dd>
                         <dd><a href="#" id="starList"><i class="layui-icon layui-icon-star-fill"> 收藏夹</i></a></dd>
-                        <dd><a href="#" id="recycled"><i class="layui-icon layui-icon-delete"> 回收站</i></a></dd>
+                        <dd><a href="#" id="recycle"><i class="layui-icon layui-icon-delete"> 回收站</i></a></dd>
                     </dl>
                 </li>
             </ul>
@@ -105,8 +105,6 @@
                                     class="layui-icon layui-icon-search" style="font-size: 32px;"></i>
                             </button>
                         </div>
-
-
                         <div class="layui-col-sm12" style="text-align:center;">
                             <form class="layui-form" lay-filter="formSelectType" id="2" action="post">
                                 <div class="layui-form-item" style="margin-bottom: 0">
@@ -217,15 +215,10 @@
 
     var globalNote = "";
 
-    /*let globalNoteId = "";*/
     let showTypeFlag = true;
     let disableFlag = true;
     //导航栏识别
     let sideId = "all";
-
-    var oldNoteTitle = "";
-    var oldNoteContent = "";
-    var oldNoteType = "";
 
 
     layui.use(['table', 'element', 'form', 'layer'], function () {
@@ -330,7 +323,8 @@
         })
 
         //回收站
-        $("#recycled").click(function () {
+        $("#recycle").click(function () {
+            sideId = "recycle";
             disabledFalse();//设置不能编辑
             showNoteType();//展示标签
             clearEidtSpace();//清空编辑区
@@ -370,9 +364,7 @@
         table.on('row(note-filter)', function (obj) {
             globalNote = obj.data;
             $('#noteTitle').val(obj.data.noteTitle);
-            oldNoteContent = obj.data.noteContent;
             tinyMCE.activeEditor.setContent(obj.data.noteContent);
-            oldNoteType = obj.data.noteType;
             form.val("formNoteType", {
                 "inputNoteType": obj.data.noteType
             });
@@ -568,10 +560,17 @@
         //全文搜索
         $("#search-note").click(function () {
             let key = $("#input-search-note").val();
-            form.val("formSelectType", {
-                "selectNoteType": ""
-            });
-            init_table("", key, "", "No");
+            /*   form.val("formSelectType", {
+                   "selectNoteType": ""
+               });
+           */
+            if (sideId == "all") {
+                init_table("", key, "", "NO");
+            } else if (sideId == "recycle") {
+                init_table("", key, "", "YES");
+            } else {
+                init_table("", key, "YES", "NO");
+            }
         })
 
         //设置标签是否可见

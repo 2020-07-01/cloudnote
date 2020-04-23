@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.entity.note.Note;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.entity.Condition;
@@ -27,4 +28,7 @@ public interface ImageService {
 
     //更新图片
     Map updateImage(Image image);
+
+    //删除图片
+    Map deleteImage(Image image);
 }

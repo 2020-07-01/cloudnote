@@ -8,7 +8,7 @@ package com.entity;
 public class Image {
 
     // id
-    private Integer imageId;
+    private String imageId;
     // accountId
     private Integer accountId;
     // 名称
@@ -30,11 +30,11 @@ public class Image {
     //更新时间
     private String updateTime;
 
-    public Integer getImageId() {
+    public String getImageId() {
         return imageId;
     }
 
-    public void setImageId(Integer imageId) {
+    public void setImageId(String imageId) {
         this.imageId = imageId;
     }
 

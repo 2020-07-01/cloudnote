@@ -15,15 +15,17 @@ public interface ImageMapper {
 
     List<Image> selectImageList(Integer accountId);
 
+    //设置图片信息
     void updateImage(Image image);
 
     String selectImageUrl(Integer imageId);
-
-    void updateIsRecycle(Condition condition);
 
     //查询文件
     Image selectImage(Image image);
 
     //获取图片列表
     List<Image> findImageByCondition(Condition condition);
+
+    //删除图片
+    Integer deleteImage(String imageId);
 }

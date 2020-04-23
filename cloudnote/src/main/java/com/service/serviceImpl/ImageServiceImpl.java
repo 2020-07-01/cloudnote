@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.Util.DateUtils;
+import com.Util.UUIDUtils;
 import com.cache.CacheService;
 import com.entity.Constant;
+import com.entity.note.Note;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.collections.ObservableMap;
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,20 +95,30 @@ public class ImageServiceImpl implements ImageService {
             imageMap.put(Constant.CACHE_NEW_NAME, newWholeName);//存储新的文件名
             imageMap.put(Constant.CACHE_SIZE, file.getSize());//存储文件大小
 
-            cacheMap.put(newWholeName,imageMap);
-            result.put("fail",newWholeName);
+            cacheMap.put(newWholeName, imageMap);
+            result.put("fail", newWholeName);
         } else {// 如果图片命名不重复
+            // 存储到oss
+            ossUtil.putObject(file, accountId.toString());
+
             Image newImage = new Image();
+            newImage.setImageId(UUIDUtils.getUUID());
             newImage.setAccountId(accountId);
             newImage.setImageSize(imageSize.toString());
             newImage.setImageType(imageType);
             newImage.setImagePath(imagePath);
             newImage.setImageName(imageName);
             newImage.setWholeName(wholeName);
+
+            String imageUrl = ossUtil.getUrl(imagePath);
+            if (StringUtils.isNotEmpty(imageUrl)) {
+                newImage.setImageUrl(imageUrl);
+            } else {
+                newImage.setImageUrl("");
+            }
             // 存储数据库
             imageMapper.insertImage(newImage);
-            // 存储到oss
-            ossUtil.putObject(file, accountId.toString());
+
             result.put("true", "上传成功!");
         }
         return result;
@@ -161,10 +175,27 @@ public class ImageServiceImpl implements ImageService {
      */
     @Override
     public Map updateImage(Image image) {
-        HashMap result = new HashMap();
+        Map result = new HashMap();
         imageMapper.updateImage(image);
-        result.put("true","SUCCESS");
+        result.put("true", "SUCCESS");
         return result;
+    }
+
+    @Override
+    public Map deleteImage(Image image) {
+        Map<Boolean, String> map = new HashMap<>();
+        try {
+            int row = imageMapper.deleteImage(image.getImageId());
+            boolean flag = ossUtil.deleteImage(image.getImagePath());
+            if (flag && row == 1) {
+                map.put(true, "SUCCESS");
+            } else {
+                map.put(false, "FAILURE");
+            }
+        }catch (Exception e){
+            map.put(false, "FAILURE");
+        }
+        return map;
     }
 
     /**

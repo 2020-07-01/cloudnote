@@ -123,7 +123,7 @@ public class NoteController {
         String token = request.getHeader("token");
         Integer accountId = tokenUtil.getAccountIdByToken(token);
         noteVo.setAccountId(accountId);
-        Map<Boolean,String> map = noteService.updateNote(noteVo);
+        Map<Boolean, String> map = noteService.updateNote(noteVo);
         if (StringUtils.isNotEmpty(map.get(true))) {
             result = new Result(true, map.get(true));
         } else {
@@ -234,7 +234,7 @@ public class NoteController {
     @UserLoginToken
     @RequestMapping(value = "/revert_note.json")
     public void revertNote(String noteId, HttpServletRequest request, HttpServletResponse response) {
-        Result result = null;
+        Result result;
         Note note = new Note();
         note.setNoteId(noteId);
         note.setIsRecycle(Constant.NO);

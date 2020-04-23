@@ -113,10 +113,11 @@
         </if>
     </select>
 
+    <!--删除笔记-->
     <delete id="deleteNote" parameterType="java.lang.String">
-    delete
-    from note
-    where note_id = #{noteId,jdbcType=VARCHAR}
+        delete
+        from note
+        where note_id = #{noteId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>
