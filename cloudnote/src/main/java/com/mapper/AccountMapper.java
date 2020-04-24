@@ -20,7 +20,7 @@ public interface AccountMapper {
     //获取账户信息
     List<Account> findAccountByCondition(Condition condition);
     //获取旧密码
-    String findPasswordByAccountId(Integer accountId);
+    String findPasswordByAccountId(String accountId);
     //更新账户信息
     int updateAccount(Account account);
     //当登录成功时更新is_online login_count  last_login_time三个字段信息

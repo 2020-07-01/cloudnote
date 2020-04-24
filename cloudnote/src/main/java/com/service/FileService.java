@@ -11,7 +11,7 @@ import java.util.Map;
 public interface FileService {
 
     //上传文件
-    Map uploadFile(MultipartFile file, Integer accountId) throws IOException;
+    Map uploadFile(MultipartFile file, String accountId) throws IOException;
 
     //存储图片
     Map insertFile(CNFile file);

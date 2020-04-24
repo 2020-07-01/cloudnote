@@ -72,7 +72,7 @@ public class AdminController {
                                  @RequestParam(value = "pageSize", defaultValue = "10") String pageSize,
                                  HttpServletRequest request, HttpServletResponse response) {
         Condition condition = new Condition();
-        condition.setStartNumber(getStartNumber(Integer.parseInt(page),Integer.parseInt(pageSize)));
+        condition.setStartNumber(getStartNumber(Integer.parseInt(page), Integer.parseInt(pageSize)));
         condition.setPageSize(Integer.parseInt(pageSize));
 
         List<Account> accountList = accountService.getAccountByCondition(condition);
@@ -90,8 +90,8 @@ public class AdminController {
         return responseMap;
     }
 
-    private Integer getStartNumber(Integer page,Integer pageSize){
-        return  page == 1 ? 0 : ((page - 1 )* pageSize) ;
+    private Integer getStartNumber(Integer page, Integer pageSize) {
+        return page == 1 ? 0 : ((page - 1) * pageSize);
     }
 
     /**
@@ -109,7 +109,7 @@ public class AdminController {
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String accountId = jsonObject.getString("accountId");
         Account account = new Account();
-        account.setAccountId(Integer.parseInt(accountId));
+        account.setAccountId(accountId);
         account.setIsLocked(isLock);
         if (accountService.updateAccount(account)) {
             result = new Result(true, "SUCCESS");

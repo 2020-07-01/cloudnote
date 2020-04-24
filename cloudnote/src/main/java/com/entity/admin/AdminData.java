@@ -23,7 +23,7 @@ public class AdminData {
 
     }
 
-    private Integer accountId;
+    private String accountId;
     private String accountName;
     private String sex;
     private String birthday;

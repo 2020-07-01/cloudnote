@@ -40,7 +40,7 @@ public class ScheduleController {
     @RequestMapping(value = "/save_task.json")
     public void insertNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         String scheduleId = jsonObject.getString("scheduleId");
 
@@ -63,7 +63,7 @@ public class ScheduleController {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             Schedule schedule = new Schedule();
-            schedule.setScheduleId(Integer.parseInt(scheduleId));
+            schedule.setScheduleId(scheduleId);
             schedule.setScheduleContent(scheduleContentUpdate);
             schedule.setScheduleTitle(scheduleTitleUpdate);
             int integerAheadTime2 = Integer.parseInt(aheadTime2);
@@ -146,7 +146,7 @@ public class ScheduleController {
      * @param accountId
      * @return
      */
-    private HashMap getAheadTimeMapCache(int accountId) {
+    private HashMap getAheadTimeMapCache(String accountId) {
         String key = accountId + "aheadTIme";
         if (cacheService.getValue(key) == null) {
             HashMap<String, String> aheadTimeMap = new HashMap();
@@ -164,6 +164,7 @@ public class ScheduleController {
 
     /**
      * 日程列表
+     *
      * @param request
      * @param response
      */
@@ -171,7 +172,7 @@ public class ScheduleController {
     @UserLoginToken
     public void scheduleList(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         Map data = scheduleService.getScheduleList(accountId);
         Json.toJson(new Result(true, "查询成功", data), response);
     }
@@ -187,11 +188,11 @@ public class ScheduleController {
     @RequestMapping(value = "/remove_schedule")
     public void delete(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         String executeTime = jsonObject.getString("executeTime");
         Condition condition = new Condition();
-        condition.setUserId(userId);
+        condition.setAccountId(accountId);
         condition.setExecuteTime(executeTime);
         Map map = scheduleService.removeSchedule(condition);
         if (map.get("true") != null) {
@@ -213,13 +214,13 @@ public class ScheduleController {
     @RequestMapping(value = "/get_execute_time")
     public void getExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
 
         String showExecuteTime = jsonObject.getString("showExecuteTime");
 
         Condition condition = new Condition();
-        condition.setUserId(userId);
+        condition.setAccountId(accountId);
         condition.setShowExecuteTime(showExecuteTime);
         Map data = scheduleService.slelectExecuteTime(condition);
         Json.toJson(new Result(true, (String) "查询成功", data), response);
@@ -236,12 +237,12 @@ public class ScheduleController {
     @RequestMapping(value = "/get_execute_content")
     public void getExecuteContent(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         String executeTime = jsonObject.getString("executeTime");
         Condition condition = new Condition();
 
-        condition.setUserId(userId);
+        condition.setAccountId(accountId);
         condition.setExecuteTime(executeTime);
 
         Map data = scheduleService.selectCotnentByCondition(condition);
@@ -259,11 +260,11 @@ public class ScheduleController {
     @RequestMapping(value = "/get_advance_time")
     public void getAdvanceTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer userId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         String executeTime = jsonObject.getString("executeTime");
         Condition condition = new Condition();
-        condition.setUserId(userId);
+        condition.setAccountId(accountId);
         condition.setExecuteTime(executeTime);
         Map<String, String> data = scheduleService.selectAdvanceByCondition(condition);
         Result result = new Result(true, "", data);
@@ -281,7 +282,7 @@ public class ScheduleController {
     public void updateSchedule(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
 
         Schedule schedule = new Schedule();
@@ -303,17 +304,8 @@ public class ScheduleController {
 
         schedule.setScheduleContent(jsonObject.getString("scheduleContent"));
 
-
         String remindTime = DateUtils.parse(hour, minute, executeTime);
         schedule.setRemindTime(remindTime);
-        //Map<String, String> data = scheduleService.updateSchedule(schedule);
-       /* if (data.get("true") != null) {
-            Result result = new Result(true, data.get("true"));
-            Json.toJson(result, response);
-        } else {
-            Result result = new Result(false, data.get("false"));
-            Json.toJson(result, response);
-        }*/
     }
 
 
@@ -349,7 +341,7 @@ public class ScheduleController {
     @RequestMapping(value = "/init_executeTime.json")
     public void initSelectExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        int accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String executeTime = jsonObject.getString("executeTime").substring(0, 10);
 
@@ -373,7 +365,7 @@ public class ScheduleController {
     @RequestMapping(value = "/get_schedule.json")
     public void getScheduleByExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        int accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String executeTime = jsonObject.getString("executeTime");
 

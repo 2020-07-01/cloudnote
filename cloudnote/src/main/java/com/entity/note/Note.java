@@ -12,7 +12,7 @@ import lombok.Data;
 public class Note {
 
     private String noteId;
-    private Integer accountId;
+    private String accountId;
     private String noteType;
     private String noteTitle;
     private String noteContent;

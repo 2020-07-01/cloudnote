@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -65,6 +66,9 @@ public class UploadController {
     @RequestMapping(value = "/upload_image.json")
     public void uploadImage(@RequestParam(value = "file", required = false) MultipartFile uploadImage,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String token = request.getHeader("token");
+
+        String accountId = tokenUtil.getAccountIdByToken(token);
         Result result = null;
         //图片审核
         org.json.JSONObject jsonObject = baiDuUtils.checkImage(uploadImage.getBytes());
@@ -74,7 +78,7 @@ public class UploadController {
             String msg = dataJSONArray.getJSONObject(0).getString("msg");
             result = new Result(false, msg);
         } else {
-            Map serviceData = imageService.uploadImage(uploadImage, 63);
+            Map serviceData = imageService.uploadImage(uploadImage, accountId);
             if (serviceData.get("true") != null) {
                 result = new Result(true, "上传成功!");
             } else {
@@ -96,7 +100,7 @@ public class UploadController {
     @UserLoginToken
     public void renameImage(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String cacheKey = jsonObject.getString("cacheKey");
 
@@ -145,7 +149,7 @@ public class UploadController {
     @RequestMapping(value = "/no_rename_image.json")
     public void noRename(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String cacheKey = jsonObject.getString("cacheKey");
         //清空缓存
@@ -181,7 +185,7 @@ public class UploadController {
                                @RequestParam(value = "isRecycle", defaultValue = "NO") String isRecycle,
                                HttpServletRequest request, HttpServletResponse response) {
 
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
         condition.setIsRecycle(isRecycle);
@@ -277,7 +281,7 @@ public class UploadController {
                            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         Map<String, String> serviceData = fileService.uploadFile(uploadFile, accountId);
         if (serviceData.get("true") != null) {
             Result result = new Result(true, "上传成功!");
@@ -299,7 +303,7 @@ public class UploadController {
     @RequestMapping(value = "/rename_file.json")
     public void renameFile(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String cacheKey = jsonObject.getString("cacheKey");
 
@@ -354,7 +358,7 @@ public class UploadController {
     @RequestMapping(value = "/no_rename_file.json")
     public void noRenameFile(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String cacheKey = jsonObject.getString("cacheKey");
 
@@ -397,7 +401,7 @@ public class UploadController {
                               HttpServletRequest request,
                               HttpServletResponse response) {
 
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
         condition.setIsRecycle(recycle);

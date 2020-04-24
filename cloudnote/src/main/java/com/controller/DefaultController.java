@@ -33,6 +33,7 @@ public class DefaultController {
     ScheduleJob scheduleJob;
 
     @RequestMapping(value = "register")
+    @PassToken
     public String toEmailRegister() {
         return "emailRegister";
     }

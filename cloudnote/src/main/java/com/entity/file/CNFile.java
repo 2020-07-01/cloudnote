@@ -10,7 +10,7 @@ public class CNFile {
     // id
     private String fileId;
     // accountId
-    private Integer accountId;
+    private String accountId;
     // 名称
     private String fileName;
     // 类型
@@ -38,11 +38,7 @@ public class CNFile {
         this.fileId = fileId;
     }
 
-    public Integer getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Integer accountId) {
+    public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
 

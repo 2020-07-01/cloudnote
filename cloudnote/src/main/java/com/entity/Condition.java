@@ -11,11 +11,11 @@ import lombok.Data;
 public class Condition {
 
 
-    public Condition(){
+    public Condition() {
 
     }
 
-    public Condition(String currentDay){
+    public Condition(String currentDay) {
         this.currentDay = currentDay;
     }
 
@@ -25,7 +25,6 @@ public class Condition {
     private String email;
     private String accountName;
     private String phone;
-    private Integer userId;
     private String currentDay;
     private String showExecuteTime;
     private String executeTime;
@@ -34,7 +33,7 @@ public class Condition {
     private Integer imageId;
     private String isRecycle;
     private String type;
-    private Integer accountId;
+    private String accountId;
     private String star;
     private String startTime;
     private String endTime;

@@ -19,8 +19,6 @@ import com.service.serviceImpl.AccountServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -221,7 +219,7 @@ public class AccountController {
     @RequestMapping(value = "showPassword.json")
     public void findPassword(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer accountId = tokenService.getAccountIdByToken(token);
+        String accountId = tokenService.getAccountIdByToken(token);
         String passpord = accountService.findPasswordByAccountId(accountId);
         Json.toJson(new Result(true, passpord), response);
     }
@@ -238,9 +236,7 @@ public class AccountController {
     public void updatePassword(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String token = request.getHeader("token");
-
-        Integer accountId = tokenService.getAccountIdByToken(token);
-
+        String accountId = tokenService.getAccountIdByToken(token);
         String currentPassword = jsonObject.getString("currentPassword");
         String accountPassword = jsonObject.getString("accountPassword");
         String confirmPassword = jsonObject.getString("confirmPassword");
@@ -361,7 +357,7 @@ public class AccountController {
     public void logout(HttpServletRequest request, HttpServletResponse response) {
 
         String token = request.getParameter("token");
-        Integer accountId = tokenService.getAccountIdByToken(token);
+        String accountId = tokenService.getAccountIdByToken(token);
         //删除缓存
         cacheService.deleteValue(String.valueOf(accountId));
         Account account = new Account();
@@ -388,7 +384,7 @@ public class AccountController {
     public void updateAccount(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
         String token = request.getHeader("token");
-        Integer accountId = tokenService.getAccountIdByToken(token);
+        String accountId = tokenService.getAccountIdByToken(token);
 
         JSONObject jsonObject = JSON.parseObject(jsonString);
 
@@ -430,7 +426,7 @@ public class AccountController {
     public void getAccountData(HttpServletRequest request, HttpServletResponse response) {
         Result result = null;
         String token = request.getHeader("token");
-        Integer accountId = tokenService.getAccountIdByToken(token);
+        String accountId = tokenService.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
         List<Account> accountList = accountService.getAccountByCondition(condition);
@@ -463,7 +459,7 @@ public class AccountController {
             result = new Result(false, msg);
         } else {
             String token = request.getHeader("token");
-            Integer accountId = tokenService.getAccountIdByToken(token);
+            String accountId = tokenService.getAccountIdByToken(token);
             String headName = random(5);
             String headPath = accountId + "/" + "headImage" + "/" + headName;
             Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
@@ -502,7 +498,7 @@ public class AccountController {
         Result result = null;
         Map<String, String> data = new HashMap<>();
         String token = request.getHeader("token");
-        Integer accountId = tokenService.getAccountIdByToken(token);
+        String accountId = tokenService.getAccountIdByToken(token);
         Condition condition = new Condition();
         condition.setAccountId(accountId);
         List<Account> accountList = accountService.getAccountByCondition(condition);

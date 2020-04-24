@@ -8,8 +8,8 @@
     </sql>
 
     <resultMap id="baseMap" type="com.entity.Schedule">
-        <id column="schedule_id" property="scheduleId" jdbcType="INTEGER"/>
-        <result column="account_id" property="accountId" jdbcType="INTEGER"/>
+        <id column="schedule_id" property="scheduleId" jdbcType="VARCHAR"/>
+        <result column="account_id" property="accountId" jdbcType="VARCHAR"/>
         <result column="schedule_content" property="scheduleContent" jdbcType="VARCHAR"/>
         <result column="execute_time" property="executeTime" jdbcType="VARCHAR"/>
         <result column="remind_time" property="remindTime" jdbcType="VARCHAR"/>

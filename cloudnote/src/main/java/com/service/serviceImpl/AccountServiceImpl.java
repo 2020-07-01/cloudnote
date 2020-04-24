@@ -56,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public String findPasswordByAccountId(Integer accountId) {
+    public String findPasswordByAccountId(String accountId) {
         String passWord = accountMapper.findPasswordByAccountId(accountId);
         return passWord;
     }

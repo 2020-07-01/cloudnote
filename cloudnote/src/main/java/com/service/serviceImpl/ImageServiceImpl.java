@@ -51,7 +51,7 @@ public class ImageServiceImpl implements ImageService {
      * @return
      */
     @Override
-    public Map uploadImage(MultipartFile file, Integer accountId) throws IOException {
+    public Map uploadImage(MultipartFile file, String accountId) throws IOException {
         HashMap result = new HashMap();
         String wholeName = file.getOriginalFilename();// 获取源文件名
         String imageName = wholeName.substring(0, wholeName.lastIndexOf("."));// 文件名

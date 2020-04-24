@@ -19,7 +19,7 @@ public interface AccountService {
     Map insert(Account user);
 
     //获取旧密码
-    String findPasswordByAccountId(Integer accountId);
+    String findPasswordByAccountId(String accountId);
     //更新账户信息
     boolean updateAccount(Account account);
     //设置状态

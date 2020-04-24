@@ -13,7 +13,7 @@ import com.entity.Image;
 public interface ImageService {
 
     // 上传图片
-    Map uploadImage(MultipartFile file, Integer userId) throws IOException;
+    Map uploadImage(MultipartFile file, String accountId) throws IOException;
 
     // 获取image数据
     List<Image> selectImage(Integer userId);

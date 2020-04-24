@@ -47,7 +47,7 @@ public class FileServiceImpl implements FileService {
      * @return
      */
     @Override
-    public Map uploadFile(MultipartFile file, Integer accountId) throws IOException {
+    public Map uploadFile(MultipartFile file, String accountId) throws IOException {
 
         HashMap result = new HashMap();
         String wholeName = file.getOriginalFilename();// 获取源文件名

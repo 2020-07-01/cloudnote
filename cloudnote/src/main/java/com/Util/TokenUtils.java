@@ -100,14 +100,14 @@ public class TokenUtils {
      * @param token
      * @return
      */
-    public Integer getAccountIdByToken(String token) {
+    public String getAccountIdByToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("yq").build();
             DecodedJWT jwt = verifier.verify(token);// 进行验证
             String accountId = jwt.getAudience().get(0);
             if (accountId != null) {
-                return Integer.decode(accountId);
+                return accountId;
             } else {
                 throw new RuntimeException("token中不存在accountId");
             }

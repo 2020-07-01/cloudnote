@@ -1,10 +1,8 @@
 package com.controller;
 
-import com.Util.ASEUtils;
 import com.Util.Json;
 import com.Util.Result;
 import com.Util.TokenUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.*;
 import com.entity.note.Note;
@@ -56,7 +54,7 @@ public class NoteController {
                             @RequestParam(value = "key", defaultValue = "") String key,
                             @RequestParam(value = "star", defaultValue = "") String star, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         Condition condition = new Condition();
 
         condition.setAccountId(accountId);
@@ -96,7 +94,7 @@ public class NoteController {
 
         Result result = null;
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         noteVo.setAccountId(accountId);
 
         Map<Boolean, String> map = noteService.insertNote(noteVo);//存储笔记
@@ -121,7 +119,7 @@ public class NoteController {
     public void updateNote(@RequestBody Note noteVo, HttpServletRequest request, HttpServletResponse response) {
         Result result = null;
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         noteVo.setAccountId(accountId);
         Map<Boolean, String> map = noteService.updateNote(noteVo);
         if (StringUtils.isNotEmpty(map.get(true))) {
@@ -174,7 +172,7 @@ public class NoteController {
                              HttpServletRequest request,
                              HttpServletResponse response) {
         String token = request.getHeader("token");
-        Integer accountId = tokenUtil.getAccountIdByToken(token);
+        String accountId = tokenUtil.getAccountIdByToken(token);
         Note note = new Note();
         note.setAccountId(accountId);
         //是否删除

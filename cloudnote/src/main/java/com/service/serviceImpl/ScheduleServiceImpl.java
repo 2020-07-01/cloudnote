@@ -42,7 +42,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Map getScheduleList(Integer accountId) {
+    public Map getScheduleList(String accountId) {
         Condition condition = new Condition();
         condition.setAccountId(accountId);
         List<Schedule> listSchedule = scheduleMapper.selectScheduleByCondition(condition);

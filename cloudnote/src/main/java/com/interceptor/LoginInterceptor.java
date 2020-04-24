@@ -64,7 +64,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                     return false;
                 }
                 //获取token中的accountId
-                Integer accountId = tokenUtil.getAccountIdByToken(token);
+                String accountId = tokenUtil.getAccountIdByToken(token);
                 Map<String, String> cacheMap = cacheService.getValue(accountId.toString());
                 if (cacheMap != null) {
                     String cacheAccountId = cacheMap.get("accountId");

@@ -17,7 +17,6 @@
         <result column="schedule_id" property="scheduleId" jdbcType="INTEGER"/>
     </resultMap>
 
-
     <!--查找需要发送邮件的数据-->
     <select id="select" parameterType="com.entity.Condition" resultType="com.entity.TaskData"
             resultMap="baseMap">
@@ -35,4 +34,5 @@
             and #{endTime,jdbcType=VARCHAR}
         </if>
     </select>
+
 </mapper>

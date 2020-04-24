@@ -10,15 +10,15 @@ public class Schedule {
     public Schedule() {
     }
 
-    public Schedule(Integer scheduleId,String isNeedRemind) {
+    public Schedule(String scheduleId, String isNeedRemind) {
         this.scheduleId = scheduleId;
         this.isNeedRemind = isNeedRemind;
     }
 
     //任务id
-    private Integer scheduleId;
+    private String scheduleId;
     //账户id
-    private Integer accountId;
+    private String accountId;
     //任务内容
     private String scheduleContent;
     //创建时间
@@ -36,14 +36,6 @@ public class Schedule {
     //发送邮件的时间
     public String remindTime;
 
-    public Integer getScheduleId() {
-        return scheduleId;
-    }
-
-    public void setScheduleId(Integer scheduleId) {
-        this.scheduleId = scheduleId;
-    }
-
     public String getScheduleContent() {
         return scheduleContent;
     }
@@ -52,12 +44,19 @@ public class Schedule {
         this.scheduleContent = scheduleContent;
     }
 
+    public String getScheduleId() {
+        return scheduleId;
+    }
 
-    public Integer getAccountId() {
+    public void setScheduleId(String scheduleId) {
+        this.scheduleId = scheduleId;
+    }
+
+    public String getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(Integer accountId) {
+    public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
 

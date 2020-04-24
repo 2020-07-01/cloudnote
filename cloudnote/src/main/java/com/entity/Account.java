@@ -11,7 +11,7 @@ public class Account {
     }
 
     //账户id
-    private Integer accountId;
+    private String accountId;
     //账户名
     private String accountName;
     //密码
@@ -45,11 +45,11 @@ public class Account {
     //出生日期
     private String birthday;
 
-    public Integer getAccountId() {
+    public String getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(Integer accountId) {
+    public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
 
