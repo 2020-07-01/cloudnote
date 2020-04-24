@@ -1,7 +1,6 @@
 package com.oss;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -32,6 +31,7 @@ public class OSSUtil {
 
     static {
         typeMap.put("doc", "file");
+        typeMap.put("docx", "file");
         typeMap.put("pdf", "file");
         typeMap.put("txt", "file");
         typeMap.put("xlsx", "file");
@@ -100,9 +100,7 @@ public class OSSUtil {
                 break;
         }
         PutObjectRequest putObjectRequest = null;
-       /* ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentEncoding("UTF-8");
-        putObjectRequest.setMetadata(objectMetadata);*/
+
         putObjectRequest = new PutObjectRequest("001-bucket", path, new ByteArrayInputStream(bytes));
         PutObjectResult putResult = ossClient.putObject(putObjectRequest);
         result.put("true", true);
@@ -189,5 +187,9 @@ public class OSSUtil {
         return accountId + "/" + "file" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 
-
+/*
+    public OSSObject getObject() {
+        OSSObject ossObject = ossClient.getObject("001-bucket", "63/file/2020-04-23/doc/论文.doc");
+        return ossObject;
+    }*/
 }

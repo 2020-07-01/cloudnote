@@ -74,13 +74,17 @@ public class FileServiceImpl implements FileService {
 
             String fileUrl = ossUtil.getUrl(filePath);
             if (StringUtils.isNotEmpty(fileUrl)) {
-                cnFile.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
+                if (fileType.equals("doc") || fileType.equals("docx") || fileType.equals("xlsx")) {
+                    cnFile.setFileUrl("https://view.officeapps.live.com/op/view.aspx?src=" + fileUrl.substring(0, fileUrl.lastIndexOf("?")));
+                }
+                if (fileType.equals("pdf") || fileType.equals("txt")) {
+                    cnFile.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
+                }
             } else {
                 cnFile.setFileUrl("");
             }
             //存储到mysql
             fileMapper.insertFile(cnFile);
-
             result.put("true", "上传成功!");
         } else { //存在重名文件
             // 设置终止条件

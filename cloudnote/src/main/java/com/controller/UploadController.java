@@ -14,15 +14,22 @@ import com.interceptor.UserLoginToken;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -337,7 +344,7 @@ public class UploadController {
         fileService.insertFile(file);
         //删除缓存
         cacheMap.remove(cacheKey);
-        Result result = new Result(true, "存储成功!");
+        Result result = new Result(true, "SUCCESS!");
         Json.toJson(result, response);
     }
 
@@ -485,7 +492,7 @@ public class UploadController {
     @RequestMapping(value = "/revert_file.json")
     @UserLoginToken
     public void revertFile(String fileId, HttpServletRequest request, HttpServletResponse response) {
-        Result result ;
+        Result result;
         CNFile file = new CNFile();
         file.setFileId(fileId);
         file.setIsRecycle(Constant.NO);
@@ -497,5 +504,4 @@ public class UploadController {
         }
         Json.toJson(result, response);
     }
-
 }

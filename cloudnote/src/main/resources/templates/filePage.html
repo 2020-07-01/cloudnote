@@ -149,11 +149,11 @@
 
                             <div class="layui-col-md4 layui-col-sm4" style="text-align: center">
                                 <div id="buttonGroup" class="layui-btn-group" style="display: block">
-                                    <button id="downloadFile" type="button"
-                                            class="layui-btn layui-btn-primary"
-                                            style="border:none;padding: 0 5px;"><i
+                                    <a id="downloadFile" href="" download=""
+                                       class="layui-btn layui-btn-primary"
+                                       style="border:none;padding: 0 5px;"><i
                                             class="layui-icon layui-icon-download-circle"
-                                            style="font-size: 32px;"></i></button>
+                                            style="font-size: 32px;"></i></a>
                                     <button id="deleteFile" type="button" class="layui-btn layui-btn-primary"
                                             button-space style="border:none;padding: 0 5px;"><i
                                             class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
@@ -244,7 +244,7 @@
                 , headers: {token: token}
                 , url: '/source/upload_file.json'
                 , accept: 'file'
-                , acceptMime: '.pdf,.txt'//筛选的文件类型
+                , acceptMime: '.pdf,.doc,.docx,.xlsx,.txt'//筛选的文件类型
                 , before: function (obj) {
                     obj.preview(function (index, file, result) {
 
@@ -279,7 +279,11 @@
                                     },
                                     success: function (result) {
                                         if (result.code == 1) {
-                                            initFileist("", "NO")
+                                            if (sideId == "all") {
+                                                initFileist("", "NO");
+                                            } else {
+                                                initFileist("", "YES");
+                                            }
                                         }
                                     }
                                 })
@@ -303,7 +307,13 @@
                             }
                         });
                     } else {
-                        initFileist("", "NO");
+                        if (sideId == "all") {
+                            initFileist("", "NO");
+                        } else {
+                            initFileist("", "YES");
+                        }
+
+
                         return layer.msg(result.message);
                     }
                 }
@@ -321,18 +331,27 @@
         //监听行单击事件（双击事件为：rowDouble）
         table.on('row(table-filter)', function (obj) {
             globalFile = obj.data;
-            $('#showFile').attr('src', obj.data.fileUrl);
             $('#fileWholeName').val(obj.data.wholeName);
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
-        });
+            if (obj.data.fileType == "pdf" || obj.data.fileType == "txt") {
 
-        //放大图片
-        $("#downloadFile").click(function () {
-            if (globalFile == "") {
-                layer.msg('请先选择文件!');
-                return;
+                $('#showFile').attr('src', obj.data.fileUrl);
+                $('#downloadFile').attr('download', obj.data.wholeName);
+                $('#downloadFile').attr('href', "");
+
             }
-            window.location.href = globalFile.fileUrl;
+            if (obj.data.fileType == "doc" || obj.data.fileType == "docx") {
+
+                $('#showFile').attr('src', obj.data.fileUrl);
+                $('#downloadFile').attr('download', obj.data.wholeName);
+                $('#downloadFile').attr('href', "");
+            }
+            if (obj.data.fileType == "xlsx") {
+
+                $('#showFile').attr('src', obj.data.fileUrl);
+                $('#downloadFile').attr('download', obj.data.wholeName);
+                $('#downloadFile').attr('href', "");
+            }
         });
 
         //删除图片

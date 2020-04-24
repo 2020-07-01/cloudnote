@@ -37,10 +37,12 @@
         #{fileUrl,jdbcType=VARCHAR},
         now())
     </insert>
+
     <!--查询文件列表-->
     <select id="getFileList" parameterType="com.entity.Condition" resultType="com.entity.file.CNFile"
             resultMap="baseMap">
-        select file_id,file_name,file_path,whole_name,file_url
+        select
+        <include refid="base_sql"/>
         from file
         where
         1 = 1
