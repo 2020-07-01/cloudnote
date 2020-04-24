@@ -66,9 +66,9 @@
         <if test="currentDay != null and currentDay !=''">
             and like #{currentDay} '%'
         </if>
-        <if test="startNumber != null and endNumber != ''">
+        <if test="startNumber != null and pageSize != null">
             ORDER BY create_time desc
-            limit #{startNumber},#{endNumber};
+            limit #{startNumber},#{pageSize};
         </if>
     </select>
 

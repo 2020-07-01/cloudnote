@@ -37,14 +37,11 @@
     <!--左侧导航栏-->
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll" style="text-align: left;padding-left: 8px">
-
             <ul class="layui-nav layui-nav-tree" lay-filter="select-type">
                 <li class="layui-nav-item">
                     <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a>
-                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
-                        </dd>
+                        <dd><a href="#" id="toNotePage"><i class="layui-icon layui-icon-form"></i> 所有笔记</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -53,8 +50,8 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a a href="#" id="toImagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
-                        <dd><a a href="#" id="toFilePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
+                        <dd><a href="#" id="toImagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="#" id="toFilePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -63,18 +60,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 查看</a>
-                    </dl>
-                </li>
-            </ul>
-
-            <ul class="layui-nav layui-nav-tree">
-                <li class="layui-nav-item">
-                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
-                    <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 查看全部</a></dd>
+                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 所有日程</a>
                     </dl>
                 </li>
             </ul>
@@ -83,7 +69,7 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="javascript:location.reload();"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd class="layui-this"><a href="javascript:location.reload();"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
                         <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a></dd>
                         <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>

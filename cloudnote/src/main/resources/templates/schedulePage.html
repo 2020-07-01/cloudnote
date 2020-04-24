@@ -8,7 +8,7 @@
     <!--引入layui-->
     <link rel='stylesheet' typeUtils='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
-    <!--引入jquery-->
+    <script type="text/javascript" src="../static/common.js"></script>
     <script src="../static/jquery-3.4.1.min.js"></script>
     <style>
         #calendar {
@@ -75,9 +75,7 @@
                 <li class="layui-nav-item">
                     <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a>
-                        <dd><a href="/to_note_page"><i class="layui-icon layui-icon-form"></i> 查看</a></dd>
-                        </dd>
+                        <dd><a href="#" id="toNotePage"><i class="layui-icon layui-icon-form"></i> 所有笔记</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -86,8 +84,8 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/image_page"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
-                        <dd><a href="/file_page"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
+                        <dd><a href="#" id="toImagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd><a href="#" id="toFilePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                     </dl>
                     </dl>
                 </li>
@@ -97,18 +95,8 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="/to_schedule_page"><i class="layui-icon layui-icon-form"></i> 查看任务</a></dd>
-                    </dl>
-                </li>
-            </ul>
-
-            <ul class="layui-nav layui-nav-tree">
-                <li class="layui-nav-item">
-                    <a href="javascript:;"><i class="layui-icon layui-icon-delete"></i> 回收站</a>
-                    <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部恢复</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 全部清空</a></dd>
-                        <dd><a href="javascript:;"><i class="layui-icon layui-icon-home"></i> 查看全部</a></dd>
+                        <dd class="layui-this"><a href="#" id="schedule"><i class="layui-icon layui-icon-form"></i> 查看任务</a>
+                        </dd>
                     </dl>
                 </li>
             </ul>
@@ -117,9 +105,11 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="information"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
-                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 意见反馈</a></dd>
-                        <dd><a href=""><i class="layui-icon layui-icon-logout"></i> 注销登录</a></dd>
+                        <dd><a href="javascript:location.reload();"><i class="layui-icon layui-icon-user"></i> 账号设置</a>
+                        </dd>
+                        <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a>
+                        </dd>
+                        <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -559,6 +549,36 @@
                 },
             })
         });
+
+        //刷新内容区
+        $("#schedule").click(function () {
+            loading_date();
+        })
+
+        $("#logout").click(function () {
+            logout(token);
+        })
+
+        $("#toImagePage").click(function () {
+            toImagePage(token);
+        })
+
+        $("#toFilePage").click(function () {
+            toFilePage(token);
+        })
+
+        $("#toInformationPage").click(function () {
+            toInformationPage(token);
+        })
+
+        $("#toResetPasswordPage").click(function () {
+            toResetPasswordPage(token);
+        })
+
+        $("#toRecycleBinPage").click(function () {
+            toRecycleBinPage(token);
+        })
+
     });
 
     //获取活动内容

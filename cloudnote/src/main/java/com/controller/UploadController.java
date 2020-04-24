@@ -14,22 +14,16 @@ import com.interceptor.UserLoginToken;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+
 import org.apache.commons.lang3.StringUtils;
 
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 

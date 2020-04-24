@@ -90,10 +90,7 @@
         <if test="currentDay != null and currentDay !=''">
             and create_time like #{currentDay} '%'
         </if>
-        <if test="startNumber != null and endNumber != ''">
-            ORDER BY create_time desc
-            limit #{startNumber},#{endNumber};
-        </if>
+        ORDER BY create_time desc
     </select>
 
     <!--查询图片-->

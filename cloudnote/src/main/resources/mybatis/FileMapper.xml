@@ -55,13 +55,10 @@
         <if test="key != null and key != ''">
             and whole_name like "%"#{key,jdbcType=VARCHAR}"%"
         </if>
-        <if test="startNumber != null and endNumber != ''">
-            ORDER BY create_time desc
-            limit #{startNumber},#{endNumber};
-        </if>
         <if test="currentDay != null and currentDay !=''">
             and create_time like #{currentDay} '%'
         </if>
+        ORDER BY create_time desc
     </select>
 
     <!--查询文件-->
