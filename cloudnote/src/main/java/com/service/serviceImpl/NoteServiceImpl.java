@@ -9,6 +9,7 @@ import com.Util.UUIDUtils;
 import com.baidu.BaiDuUtils;
 import com.entity.Constant;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -28,7 +29,7 @@ import sun.misc.BASE64Encoder;
  * @description :
  * @other : 进行逻辑处理层
  */
-
+@Slf4j
 @Service
 public class NoteServiceImpl implements NoteService {
 
@@ -53,36 +54,38 @@ public class NoteServiceImpl implements NoteService {
         Map<Object, String> result = new HashMap();
         String noteId = UUIDUtils.getUUID();
         noteVo.setNoteId(noteId);
-        if (StringUtils.isBlank(noteVo.getNoteTitle())) {
-            result.put(false, "标题不能为空!");
-        } else if (StringUtils.isBlank(noteVo.getNoteContent())) {
-            result.put(false, "内容不能为空!");
-        } else if (noteVo.getNoteContent().trim().length() > 20000) {
-            result.put(false, "内容长度超过限制!");
-        } else {
-            Map<Boolean, String> map = check(noteVo);
-            //true
-            if (StringUtils.isNotEmpty(map.get(true))) {
-                try {
+
+        try {
+            if (StringUtils.isBlank(noteVo.getNoteTitle())) {
+                result.put(false, "标题不能为空!");
+            } else if (StringUtils.isBlank(noteVo.getNoteContent())) {
+                result.put(false, "内容不能为空!");
+            } else if (noteVo.getNoteContent().trim().length() > 20000) {
+                result.put(false, "内容长度超过限制!");
+            } else {
+                Map<Boolean, String> map = check(noteVo);
+                //true
+                if (StringUtils.isNotEmpty(map.get(true))) {
                     //进行加密
                     String noteContent = aseUtils.encrypt(noteVo.getNoteContent().trim().getBytes("UTF-8"), noteVo.getAccountId().toString().getBytes("UTF-8"));
                     noteVo.setNoteContent(noteContent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                //设置type
-                if (StringUtils.isBlank(noteVo.getNoteType())) {
-                    noteVo.setNoteType("未分类");
-                }
 
-                if (noteMapper.insertNote(noteVo) == 1) {
-                    result.put(true, "SUCCESS");
+                    //设置type
+                    if (StringUtils.isBlank(noteVo.getNoteType())) {
+                        noteVo.setNoteType("未分类");
+                    }
+                    if (noteMapper.insertNote(noteVo) == 1) {
+                        result.put(true, "SUCCESS");
+                    } else {
+                        result.put(false, "FAILURE");
+                    }
                 } else {
-                    result.put(false, "FAILURE");
+                    result.put(false, map.get(false));
                 }
-            } else {
-                result.put(false, map.get(false));
             }
+        } catch (Exception e) {
+            log.error("存储笔记异常:", new Throwable(e));
+            result.put(false, "出现异常");
         }
         return result;
     }

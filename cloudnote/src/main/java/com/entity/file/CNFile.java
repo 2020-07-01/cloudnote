@@ -1,10 +1,13 @@
 package com.entity.file;
 
+import lombok.Data;
+
 /**
  * @Description 文件实体类
  * @Author yq
  * @Date 2020/4/3 13:20
  */
+@Data
 public class CNFile {
 
     // id
@@ -30,87 +33,5 @@ public class CNFile {
     //更新时间
     private String updateTime;
 
-    public String getFileId() {
-        return fileId;
-    }
 
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getFileUrl() {
-        return fileUrl;
-    }
-
-    public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
-    }
-
-    public String getWholeName() {
-        return wholeName;
-    }
-
-    public void setWholeName(String wholeName) {
-        this.wholeName = wholeName;
-    }
-
-    public String getIsRecycle() {
-        return isRecycle;
-    }
-
-    public void setIsRecycle(String isRecycle) {
-        this.isRecycle = isRecycle;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(String fileSize) {
-        this.fileSize = fileSize;
-    }
 }

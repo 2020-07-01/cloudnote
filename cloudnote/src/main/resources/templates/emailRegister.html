@@ -31,7 +31,7 @@
                     <div class="layui-col-xs7">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
                                for="securityCode"></label>
-                        <input type="text" name="securityCode"  id="securityCode" lay-verify="required"
+                        <input type="text" name="securityCode" id="securityCode" lay-verify="required"
                                placeholder="验证码" class="layui-input">
                     </div>
                     <div class="layui-col-xs5">
@@ -44,10 +44,19 @@
                     </div>
                 </div>
             </div>
+
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-username"
+                       for="accountName"></label>
+                <input type="text" name="accountName" id="accountName" lay-verify="required" placeholder="昵称"
+                       class="layui-input">
+            </div>
+
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-password"
                        for="accountPassword"></label>
-                <input type="password" name="accountPassword" id="accountPassword" lay-verify="required" placeholder="密码"
+                <input type="password" name="accountPassword" id="accountPassword" lay-verify="required"
+                       placeholder="密码"
                        class="layui-input">
             </div>
             <div class="layui-form-item">
@@ -57,12 +66,7 @@
                        placeholder="确认密码"
                        class="layui-input">
             </div>
-            <div class="layui-form-item">
-                <label class="layadmin-user-login-icon layui-icon layui-icon-username"
-                       for="accountName"></label>
-                <input type="text" name="accountName" id="accountName" lay-verify="required" placeholder="昵称"
-                       class="layui-input">
-            </div>
+
             <div class="layui-form-item">
                 <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="register">注 册</button>
             </div>
@@ -90,9 +94,6 @@
 </body>
 <script type="text/javascript">
 
-    //设置全局的验证码
-    var tempSecurityCode = "";
-
     layui.use(['element', 'form', 'table'], function () {
         var form = layui.form;
 
@@ -100,14 +101,19 @@
          * 注册
          */
         form.on('submit(register)', function (data) {
+            //判断密码是否一直
+            if (data.accountPassword != data.confirmPassword) {
+                layer.msg("密码不一致!");
+                return;
+            }
 
             var jsonData = JSON.stringify(data.field);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 data: jsonData,
-                headers: {'Content-Type': 'application/json;charset=utf8', 'tempSecurityCode': tempSecurityCode},
-                url: "http://localhost:8080/account/register.json",
+                headers: {'Content-Type': 'application/json;charset=utf8'},
+                url: "/account/register.json",
                 error: function (result) {
                     alert("网络出现异常!");
                 },
@@ -134,19 +140,18 @@
                 {
                     "emailAddress": emailAddress
                 };
-            var datajson = JSON.stringify(data);
+            var jsonData = JSON.stringify(data);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
-                data: datajson,
-                url: "http://localhost:8080/account/send_security_code1.json",
+                data: jsonData,
+                url: "/account/send_security_code1.json",
                 error: function () {
                     alert("网络出现异常");
                 },
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
-                        tempSecurityCode = result.data.securityCode;
                     } else {
                         layer.msg(result.message);
                     }

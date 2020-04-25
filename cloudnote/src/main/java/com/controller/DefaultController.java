@@ -6,14 +6,8 @@ import com.interceptor.UserLoginToken;
 import com.job.ScheduleJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.PreDestroy;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author :qiang
@@ -26,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "/")
 public class DefaultController {
 
-
     @Autowired
     TokenUtils tokenUtil;
+
     @Autowired
     ScheduleJob scheduleJob;
 

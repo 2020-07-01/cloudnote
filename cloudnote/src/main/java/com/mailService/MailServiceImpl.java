@@ -1,6 +1,7 @@
 package com.mailService;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  * @other :
  */
 @Service
+@Slf4j
 public class MailServiceImpl implements MailService {
 
     @Autowired
@@ -40,83 +42,20 @@ public class MailServiceImpl implements MailService {
         try {
             javaMailSender.send(mainMessage);
         } catch (Exception e) {
-            return "fail";
+            log.error(e.getMessage(), new Throwable(e));
         }
         return "success";
     }
 
-
     @Override
-    public boolean sendSchedule(String sender, String receiver, String title,String content) {
+    public boolean sendSchedule(String sender, String receiver, String title, String content) {
         SimpleMailMessage mainMessage = new SimpleMailMessage();
         mainMessage.setFrom(sender);
         mainMessage.setTo(receiver);
         mainMessage.setSubject(title);
         mainMessage.setText(content);
         javaMailSender.send(mainMessage);
-
         return true;
     }
 
-   /* @Autowired
-    JavaMailSender javaMailSender;
-
-    @Autowired
-    private TemplateEngine templateEngine;
-
-
-    *//**
-     * 发送简单邮件
-     *
-     * @param sender   发送者
-     * @param receiver 接受者
-     * @param title    邮件标题
-     * @param context  邮件内容
-     * @return
-     *//*
-    @Override
-    public String send(String sender, String receiver, String title, String context) {
-
-
-    }
-
-    *//**
-     * 使用thymleaf模板发送邮件
-     *
-     * @param sender
-     * @param receiver
-     * @param subject
-     * @param
-     * @return
-     *//*
-    @Override
-    public String sendHtml(String sender, String receiver, String subject, EmailParam emailParam) {
-
-        try {
-            MimeMessage mainMessage = jms.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mainMessage, true);
-
-            mimeMessageHelper.setFrom(sender);
-            mimeMessageHelper.setTo(receiver);
-            mimeMessageHelper.setSubject(subject);
-
-
-            // 添加正文（使用thymeleaf模板）
-            Context context = new Context();
-            //为模板设置参数上下文
-            context.setVariable("emailParam", emailParam);
-
-            //html模板的相对路径
-            String templatePath = "email";
-            String emailText = templateEngine.process(templatePath, context);
-
-            mimeMessageHelper.setText(emailText, true);
-
-            jms.send(mainMessage);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return "fail";
-        }
-        return "success";
-    }*/
 }

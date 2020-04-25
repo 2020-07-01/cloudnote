@@ -4,7 +4,7 @@
 <mapper namespace="com.mapper.AccountMapper">
 
     <resultMap id="baseMap" type="com.entity.Account">
-        <id column="account_id" property="accountId" jdbcType="INTEGER"/>
+        <id column="account_id" property="accountId" jdbcType="VARCHAR"/>
         <result column="account_name" property="accountName" jdbcType="VARCHAR"/>
         <result column="account_password" property="accountPassword" jdbcType="VARCHAR"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
@@ -29,15 +29,21 @@
     </sql>
 
     <insert id="insertAccount" parameterType="com.entity.Account">
-        insert into account (email,account_name,account_password,create_time)
-        value ( #{email,jdbcType=VARCHAR},#{accountName,jdbcType=VARCHAR},#{accountPassword,jdbcType=VARCHAR},now())
+        insert into account (account_id,email,account_name,account_password,head_image_url,create_time)
+        value (
+        #{accountId,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR},
+        #{accountName,jdbcType=VARCHAR},
+        #{accountPassword,jdbcType=VARCHAR},
+        #{headImageUrl,jdbcType=VARCHAR},
+        now())
     </insert>
 
     <!--获取旧密码-->
-    <select id="findPasswordByAccountId" parameterType="java.lang.Integer" resultType="java.lang.String">
+    <select id="findPasswordByAccountId" parameterType="java.lang.String" resultType="java.lang.String">
         select account_password
         from account
-        where account_id = #{accountId,jdbcType=INTEGER}
+        where account_id = #{accountId,jdbcType=VARCHAR}
     </select>
 
     <!--获取账户信息-->
@@ -61,7 +67,7 @@
             and account_password = #{accountPassword,jdbcType=VARCHAR}
         </if>
         <if test="accountId != null and accountId != ''">
-            and account_id = #{accountId,jdbcType=INTEGER}
+            and account_id = #{accountId,jdbcType=VARCHAR}
         </if>
         <if test="currentDay != null and currentDay !=''">
             and like #{currentDay} '%'
@@ -108,18 +114,18 @@
             and email = #{email,jdbcType=VARCHAR}
         </if>
         <if test="accountId != null and accountId != ''">
-            and account_id = #{accountId,jdbcType=INTEGER}
+            and account_id = #{accountId,jdbcType=VARCHAR}
         </if>
     </update>
 
-    <!--更新账户状态-->
+    <!--登陆时更新账户状态-->
     <update id="updateLoginStatus" parameterType="com.entity.Account">
         update account
         <set>
-            <if test="isOnline!= null">
+            <if test="isOnline!= null and isOnline !=''">
                 is_online = #{isOnline,jdbcType=VARCHAR},
             </if>
-            <if test="lastLoginTime != null">
+            <if test="lastLoginTime != null and lastLoginTime != ''">
                 last_login_time = #{lastLoginTime,jdbcType=VARCHAR},
             </if>
             <if test="loginCount != null and loginCount != ''">
@@ -135,13 +141,11 @@
         <if test="accountPassword != null and accountPassword != ''">
             and account_password = #{accountPassword,jdbcType=VARCHAR}
         </if>
-        <if test="accountId != null and accountId != ''">
-            and account_id = #{accountId,jdbcType=INTEGER}
-        </if>
         and is_locked = "UNLOCK"
     </update>
 
-    <select id="findAccountId" parameterType="com.entity.Condition" resultType="java.lang.Integer">
+    <!--获取accountId-->
+    <select id="findAccountId" parameterType="com.entity.Condition" resultType="java.lang.String">
         select
         account_id
         from account

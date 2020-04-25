@@ -26,7 +26,7 @@ public interface AccountMapper {
     //当登录成功时更新is_online login_count  last_login_time三个字段信息
     int updateLoginStatus(Account account);
     //根据用户名和密码获取用户的id
-    Integer findAccountId(Condition condition);
+    String findAccountId(Condition condition);
 
     //获取活跃用户
     Integer findAliveAccountByCondition(Condition condition);

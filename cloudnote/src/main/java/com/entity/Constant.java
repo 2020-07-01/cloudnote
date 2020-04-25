@@ -27,7 +27,7 @@ public final class Constant {
     //accountId
     public final static String CACHE_ACCOUNTID = "accountId";
 
-    public final static String LOCK_YES = "LOCK";
+    public final static String LOCK_YES = "LOCKED";
 
     public final static String UNLOCK_NO = "UNLOCK";
 
@@ -40,6 +40,8 @@ public final class Constant {
     public final static String CONCLUSION_3 = "疑似";
 
     public final static String CONCLUSION_4 = "审核失败";
+
+    public final static String SECURITY_CODE = "securityCode";
 
 
 }

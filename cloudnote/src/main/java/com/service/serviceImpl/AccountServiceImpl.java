@@ -4,6 +4,7 @@ import com.entity.Account;
 import com.entity.Condition;
 import com.mapper.AccountMapper;
 import com.service.AccountService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.Map;
  * @description :
  * @other :
  */
+@Slf4j
 @Service
 public class AccountServiceImpl implements AccountService {
 
@@ -33,23 +35,24 @@ public class AccountServiceImpl implements AccountService {
      * @return
      */
     public Map insert(Account account) {
-        Map<String, String> result = new HashMap();
+        Map<Boolean, String> result = new HashMap();
         try {
-            Condition condition = new Condition();
-            condition.setEmail(account.getEmail());
-            Condition condition1 = new Condition();
-            condition1.setAccountName(account.getAccountName());
-            if (accountMapper.findAccountByCondition(condition) != null) {
-                result.put("false", "此邮箱已注册!");
-            } else if (accountMapper.findAccountByCondition(condition1) != null) {
-                result.put("false", "用户已经存在!");
+            Condition conditionEmail = new Condition();
+            conditionEmail.setEmail(account.getEmail());
+            Condition conditionAccountName = new Condition();
+            conditionAccountName.setAccountName(account.getAccountName());
+            List<Account> accountList = accountMapper.findAccountByCondition(conditionEmail);
+            if (CollectionUtils.isNotEmpty(accountList)) {
+                result.put(false, "此邮箱已注册!");
+            } else if (CollectionUtils.isNotEmpty(accountMapper.findAccountByCondition(conditionAccountName))) {
+                result.put(false, "用户名已存在!");
             } else {
                 accountMapper.insertAccount(account);
-                result.put("true", "注册成功!");
+                result.put(true, "SUCCESS!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            result.put("false", "出现异常!");
+            log.error("注册异常:", new Throwable(e));
+            result.put(false, "出现异常!");
         }
         return result;
     }
@@ -97,10 +100,11 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
+    //获取用户id
     @Override
     public String findAccountId(Condition condition) {
-        Integer accountId = accountMapper.findAccountId(condition);
-        return accountId.toString();
+        String accountId = accountMapper.findAccountId(condition);
+        return accountId;
     }
 
     /**
@@ -117,6 +121,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 获取活跃用户
+     *
      * @param condition
      * @return
      */

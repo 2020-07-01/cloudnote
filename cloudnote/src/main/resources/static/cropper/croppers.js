@@ -14,7 +14,7 @@ layui.config({
         "            <label for=\"cropper_avatarImgUpload\" class=\"layui-btn layui-btn-primary\">\n" +
         "                <i class=\"layui-icon\">&#xe67c;</i>选择图片\n" +
         "            </label>\n" +
-        "            <input class=\"layui-upload-file\" id=\"cropper_avatarImgUpload\" type=\"file\" value=\"选择图片\" name=\"file\">\n" +
+        "            <input class=\"layui-upload-file\" id=\"cropper_avatarImgUpload\" type=\"file\" accept=\"image/*\" value=\"选择图片\" name=\"file\">\n" +
         "        </div>\n" +
         "        <div class=\"layui-form-mid layui-word-aux\">头像的尺寸限定150x150px</div>\n" +
         "    </div>\n" +
@@ -125,6 +125,9 @@ layui.config({
                     };
                 });
             });
+            //扩展
+
+
         }
 
     };

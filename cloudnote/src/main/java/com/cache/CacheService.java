@@ -8,6 +8,7 @@ import org.checkerframework.checker.units.qual.K;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  * 所有用户共同使用一块缓存
  * 每个用户的缓存信息存储在Map中，Map由accountId唯一标识
  * <accountId  Map<key,value>>
-
  */
 @Component
 public class CacheService implements InitializingBean {
@@ -46,7 +46,6 @@ public class CacheService implements InitializingBean {
      * 删除缓存
      */
     public void deleteValue(String string) {
-        System.out.println("清除缓存"+string);
         this.cache.invalidate(string);
     }
 
@@ -68,8 +67,8 @@ public class CacheService implements InitializingBean {
             //在缓存不存在时通过此方法加载缓存,在初始化时此方法不执行
             @Override
             public Map load(String string) throws Exception {
-                //System.out.println("1321321");
-                return null;
+                Map map = new HashMap();
+                return map;
             }
         });
     }
