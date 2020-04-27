@@ -26,8 +26,6 @@ import java.util.Map;
 @Component
 public class TokenUtils {
 
-    @Autowired
-    AccountService serService;
 
     @Autowired
     CacheService cacheService;

@@ -1,15 +1,15 @@
 package com.controller;
 
-import com.Util.DateUtils;
-import com.Util.Json;
-import com.Util.Result;
-import com.Util.TokenUtils;
-import com.alibaba.fastjson.JSON;
+import com.Util.*;
 import com.alibaba.fastjson.JSONObject;
 import com.cache.CacheService;
 import com.entity.*;
+import com.entity.schedule.Schedule;
+import com.entity.schedule.ScheduleData;
 import com.interceptor.UserLoginToken;
 import com.service.serviceImpl.ScheduleServiceImpl;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,106 +37,68 @@ public class ScheduleController {
     @Autowired
     CacheService cacheService;
 
-    @RequestMapping(value = "/save_task.json")
+
+    /**
+     * 创建日程
+     * 同一天不能有两个相同的标题
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     * @throws ParseException
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/save_schedule.json")
     public void insertNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) throws ParseException {
+
         String token = request.getHeader("token");
         String accountId = tokenUtil.getAccountIdByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        String scheduleId = jsonObject.getString("scheduleId");
 
-        //如果scheduleId不为空则为更新
-        if (scheduleId.length() != 0) {
-
-            String aheadTime2 = jsonObject.getString("aheadTime2");
-            String scheduleTitleUpdate = jsonObject.getString("scheduleTitleUpdate");
-            String scheduleContentUpdate = jsonObject.getString("scheduleContentUpdate");
-
-            if (scheduleContentUpdate.trim().length() == 0) {
-                Json.toJson(new Result(false, "内容不能为空!"), response);
-            }
-
-            if (scheduleTitleUpdate.trim().length() == 0) {
-                Json.toJson(new Result(false, "标题不能为空!"), response);
-            }
-
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            Schedule schedule = new Schedule();
-            schedule.setScheduleId(scheduleId);
-            schedule.setScheduleContent(scheduleContentUpdate);
-            schedule.setScheduleTitle(scheduleTitleUpdate);
-            int integerAheadTime2 = Integer.parseInt(aheadTime2);
-            HashMap<String, String> aheadTimeMap = getAheadTimeMapCache(accountId);
-
-            String aheadTime = aheadTimeMap.get(aheadTime2);
-            schedule.setAheadTime(aheadTime);
-
-            String executeTimeUpdate = jsonObject.getString("executeTimeUpdate");
-            //是否发送邮件
-            if (integerAheadTime2 == 0) {
-                schedule.setIsNeedRemind("0");
-            } else {
-                schedule.setIsNeedRemind("1");
-                //计算发送邮件的时间
-                Date executeTimeDate = dateFormat.parse(executeTimeUpdate);
-
-                Long remindTime = executeTimeDate.getTime() - integerAheadTime2 * 60 * 1000;
-                String remindTimeString = dateFormat.format(remindTime).substring(0, 16);
-                schedule.setRemindTime(remindTimeString);
-            }
-            boolean p = scheduleService.updateSchedule(schedule);
-            if (p) {
-                Json.toJson(new Result(true, "更新成功!"), response);
-            } else {
-                Json.toJson(new Result(false, "更新失败!"), response);
-            }
-
+        String scheduleContent = jsonObject.getString("scheduleContent");
+        if (scheduleContent.trim().length() == 0) {
+            Json.toJson(new Result(false, "内容不能为空!"), response);
         }
-        //新增日程
-        else {
+        String scheduleTitle = jsonObject.getString("scheduleTitle");
+        if (scheduleTitle.trim().length() == 0) {
+            Json.toJson(new Result(false, "标题不能为空!"), response);
+        }
 
-            String scheduleContent = jsonObject.getString("scheduleContent");
-            if (scheduleContent.trim().length() == 0) {
-                Json.toJson(new Result(false, "内容不能为空!"), response);
-            }
-            String scheduleTitle = jsonObject.getString("scheduleTitle");
-            if (scheduleTitle.trim().length() == 0) {
-                Json.toJson(new Result(false, "标题不能为空!"), response);
-            }
+        Schedule schedule = new Schedule();
+        schedule.setScheduleId(UUIDUtils.getUUID());
+        schedule.setAccountId(accountId);
+        schedule.setScheduleContent(scheduleContent);
+        schedule.setScheduleTitle(scheduleTitle);
+        String startTime = jsonObject.getString("startTime");
+        if (StringUtils.isNotEmpty(startTime)) {
+            schedule.setStartTime(startTime);
+        }
 
-            Schedule schedule = new Schedule();
-            schedule.setAccountId(accountId);
-            schedule.setScheduleContent(scheduleContent);
-            schedule.setScheduleTitle(scheduleTitle);
+        String aheadTime = jsonObject.getString("aheadTime");
+      /*  //获取数据
+        HashMap<String, String> aheadTimeMap = getAheadTimeMapCache(accountId);*/
+        schedule.setAheadTime(aheadTime);
+        //是否发送邮件
+        if (aheadTime.equals("0")) {
+            schedule.setIsNeedRemind("NO");
+            schedule.setRemindTime("");
+        } else {
+            //需要发送邮件
+            schedule.setIsNeedRemind("YES");
+            //计算发送邮件的时间
+            Integer integerAheadTime = Integer.parseInt(aheadTime);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date executeTimeDate = dateFormat.parse(startTime);
+            Long remindTime = executeTimeDate.getTime() - integerAheadTime * 60 * 1000;
+            String remindTimeString = dateFormat.format(remindTime).substring(0, 16);
+            schedule.setRemindTime(remindTimeString);
+        }
 
-            schedule.setCreateTime(dateFormat.format(new Date()));
-            String aheadTime = jsonObject.getString("aheadTime");
-            int integerAheadTime = Integer.parseInt(aheadTime);
-            //获取数据
-            HashMap<String, String> aheadTimeMap = getAheadTimeMapCache(accountId);
-            schedule.setAheadTime(aheadTimeMap.get(aheadTime));
-            String executeTime = jsonObject.getString("executeTime");
-            schedule.setExecuteTime(executeTime);
-            //是否发送邮件
-            if (integerAheadTime == 0) {
-                schedule.setIsNeedRemind("0");
-            } else {
-                schedule.setIsNeedRemind("1");
-                //计算发送邮件的时间
-                Date executeTimeDate = dateFormat.parse(executeTime);
-                Long remindTime = executeTimeDate.getTime() - integerAheadTime * 60 * 1000;
-                String remindTimeString = dateFormat.format(remindTime).substring(0, 16);
-                schedule.setRemindTime(remindTimeString);
-            }
-
-            Map result = scheduleService.insertSchedule(schedule);
-            if (result.get("true") != null) {
-                Json.toJson(new Result(true, "创建成功!"), response);
-            } else {
-                Json.toJson(new Result(false, "创建失败!"), response);
-            }
+        Map result = scheduleService.insertSchedule(schedule);
+        if (result.get("true") != null) {
+            Json.toJson(new Result(true, "创建成功!"), response);
+        } else {
+            Json.toJson(new Result(false, "创建失败!"), response);
         }
     }
 
@@ -173,214 +135,68 @@ public class ScheduleController {
     public void scheduleList(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
         String accountId = tokenUtil.getAccountIdByToken(token);
-        Map data = scheduleService.getScheduleList(accountId);
+        Condition condition = new Condition();
+        condition.setAccountId(accountId);
+        Map data = scheduleService.getScheduleList(condition);
         Json.toJson(new Result(true, "查询成功", data), response);
     }
 
-
     /**
-     * 撤销操作
+     * 初始化当日所有的日程
      *
-     * @param jsonString
+     * @param date
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/remove_schedule")
-    public void delete(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+    @UserLoginToken
+    @RequestMapping(value = "/init_currentDay_schedule.json")
+    public void getCurrentDayScheduleLit(@RequestParam(value = "date", defaultValue = "") String date,
+                                         HttpServletRequest request,
+                                         HttpServletResponse response) {
+
         String token = request.getHeader("token");
         String accountId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        String executeTime = jsonObject.getString("executeTime");
         Condition condition = new Condition();
         condition.setAccountId(accountId);
-        condition.setExecuteTime(executeTime);
-        Map map = scheduleService.removeSchedule(condition);
-        if (map.get("true") != null) {
-            Result result = new Result(true, (String) map.get("true"));
-            Json.toJson(result, response);
-        } else {
-            Result result = new Result(false, (String) map.get("false"));
-            Json.toJson(result, response);
+        if (StringUtils.isNotEmpty(date)) {
+            String currentDay = date.substring(0, 10);
+            condition.setStartTime(currentDay);
         }
-    }
-
-    /**
-     * 查询执行时间初始化下拉框
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/get_execute_time")
-    public void getExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        String accountId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
-
-        String showExecuteTime = jsonObject.getString("showExecuteTime");
-
-        Condition condition = new Condition();
-        condition.setAccountId(accountId);
-        condition.setShowExecuteTime(showExecuteTime);
-        Map data = scheduleService.slelectExecuteTime(condition);
-        Json.toJson(new Result(true, (String) "查询成功", data), response);
-
-    }
-
-    /**
-     * 查询内容
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/get_execute_content")
-    public void getExecuteContent(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        String accountId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        String executeTime = jsonObject.getString("executeTime");
-        Condition condition = new Condition();
-
-        condition.setAccountId(accountId);
-        condition.setExecuteTime(executeTime);
-
-        Map data = scheduleService.selectCotnentByCondition(condition);
-        Json.toJson(new Result(true, (String) "查询成功", data), response);
-    }
-
-
-    /**
-     * 获取日程的提前量
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/get_advance_time")
-    public void getAdvanceTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        String accountId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        String executeTime = jsonObject.getString("executeTime");
-        Condition condition = new Condition();
-        condition.setAccountId(accountId);
-        condition.setExecuteTime(executeTime);
-        Map<String, String> data = scheduleService.selectAdvanceByCondition(condition);
-        Result result = new Result(true, "", data);
-        Json.toJson(result, response);
-    }
-
-    /**
-     * 更新日程
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/update_schedule")
-    public void updateSchedule(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-
-        String token = request.getHeader("token");
-        String accountId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
-
-        Schedule schedule = new Schedule();
-        schedule.setAccountId(accountId);
-        String executeTime = jsonObject.getString("executeTime");
-        schedule.setExecuteTime(executeTime);
-        String advanceHour = jsonObject.getString("advanceHour");
-        String advanceMinute = jsonObject.getString("advanceMinute");
-        //获取提前量
-        Long hour = 0L;
-        Long minute = 0L;
-
-        if (!advanceHour.equals("")) {
-            hour = Long.parseLong(advanceHour.substring(0, advanceHour.length() - 2));
-        }
-        if (!advanceMinute.equals("")) {
-            minute = Long.parseLong(advanceMinute.substring(0, advanceMinute.length() - 2));
-        }
-
-        schedule.setScheduleContent(jsonObject.getString("scheduleContent"));
-
-        String remindTime = DateUtils.parse(hour, minute, executeTime);
-        schedule.setRemindTime(remindTime);
-    }
-
-
-    /**
-     * 判断当前点击的日期的是否过时
-     */
-    @RequestMapping(value = "/is_pass.json")
-    public void isPass(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            JSONObject jsonObject = JSON.parseObject(jsonString);
-            Date selectDate = format.parse(jsonObject.getString("selectDate"));
-            Date currentDate = new Date();
-            if (currentDate.getTime() + 60 * 10000 < selectDate.getTime()) {
-                Json.toJson(new Result(true, "true"), response);
-            } else {
-                Json.toJson(new Result(true, "false"), response);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Json.toJson(new Result(false, "失败"), response);
-        }
-    }
-
-    /**
-     * 初始化selectExecuteTime
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/init_executeTime.json")
-    public void initSelectExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        String accountId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSON.parseObject(jsonString);
-        String executeTime = jsonObject.getString("executeTime").substring(0, 10);
-
-        Condition condition = new Condition();
-        condition.setAccountId(accountId);
-        condition.setExecuteTime(executeTime);
-
-        Map schedules = scheduleService.selectScheduleByCondition(condition);
-
-        Json.toJson(new Result(true, "SUCCESS", schedules), response);
-
-    }
-
-    /**
-     * 选择时间后获取全部数据
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/get_schedule.json")
-    public void getScheduleByExecuteTime(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        String accountId = tokenUtil.getAccountIdByToken(token);
-        JSONObject jsonObject = JSON.parseObject(jsonString);
-        String executeTime = jsonObject.getString("executeTime");
-
-        Condition condition = new Condition();
-        condition.setAccountId(accountId);
-        condition.setExecuteTime(executeTime);
-
-        List<Schedule> scheduleList = scheduleService.selectScheduleByExecuteTime(condition);
-
         HashMap data = new HashMap();
-        data.put("scheduleTitle", scheduleList.get(0).getScheduleTitle());
-        data.put("scheduleContent", scheduleList.get(0).getScheduleContent());
-        data.put("aheadTime", scheduleList.get(0).getAheadTime());
-        data.put("scheduleId", scheduleList.get(0).getScheduleId());
-
+        List<Schedule> scheduleList = scheduleService.getCurrentDaySchedule(condition);
+        if (CollectionUtils.isNotEmpty(scheduleList)) {
+            ArrayList<TextValue> textValues = new ArrayList<>();
+            for (Schedule item : scheduleList) {
+                TextValue textValue = new TextValue(item.getScheduleId(), item.getScheduleTitle());
+                textValues.add(textValue);
+            }
+            data.put("textValues", textValues);
+        }
         Json.toJson(new Result(true, "SUCCESS", data), response);
+    }
+
+    /**
+     * 根据scheduleId 获取单个日程
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/get_schedule.json")
+    public void getSchedule(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+
+        Result result;
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        String scheduleId = jsonObject.getString("scheduleId");
+        if (StringUtils.isNotEmpty(scheduleId)) {
+            Condition condition = new Condition();
+            condition.setScheduleId(scheduleId);
+            Schedule schedule = scheduleService.getSchedule(condition);
+            result = new Result(true, "SUCCESS", schedule);
+        } else {
+            result = new Result(true, "SUCCESS", null);
+        }
+        Json.toJson(result, response);
     }
 }

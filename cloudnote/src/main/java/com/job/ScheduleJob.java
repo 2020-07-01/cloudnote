@@ -1,17 +1,14 @@
 package com.job;
 
 import com.entity.Condition;
-import com.entity.Schedule;
+import com.entity.schedule.Schedule;
 import com.entity.TaskData;
 import com.mailService.MailServiceImpl;
-import com.service.ScheduleService;
-import com.service.TaskJobService;
 import com.service.serviceImpl.ScheduleServiceImpl;
 import com.service.serviceImpl.TaskJobServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;

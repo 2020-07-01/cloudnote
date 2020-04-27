@@ -40,4 +40,5 @@ public class Condition {
     private String isNeedRemind;
     private Integer startNumber;
     private Integer pageSize;
+    private String scheduleId;
 }

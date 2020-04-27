@@ -4,14 +4,14 @@
 <mapper namespace="com.mapper.ScheduleMapper">
 
     <sql id="base_sql">
-        schedule_id,account_id,schedule_content,execute_time,ahead_time,create_time,update_time,is_need_remind,schedule_title,remind_time
+        schedule_id,account_id,schedule_content,start_time,ahead_time,create_time,update_time,is_need_remind,schedule_title,remind_time
     </sql>
 
-    <resultMap id="baseMap" type="com.entity.Schedule">
+    <resultMap id="baseMap" type="com.entity.schedule.Schedule">
         <id column="schedule_id" property="scheduleId" jdbcType="VARCHAR"/>
         <result column="account_id" property="accountId" jdbcType="VARCHAR"/>
         <result column="schedule_content" property="scheduleContent" jdbcType="VARCHAR"/>
-        <result column="execute_time" property="executeTime" jdbcType="VARCHAR"/>
+        <result column="start_time" property="startTime" jdbcType="VARCHAR"/>
         <result column="remind_time" property="remindTime" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
@@ -20,87 +20,45 @@
         <result column="ahead_time" property="aheadTime" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <select id="selectScheduleByCondition" parameterType="com.entity.Condition" resultType="com.entity.Schedule"
+    <!--日程列表-->
+    <select id="selectScheduleByCondition" parameterType="com.entity.Condition" resultType="com.entity.schedule.Schedule"
             resultMap="baseMap">
         select
         <include refid="base_sql"/>
         from schedule
-        where account_id = #{accountId,jdbcType=INTEGER}
-        <if test="executeTime != null and executeTime != ''">
-            and execute_time like #{executeTime} '%'
+        where
+        1 = 1
+        <if test="accountId != null and accountId != ''">
+            and account_id = #{accountId,jdbcType=VARCHAR}
         </if>
-
+        <if test="startTime != null and startTime != ''">
+            and start_time like #{startTime,jdbcType=VARCHAR} '%'
+        </if>
+        <if test="scheduleId != null and scheduleId !=''">
+            and schedule_id = #{scheduleId,jdbcType=VARCHAR}
+        </if>
+        ORDER BY create_time asc
     </select>
 
-    <insert id="insertSchedule" parameterType="com.entity.Schedule" useGeneratedKeys="true" keyProperty="scheduleId">
-        insert into schedule
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="accountId != null">
-                account_id,
-            </if>
-            <if test="scheduleContent != null">
-                schedule_content,
-            </if>
-            <if test="executeTime != null">
-                execute_time,
-            </if>
-            <if test="remindTime != null">
-                remind_time,
-            </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
-            <if test="isNeedRemind != null">
-                is_need_remind,
-            </if>
-            <if test="aheadTime != null">
-                ahead_time,
-            </if>
-            <if test="scheduleTitle != null">
-                schedule_title,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="accountId != null">
-                #{accountId,jdbcType=INTEGER},
-            </if>
-            <if test="scheduleContent != null">
-                #{scheduleContent,jdbcType=VARCHAR},
-            </if>
-            <if test="executeTime != null">
-                #{executeTime,jdbcType=VARCHAR},
-            </if>
-            <if test="remindTime != null">
-                #{remindTime,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=VARCHAR},
-            </if>
-            <if test="isNeedRemind != null">
-                #{isNeedRemind,jdbcType=VARCHAR},
-            </if>
-            <if test="aheadTime != null">
-                #{aheadTime,jdbcType=VARCHAR},
-            </if>
-            <if test="scheduleTitle != null">
-                #{scheduleTitle,jdbcType=VARCHAR},
-            </if>
-        </trim>
+    <!--创建日程-->
+    <insert id="insertSchedule" parameterType="com.entity.schedule.Schedule">
+        insert into schedule (
+        schedule_id, account_id, schedule_content, start_time, remind_time, create_time, is_need_remind, ahead_time,schedule_title)
+        value (
+            #{scheduleId,jdbcType=VARCHAR},
+            #{accountId,jdbcType=VARCHAR},
+            #{scheduleContent,jdbcType=VARCHAR},
+            #{startTime,jdbcType=VARCHAR},
+            #{remindTime,jdbcType=VARCHAR},
+            now(),
+            #{isNeedRemind,jdbcType=VARCHAR},
+            #{aheadTime,jdbcType=VARCHAR},
+            #{scheduleTitle,jdbcType=VARCHAR}
+        )
     </insert>
 
-    <!--批量设置isNeedRemind-->
-    <update id="updateIsNeedRemind" parameterType="java.util.List">
-        <foreach collection="list" item="item" close="" open="" index="index" separator=";">
-            update schedule
-            set
-            is_need_remind = #{item.isNeedRemind,jdbcType=VARCHAR},
-            update_time = now()
-            where
-            schedule_id = #{item.scheduleId,jdbcType=INTEGER}
-        </foreach>
-    </update>
 
-    <update id="updateSchedule" parameterType="com.entity.Schedule">
+    <update id="updateSchedule" parameterType="com.entity.schedule.Schedule">
         update schedule
         <set>
             <if test="scheduleContent != null">
@@ -117,6 +75,6 @@
             </if>
             update_time = now()
         </set>
-        where schedule_id = #{scheduleId,jdbcType=INTEGER}
+        where schedule_id = #{scheduleId,jdbcType=VARCHAR}
     </update>
 </mapper>
