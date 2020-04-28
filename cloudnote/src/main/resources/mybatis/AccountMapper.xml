@@ -144,18 +144,19 @@
         and is_locked = "UNLOCK"
     </update>
 
-    <!--获取accountId-->
-    <select id="findAccountId" parameterType="com.entity.Condition" resultType="java.lang.String">
+    <!--查询单个账号数据-->
+    <select id="findAccountData" parameterType="com.entity.Condition" resultType="com.entity.Account"
+            resultMap="baseMap">
         select
-        account_id
+        account_id,account_password,is_locked
         from account
         where
         1=1
         <if test="accountName != '' and accountName != null">
             and account_name = #{accountName,jdbcType=VARCHAR}
         </if>
-        <if test="accountPassword != '' and accountPassword != null">
-            and account_password = #{accountPassword,jdbcType=VARCHAR}
+        <if test="email != null and email != ''">
+            and email = #{email,jdbcType=VARCHAR}
         </if>
     </select>
 

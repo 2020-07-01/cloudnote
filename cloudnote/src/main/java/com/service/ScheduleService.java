@@ -18,4 +18,9 @@ public interface ScheduleService {
 
     //根据id获取日程信息
     Schedule getSchedule(Condition condition);
+
+    Map updateSchedule(Schedule schedule);
+
+    //批量更新日程
+    boolean updateScheduleList(List<Schedule> schedules);
 }

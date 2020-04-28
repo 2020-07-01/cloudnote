@@ -1,14 +1,18 @@
 package com.job;
 
 import com.entity.Condition;
+import com.entity.Constant;
 import com.entity.schedule.Schedule;
 import com.entity.TaskData;
 import com.mailService.MailServiceImpl;
 import com.service.serviceImpl.ScheduleServiceImpl;
 import com.service.serviceImpl.TaskJobServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -21,6 +25,7 @@ import java.util.List;
  * @description: 创建一个job
  * @create: 2020-01-31 14:45
  **/
+@Slf4j
 @Component
 @Configuration
 @EnableScheduling
@@ -39,7 +44,7 @@ public class ScheduleJob {
      * 日程提醒
      * 2分钟刷新一次 发送邮件
      */
-    //@Scheduled(cron = "0 */2 * * * ?")
+    @Scheduled(cron = "0 */2 * * * ?")
     public void scheduleRemind() {
 
         /**
@@ -48,7 +53,7 @@ public class ScheduleJob {
          * 设置一个时间范围
          */
         Condition condition = new Condition();
-        condition.setIsNeedRemind("1");
+        condition.setIsNeedRemind(Constant.YES);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = new Date();
         Long time = date.getTime() + 60 * 1000;
@@ -58,34 +63,22 @@ public class ScheduleJob {
 
         condition.setStartTime(startTime);
         condition.setEndTime(endTime);
-
         List<TaskData> list = taskJobService.selectTaskDataByCondition(condition);
-
-        List<Schedule> listScheduleId = new ArrayList<>();
-
-        if (listScheduleId == null) {
-            return;
+        if (CollectionUtils.isNotEmpty(list)) {
+            List<Schedule> listSchedule = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                TaskData taskData = list.get(i);
+                String receiver = taskData.getEmail();
+                String sender = "2422321558@qq.com";
+                String title = taskData.getScheduleTitle();
+                String content = taskData.getScheduleContent();
+                mailService.sendSchedule(sender, receiver, title, content);
+                //存储id
+                listSchedule.add(new Schedule(taskData.getScheduleId(), Constant.NO));
+            }
+            //设置已发送
+            scheduleService.updateScheduleList(listSchedule);
         }
-        for (int i = 0; i < list.size(); i++) {
-            TaskData taskData = list.get(i);
-            String recevier = taskData.getEmail();
-            String sender = "2422321558@qq.com";
-            String title = taskData.getScheduleTitle();
-            String content = taskData.getScheduleContent();
-            mailService.sendSchedule(sender, recevier, title, content);
-            //存储id
-            listScheduleId.add(new Schedule(taskData.getScheduleId(), "0"));
-        }
-        //scheduleService.updateIsNeedRemind(listScheduleId);
+        log.info(startTime + "刷新日程:SUCCESS");
     }
-
-
-    /**
-     * 每天刷新一次，生日祝福
-     */
-    public void birthdayBlessing(){
-
-    }
-
-
 }

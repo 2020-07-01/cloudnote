@@ -1,9 +1,6 @@
 package com.controller;
 
-import com.Util.Json;
-import com.Util.Result;
-import com.Util.TokenUtils;
-import com.Util.UUIDUtils;
+import com.Util.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.BaiDuUtils;
@@ -17,6 +14,7 @@ import com.mailService.MailServiceImpl;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.AccountServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -59,6 +57,10 @@ public class AccountController {
     @Autowired
     BaiDuUtils baiDuUtils;
 
+
+    @Autowired
+    ASEUtils aseUtils;
+
     /**
      * 邮箱注册
      *
@@ -81,12 +83,13 @@ public class AccountController {
                 String email = jsonObject.getString("email");
                 String accountName = jsonObject.getString("accountName");
                 String accountPassword = jsonObject.getString("accountPassword");
-                String confirmPassword = jsonObject.getString("confirmPassword");
-
                 Account account = new Account();
-                account.setAccountId(UUIDUtils.getUUID());
+                String accountId = UUIDUtils.getUUID();
+                account.setAccountId(accountId);
                 account.setAccountName(accountName);
-                account.setAccountPassword(accountPassword);
+                //对密码进行加密存储
+                String password = aseUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
+                account.setAccountPassword(password);
                 account.setEmail(email);
                 account.setHeadImageUrl("http://t.cn/RCzsdCq");
                 Map<Boolean, String> map = accountService.insert(account);
@@ -113,56 +116,61 @@ public class AccountController {
      * @return
      */
     @PassToken
-    @RequestMapping(value = "login.json")
+    @RequestMapping(value = "/login.json")
     public void Login(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject;
         Result result = null;
-        String accountId = "";
         jsonObject = JSON.parseObject(jsonParam);
         String accountName = jsonObject.getString("accountName");
         try {
-            Account account = new Account(jsonObject.getString("accountName"), jsonObject.getString("accountPassword"));
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String lastLoginTime = dateFormat.format(new Date());
-            account.setLastLoginTime(lastLoginTime);
-            account.setIsOnline("ONLINE");
-            account.setLoginCount(1);
-            boolean flag = accountService.updateLoginStatus(account);
-            if (!flag) {
-                //判断是否被锁定
-                Condition condition = new Condition();
-                condition.setAccountName(jsonObject.getString("accountName"));
-                condition.setAccountPassword(jsonObject.getString("accountPassword"));
-                List<Account> accountList = accountService.getAccountByCondition(condition);
-                if (CollectionUtils.isNotEmpty(accountList)) {
-                    if (accountList.get(0).getIsLocked().equals(Constant.LOCK_YES)) {
-                        result = new Result(false, "账户被锁，请联系管理员!");
-                    }
-                } else {
-                    result = new Result(false, "用户名或密码错误!");
-                }
+            /**
+             * 根据用户名查询数据进行解密核对密码
+             * 密码核对成功后再进行更新数据
+             */
+            Account account;
+            Condition condition = new Condition();
+            condition.setAccountName(accountName);
+            account = accountService.getOneAccount(condition);
+            if (account == null) {
+                result = new Result(false, "用户名或密码错误!");
+            } else if (account.getIsLocked().equals(Constant.LOCK_YES)) {
+                result = new Result(false, "账户被锁，请联系管理员!");
             } else {
-                //获取accountId生成token
-                Condition condition = new Condition();
-                condition.setAccountName(jsonObject.getString("accountName"));
-                condition.setAccountPassword(jsonObject.getString("accountPassword"));
-                accountId = accountService.findAccountId(condition);
-                //生成token并存储在缓存中
-                String token = tokenService.createToken(accountId);
-                HashMap cacheMap = new HashMap();
-                cacheMap.put("accountId", accountId);
-                cacheService.putValue(accountId, cacheMap);
-                HashMap data = new HashMap();
-                data.put("token", token);
-                if (jsonObject.getString("accountName").equals("admin")) {
-                    result = new Result("000", "SUCCESS!", data);
-                } else {
-                    result = new Result(true, "SUCCESS!", data);
+                if (StringUtils.isNotEmpty(account.getAccountPassword())) {
+                    //解密
+                    String asePassword = new String(aseUtils.decrypt(Base64.decodeBase64(account.getAccountPassword()), account.getAccountId().getBytes("UTF-8")));
+                    String accountPassword = jsonObject.getString("accountPassword");
+                    //如果验证成功
+                    if (asePassword.equals(accountPassword)) {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String lastLoginTime = dateFormat.format(new Date());
+                        account.setLastLoginTime(lastLoginTime);
+                        account.setIsOnline("ONLINE");
+                        account.setLoginCount(1);
+                        //更新状态
+                        boolean flag = accountService.updateLoginStatus(account);
+                        if (flag) {
+                            //生成token并存储在缓存中
+                            String token = tokenService.createToken(account.getAccountId());
+                            HashMap cacheMap = new HashMap();
+                            cacheMap.put("accountId", account.getAccountId());
+                            cacheService.putValue(account.getAccountId(), cacheMap);
+                            HashMap data = new HashMap();
+                            data.put("token", token);
+                            if (jsonObject.getString("accountName").equals("admin")) {
+                                result = new Result("000", "SUCCESS!", data);
+                            } else {
+                                result = new Result(true, "SUCCESS!", data);
+                            }
+                        }
+                    } else {
+                        result = new Result(false, "用户名或密码错误!");
+                    }
                 }
             }
         } catch (Exception e) {
             log.error("账户" + accountName + "登录异常:", new Throwable(e));
-            result = new Result(false, "FAILURE");
+            result = new Result(false, "异常错误!");
         }
         Json.toJson(result, response);
     }
@@ -210,21 +218,6 @@ public class AccountController {
         Json.toJson(result, response);
     }
 
-
-    /**
-     * 查询密码
-     *
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "showPassword.json")
-    public void findPassword(HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("token");
-        String accountId = tokenService.getAccountIdByToken(token);
-        String passpord = accountService.findPasswordByAccountId(accountId);
-        Json.toJson(new Result(true, passpord), response);
-    }
-
     /**
      * 修改密码
      *
@@ -235,54 +228,66 @@ public class AccountController {
     @UserLoginToken
     @RequestMapping(value = "/update_password.json")
     public void updatePassword(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+
+        Result result;
+
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String token = request.getHeader("token");
         String accountId = tokenService.getAccountIdByToken(token);
+
         String currentPassword = jsonObject.getString("currentPassword");
         String accountPassword = jsonObject.getString("accountPassword");
         String confirmPassword = jsonObject.getString("confirmPassword");
 
-        //获取旧的密码
-        String oldAccountPassword = accountService.findPasswordByAccountId(accountId);
-        if (!oldAccountPassword.equals(currentPassword)) {
-            Json.toJson(new Result(false, "密码错误!"), response);
-            return;
+        try {
+            //获取旧的密码
+            String oldAccountPassword = accountService.findPasswordByAccountId(accountId);
+            //解密
+            String asePassword = new String(aseUtils.decrypt(Base64.decodeBase64(oldAccountPassword), accountId.getBytes("UTF-8")));
+            if (!asePassword.equals(currentPassword)) {
+                result = new Result(false, "密码错误!");
+            } else if (!accountPassword.equals(confirmPassword)) {
+                result = new Result(false, "密码不一致!");
+            } else if (asePassword.equals(accountPassword)) { //判断密码是否重复
+                result = new Result(false, "新密码不能与原来的密码一致!");
+            } else {
+                //更新密码
+                Account account = new Account();
+                account.setAccountId(accountId);
+                //对新密码进行加密
+                String password = aseUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
+                account.setAccountPassword(password);
+                if (accountService.updateAccount(account)) {
+                    result = new Result(true, "SUCCESS");
+                } else {
+                    result = new Result(false, "FAILURE");
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), new Throwable(e));
+            result = new Result(false, "FAILURE");
         }
-        //判断密码是否一致
-        if (!accountPassword.equals(confirmPassword)) {
-            Json.toJson(new Result(false, "密码不一致!"), response);
-            return;
-        }
-        //判断密码是否重复
-        if (oldAccountPassword.equals(accountPassword)) {
-            Json.toJson(new Result(false, "新密码不能与原来的密码一致!"), response);
-            return;
-        }
-        Account account = new Account();
-        account.setAccountId(accountId);
-        account.setAccountPassword(accountPassword);
-        accountService.updateAccount(account);
-        Json.toJson(new Result(true, "修改成功!"), response);
+
+        Json.toJson(result, response);
     }
 
     /**
      * 忘记密码->发送验证码
      */
+    @PassToken
     @RequestMapping(value = "/send_security_code.json")
     public void getSecurityCode(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
         JSONObject jsonObject = JSON.parseObject(jsonString);
-        String email = jsonObject.getString("email");
-
-        if (email == null || email.equals("")) {
-            Json.toJson(new Result(false, "邮箱不能为空!"), response);
-            return;
-        }
-        Map result = accountService.findUerByEmail(email);
-        if (result.get("true") != null) {
-            Json.toJson(new Result(false, "此邮箱不存在!"), response);
-        } else {
-            try {
+        Result result;
+        try {
+            String email = jsonObject.getString("email");
+            Condition condition = new Condition();
+            condition.setEmail(email);
+            Account account = accountService.getOneAccount(condition);
+            if (account == null) {
+                result = new Result(false, "此邮箱不存在!");
+            } else {
                 String sender = "2422321558@qq.com";
                 //生成6位验证码
                 String securityCode = random(6);
@@ -290,35 +295,15 @@ public class AccountController {
                 HashMap data = new HashMap();
                 data.put("securityCode", securityCode);
                 data.put("email", email);
-                Json.toJson(new Result(true, "验证码已发送，请查收!", data), response);
-            } catch (Exception e) {
-                Json.toJson(new Result(false, "发送失败!"), response);
+                data.put("accountId", account.getAccountId());
+                result = new Result(true, "验证码已发送，请查收!", data);
             }
+        } catch (Exception e) {
+            result = new Result(false, "FAILURE");
+            log.error(e.getMessage(), new Throwable(e));
         }
+        Json.toJson(result, response);
     }
-
-
-    /**
-     * 忘记密码->找回密码时验证已发送的验证码
-     *
-     * @param jsonString
-     * @param request
-     * @param response
-     */
-    @RequestMapping(value = "/check_security_code.json")
-    public void checkSecurityCode(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-
-        JSONObject jsonObject = JSON.parseObject(jsonString);
-        String firstSecurityCode = jsonObject.getString("firstSecurityCode");
-        String secondSecurityCode = jsonObject.getString("secondSecurityCode");
-
-        if (firstSecurityCode.equals(secondSecurityCode)) {
-            Json.toJson(new Result(true, "验证通过!"), response);
-        } else {
-            Json.toJson(new Result(false, "验证失败!"), response);
-        }
-    }
-
 
     /**
      * 忘记密码->重置新密码->成功后跳转至登录界面
@@ -327,24 +312,34 @@ public class AccountController {
      * @param request
      * @param response
      */
+    @PassToken
     @RequestMapping(value = "/reset_password.json")
     public void toResetPassword(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
+        Result result;
         JSONObject jsonObject = JSON.parseObject(jsonString);
-
-        String confirmPassword = jsonObject.getString("confirmPassword");
-        String accountPassword = jsonObject.getString("accountPassword");
-        String email = jsonObject.getString("email2");
-
-        if (!confirmPassword.equals(confirmPassword)) {
-            Json.toJson(new Result(false, "密码不一致!"), response);
-        } else {
-            Account account = new Account();
-            account.setEmail(email);
-            account.setAccountPassword(accountPassword);
-            accountService.updateAccount(account);
-            Json.toJson(new Result(true, "重置密码成功!"), response);
+        try {
+            String confirmPassword = jsonObject.getString("confirmPassword");
+            String accountPassword = jsonObject.getString("accountPassword");
+            String email = jsonObject.getString("email");
+            String accountId = jsonObject.getString("accountId");
+            if (!confirmPassword.equals(confirmPassword)) {
+                result = new Result(false, "密码不一致!");
+            } else {
+                Account account = new Account();
+                account.setEmail(email);
+                account.setAccountPassword(accountPassword);
+                //对新密码进行加密
+                String password = aseUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
+                account.setAccountPassword(password);
+                accountService.updateAccount(account);
+                result = new Result(true, "SUCCESS!");
+            }
+        } catch (Exception e) {
+            result = new Result(false, "FAILURE");
+            log.error(e.getMessage(), new Throwable(e));
         }
+        Json.toJson(result, response);
     }
 
     /**

@@ -15,6 +15,4 @@ public class TaskData {
     private String scheduleTitle;
     private String isNeedRemind;
     private String remindTime;
-
-
 }

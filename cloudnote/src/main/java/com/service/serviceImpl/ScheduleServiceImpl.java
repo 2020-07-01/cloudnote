@@ -4,6 +4,8 @@ import com.entity.Condition;
 import com.entity.schedule.Schedule;
 import com.mapper.ScheduleMapper;
 import com.service.ScheduleService;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +19,12 @@ import java.util.Map;
  * @description:
  * @create: 2020-01-30 13:41
  **/
+@Slf4j
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
     @Autowired
     ScheduleMapper scheduleMapper;
-
 
     //创建日程
     @Override
@@ -88,6 +90,34 @@ public class ScheduleServiceImpl implements ScheduleService {
         } else {
             return null;
         }
+    }
+
+    //更新日程
+    @Override
+    public Map updateSchedule(Schedule schedule) {
+        int row;
+        Map<Boolean, String> map = new HashMap<>();
+        row = scheduleMapper.updateSchedule(schedule);
+        if (row == 1) {
+            map.put(true, "SUCCESS");
+        } else {
+            map.put(false, "FAILURE");
+        }
+        return map;
+    }
+
+    //批量更新日程
+    @Override
+    public boolean updateScheduleList(List<Schedule> schedules) {
+        boolean flag = false;
+        try {
+            scheduleMapper.updateScheduleList(schedules);
+            flag = true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), new Throwable(e));
+            flag = false;
+        }
+        return flag;
     }
 
 }

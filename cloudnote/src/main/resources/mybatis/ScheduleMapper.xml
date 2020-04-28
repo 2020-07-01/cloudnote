@@ -21,7 +21,8 @@
     </resultMap>
 
     <!--日程列表-->
-    <select id="selectScheduleByCondition" parameterType="com.entity.Condition" resultType="com.entity.schedule.Schedule"
+    <select id="selectScheduleByCondition" parameterType="com.entity.Condition"
+            resultType="com.entity.schedule.Schedule"
             resultMap="baseMap">
         select
         <include refid="base_sql"/>
@@ -76,5 +77,22 @@
             update_time = now()
         </set>
         where schedule_id = #{scheduleId,jdbcType=VARCHAR}
+    </update>
+
+    <!--批量更新日程-->
+    <update id="updateScheduleList" parameterType="java.util.List">
+
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update schedule
+            <set>
+                <if test="item.isNeedRemind != null">
+                    is_need_remind = #{item.isNeedRemind,jdbcType=VARCHAR},
+                </if>
+            </set>
+            where
+            <if test="item.scheduleId != null">
+                schedule_id = #{item.scheduleId,jdbcType=VARCHAR}
+            </if>
+        </foreach>
     </update>
 </mapper>

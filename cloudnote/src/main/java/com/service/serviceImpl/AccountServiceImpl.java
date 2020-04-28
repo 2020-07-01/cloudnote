@@ -102,9 +102,10 @@ public class AccountServiceImpl implements AccountService {
 
     //获取用户id
     @Override
-    public String findAccountId(Condition condition) {
-        String accountId = accountMapper.findAccountId(condition);
-        return accountId;
+    public Account getOneAccount(Condition condition) {
+
+        Account account = accountMapper.findAccountData(condition);
+        return account;
     }
 
     /**

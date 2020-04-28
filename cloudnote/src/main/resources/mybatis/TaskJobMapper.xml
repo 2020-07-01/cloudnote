@@ -8,13 +8,13 @@
     </sql>
 
     <resultMap id="baseMap" type="com.entity.TaskData">
-        <result column="account_id" property="accountId" jdbcType="INTEGER"/>
+        <result column="account_id" property="accountId" jdbcType="VARCHAR"/>
         <result column="schedule_content" property="scheduleContent" jdbcType="VARCHAR"/>
         <result column="remind_time" property="remindTime" jdbcType="VARCHAR"/>
         <result column="schedule_title" property="scheduleTitle" jdbcType="VARCHAR"/>
         <result column="is_need_remind" property="isNeedRemind" jdbcType="VARCHAR"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
-        <result column="schedule_id" property="scheduleId" jdbcType="INTEGER"/>
+        <result column="schedule_id" property="scheduleId" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查找需要发送邮件的数据-->
@@ -34,5 +34,4 @@
             and #{endTime,jdbcType=VARCHAR}
         </if>
     </select>
-
 </mapper>
