@@ -71,14 +71,14 @@
                 is_recycle = #{isRecycle,jdbcType=VARCHAR},
             </if>
             <if test="noteType != null">
-                note_type=#{noteType,jdbcType=INTEGER},
+                note_type=#{noteType,jdbcType=VARCHAR},
             </if>
             <if test="star != null and star !=''">
                 star = #{star,jdbcType=VARCHAR},
             </if>
             update_time = now()
         </set>
-        where note_id = #{noteId,jdbcType=INTEGER}
+        where note_id = #{noteId,jdbcType=VARCHAR}
     </update>
 
     <!--获取标签-->
@@ -100,7 +100,7 @@
         select
         count(note_id)
         from note
-        where account_id = #{accountId,jdbcType=INTEGER}
+        where account_id = #{accountId,jdbcType=VARCHAR}
         and is_recycle = #{isRecycle,jdbcType=VARCHAR}
         <if test="type != null and type != ''">
             and note_type = #{type,jdbcType=VARCHAR}
