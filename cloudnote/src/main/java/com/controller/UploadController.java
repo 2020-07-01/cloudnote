@@ -15,6 +15,7 @@ import com.oss.OSSUtil;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import org.json.JSONArray;
@@ -33,6 +34,7 @@ import java.util.*;
  * @description:
  * @create: 2020-02-08 15:39
  **/
+@Slf4j
 @RequestMapping(value = "/source")
 @RestController
 public class UploadController {
@@ -70,22 +72,28 @@ public class UploadController {
 
         String accountId = tokenUtil.getAccountIdByToken(token);
         Result result = null;
-        //图片审核
-        org.json.JSONObject jsonObject = baiDuUtils.checkImage(uploadImage.getBytes());
-        //如果不合规
-        if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
-            JSONArray dataJSONArray = jsonObject.getJSONArray("data");
-            String msg = dataJSONArray.getJSONObject(0).getString("msg");
-            result = new Result(false, msg);
-        } else {
-            Map serviceData = imageService.uploadImage(uploadImage, accountId);
-            if (serviceData.get("true") != null) {
-                result = new Result(true, "上传成功!");
+        try {
+            //图片审核
+            org.json.JSONObject jsonObject = baiDuUtils.checkImage(uploadImage.getBytes());
+            //如果不合规
+            if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
+                JSONArray dataJSONArray = jsonObject.getJSONArray("data");
+                String msg = dataJSONArray.getJSONObject(0).getString("msg");
+                result = new Result("2", msg);
             } else {
-                Map<String, String> data = new HashMap<>();
-                data.put("cache", serviceData.get("fail").toString());
-                result = new Result(false, serviceData.get("message").toString(), data);
+                //如果合规
+                Map serviceData = imageService.uploadImage(uploadImage, accountId);
+                if (serviceData.get("true") != null) {
+                    result = new Result(true, "上传成功!");
+                } else {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("cache", serviceData.get("fail").toString());
+                    result = new Result(false, serviceData.get("message").toString(), data);
+                }
             }
+        } catch (Exception e) {
+            result = new Result(false, "异常错误!");
+            log.error(e.getMessage(), new Throwable(e));
         }
         Json.toJson(result, response);
     }

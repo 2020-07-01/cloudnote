@@ -74,7 +74,6 @@ public class AccountController {
         String securityCode = jsonObject.getString("securityCode");
         Result result;
         try {
-
             Map<String, String> securityCodeCacheMap = cacheService.getValue(securityCode);
             if (!securityCodeCacheMap.get(securityCode).equals(securityCode)) {
                 result = new Result(false, "验证码错误");
@@ -190,10 +189,7 @@ public class AccountController {
         Result result;
         JSONObject jsonObject = JSON.parseObject(jsonParam);
         String emailAddress = jsonObject.getString("emailAddress");
-        if (emailAddress == null || emailAddress.equals("")) {
-            Json.toJson(new Result(false, "邮箱不能为空!"), response);
-            return;
-        }
+
         //验证邮箱格式
         Map<String, String> serviceData = accountService.findUerByEmail(emailAddress);
         if (serviceData.get("true") != null) {
@@ -213,6 +209,7 @@ public class AccountController {
                 result = new Result(false, "FAILURE!");
             }
         } else {
+            log.info(emailAddress + "意见注册");
             result = new Result(false, serviceData.get("false"));
         }
         Json.toJson(result, response);
@@ -448,24 +445,27 @@ public class AccountController {
         Result result = null;
         //图片审核
         org.json.JSONObject jsonObject = baiDuUtils.checkImage(headImage.getBytes());
-        //如果不合规
-        if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
-            JSONArray dataJSONArray = jsonObject.getJSONArray("data");
-            String msg = dataJSONArray.getJSONObject(0).getString("msg");
-            result = new Result(false, msg);
-        } else {
-            String token = request.getHeader("token");
-            String accountId = tokenService.getAccountIdByToken(token);
-            String headName = random(5);
-            String headPath = accountId + "/" + "headImage" + "/" + headName;
-            Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
-            if (StringUtils.isNotEmpty(ossMap.get(Constant.FILE_IMAGE_URL))) {
-                String url = ossMap.get(Constant.FILE_IMAGE_URL).substring(0, ossMap.get(Constant.FILE_IMAGE_URL).lastIndexOf("?"));
-                result = new Result(true, "上传成功!", url);
+        if (jsonObject == null) {
+            result = new Result(false, "FAILURE");
+        } else
+            //如果不合规
+            if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
+                JSONArray dataJSONArray = jsonObject.getJSONArray("data");
+                String msg = dataJSONArray.getJSONObject(0).getString("msg");
+                result = new Result(false, msg);
             } else {
-                result = new Result(false, "上传失败!");
+                String token = request.getHeader("token");
+                String accountId = tokenService.getAccountIdByToken(token);
+                String headName = random(5);
+                String headPath = accountId + "/" + "headImage" + "/" + headName;
+                Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
+                if (StringUtils.isNotEmpty(ossMap.get(Constant.FILE_IMAGE_URL))) {
+                    String url = ossMap.get(Constant.FILE_IMAGE_URL).substring(0, ossMap.get(Constant.FILE_IMAGE_URL).lastIndexOf("?"));
+                    result = new Result(true, "上传成功!", url);
+                } else {
+                    result = new Result(false, "上传失败!");
+                }
             }
-        }
         Json.toJson(result, response);
     }
 

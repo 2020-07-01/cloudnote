@@ -1,6 +1,7 @@
 package com.baidu;
 
 import com.baidu.aip.contentcensor.AipContentCensor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
  * @Author yq
  * @Date 2020/4/21 10:49
  */
+@Slf4j
 @Component
 public class BaiDuUtils {
 
@@ -32,13 +34,18 @@ public class BaiDuUtils {
 
     /**
      * 图片内容审核
+     *
      * @param byteData
      * @return
      */
     public JSONObject checkImage(byte[] byteData) {
-        AipContentCensor client = baiduConfig.baiDuClient();
-        JSONObject response = client.imageCensorUserDefined(byteData, null);
-        return response;
+        try {
+            AipContentCensor client = baiduConfig.baiDuClient();
+            JSONObject response = client.imageCensorUserDefined(byteData, null);
+            return response;
+        } catch (Exception e) {
+            log.error(e.getMessage(), new Throwable(e));
+        }
+        return null;
     }
-
 }

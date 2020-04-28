@@ -68,7 +68,8 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd class="layui-this"><a href="#" id="all"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
+                        <dd class="layui-this"><a href="#" id="all"><i class="layui-icon layui-icon-picture"></i> 图片</a>
+                        </dd>
                         <dd><a href="#" id="toFilePage"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
                         <dd><a href="#" id="recycle"><i class="layui-icon layui-icon-file-b"></i> 回收站</a></dd>
                     </dl>
@@ -241,12 +242,11 @@
                 , headers: {token: token}
                 , url: '/source/upload_image.json'
                 , accept: 'images'
-                , acceptMime: 'image/jpg, image/png'
+                , acceptMime: '.jpg,.png'
                 , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
                     obj.preview(function (index, file, result) {
 
                     });
-
                 }
                 , done: function (result, index, upload) {//每个文件触发一次，回调一次
                     if (result.code == 0) {//失败，存在重名图片
@@ -301,6 +301,8 @@
                                 layer.close(index);
                             }
                         });
+                    } else if (result.code == 2) {
+                        layer.msg(result.message);
                     } else {
                         table_reload.reload();//刷新数据
                         return layer.msg(result.message);
@@ -338,7 +340,7 @@
 
         //删除图片
         $("#deleteImage").click(function () {
-            if(globalImage == ""){
+            if (globalImage == "") {
                 layer.msg("请先选择图片!");
                 return;
             }
@@ -347,7 +349,7 @@
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: {imageId:globalImage.imageId},
+                data: {imageId: globalImage.imageId},
                 url: "/source/delete_image.json",
                 success: function (result) {
                     if (result.code == 1) {
@@ -411,7 +413,7 @@
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: {imageId:globalImage.imageId},
+                data: {imageId: globalImage.imageId},
                 url: "/source/revert_image.json",
                 success: function (result) {
                     if (result.code == 1) {
@@ -439,7 +441,7 @@
                 contentType: "application/json",
                 dataType: 'json',
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                data: {imageId:globalImage.imageId,imagePath:globalImage.imagePath},
+                data: {imageId: globalImage.imageId, imagePath: globalImage.imagePath},
                 url: "/source/completely_remove_image.json",
                 success: function (result) {
                     if (result.code == 1) {
