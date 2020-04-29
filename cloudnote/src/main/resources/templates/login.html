@@ -25,27 +25,25 @@
                 <label class="layadmin-user-login-icon layui-icon layui-icon-username"
                        for="accountName"></label>
                 <input type="text" name="accountName" id="accountName" lay-verify="required"
-                       placeholder="用户名"
+                       placeholder="用户名" maxlength="10"
                        class="layui-input">
             </div>
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-password"
                        for="accountPassword"></label>
-                <input type="password" name="accountPassword" id="accountPassword" lay-verify="required"
+                <input type="password" name="accountPassword" id="accountPassword" lay-verify="required" maxlength="15"
                        placeholder="密码" class="layui-input">
             </div>
 
             <div class="layui-form-item" style="margin-bottom: 20px;">
-                <input type="checkbox" name="remember" lay-skin="primary" title="记住密码">
+                <!--<input type="checkbox" name="remember" lay-skin="primary" title="记住密码">-->
                 <a href="/findPassword" class="layadmin-user-jump-change layadmin-link"
                    style="margin-top: 7px;">忘记密码？</a>
             </div>
             <div class="layui-form-item">
                 <button class="layui-btn layui-btn-fluid" type="button" lay-submit lay-filter="login">登 入</button>
             </div>
-            <div class="layui-trans layui-form-item layadmin-user-login-other">
-
-
+            <div class="layui-trans layui-form-item layadmin-user-login-other" style="padding-top:0px" >
                 <a href="/register" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
             </div>
         </div>

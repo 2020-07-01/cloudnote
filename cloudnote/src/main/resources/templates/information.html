@@ -18,6 +18,7 @@
         .layuiadmin-card-list {
             padding: 10px
         }
+
     </style>
 </head>
 
@@ -69,7 +70,7 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd class="layui-this"><a href="javascript:location.reload();"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd class="layui-this"><a href="javascript:location.reload();"><i class="layui-icon layui-icon-user"></i> 用户设置</a></dd>
                         <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a></dd>
                         <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>
@@ -120,7 +121,7 @@
                                                     <div class="layui-inline">
                                                         <div class="layui-input-inline">
                                                             <input type="text" name="area" id="area"
-                                                                   placeholder="例:江苏省-无锡市"
+                                                                   placeholder="例:江苏省-无锡市" maxlength="255"
                                                                    autocomplete="off" class="layui-input">
                                                         </div>
                                                     </div>
@@ -174,7 +175,7 @@
                                         <div class="layui-form-item layui-form-text">
                                             <label class="layui-form-label">备注</label>
                                             <div class="layui-input-block">
-                                            <textarea name="remark" id="remark" placeholder="请输入内容"
+                                            <textarea name="remark" id="remark" placeholder="请输入内容" maxlength="200"
                                                       class="layui-textarea"></textarea>
                                             </div>
                                         </div>

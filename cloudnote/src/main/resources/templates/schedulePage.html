@@ -98,7 +98,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="#" id="toInformationPage"><i class="layui-icon layui-icon-user"></i> 账号设置</a></dd>
+                        <dd><a href="#" id="toInformationPage"><i class="layui-icon layui-icon-user"></i> 用户设置</a></dd>
                         <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a>
                         </dd>
                         <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
@@ -180,7 +180,7 @@
 
                     <div class="layui-form-item layui-form-text">
                         <textarea id="scheduleContent" class="layui-textarea"
-                                  placeholder="请输入内容"
+                                  placeholder="请输入内容" maxlength="500"
                                   style="height: 50px;resize: none"></textarea>
                     </div>
                 </div>
@@ -206,7 +206,7 @@
         //弹窗
         var index;
 
-        var scheduleId = "";
+        let globalSchedule = "";
 
         //加载日历插件
         loading_date();
@@ -295,10 +295,13 @@
                         if (result.code == 1) {
                             $("#scheduleTitle").val(result.data.scheduleTitle);
                             $("#scheduleContent").val(result.data.scheduleContent);
-
                             form.val("scheduleAheadTime", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
                                 "aheadTime": result.data.aheadTime // "name": "value"
                             });
+                            //全局数据赋值
+                            globalSchedule = result.data;
+                        }else {
+                            layer.msg(result.message);
                         }
                     },
                 })
@@ -313,7 +316,7 @@
                 title: false,
                 area: ['400px', '400px'], //宽高
            //     btn: ['创建', '更新', '删除'],
-                btn: ['创建'],
+                btn: ['创建','删除'],
                 content: $("#scheduleSpace")
                 , success: function () {
                     //打开成功后的回调
@@ -323,17 +326,15 @@
                     //创建日程
                     saveSchedule(value);
                 },
-                btn2: function () {
-                    //更新
-                },
-                btn3: function (index, layero) {
-                    //删除
+                btn2: function (index, layero) {
                     //清空编辑区
                     $("#scheduleTitle").val("");
                     $("#scheduleContent").val("");
                     form.val("scheduleAheadTime", {
                         "aheadTime": ""
                     });
+                    //删除日程
+
                 },
                 cancel: function () {
                     //清空编辑区
@@ -378,6 +379,33 @@
                 }
             })
         }
+
+        //删除日程
+        function removeSchedule(data) {
+            if(globalSchedule == ""){
+                return;
+            }else {
+                $.ajax({
+                    type: "get",
+                    contentType: "application/json",
+                    dataType: 'json',
+                    async: false,
+                    headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                    url: "/schedule/schedule_list.json",
+                    error: function (result) {
+
+                    },
+                    success: function (result) {
+                        if (result.code == 1) {
+                            data = JSON.stringify(result.data);
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            }
+        }
+
 
         //获取所有活动内容
         function getScheduleList() {

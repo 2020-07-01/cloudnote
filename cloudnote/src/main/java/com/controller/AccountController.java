@@ -105,6 +105,8 @@ public class AccountController {
         Json.toJson(result, response);
     }
 
+
+
     /**
      * 用户名登录
      * 登陆成功后在缓存中创建私有Map
@@ -122,10 +124,6 @@ public class AccountController {
         jsonObject = JSON.parseObject(jsonParam);
         String accountName = jsonObject.getString("accountName");
         try {
-            /**
-             * 根据用户名查询数据进行解密核对密码
-             * 密码核对成功后再进行更新数据
-             */
             Account account;
             Condition condition = new Condition();
             condition.setAccountName(accountName);
@@ -441,7 +439,6 @@ public class AccountController {
     @RequestMapping(value = "/upload_image.json")
     public void uploadHeadImage(@RequestParam(value = "file", required = false) MultipartFile headImage,
                                 HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         Result result = null;
         //图片审核
         org.json.JSONObject jsonObject = baiDuUtils.checkImage(headImage.getBytes());
@@ -457,7 +454,8 @@ public class AccountController {
                 String token = request.getHeader("token");
                 String accountId = tokenService.getAccountIdByToken(token);
                 String headName = random(5);
-                String headPath = accountId + "/" + "headImage" + "/" + headName;
+                String imageType = headImage.getOriginalFilename().substring(headImage.getOriginalFilename().lastIndexOf(".") + 1);// 获取文件的类型
+                String headPath = accountId + "/" + "headImage" + "/" + headName + "." + imageType;
                 Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
                 if (StringUtils.isNotEmpty(ossMap.get(Constant.FILE_IMAGE_URL))) {
                     String url = ossMap.get(Constant.FILE_IMAGE_URL).substring(0, ossMap.get(Constant.FILE_IMAGE_URL).lastIndexOf("?"));

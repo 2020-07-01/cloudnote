@@ -144,7 +144,7 @@ public class AdminController {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String currentDay = format.format(new Date());
 
-        //活月用户:
+        //活跃用户:
         Integer aliveCount = accountService.findAliveAccountByCondintion(new Condition());
         List<Note> currentDayNoteList = noteService.findNoteByCondition(new Condition(currentDay));
         List<Image> currentDayImageList = imageService.findImageByCondition(new Condition(currentDay));

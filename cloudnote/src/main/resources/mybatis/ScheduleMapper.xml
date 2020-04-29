@@ -38,7 +38,7 @@
         <if test="scheduleId != null and scheduleId !=''">
             and schedule_id = #{scheduleId,jdbcType=VARCHAR}
         </if>
-        ORDER BY create_time asc
+        ORDER BY create_time desc
     </select>
 
     <!--创建日程-->

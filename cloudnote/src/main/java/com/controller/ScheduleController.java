@@ -141,6 +141,7 @@ public class ScheduleController {
         Json.toJson(new Result(true, "查询成功", data), response);
     }
 
+
     /**
      * 初始化当日所有的日程
      *
@@ -198,5 +199,11 @@ public class ScheduleController {
             result = new Result(true, "SUCCESS", null);
         }
         Json.toJson(result, response);
+    }
+
+
+
+    public void deleteSchedule(){
+
     }
 }
