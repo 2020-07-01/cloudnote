@@ -40,7 +40,7 @@ public class FileServiceImpl implements FileService {
     CacheService cacheService;
 
     /**
-     * 上传文件
+     * 上传文档
      *
      * @param file
      * @param accountId
@@ -59,9 +59,9 @@ public class FileServiceImpl implements FileService {
         if (fileMapper.selectFile(repeatFile) == null) {
             String fileType = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 文件类型
             Long fileSize = file.getSize();//文件大小
-            String filePath = getFilePath(wholeName, accountId.toString(), fileType);// 生成图片在oss上的目录
+            String filePath = getFilePath(wholeName, accountId, fileType);// 生成图片在oss上的目录
             // 存储到oss
-            ossUtil.putObject(file, accountId.toString());
+            ossUtil.putObject(file, accountId);
 
             CNFile cnFile = new CNFile();
             cnFile.setFileId(UUIDUtils.getUUID());
@@ -113,17 +113,15 @@ public class FileServiceImpl implements FileService {
             fileCache.put(Constant.CACHE_NEW_NAME, newWholeName);//存储新的文件名
             fileCache.put(Constant.CACHE_SIZE, file.getSize());//存储文件大小
             cacheMap.put(newWholeName, fileCache);
-
             result.put("false", "文件名重复!");
             result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><p style=\"text-align: center;font-weight: bold;\">" + newFileName + "." + fileType + "</p>");
             result.put("fail", newWholeName);
-
         }
         return result;
     }
 
     /**
-     * 存储图片
+     * 存储文档
      *
      * @param file
      * @return

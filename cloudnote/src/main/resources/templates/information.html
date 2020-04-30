@@ -61,7 +61,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 所有日程</a>
+                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 我的日程</a>
                     </dl>
                 </li>
             </ul>
@@ -70,8 +70,10 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd class="layui-this"><a href="javascript:location.reload();"><i class="layui-icon layui-icon-user"></i> 用户设置</a></dd>
-                        <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a></dd>
+                        <dd class="layui-this"><a href="javascript:location.reload();"><i
+                                class="layui-icon layui-icon-user"></i> 用户设置</a></dd>
+                        <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a>
+                        </dd>
                         <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>
                 </li>
@@ -130,7 +132,7 @@
                                             <div class="layui-col-sm7 layui-col-md3">
                                                 <div class="layui-card">
                                                     <div class="layui-card-header">
-                                                        图片预览
+                                                        头像预览
                                                     </div>
                                                     <div class="layui-card-body layuiadmin-card-list">
                                                         <div>
@@ -199,7 +201,9 @@
     </div>
     <!-- 底部固定区域 -->
     <div class="layui-footer layui-bg-black">
-        © layui.com - 底部固定区域
+        <div class="layui-main">
+            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: #fffbf0;">苏ICP备19045217号</a>
+        </div>
     </div>
 </div>
 </body>
@@ -289,6 +293,10 @@
         });
 
         $("#logout").click(function () {
+            //清空sessionStorage
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("headAccountName");
+            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 

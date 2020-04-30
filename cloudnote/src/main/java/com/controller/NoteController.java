@@ -91,7 +91,6 @@ public class NoteController {
     @UserLoginToken
     @RequestMapping(value = "/save_note.json")
     public void insertNote(@RequestBody Note noteVo, HttpServletRequest request, HttpServletResponse response) {
-
         Result result = null;
         String token = request.getHeader("token");
         String accountId = tokenUtil.getAccountIdByToken(token);
@@ -143,7 +142,6 @@ public class NoteController {
     public void deleteNote(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
         Result result = null;
         String token = request.getHeader("token");
-
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         String noteId = jsonObject.getString("noteId");
         Note note = new Note();
@@ -178,7 +176,6 @@ public class NoteController {
         //是否删除
         note.setIsRecycle(recycle);
         note.setStar(star);
-
         List<String> noteTypes = noteService.selectNoteType(note);
         HashMap data = new HashMap();
         ArrayList<TextValue> textValues = new ArrayList<>();

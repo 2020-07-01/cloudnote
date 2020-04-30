@@ -45,6 +45,12 @@
             right: 0;
             bottom: 0
         }
+
+        .group-button {
+            height: 35px;
+            line-height: 35px;
+            padding: 0 13px;
+        }
     </style>
 </head>
 <body>
@@ -76,7 +82,8 @@
                     <a href="javascript:;"><i class="layui-icon layui-icon-component"></i> 我的资源</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
                         <dd><a href="#" id="toImagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
-                        <dd  class="layui-this"><a href="#" id="all"><i class="layui-icon layui-icon-file-b"></i> 文档</a></dd>
+                        <dd class="layui-this"><a href="#" id="all"><i class="layui-icon layui-icon-file-b"></i> 文档</a>
+                        </dd>
                         <dd><a href="#" id="recycle"><i class="layui-icon layui-icon-file-b"></i> 回收站</a></dd>
                     </dl>
                 </li>
@@ -86,7 +93,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 所有日程</a>
+                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 我的日程</a>
                     </dl>
                 </li>
             </ul>
@@ -139,7 +146,8 @@
                     <div class="grid-demo">
                         <!--标题区-->
                         <div class="layui-row">
-                            <div class="layui-col-xs8 layui-col-sm8">
+
+                            <div class="layui-col-xs9 layui-col-sm9">
                                 <div class="layui-input-inline" style="width: 100%;float:left;">
                                     <input id="fileWholeName" type="text" name="title"
                                            class="layui-input note-title" lay-verify="title" readonly
@@ -147,38 +155,35 @@
                                 </div>
                             </div>
 
-                            <div class="layui-col-md4 layui-col-sm4" style="text-align: center">
+                            <div class="layui-col-md3 layui-col-sm3" style="text-align: center">
                                 <div id="buttonGroup" class="layui-btn-group" style="display: block">
                                     <a id="downloadFile" href="" download=""
-                                       class="layui-btn layui-btn-primary"
-                                       style="border:none;padding: 0 5px;"><i
-                                            class="layui-icon layui-icon-download-circle"
-                                            style="font-size: 32px;"></i></a>
-                                    <button id="deleteFile" type="button" class="layui-btn layui-btn-primary"
-                                            button-space style="border:none;padding: 0 5px;"><i
-                                            class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
-                                    </button>
-                                    <button type="button" class="layui-btn layui-btn-primary"
-                                            style="border:none;padding: 0 5px;"><i
-                                            class="layui-icon layui-icon-about" style="font-size: 32px;"></i>
+                                       class="layui-btn layui-btn-primary group-button">下载</a>
+                                    <button type="button" class="layui-btn layui-btn-primary group-button"
+                                            id="deleteFile">删除
                                     </button>
                                 </div>
-
 
                                 <div id="recycleButton" style="display: none;">
+
                                     <button id="revertFile" type="button"
                                             style="font-size: 16px; "
-                                            class="layui-btn layui-btn-primary layui-btn-radius">恢复文件
+                                            class="layui-btn layui-btn-primary group-button">恢复文档
                                     </button>
                                     <button id="completelyRemove" type="button" style="font-size: 16px;"
-                                            class="layui-btn layui-btn-primary layui-btn-radius">彻底删除
+                                            class="layui-btn layui-btn-primary group-button">彻底删除
                                     </button>
+
                                 </div>
+
                             </div>
                         </div>
+
                         <div class="layui-row">
                             <div class="layui-col-md12">
-                                <iframe id="showFile" src="" style="height: 430px" class="layadmin-iframe"></iframe>
+                                <iframe id="showFile" src=""
+                                        style="height: 430px;border-bottom: none;border-left: none;border-right: none;"
+                                        class="layadmin-iframe"></iframe>
                             </div>
                         </div>
                     </div>
@@ -187,9 +192,11 @@
         </div>
     </div>
 
-
+    <!-- 底部固定区域 -->
     <div class="layui-footer layui-bg-black">
-        © layui.com - 底部固定区域
+        <div class="layui-main">
+            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: #fffbf0;">苏ICP备19045217号</a>
+        </div>
     </div>
 </div>
 </body>
@@ -212,10 +219,14 @@
         var sideId = "all";
         var globalFile = "";
 
-        initFileist("", "NO");
+        //设置下载按钮无反应
+        $('#downloadFile').attr('download', "");
+        $('#downloadFile').attr('href', "javascript:void(0);");
+
+        initFileList("", "NO");
 
         //初始化文件列表
-        function initFileist(key, recycle) {
+        function initFileList(key, recycle) {
             table.render({
                 elem: '#fileList',
                 where: {token: token, key: key, recycle: recycle},//传递token到服务端
@@ -280,9 +291,9 @@
                                     success: function (result) {
                                         if (result.code == 1) {
                                             if (sideId == "all") {
-                                                initFileist("", "NO");
+                                                initFileList("", "NO");
                                             } else {
-                                                initFileist("", "YES");
+                                                initFileList("", "YES");
                                             }
                                         }
                                     }
@@ -308,9 +319,9 @@
                         });
                     } else {
                         if (sideId == "all") {
-                            initFileist("", "NO");
+                            initFileList("", "NO");
                         } else {
-                            initFileist("", "YES");
+                            initFileList("", "YES");
                         }
 
 
@@ -371,7 +382,9 @@
                     if (result.code == 1) {
                         $('#fileWholeName').val("");
                         $('#showFile').attr('src', "");
-                        initFileist("", "NO");
+                        $('#downloadFile').attr('download', "");
+                        $('#downloadFile').attr('href', "javascript:void(0);");
+                        initFileList("", "NO");
                         globalFile = "";
                         layer.msg('删除成功!');
                     }
@@ -383,9 +396,9 @@
         $("#searchFile").click(function () {
             let key = $("#inputSearchFile").val();
             if (sideId == "all") {
-                initFileist(key, "NO");
+                initFileList(key, "NO");
             } else {
-                initFileist(key, "YES");
+                initFileList(key, "YES");
             }
         });
 
@@ -394,7 +407,10 @@
             $('#fileWholeName').val("");
             $('#showFile').attr('src', "");
             globalFile = "";
-            initFileist("", "NO");
+            //设置下载按钮无反应
+            $('#downloadFile').attr('download', "");
+            $('#downloadFile').attr('href', "javascript:void(0);");
+            initFileList("", "NO");
             $('#buttonGroup').css({'display': 'block'});
             $('#recycleButton').css({'display': 'none'});
         });
@@ -402,7 +418,7 @@
         //回收站
         $("#recycle").click(function () {
             sideId = "recycle";
-            initFileist("", "YES");
+            initFileList("", "YES");
             //清空右侧区域
             $('#fileWholeName').val("");
             $('#showFile').attr('src', "");
@@ -429,7 +445,7 @@
                         layer.msg(result.message);
                         $('#fileWholeName').val("");
                         $('#showFile').attr('src', "");
-                        initFileist("", "NO");
+                        initFileList("", "YES");
                         globalFile = "";
                     } else {
                         layer.msg(result.message);
@@ -453,7 +469,7 @@
                 url: "/source/completely_remove_file.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        initFileist("", "YES");
+                        initFileList("", "YES");
                         layer.msg(result.message);
                         //清空右侧区域
                         $('#fileWholeName').val("");

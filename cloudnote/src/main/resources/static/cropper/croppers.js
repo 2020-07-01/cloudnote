@@ -65,7 +65,8 @@ layui.config({
 
             $(elem).on('click',function () {
                 layer.open({
-                    type: 1
+                    title: '头像设置'
+                    , type: 1
                     , content: content
                     , area: ['600px', '400px']
                     , success: function () {

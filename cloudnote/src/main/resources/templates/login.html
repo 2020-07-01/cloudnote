@@ -43,16 +43,14 @@
             <div class="layui-form-item">
                 <button class="layui-btn layui-btn-fluid" type="button" lay-submit lay-filter="login">登 入</button>
             </div>
-            <div class="layui-trans layui-form-item layadmin-user-login-other" style="padding-top:0px" >
+            <div class="layui-trans layui-form-item layadmin-user-login-other" style="padding-top:0px">
                 <a href="/register" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
             </div>
         </div>
     </div>
 
     <div class="layui-trans layadmin-user-login-footer">
-
-        <p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>
-
+        <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">苏ICP备19045217号</a>
     </div>
 </div>
 </body>
@@ -76,11 +74,11 @@
                         var tokenData = result.data.token;
                         sessionStorage.setItem("token", tokenData);//存储token
                         window.location.href = "/to_note_page?token=" + tokenData;//进入主页
-                    } else if (result.code == "000"){
+                    } else if (result.code == "000") {
                         var tokenData = result.data.token;
                         sessionStorage.setItem("token", tokenData);//存储token
                         window.location.href = "/admin?token=" + tokenData; //进入管理页面
-                    }else {
+                    } else {
                         layer.msg(result.message);
                     }
                 },

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset='utf-8'>
+    <meta charset='UTF-8'>
     <title>cloudNote</title>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
@@ -19,6 +19,13 @@
         .layui-table, .layui-table-view {
             margin: 0 0;
         }
+
+        .group-button {
+            height: 35px;
+            line-height: 35px;
+            padding: 0 10px;
+        }
+
 
         .layui-form-item {
         }
@@ -47,7 +54,8 @@
                     <a><i class="layui-icon layui-icon-edit"></i> 我的笔记</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
                         <dd><a href="#" id="cleanEditSpace"><i class="layui-icon layui-icon-edit"></i> 创建笔记</a></dd>
-                        <dd  class="layui-this"><a href="#" id="all"><i class="layui-icon layui-icon-form"></i> 所有笔记</a></dd>
+                        <dd class="layui-this"><a href="#" id="all"><i class="layui-icon layui-icon-form"></i> 所有笔记</a>
+                        </dd>
                         <dd><a href="#" id="starList"><i class="layui-icon layui-icon-star-fill"> 收藏夹</i></a></dd>
                         <dd><a href="#" id="recycle"><i class="layui-icon layui-icon-delete"> 回收站</i></a></dd>
                     </dl>
@@ -68,7 +76,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 所有日程</a>
+                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 我的日程</a>
                     </dl>
                 </li>
             </ul>
@@ -132,40 +140,37 @@
 
                     <!--标题区-->
                     <div class="layui-row">
-                        <div class="layui-col-md8 layui-col-sm8">
+                        <div class="layui-col-md9 layui-col-sm9">
                             <div class="layui-input-inline" style="width: 100%;float:left;">
                                 <input type="text" id="noteTitle" name="noteTitle"
                                        class="layui-input note-title" maxlength="30" style="font-size: 16px"
                                        placeholder="标题">
                             </div>
                         </div>
-                        <div class="layui-col-md4 layui-col-sm4" style="text-align: center">
+                        <div class="layui-col-md3 layui-col-sm3" style="text-align: center">
                             <div id="buttonGroup" class="layui-btn-group" style="display: block">
-                                <button id="saveNote" type="button" class="layui-btn layui-btn-primary"
-                                        style="border:none;padding: 0 5px;"><i
-                                        class="layui-icon layui-icon-add-1" style="font-size: 32px;"></i>
+                                <button type="button" class="layui-btn layui-btn-primary group-button"
+                                        id="saveNote"> 增加
                                 </button>
-                                <button type="button" id="setType" class="layui-btn layui-btn-primary"
-                                        style="border:none;padding: 0 5px"><i
-                                        class="layui-icon layui-icon-note" style="font-size: 32px;"></i>
+                                <button type="button" class="layui-btn layui-btn-primary group-button"
+                                        id="setType"> 标签
                                 </button>
-                                <button id="deleteNote" type="button" class="layui-btn layui-btn-primary"
-                                        style="border:none;padding: 0 5px;"><i
-                                        class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
+                                <button type="button" class="layui-btn layui-btn-primary group-button"
+                                        id="deleteNote">删除
                                 </button>
-                                <button type="button" id="star" class="layui-btn layui-btn-primary"
-                                        style="border:none;padding: 0 5px"><i id="starIcon" class="layui-icon"
-                                                                              style="font-size: 32px;">&#xe600;</i>
+                                <button type="button" id="star" class="layui-btn layui-btn-primary group-button"><i
+                                        id="starIcon"
+                                        class="layui-icon">&#xe600;</i>
                                 </button>
                             </div>
 
                             <div id="recycleButton" style="display: none;">
                                 <button id="revertNote" type="button"
                                         style="font-size: 16px; "
-                                        class="layui-btn layui-btn-primary layui-btn-radius">恢复笔记
+                                        class="layui-btn layui-btn-primary group-button">恢复笔记
                                 </button>
                                 <button id="completelyRemove" type="button" style="font-size: 16px;"
-                                        class="layui-btn layui-btn-primary layui-btn-radius">彻底删除
+                                        class="layui-btn layui-btn-primary group-button">彻底删除
                                 </button>
                             </div>
 
@@ -202,8 +207,11 @@
         </div>
     </div>
 
+    <!-- 底部固定区域 -->
     <div class="layui-footer layui-bg-black">
-        © layui.com - 底部固定区域
+        <div class="layui-main">
+            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: #fffbf0;">苏ICP备19045217号</a>
+        </div>
     </div>
 </div>
 </body>

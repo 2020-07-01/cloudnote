@@ -37,6 +37,12 @@
             border: none;
         }
 
+        .group-button {
+            height: 35px;
+            line-height: 35px;
+            padding: 0 13px;
+        }
+
     </style>
 </head>
 <body>
@@ -80,7 +86,7 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 所有日程</a>
+                        <dd><a href="#" id="toSchedulePage"><i class="layui-icon layui-icon-form"></i> 我的日程</a>
                     </dl>
                 </li>
             </ul>
@@ -104,7 +110,6 @@
             <div class="layui-row">
                 <div class="layui-col-xs3">
                     <div class="grid-demo grid-demo-bg1">
-
                         <div class="layui-row">
                             <div class="layui-col-xs9">
                                 <input id="input-search-image" type="text" placeholder="搜索" autocomplete="off"
@@ -133,7 +138,7 @@
                     <div class="grid-demo">
                         <!--标题区-->
                         <div class="layui-row">
-                            <div class="layui-col-xs8 layui-col-sm8">
+                            <div class="layui-col-xs9 layui-col-sm9">
                                 <div class="layui-input-inline" style="width: 100%;float:left;">
                                     <input id="imageWholeName" type="text" name="title" readonly
                                            class="layui-input note-title" lay-verify="title"
@@ -141,31 +146,25 @@
                                 </div>
                             </div>
 
-                            <div class="layui-col-md4 layui-col-sm4" style="text-align: center">
+                            <div class="layui-col-md3 layui-col-sm3" style="text-align: center">
                                 <div id="buttonGroup" class="layui-btn-group" style="display: block">
-                                    <button id="downloadImage" type="button"
-                                            class="layui-btn layui-btn-primary"
-                                            style="border:none;padding: 0 5px;"><i
-                                            class="layui-icon layui-icon-download-circle"
-                                            style="font-size: 32px;"></i></button>
-                                    <button id="deleteImage" type="button" class="layui-btn layui-btn-primary"
-                                            button-space
-                                            style="border:none;padding: 0 5px;" onmouseover="123"><i
-                                            class="layui-icon layui-icon-delete" style="font-size: 32px;"></i>
+
+                                    <button type="button" class="layui-btn layui-btn-primary group-button"
+                                            id="downloadImage"> 下载
                                     </button>
-                                    <button type="button" class="layui-btn layui-btn-primary"
-                                            style="border:none;padding: 0 5px;"><i
-                                            class="layui-icon layui-icon-about" style="font-size: 32px;"></i>
+
+                                    <button type="button" class="layui-btn layui-btn-primary group-button"
+                                            id="deleteImage">删除
                                     </button>
                                 </div>
 
                                 <div id="recycleButton" style="display: none;">
                                     <button id="revertImage" type="button"
                                             style="font-size: 16px; "
-                                            class="layui-btn layui-btn-primary layui-btn-radius">恢复图片
+                                            class="layui-btn layui-btn-primary group-button">恢复图片
                                     </button>
                                     <button id="completelyRemove" type="button" style="font-size: 16px;"
-                                            class="layui-btn layui-btn-primary layui-btn-radius">彻底删除
+                                            class="layui-btn layui-btn-primary group-button">彻底删除
                                     </button>
                                 </div>
                             </div>
@@ -188,8 +187,11 @@
             </div>
         </div>
     </div>
+    <!-- 底部固定区域 -->
     <div class="layui-footer layui-bg-black">
-        © layui.com - 底部固定区域
+        <div class="layui-main">
+            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: #fffbf0;">苏ICP备19045217号</a>
+        </div>
     </div>
 </div>
 </body>
@@ -319,14 +321,12 @@
             });
         }
 
-        //监听行单击事件
+        //查看图片
         table.on('row(table-filter)', function (obj) {
             globalImage = obj.data;
-            $('#showImage').attr('src', obj.data.imageUrl);
-            //显示标题
-            $('#imageWholeName').val(obj.data.wholeName);
-            //标注选中样式
-            obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+            $('#showImage').attr('src', obj.data.imageUrl);//显示图片
+            $('#imageWholeName').val(obj.data.wholeName);  //显示标题
+            obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');//样式设置
         });
 
         //下载图片

@@ -99,7 +99,7 @@ public class UploadController {
     }
 
     /**
-     * 重命名文件
+     * 重命名图片
      *
      * @param request
      * @param response
@@ -151,7 +151,7 @@ public class UploadController {
     }
 
     /**
-     * 不重命名文件
+     * 不重命名图片
      */
     @UserLoginToken
     @RequestMapping(value = "/no_rename_image.json")
@@ -273,10 +273,10 @@ public class UploadController {
     }
 
 
-    /************************************************文件资源*************************************************************/
+    /************************************************文档资源*************************************************************/
 
     /**
-     * 上传文件
+     * 上传文档
      *
      * @param uploadFile
      * @param request
@@ -302,7 +302,7 @@ public class UploadController {
     }
 
     /**
-     * 重命名文件
+     * 重命名文档
      *
      * @param request
      * @param response
@@ -356,7 +356,7 @@ public class UploadController {
 
 
     /**
-     * 不重命名文件
+     * 不重命名文档
      *
      * @param jsonString
      * @param request
@@ -378,7 +378,7 @@ public class UploadController {
 
 
     /**
-     * 获取文件路径
+     * 获取文文档路径
      *
      * @param sourceFileName
      * @param accountId
@@ -390,7 +390,7 @@ public class UploadController {
     }
 
     /**
-     * 获取文件列表/关键字查询
+     * 获取文档列表/关键字查询
      *
      * @param page
      * @param pagesize

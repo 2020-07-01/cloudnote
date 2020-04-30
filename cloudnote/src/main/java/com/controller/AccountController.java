@@ -106,7 +106,6 @@ public class AccountController {
     }
 
 
-
     /**
      * 用户名登录
      * 登陆成功后在缓存中创建私有Map
@@ -214,7 +213,7 @@ public class AccountController {
     }
 
     /**
-     * 修改密码
+     * 系统设置->修改密码
      *
      * @param jsonString
      * @param request
@@ -223,17 +222,13 @@ public class AccountController {
     @UserLoginToken
     @RequestMapping(value = "/update_password.json")
     public void updatePassword(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-
         Result result;
-
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String token = request.getHeader("token");
         String accountId = tokenService.getAccountIdByToken(token);
-
         String currentPassword = jsonObject.getString("currentPassword");
         String accountPassword = jsonObject.getString("accountPassword");
         String confirmPassword = jsonObject.getString("confirmPassword");
-
         try {
             //获取旧的密码
             String oldAccountPassword = accountService.findPasswordByAccountId(accountId);
@@ -262,7 +257,6 @@ public class AccountController {
             log.error(e.getMessage(), new Throwable(e));
             result = new Result(false, "FAILURE");
         }
-
         Json.toJson(result, response);
     }
 
@@ -338,7 +332,7 @@ public class AccountController {
     }
 
     /**
-     * 退出登录->修改改login status->删除缓存->跳转至登录界面
+     * 注销登录->修改login status->删除缓存->跳转至登录界面
      *
      * @param request
      * @param response
@@ -349,14 +343,13 @@ public class AccountController {
 
         String token = request.getParameter("token");
         String accountId = tokenService.getAccountIdByToken(token);
-        //删除缓存
-        cacheService.deleteValue(String.valueOf(accountId));
-        Account account = new Account();
-        account.setIsOnline("OFFLINE");
-        account.setAccountId(accountId);
-        accountService.updateLoginStatus(account);
-
         try {
+            //删除缓存
+            cacheService.deleteValue(String.valueOf(accountId));
+            Account account = new Account();
+            account.setIsOnline("OFFLINE");
+            account.setAccountId(accountId);
+            accountService.updateLoginStatus(account);
             response.sendRedirect("/login");
         } catch (IOException e) {
             e.printStackTrace();
@@ -364,7 +357,7 @@ public class AccountController {
     }
 
     /**
-     * 账号设置
+     * 用户设置->修改用户信息以及头像
      *
      * @param jsonString
      * @param request
@@ -373,12 +366,9 @@ public class AccountController {
     @UserLoginToken
     @RequestMapping(value = "/update_account.json")
     public void updateAccount(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-
         String token = request.getHeader("token");
         String accountId = tokenService.getAccountIdByToken(token);
-
         JSONObject jsonObject = JSON.parseObject(jsonString);
-
         Account account = new Account();
         account.setAccountId(accountId);
         if (StringUtils.isNotEmpty(jsonObject.getString("sex"))) {
@@ -399,11 +389,8 @@ public class AccountController {
         if (StringUtils.isNotEmpty(jsonObject.getString("phone"))) {
             account.setPhone(jsonObject.getString("phone"));
         }
-
         accountService.updateAccount(account);
-
         Json.toJson(new Result(true, "设置成功!"), response);
-
     }
 
     /**
@@ -428,7 +415,7 @@ public class AccountController {
     }
 
     /**
-     * 上传头像:返回头像的url连接
+     * 上传头像->返回头像的url地址
      *
      * @param headImage
      * @param request

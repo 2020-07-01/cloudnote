@@ -54,13 +54,13 @@ public class NoteServiceImpl implements NoteService {
         Map<Object, String> result = new HashMap();
         String noteId = UUIDUtils.getUUID();
         noteVo.setNoteId(noteId);
-
         try {
             if (StringUtils.isBlank(noteVo.getNoteTitle())) {
                 result.put(false, "标题不能为空!");
             } else if (StringUtils.isBlank(noteVo.getNoteContent())) {
                 result.put(false, "内容不能为空!");
-            } else if (noteVo.getNoteContent().trim().length() > 20000) {
+            } else if (noteVo.getNoteContent().trim().length() > 60000) {
+                log.info("文本长度超过限制!" + "length:" + noteVo.getNoteContent().trim().length());
                 result.put(false, "内容长度超过限制!");
             } else {
                 Map<Boolean, String> map = check(noteVo);
@@ -68,6 +68,8 @@ public class NoteServiceImpl implements NoteService {
                 if (StringUtils.isNotEmpty(map.get(true))) {
                     //进行加密
                     String noteContent = aseUtils.encrypt(noteVo.getNoteContent().trim().getBytes("UTF-8"), noteVo.getAccountId().toString().getBytes("UTF-8"));
+                    log.info("加密前的长度:"+noteVo.getNoteContent().trim().length());
+                    log.info("加密后的长度:"+noteContent.length());
                     noteVo.setNoteContent(noteContent);
 
                     //设置type

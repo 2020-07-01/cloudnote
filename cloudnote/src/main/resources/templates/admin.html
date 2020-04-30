@@ -53,6 +53,7 @@
             height: 185px !important;
             background-color: #fff
         }
+
         .layadmin-backlog .layadmin-backlog-body {
             display: block;
             padding: 10px 15px;
@@ -131,7 +132,7 @@
                             <p id="noteCount" class="layuiadmin-big-font"></p>
                             <p>
                                 今日新创建
-                                <span  id="currentDayNoteCount" class="layuiadmin-span-color"><i
+                                <span id="currentDayNoteCount" class="layuiadmin-span-color"><i
                                         class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
                             </p>
                         </div>
@@ -165,7 +166,8 @@
                             <p id="fileCount" class="layuiadmin-big-font"></p>
                             <p>
                                 今日新创建
-                                <span id="currentDayFileCount" class="layuiadmin-span-color"><i class="layui-inline layui-icon layui-icon-user"></i></span>
+                                <span id="currentDayFileCount" class="layuiadmin-span-color"><i
+                                        class="layui-inline layui-icon layui-icon-user"></i></span>
                             </p>
                         </div>
                     </div>
@@ -182,36 +184,36 @@
                     </div>
                 </div>
 
-        <!--        <div class="layui-row layui-col-space15">
-                    <div class="layui-card">
-                        <div class="layui-card-header">邮件服务</div>
-                        <div class="layui-card-body">
+                <!--        <div class="layui-row layui-col-space15">
+                            <div class="layui-card">
+                                <div class="layui-card-header">邮件服务</div>
+                                <div class="layui-card-body">
 
-                            <div class="layui-col-sm6">
-                                <div class="layui-card">
-                                    <div class="layui-card-header">邮件内容</div>
-                                    <div class="layui-card-body">
+                                    <div class="layui-col-sm6">
+                                        <div class="layui-card">
+                                            <div class="layui-card-header">邮件内容</div>
+                                            <div class="layui-card-body">
 
 
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="layui-col-sm6">
-                                <div class="layui-card">
-                                    <div class="layui-card-header">选择用户</div>
-                                    <div class="layui-card-body">
-                                        <div class="layui-tab-content">
-                                            <div class="layui-tab-item layui-show">
+                                    <div class="layui-col-sm6">
+                                        <div class="layui-card">
+                                            <div class="layui-card-header">选择用户</div>
+                                            <div class="layui-card-body">
+                                                <div class="layui-tab-content">
+                                                    <div class="layui-tab-item layui-show">
 
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>-->
+                        </div>-->
 
                 <!-- <div class="layui-col-md6">
                     <div class="layui-card">
@@ -251,59 +253,63 @@
                     </div>
                 </div>-->
 
-              <!--  <div class="layui-col-sm12">
-                    <div class="layui-card">
-                        <div class="layui-card-header">
-                            访问量
-                            <div class="layui-btn-group layuiadmin-btn-group">
-                                <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-xs">去年</a>
-                                <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-xs">今年</a>
-                            </div>
-                        </div>
-                        <div class="layui-card-body">
-                            <div class="layui-row">
+                <!--  <div class="layui-col-sm12">
+                      <div class="layui-card">
+                          <div class="layui-card-header">
+                              访问量
+                              <div class="layui-btn-group layuiadmin-btn-group">
+                                  <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-xs">去年</a>
+                                  <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-xs">今年</a>
+                              </div>
+                          </div>
+                          <div class="layui-card-body">
+                              <div class="layui-row">
 
 
-                                <div class="layui-col-sm4">
-                                    <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
-                                           class="layui-input" maxlength="12"
-                                           style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
+                                  <div class="layui-col-sm4">
+                                      <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
+                                             class="layui-input" maxlength="12"
+                                             style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
 
-                                </div>
+                                  </div>
 
-                                <div class="layui-col-sm8">
-                                    <div class="layuiadmin-card-list">
-                                        <p class="layuiadmin-normal-font">月访问数</p>
-                                        <span>同上期增长</span>
-                                        <div class="layui-progress layui-progress-big" lay-showPercent="yes">
-                                            <div class="layui-progress-bar" lay-percent="30%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="layuiadmin-card-list">
-                                        <p class="layuiadmin-normal-font">月下载数</p>
-                                        <span>同上期增长</span>
-                                        <div class="layui-progress layui-progress-big" lay-showPercent="yes">
-                                            <div class="layui-progress-bar" lay-percent="20%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="layuiadmin-card-list">
-                                        <p class="layuiadmin-normal-font">月收入</p>
-                                        <span>同上期增长</span>
-                                        <div class="layui-progress layui-progress-big" lay-showPercent="yes">
-                                            <div class="layui-progress-bar" lay-percent="25%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
+                                  <div class="layui-col-sm8">
+                                      <div class="layuiadmin-card-list">
+                                          <p class="layuiadmin-normal-font">月访问数</p>
+                                          <span>同上期增长</span>
+                                          <div class="layui-progress layui-progress-big" lay-showPercent="yes">
+                                              <div class="layui-progress-bar" lay-percent="30%"></div>
+                                          </div>
+                                      </div>
+                                      <div class="layuiadmin-card-list">
+                                          <p class="layuiadmin-normal-font">月下载数</p>
+                                          <span>同上期增长</span>
+                                          <div class="layui-progress layui-progress-big" lay-showPercent="yes">
+                                              <div class="layui-progress-bar" lay-percent="20%"></div>
+                                          </div>
+                                      </div>
+                                      <div class="layuiadmin-card-list">
+                                          <p class="layuiadmin-normal-font">月收入</p>
+                                          <span>同上期增长</span>
+                                          <div class="layui-progress layui-progress-big" lay-showPercent="yes">
+                                              <div class="layui-progress-bar" lay-percent="25%"></div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>-->
             </div>
         </div>
     </div>
 
-    <div class="layui-footer1 layui-bg-black">
-        © layui.com - 底部固定区域
+    <!-- 底部固定区域 -->
+    <div class="layui-footer layui-bg-black">
+        <div class="layui-main">
+            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow"
+               style="color: #fffbf0;">苏ICP备19045217号</a>
+        </div>
     </div>
 </div>
 
@@ -330,7 +336,7 @@
         initHeadData();
 
         //初始化账户列表
-        function init_accountList(){
+        function init_accountList() {
             table.render({
                 elem: '#accountList'
                 , where: {token: token}//传递token到服务端
@@ -341,7 +347,7 @@
                 , cols: [[
                     {type: 'checkbox', fixed: 'left'}
                     , {field: 'accountId', title: 'ID', align: 'center', width: 50, fixed: 'left', unresize: true}
-                    , {field: 'accountName', title: '用户名', align: 'center', width: 140, unresize: false,fixed: 'left'}
+                    , {field: 'accountName', title: '用户名', align: 'center', width: 140, unresize: false, fixed: 'left'}
                     , {field: 'sex', title: '性别', width: 60, align: 'center', unresize: true}
                     , {field: 'birthday', title: '出生日期', align: 'center', width: 105, unresize: true}
                     , {field: 'area', title: '区域', align: 'center', width: 120, unresize: false}
@@ -355,17 +361,18 @@
                 , page: true
             });
         }
+
         //监听操作
         table.on('tool(accountList)', function (obj) {
             if (obj.event === 'showDetail') {
                 showDetail(obj.data);
 
             } else if (obj.event === 'unLock') {
-                if (obj.data.isLocked == "UNLOCK"){
+                if (obj.data.isLocked == "UNLOCK") {
                     layer.msg("不支持该操作!");
-                }else {
+                } else {
                     layer.confirm('确定要解锁吗？', function (index) {
-                        lock(obj.data,'UNLOCK');
+                        lock(obj.data, 'UNLOCK');
                         layer.close(index);
                     });
                 }
@@ -383,13 +390,13 @@
         });
 
         //锁定/解锁用户
-        function lock(data,flag) {
+        function lock(data, flag) {
             var jsonData = JSON.stringify(data);
             $.ajax({
                 type: "post",
                 contentType: "application/json",
                 data: jsonData,
-                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token,'isLock':flag},
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token, 'isLock': flag},
                 url: "/admin/lock_unlock.json",
                 success: function (result) {
                     if (result.code == 1) {
@@ -406,14 +413,13 @@
         }
 
 
-
         //查看详细信息
         function showDetail(data) {
 
         }
 
         //获取头部概况数据
-        function initHeadData(){
+        function initHeadData() {
             $.ajax({
                 type: "post",
                 contentType: "application/json",
@@ -433,7 +439,7 @@
         };
 
         //头部数据赋值
-        function setHeadData(obj){
+        function setHeadData(obj) {
             $('#accountCount').text(obj.accountCount);
             $('#aliveAccountCount').html(obj.aliveAccountCount);
             $('#noteCount').text(obj.noteCount);
@@ -445,6 +451,10 @@
         }
 
         $("#logout").click(function () {
+            //清空sessionStorage
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("headAccountName");
+            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
     });

@@ -88,7 +88,7 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><i class="layui-icon layui-icon-date"></i> 我的日程</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
-                        <dd class="layui-this"><a href="#" id="schedule"><i class="layui-icon layui-icon-form"></i> 查看任务</a>
+                        <dd class="layui-this"><a href="#" id="schedule"><i class="layui-icon layui-icon-form"></i> 查看日程</a>
                         </dd>
                     </dl>
                 </li>
@@ -119,8 +119,11 @@
         </div>
     </div>
 
+    <!-- 底部固定区域 -->
     <div class="layui-footer layui-bg-black">
-        © layui.com - 底部固定区域
+        <div class="layui-main">
+            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: #fffbf0;">苏ICP备19045217号</a>
+        </div>
     </div>
 </div>
 </body>
@@ -437,6 +440,9 @@
         })
 
         $("#logout").click(function () {
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("headAccountName");
+            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 
