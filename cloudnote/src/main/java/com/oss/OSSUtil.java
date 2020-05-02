@@ -37,6 +37,8 @@ public class OSSUtil {
         typeMap.put("xlsx", "file");
         typeMap.put("png", "image");
         typeMap.put("jpg", "image");
+        typeMap.put("jpeg","image");
+        typeMap.put("jfif","image");
     }
 
     @Autowired

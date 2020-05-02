@@ -121,7 +121,7 @@ public class AdminController {
 
 
     /**
-     * 获取头部概况数据
+     * 获取系统概况数据
      *
      * @param request
      * @param response

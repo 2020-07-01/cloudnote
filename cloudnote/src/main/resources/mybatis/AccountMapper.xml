@@ -165,6 +165,6 @@
         select count(a.account_id)
         from account a
         where
-        DATEDIFF(a.last_login_time,a.create_time) > a.login_count
+        a.login_count > DATEDIFF(a.last_login_time,a.create_time)
     </select>
 </mapper>

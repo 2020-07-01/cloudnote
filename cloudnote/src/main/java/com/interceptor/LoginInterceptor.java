@@ -31,7 +31,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     CacheService cacheService;
 
     /**
-     * 进入controller方法之前进行拦截
+     * 进入controller方法之前拦截请求并验证token
      *
      * @param request
      * @param response

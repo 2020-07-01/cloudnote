@@ -34,7 +34,7 @@ public class TokenUtils {
     private static final String TOKEN_SECRET = "privateKey";
 
     /**
-     * 创建token Algorithm.HMAC256(
+     * 创建token Algorithm.HMAC256
      */
     public String createToken(String accountId) {
         // 通过私钥来生成签名

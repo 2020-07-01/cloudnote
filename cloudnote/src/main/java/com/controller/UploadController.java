@@ -69,7 +69,6 @@ public class UploadController {
     public void uploadImage(@RequestParam(value = "file", required = false) MultipartFile uploadImage,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
         String token = request.getHeader("token");
-
         String accountId = tokenUtil.getAccountIdByToken(token);
         Result result = null;
         try {
@@ -81,7 +80,7 @@ public class UploadController {
                 String msg = dataJSONArray.getJSONObject(0).getString("msg");
                 result = new Result("2", msg);
             } else {
-                //如果合规
+                //如果图片审核通过
                 Map serviceData = imageService.uploadImage(uploadImage, accountId);
                 if (serviceData.get("true") != null) {
                     result = new Result(true, "上传成功!");

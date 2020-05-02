@@ -101,14 +101,9 @@ public class NoteServiceImpl implements NoteService {
     private Map<Boolean, String> check(Note note) {
         Map<Boolean, String> result = new HashMap<>();
         JSONObject jsonObject = baiDuUtils.checkTextContent(note.getNoteContent());
-        //StringBuffer stringBuffer = new StringBuffer();
         if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
             JSONArray dataJSONArray = jsonObject.getJSONArray("data");
             String msg = dataJSONArray.getJSONObject(0).getString("msg");
-           /* JSONArray jsonArray = dataJSONArray.getJSONObject(0).getJSONArray("hits");
-            JSONObject jsonObjectHits = jsonArray.getJSONObject(0);
-            String words = jsonObjectHits.getJSONArray("words").getString(0);
-            stringBuffer.append(msg+":"+words);*/
             result.put(false, msg);
         } else {
             result.put(true, "文本审核通过!");

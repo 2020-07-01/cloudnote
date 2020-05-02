@@ -244,7 +244,7 @@
                 , headers: {token: token}
                 , url: '/source/upload_image.json'
                 , accept: 'images'
-                , acceptMime: '.jpg,.png'
+                , acceptMime: '.jpg,.png,.jpeg,.jfif'
                 , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
                     obj.preview(function (index, file, result) {
 
