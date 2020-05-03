@@ -111,7 +111,7 @@ public class UploadController {
         JSONObject jsonObject = JSON.parseObject(jsonString);
         String cacheKey = jsonObject.getString("cacheKey");
 
-        Map cacheMap = cacheService.getValue(accountId.toString());
+        Map cacheMap = cacheService.getValue(accountId);
         Map imageCache = (Map) cacheMap.get(cacheKey);
         byte[] bytes = (byte[]) imageCache.get(Constant.CACHE_BYTE);
 

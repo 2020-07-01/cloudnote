@@ -52,6 +52,10 @@ public class FileServiceImpl implements FileService {
         HashMap result = new HashMap();
         String wholeName = file.getOriginalFilename();// 获取源文件名
         String fileName = wholeName.substring(0, wholeName.lastIndexOf("."));// 文件名
+        if(fileName.length() > 90){
+            fileName = fileName.substring(0,90);
+            wholeName = fileName + "."+fileName;
+        }
         CNFile repeatFile = new CNFile();
         repeatFile.setAccountId(accountId);
         repeatFile.setFileName(fileName);
@@ -114,7 +118,7 @@ public class FileServiceImpl implements FileService {
             fileCache.put(Constant.CACHE_SIZE, file.getSize());//存储文件大小
             cacheMap.put(newWholeName, fileCache);
             result.put("false", "文件名重复!");
-            result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><p style=\"text-align: center;font-weight: bold;\">" + newFileName + "." + fileType + "</p>");
+            result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><br><p style=\"text-align: center;\">" + newFileName + "." + fileType + "</p>");
             result.put("fail", newWholeName);
         }
         return result;

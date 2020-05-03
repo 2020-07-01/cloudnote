@@ -55,6 +55,13 @@ public class OSSUtil {
         HashMap<String, Boolean> result = new HashMap<>();
         String wholeName = file.getOriginalFilename();
         String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀
+        //判断是否需要进行文件名压缩
+        String fileName = wholeName.substring(0, wholeName.lastIndexOf("."));// 文件名
+        if(fileName.length() > 90){
+            fileName = fileName.substring(0,90);
+            wholeName = fileName + "."+type;
+        }
+
         String typeSwitch = typeMap.get(type);
         String path = "";
         switch (typeSwitch) {

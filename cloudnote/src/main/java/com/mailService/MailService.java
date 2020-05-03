@@ -7,7 +7,6 @@ package com.mailService;
  * @other :
  */
 
-
 public interface MailService {
 
     //发送验证码

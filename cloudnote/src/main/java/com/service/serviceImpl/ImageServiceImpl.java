@@ -54,8 +54,13 @@ public class ImageServiceImpl implements ImageService {
     public Map uploadImage(MultipartFile file, String accountId) throws IOException {
         HashMap result = new HashMap();
         String wholeName = file.getOriginalFilename();// 获取源文件名
-        String imageName = wholeName.substring(0, wholeName.lastIndexOf("."));// 文件名
         String imageType = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的类型
+        String imageName = wholeName.substring(0, wholeName.lastIndexOf("."));// 文件名
+        if(imageName.length() > 90){
+            imageName = imageName.substring(0,90);
+            wholeName = imageName + "."+imageType;
+        }
+
         Long imageSize = file.getSize();// 获取文件的大小 字节
         String imagePath = getImagePath(wholeName, accountId.toString(), imageType);// 生成图片在oss上的目录
         // 验证是否存在重名
@@ -85,10 +90,10 @@ public class ImageServiceImpl implements ImageService {
             String newWholeName = newImageName + "." + imageType;
 
             result.put("false", "图片名称重复!");
-            result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><p style=\"text-align: center;font-weight: bold;\">" + newImageName + "." + imageType + "</p>");
+            result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><br><p style=\"text-align: center;\">" + newImageName + "." + imageType + "</p>");
 
             // 将文件存储到缓存中
-            Map cacheMap = cacheService.getValue(accountId.toString());
+            Map cacheMap = cacheService.getValue(accountId);
             Map imageMap = new HashMap();
 
             imageMap.put(Constant.CACHE_BYTE, file.getBytes());//存储二进制文件
@@ -99,7 +104,7 @@ public class ImageServiceImpl implements ImageService {
             result.put("fail", newWholeName);
         } else {// 如果图片命名不重复
             // 存储到oss
-            ossUtil.putObject(file, accountId.toString());
+            ossUtil.putObject(file, accountId);
 
             Image newImage = new Image();
             newImage.setImageId(UUIDUtils.getUUID());

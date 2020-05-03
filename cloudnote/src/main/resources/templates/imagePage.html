@@ -141,7 +141,7 @@
                             <div class="layui-col-xs9 layui-col-sm9">
                                 <div class="layui-input-inline" style="width: 100%;float:left;">
                                     <input id="imageWholeName" type="text" name="title" readonly
-                                           class="layui-input note-title" lay-verify="title"
+                                           class="layui-input note-title" lay-verify="title" maxlength="100"
                                            placeholder="标题">
                                 </div>
                             </div>
@@ -259,9 +259,10 @@
                         var index = layer.open({
                             type: 1
                             , title: false //不显示标题栏
+                            , skin: 'layui-layer-rim'
                             , closeBtn: false
-                            , area: '300px;'
-                            , btn: ['yes', 'no']
+                            , area: ['480px', '200px']
+                            , btn: ['是', '否']
                             , btnAlign: 'c'
                             , shade: 0.5
                             , moveType: 1 //拖拽模式，0或者1
