@@ -58,7 +58,7 @@
         )
     </insert>
 
-
+    <!--更新日程-->
     <update id="updateSchedule" parameterType="com.entity.schedule.Schedule">
         update schedule
         <set>
@@ -73,6 +73,9 @@
             </if>
             <if test="aheadTime != null">
                 ahead_time = #{aheadTime,jdbcType=VARCHAR},
+            </if>
+            <if test="remindTime != null">
+                remind_time = #{remindTime,jdbcType=VARCHAR},
             </if>
             update_time = now()
         </set>
@@ -95,4 +98,12 @@
             </if>
         </foreach>
     </update>
+
+
+    <!--删除日程-->
+    <delete id="deleteSchedule" parameterType="com.entity.schedule.Schedule">
+        delete
+        from schedule
+        where schedule_id = #{scheduleId,jdbcType=VARCHAR}
+    </delete>
 </mapper>

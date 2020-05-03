@@ -21,4 +21,7 @@ public interface ScheduleMapper {
 
     //批量更新日程
     void updateScheduleList(List<Schedule> schedules);
+
+    //删除日程
+    Integer deleteSchedule(Schedule schedule);
 }

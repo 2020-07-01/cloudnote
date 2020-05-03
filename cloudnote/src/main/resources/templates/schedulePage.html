@@ -176,6 +176,7 @@
                                     <option value="30">提前30分钟</option>
                                     <option value=60>提前1小时</option>
                                     <option value="120">提前2小时</option>
+                                    <option value="1440">提前一天</option>
                                 </select>
                             </div>
                         </div>
@@ -240,9 +241,8 @@
                         //选择完毕后的回调
                         //value：得到日期生成的值，也就是点击的日期   2020-03-10 22:09:52
                         //date：得到日期的对象，显示年月日时分秒 例子：{"year":2020,"month":1,"date":8,"hours":22,"minutes":45,"seconds":36}
-                        initAll(value);
-                        createSpace(date, value);
-
+                        initAll(value);//初始化当前日期下的所有日程
+                        createSpace(value);
                     }
                     , change: function (value, date, endDate) {
 
@@ -302,7 +302,7 @@
                             });
                             //全局数据赋值
                             globalSchedule = result.data;
-                        }else {
+                        } else {
                             layer.msg(result.message);
                         }
                     },
@@ -311,24 +311,29 @@
         });
 
         //弹窗
-        function createSpace(data, value) {
+        function createSpace(value) {
             index = layer.open({
                 type: 1,
                 skin: 'layui-layer-rim',
                 title: false,
                 area: ['400px', '400px'], //宽高
-           //     btn: ['创建', '更新', '删除'],
-                btn: ['创建','删除'],
+                btn: ['创建', '更新', '删除'],
                 content: $("#scheduleSpace")
                 , success: function () {
                     //打开成功后的回调
                     $('#startTime').val(value);
+                    form.val("scheduleAheadTime", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                        "aheadTime": "0" // "name": "value"
+                    });
                 }
                 , yes: function () {
                     //创建日程
                     saveSchedule(value);
                 },
                 btn2: function (index, layero) {
+                    updateSchedule();
+                },
+                btn3: function (index, layero) {
                     //清空编辑区
                     $("#scheduleTitle").val("");
                     $("#scheduleContent").val("");
@@ -336,7 +341,7 @@
                         "aheadTime": ""
                     });
                     //删除日程
-
+                    removeSchedule();
                 },
                 cancel: function () {
                     //清空编辑区
@@ -349,9 +354,62 @@
             });
         }
 
+        //更新日程
+        function updateSchedule() {
+
+            if ($('#scheduleTitle').val() == "") {
+                layer.msg("标题不能为空!")
+                return;
+            }
+            if ($('#scheduleContent').val() == "") {
+                layer.msg("内容不能为空!")
+                return;
+            }
+            if (globalSchedule.scheduleTitle != $("#scheduleTitle").val()) {
+                globalSchedule.scheduleTitle = $("#scheduleTitle").val();
+            }
+            if (globalSchedule.scheduleContent != $("#scheduleContent").val()) {
+                globalSchedule.scheduleContent = $("#scheduleContent").val();
+            }
+            if (globalSchedule.aheadTime != $('#aheadTime').val()) {
+                globalSchedule.aheadTime = $("#aheadTime").val();
+            }
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                dataType: 'json',
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: JSON.stringify(globalSchedule),
+                url: "/schedule/update_schedule.json",
+                error: function (result) {
+                    layer.msg("出现异常，请联系管理员!");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        //成功之后刷新日历
+                        layer.close(index);
+                        location.reload();
+
+                    } else {
+                        layer.msg(result.message);
+                    }
+                }
+            })
+        }
+
         //创建日程
         function saveSchedule(value) {
             let aheadTime = $('#aheadTime').val();
+            if ($('#scheduleTitle').val() == "") {
+                layer.msg("标题不能为空!")
+                return;
+            }
+
+            if ($('#scheduleContent').val() == "") {
+                layer.msg("内容不能为空!")
+                return;
+            }
+
             let data = {
                 "aheadTime": aheadTime,
                 "scheduleContent": $('#scheduleContent').val(),
@@ -383,23 +441,26 @@
         }
 
         //删除日程
-        function removeSchedule(data) {
-            if(globalSchedule == ""){
+        function removeSchedule() {
+            if (globalSchedule == "") {
                 return;
-            }else {
+            } else {
                 $.ajax({
                     type: "get",
                     contentType: "application/json",
                     dataType: 'json',
                     async: false,
                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
-                    url: "/schedule/schedule_list.json",
+                    data: {'scheduleId': globalSchedule.scheduleId},
+                    url: "/schedule/delete_schedule.json",
                     error: function (result) {
-
+                        layer.msg("异常错误!");
                     },
                     success: function (result) {
                         if (result.code == 1) {
-                            data = JSON.stringify(result.data);
+                            //刷新页面
+                            layer.msg(result.message);
+                            location.reload();
                         } else {
                             layer.msg(result.message);
                         }

@@ -4,7 +4,6 @@ import com.entity.Condition;
 import com.entity.schedule.Schedule;
 import com.mapper.ScheduleMapper;
 import com.service.ScheduleService;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,4 +119,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         return flag;
     }
 
+    //删除日程
+    @Override
+    public Boolean deleteSchedule(Schedule schedule) {
+        int row;
+        try {
+            row = scheduleMapper.deleteSchedule(schedule);
+            if (row == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), new Throwable(e));
+            return false;
+        }
+    }
 }
