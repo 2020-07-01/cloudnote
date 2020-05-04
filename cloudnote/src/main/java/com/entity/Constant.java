@@ -11,10 +11,6 @@ public final class Constant {
 
     public final static String FAILURE = "failure";
 
-    public final static String OFFLINE = "OFFLINE";
-
-    public final static String ONLINE = "ONLINE";
-
     public final static String YES = "YES";
 
     public final static String NO = "NO";
@@ -29,7 +25,7 @@ public final class Constant {
 
     public final static String LOCK_YES = "LOCKED";
 
-    public final static String UNLOCK_NO = "UNLOCK";
+    public final static String LOCK_NO = "UNLOCK";
 
     public final static String FILE_IMAGE_URL = "fileOrImageUrl";
 

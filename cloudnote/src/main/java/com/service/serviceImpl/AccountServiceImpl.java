@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 设置账户状态信息
-     * 当登录成功时更新is_online login_count  last_login_time三个字段信息
+     * 当登录成功时更新login_count  last_login_time三个字段信息
      *
      * @param account
      * @return

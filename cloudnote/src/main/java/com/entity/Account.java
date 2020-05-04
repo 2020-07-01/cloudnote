@@ -24,8 +24,8 @@ public class Account {
     private String createTime;
     //更新时间
     private String updateTime;
-    //是否在线 ONLINE OFFLINE
-    private String isOnline;
+    //违规记录
+    private String illegalData;
     //最近登录时间
     private String lastLoginTime;
     //角色
@@ -133,12 +133,12 @@ public class Account {
         this.loginCount = loginCount;
     }
 
-    public String getIsOnline() {
-        return isOnline;
+    public String getIllegalData() {
+        return illegalData;
     }
 
-    public void setIsOnline(String isOnline) {
-        this.isOnline = isOnline;
+    public void setIllegalData(String illegalData) {
+        this.illegalData = illegalData;
     }
 
     public String getSex() {

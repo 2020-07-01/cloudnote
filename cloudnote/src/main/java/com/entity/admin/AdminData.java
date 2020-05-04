@@ -14,7 +14,6 @@ public class AdminData {
         this.accountName = account.getAccountName();
         this.email = account.getEmail();
         this.isLocked = account.getIsLocked();
-        this.isOnline = account.getIsOnline();
         this.createTime = account.getCreateTime();
         this.loginCount = account.getLoginCount();
         this.phone = account.getPhone();
@@ -26,7 +25,6 @@ public class AdminData {
     private String email;
     private String phone;
     private String createTime;
-    private String isOnline;
     private String isLocked;
     private Integer loginCount;
     private String note;

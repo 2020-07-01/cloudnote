@@ -11,9 +11,7 @@
         <result column="phone" property="phone" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
-        <result column="is_online" property="isOnline" jdbcType="VARCHAR"/>
         <result column="last_login_time" property="lastLoginTime" jdbcType="VARCHAR"/>
-        <result column="account_role" property="accountRole" jdbcType="VARCHAR"/>
         <result column="is_locked" property="isLocked" jdbcType="VARCHAR"/>
         <result column="login_count" property="loginCount" jdbcType="INTEGER"/>
         <result column="sex" property="sex" jdbcType="VARCHAR"/>
@@ -21,21 +19,23 @@
         <result column="area" property="area" jdbcType="VARCHAR"/>
         <result column="remark" property="remark" jdbcType="VARCHAR"/>
         <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+        <result column="illegal_data" property="illegalData" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="base_sql">
-        account_id,account_name,account_password,email,phone,create_time,update_time,is_online,last_login_time,
-        account_role,is_locked,login_count,birthday,remark,area,head_image_url,sex
+        account_id,account_name,account_password,email,phone,create_time,update_time,last_login_time,is_locked,login_count,birthday,remark,area,head_image_url,sex,illegal_data
     </sql>
 
+    <!--用户注册-->
     <insert id="insertAccount" parameterType="com.entity.Account">
-        insert into account (account_id,email,account_name,account_password,head_image_url,create_time)
+        insert into account (account_id,email,account_name,account_password,head_image_url,illegal_data,create_time)
         value (
         #{accountId,jdbcType=VARCHAR},
         #{email,jdbcType=VARCHAR},
         #{accountName,jdbcType=VARCHAR},
         #{accountPassword,jdbcType=VARCHAR},
         #{headImageUrl,jdbcType=VARCHAR},
+        #{illegalData,jdbcType=VARCHAR},
         now())
     </insert>
 
@@ -122,9 +122,6 @@
     <update id="updateLoginStatus" parameterType="com.entity.Account">
         update account
         <set>
-            <if test="isOnline!= null and isOnline !=''">
-                is_online = #{isOnline,jdbcType=VARCHAR},
-            </if>
             <if test="lastLoginTime != null and lastLoginTime != ''">
                 last_login_time = #{lastLoginTime,jdbcType=VARCHAR},
             </if>

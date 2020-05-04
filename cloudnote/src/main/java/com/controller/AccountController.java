@@ -91,6 +91,7 @@ public class AccountController {
                 account.setAccountPassword(password);
                 account.setEmail(email);
                 account.setHeadImageUrl("http://t.cn/RCzsdCq");
+                account.setIllegalData("");
                 Map<Boolean, String> map = accountService.insert(account);
                 if (StringUtils.isNotEmpty(map.get(true))) {
                     result = new Result(true, "SUCCESS");
@@ -141,7 +142,6 @@ public class AccountController {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String lastLoginTime = dateFormat.format(new Date());
                         account.setLastLoginTime(lastLoginTime);
-                        account.setIsOnline("ONLINE");
                         account.setLoginCount(1);
                         //更新状态
                         boolean flag = accountService.updateLoginStatus(account);
@@ -345,7 +345,6 @@ public class AccountController {
             //删除缓存
             cacheService.deleteValue(String.valueOf(accountId));
             Account account = new Account();
-            account.setIsOnline("OFFLINE");
             account.setAccountId(accountId);
             accountService.updateLoginStatus(account);
             response.sendRedirect("/login");

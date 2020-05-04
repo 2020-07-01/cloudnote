@@ -27,7 +27,7 @@ public interface AccountMapper {
     //更新账户信息
     int updateAccount(Account account);
 
-    //当登录成功时更新is_online login_count  last_login_time三个字段信息
+    //当登录成功时更新login_count  last_login_time三个字段信息
     int updateLoginStatus(Account account);
 
     //根据用户名查询数据

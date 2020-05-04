@@ -58,12 +58,14 @@ public class CacheService implements InitializingBean {
 
     /**
      * 初始化bean之前执行
+     * expireAfterWrite:指对象被写入到缓存后多久过期  一天后过期
+     * expireAfterAccess:指定对象多久没有被访问后过期  .expireAfterAccess(3,TimeUnit.MINUTES)
      *
      * @throws Exception
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        cache = CacheBuilder.newBuilder().build(new CacheLoader<String, Map>() {
+        cache = CacheBuilder.newBuilder().maximumSize(100000).expireAfterWrite(1, TimeUnit.DAYS).build(new CacheLoader<String, Map>() {
             //在缓存不存在时通过此方法加载缓存,在初始化时此方法不执行
             @Override
             public Map load(String string) throws Exception {
