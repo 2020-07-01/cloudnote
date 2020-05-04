@@ -116,8 +116,7 @@
                             <p class="layuiadmin-big-font" id="accountCount"></p>
                             <p>
                                 活跃用户
-                                <span id="aliveAccountCount" class="layuiadmin-span-color"><i
-                                        class="layui-inline layui-icon layui-icon-user"></i></span>
+                                <span id="aliveAccountCount" class="layuiadmin-span-color"></span>
                             </p>
                         </div>
                     </div>
@@ -132,8 +131,7 @@
                             <p id="noteCount" class="layuiadmin-big-font"></p>
                             <p>
                                 今日新创建
-                                <span id="currentDayNoteCount" class="layuiadmin-span-color"><i
-                                        class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
+                                <span id="currentDayNoteCount" class="layuiadmin-span-color"></span>
                             </p>
                         </div>
                     </div>
@@ -149,8 +147,7 @@
                             <p id="imageCount" class="layuiadmin-big-font"></p>
                             <p>
                                 今日新创建
-                                <span id="currentDayImageCount" class="layuiadmin-span-color"><i
-                                        class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
+                                <span id="currentDayImageCount" class="layuiadmin-span-color"></span>
                             </p>
                         </div>
                     </div>
@@ -166,8 +163,7 @@
                             <p id="fileCount" class="layuiadmin-big-font"></p>
                             <p>
                                 今日新创建
-                                <span id="currentDayFileCount" class="layuiadmin-span-color"><i
-                                        class="layui-inline layui-icon layui-icon-user"></i></span>
+                                <span id="currentDayFileCount" class="layuiadmin-span-color"></span>
                             </p>
                         </div>
                     </div>
@@ -175,7 +171,10 @@
                 <div class="layui-col-sm12 layui-col-md12">
                     <div class="layui-row layui-col-space15">
                         <div class="layui-card">
-                            <div class="layui-card-header">用户信息列表</div>
+                            <div class="layui-card-header">
+                                用户信息列表
+
+                            </div>
                             <div class="layui-card-body">
                                 <table id="accountList" class="layui-table layuiadmin-page-table" lay-skin="line"
                                        lay-filter="accountList"></table>
@@ -184,122 +183,40 @@
                     </div>
                 </div>
 
-                <!--        <div class="layui-row layui-col-space15">
-                            <div class="layui-card">
-                                <div class="layui-card-header">邮件服务</div>
-                                <div class="layui-card-body">
-
-                                    <div class="layui-col-sm6">
-                                        <div class="layui-card">
-                                            <div class="layui-card-header">邮件内容</div>
-                                            <div class="layui-card-body">
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="layui-col-sm6">
-                                        <div class="layui-card">
-                                            <div class="layui-card-header">选择用户</div>
-                                            <div class="layui-card-body">
-                                                <div class="layui-tab-content">
-                                                    <div class="layui-tab-item layui-show">
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <!--发送邮件服务-->
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-sm12 layui-col-md5">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <span>邮件服务</span>
+                                <div class="layui-layout-right" style="right: 15px;">
+                                    <button class="layui-btn layui-btn-primary  layui-btn-sm" id="sendEmail">发送</button>
                                 </div>
                             </div>
-                        </div>-->
-
-                <!-- <div class="layui-col-md6">
-                    <div class="layui-card">
-                        <div class="layui-card-header">详细数据</div>
-                        <div class="layui-card-body">
-                            <div class="layadmin-carousel layadmin-backlog">
-                                <div carousel-item>
-                                    <ul class="layui-row layui-col-space10">
-                                        <li class="layui-col-xs6">
-                                            <a class="layadmin-backlog-body">
-                                                <h3>待审评论</h3>
-                                                <p layuiadmin-big-font></p>66</cite></p>
-                                            </a>
-                                        </li>
-                                        <li class="layui-col-xs6">
-                                            <a class="layadmin-backlog-body">
-                                                <h3>待审帖子</h3>
-                                                <p layuiadmin-big-font></p>66</cite></p>
-                                            </a>
-                                        </li>
-                                        <li class="layui-col-xs6">
-                                            <a  class="layadmin-backlog-body">
-                                                <h3>待审商品</h3>
-                                                <p layuiadmin-big-font></p>66</cite></p>
-                                            </a>
-                                        </li>
-                                        <li class="layui-col-xs6">
-                                            <a class="layadmin-backlog-body">
-                                                <h3>待发货</h3>
-                                                <p layuiadmin-big-font></p>66</cite></p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <div class="layui-card-body layuiadmin-card-list">
+                                <textarea id="scheduleContent" class="layui-textarea"
+                                          placeholder="请输入邮件内容" maxlength="200"
+                                          style="resize: none;min-height:150px"></textarea>
                             </div>
+
                         </div>
                     </div>
-                </div>-->
+                    <!--账户详情-->
 
-                <!--  <div class="layui-col-sm12">
-                      <div class="layui-card">
-                          <div class="layui-card-header">
-                              访问量
-                              <div class="layui-btn-group layuiadmin-btn-group">
-                                  <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-xs">去年</a>
-                                  <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-xs">今年</a>
-                              </div>
-                          </div>
-                          <div class="layui-card-body">
-                              <div class="layui-row">
+                    <div class="layui-col-sm12 layui-col-md7">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <span>用户详情</span>
+                            </div>
+                            <div class="layui-card-body layuiadmin-card-list">
+                                <textarea id="" class="layui-textarea"
+                                          placeholder="请输入邮件内容" maxlength="200"
+                                          style="resize: none;min-height:150px"></textarea>
+                            </div>
 
-
-                                  <div class="layui-col-sm4">
-                                      <input id="input-search-note" type="text" placeholder="搜索" autocomplete="off"
-                                             class="layui-input" maxlength="12"
-                                             style="border-right: none;boder-top:none;border-bottom: none;font-size: 16px"/>
-
-                                  </div>
-
-                                  <div class="layui-col-sm8">
-                                      <div class="layuiadmin-card-list">
-                                          <p class="layuiadmin-normal-font">月访问数</p>
-                                          <span>同上期增长</span>
-                                          <div class="layui-progress layui-progress-big" lay-showPercent="yes">
-                                              <div class="layui-progress-bar" lay-percent="30%"></div>
-                                          </div>
-                                      </div>
-                                      <div class="layuiadmin-card-list">
-                                          <p class="layuiadmin-normal-font">月下载数</p>
-                                          <span>同上期增长</span>
-                                          <div class="layui-progress layui-progress-big" lay-showPercent="yes">
-                                              <div class="layui-progress-bar" lay-percent="20%"></div>
-                                          </div>
-                                      </div>
-                                      <div class="layuiadmin-card-list">
-                                          <p class="layuiadmin-normal-font">月收入</p>
-                                          <span>同上期增长</span>
-                                          <div class="layui-progress layui-progress-big" lay-showPercent="yes">
-                                              <div class="layui-progress-bar" lay-percent="25%"></div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>-->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -312,15 +229,13 @@
         </div>
     </div>
 </div>
-
-
 </div>
 </body>
 
 <script type="text/html" id="operate">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="lock">锁定</a>
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="unLock">解锁</a>
-    <!--<a class="layui-btn layui-btn-xs" lay-event="showDetail">详情</a>-->
+    <!-- <a class="layui-btn layui-btn-xs" lay-event="showDetail">详情</a>-->
 </script>
 
 <script th:inline="none">
@@ -328,12 +243,26 @@
     //设置全局token
     var token = sessionStorage.getItem("token");
 
-    layui.use(['table', 'element', 'form', 'layer'], function () {
+    layui.use(['table', 'element', 'form', 'layer', 'util'], function () {
         var table = layui.table;
-
-
+        var util = layui.util;
+        //初始化数据
         init_accountList();
         initHeadData();
+
+        //返回顶部
+        util.fixbar({
+            top: true
+            , css: {right: 25, bottom: 50}
+            , bgcolor: '#393D49 !important;display:block;'
+            , click: function (type) {
+                if (type === 'top') {
+                    $('.layui-body').animate({//主要代码
+                        scrollTop: 0
+                    }, 200);
+                }
+            }
+        });
 
         //初始化账户列表
         function init_accountList() {
@@ -346,14 +275,11 @@
                 , text: ''
                 , cols: [[
                     {type: 'checkbox', fixed: 'left'}
-                    , {field: 'accountId', title: 'ID', align: 'center', width: 50, fixed: 'left', unresize: true}
+                    , {field: 'accountId', title: 'ID', align: 'center', width: 280, fixed: 'left', unresize: true}
                     , {field: 'accountName', title: '用户名', align: 'center', width: 140, unresize: false, fixed: 'left'}
-                    , {field: 'sex', title: '性别', width: 60, align: 'center', unresize: true}
-                    , {field: 'birthday', title: '出生日期', align: 'center', width: 105, unresize: true}
-                    , {field: 'area', title: '区域', align: 'center', width: 120, unresize: false}
                     , {field: 'email', title: '邮箱', align: 'center', width: 170, unresize: false}
                     , {field: 'phone', title: '手机', align: 'center', width: 120, unresize: true}
-                    , {field: 'level', title: '等级', align: 'center', width: 100, unresize: false}
+                    , {field: 'level', title: '违规次数', align: 'center', width: 100, unresize: false}
                     , {field: 'isOnline', title: '是否在线', align: 'center', width: 90, unresize: true}
                     , {field: 'isLocked', title: '是否锁定', align: 'center', width: 90, unresize: true}
                     , {fixed: 'right', title: '操作', align: 'center', toolbar: '#operate', width: 160}
@@ -362,12 +288,13 @@
             });
         }
 
-        //监听操作
+        //监听行操作
         table.on('tool(accountList)', function (obj) {
-          /*  if (obj.event === 'showDetail') {
-                showDetail(obj.data);
+            /*  if (obj.event === 'showDetail') {
+                  showDetail(obj.data);
 
-            } else*/ if (obj.event === 'unLock') {
+              } else*/
+            if (obj.event === 'unLock') {
                 if (obj.data.isLocked == "UNLOCK") {
                     layer.msg("不支持该操作!");
                 } else {
@@ -376,7 +303,6 @@
                         layer.close(index);
                     });
                 }
-
             } else if (obj.event === 'lock') {
                 if (obj.data.isLocked == "LOCK") {
                     layer.msg("不支持该操作!");
@@ -412,9 +338,6 @@
             });
         }
 
-
-
-
         //获取头部概况数据
         function initHeadData() {
             $.ajax({
@@ -447,6 +370,18 @@
             $('#currentDayFileCount').html(obj.currentDayFileCount);
         }
 
+        //发送邮件
+        $('#sendEmail').click(function () {
+            //获取表格中所有选中的行数据
+            let checkStatus = table.checkStatus('accountList');
+            let arrayData = checkStatus.data;
+            //遍历获取id
+
+            //发送邮件
+
+        });
+
+        //注销
         $("#logout").click(function () {
             //清空sessionStorage
             sessionStorage.removeItem("token");

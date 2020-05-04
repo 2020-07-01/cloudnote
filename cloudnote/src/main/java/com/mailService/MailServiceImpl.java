@@ -21,40 +21,41 @@ public class MailServiceImpl implements MailService {
     JavaMailSender javaMailSender;
 
     /**
-     * 发送普通文本邮件
+     * 发送验证码
+     * 进行封装
      *
-     * @param sender
      * @param receiver
-     * @param title
      * @param context
      * @return
      */
     @Override
-    public String sendSecurityCode(String sender, String receiver, String title, String context) {
-
+    public boolean sendSecurityCode(String receiver, String context) {
         //简单邮件模型，对邮件的属性进行了封装
         SimpleMailMessage mainMessage = new SimpleMailMessage();
-        mainMessage.setFrom(sender);
+        mainMessage.setFrom("2422321558@qq.com");
         mainMessage.setTo(receiver);
-        mainMessage.setSubject(title);
-        mainMessage.setText(context);
+        mainMessage.setSubject("【云笔记】：验证码");
+        mainMessage.setText("【云笔记】尊敬的用户：您的验证码为：" + context + ",请勿泄露给他人!");
         try {
             javaMailSender.send(mainMessage);
         } catch (Exception e) {
             log.error(e.getMessage(), new Throwable(e));
         }
-        return "success";
+        return true;
     }
 
+    //日程提醒
     @Override
-    public boolean sendSchedule(String sender, String receiver, String title, String content) {
+    public boolean sendSchedule(String receiver, String title, String content) {
         SimpleMailMessage mainMessage = new SimpleMailMessage();
-        mainMessage.setFrom(sender);
+        mainMessage.setFrom("2422321558@qq.com");
         mainMessage.setTo(receiver);
-        mainMessage.setSubject(title);
+        mainMessage.setSubject("【云笔记】：您有新的活动即将开始:"+title);
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("活动时间：");
+        stringBuffer.append("活动内容："+content);
         mainMessage.setText(content);
         javaMailSender.send(mainMessage);
         return true;
     }
-
 }

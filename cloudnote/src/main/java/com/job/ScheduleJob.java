@@ -69,10 +69,9 @@ public class ScheduleJob {
             for (int i = 0; i < list.size(); i++) {
                 TaskData taskData = list.get(i);
                 String receiver = taskData.getEmail();
-                String sender = "2422321558@qq.com";
                 String title = taskData.getScheduleTitle();
                 String content = taskData.getScheduleContent();
-                mailService.sendSchedule(sender, receiver, title, content);
+                mailService.sendSchedule(receiver, title, content);
                 //存储id
                 listSchedule.add(new Schedule(taskData.getScheduleId(), Constant.NO));
             }

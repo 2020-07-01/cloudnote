@@ -190,11 +190,10 @@ public class AccountController {
         //验证邮箱格式
         Map<String, String> serviceData = accountService.findUerByEmail(emailAddress);
         if (serviceData.get("true") != null) {
-            String sender = "2422321558@qq.com";
             //生成验证码
             String securityCode = random(6);
             try {
-                mailService.sendSecurityCode(sender, emailAddress, "验证码", securityCode);
+                mailService.sendSecurityCode(emailAddress, securityCode);
                 //将验证码存储在缓存中
                 Map<String, String> securityCodeCacheMap = new HashMap<>();
                 securityCodeCacheMap.put(securityCode, securityCode);
@@ -277,10 +276,9 @@ public class AccountController {
             if (account == null) {
                 result = new Result(false, "此邮箱不存在!");
             } else {
-                String sender = "2422321558@qq.com";
                 //生成6位验证码
                 String securityCode = random(6);
-                mailService.sendSecurityCode(sender, email, "验证码", securityCode);
+                mailService.sendSecurityCode(email, securityCode);
                 HashMap data = new HashMap();
                 data.put("securityCode", securityCode);
                 data.put("email", email);

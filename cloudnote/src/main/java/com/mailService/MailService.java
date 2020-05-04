@@ -10,11 +10,11 @@ package com.mailService;
 public interface MailService {
 
     //发送验证码
-    String sendSecurityCode(String sender, String receiver, String title, String context);
+    boolean sendSecurityCode(String receiver,String context);
 
     //发送日程提醒
-    boolean sendSchedule(String sender, String receiver, String title,String content);
+    boolean sendSchedule(String receiver, String title, String content);
 
-
+    //群发邮件
 
 }
