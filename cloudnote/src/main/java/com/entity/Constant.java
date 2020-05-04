@@ -43,5 +43,9 @@ public final class Constant {
 
     public final static String SECURITY_CODE = "securityCode";
 
+    public final static String OSS_ACCOUNT_SIZE = "ossAccountSize";
 
+    public final static String OSS_IMAGE_SIZE = "ossImageSize";
+
+    public final static String OSS_FILE_SIZE = "ossFileSize";
 }

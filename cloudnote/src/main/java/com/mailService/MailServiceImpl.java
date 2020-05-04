@@ -2,10 +2,13 @@ package com.mailService;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author :qiang
@@ -50,12 +53,31 @@ public class MailServiceImpl implements MailService {
         SimpleMailMessage mainMessage = new SimpleMailMessage();
         mainMessage.setFrom("2422321558@qq.com");
         mainMessage.setTo(receiver);
-        mainMessage.setSubject("【云笔记】：您有新的活动即将开始:"+title);
+        mainMessage.setSubject("【云笔记】：您有新的活动即将开始:" + title);
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("活动时间：");
-        stringBuffer.append("活动内容："+content);
+        stringBuffer.append("活动内容：" + content);
         mainMessage.setText(content);
         javaMailSender.send(mainMessage);
+        return true;
+    }
+
+    //管理员群发邮件
+    @Override
+    public boolean sendEmailsByAdmin(List<String> receiverList, String title, String content) {
+        SimpleMailMessage mainMessage = new SimpleMailMessage();
+        mainMessage.setFrom("2422321558@qq.com");
+        mainMessage.setSubject(title);
+       /* StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("活动时间：");
+        stringBuffer.append("活动内容：" + content);*/
+        mainMessage.setText(content);
+        if (CollectionUtils.isNotEmpty(receiverList)) {
+            for (String emailAddress : receiverList) {
+                mainMessage.setTo(emailAddress);
+                javaMailSender.send(mainMessage);
+            }
+        }
         return true;
     }
 }

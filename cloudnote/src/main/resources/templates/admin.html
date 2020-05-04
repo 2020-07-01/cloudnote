@@ -79,6 +79,16 @@
             padding-bottom: 10px;
             font-size: 12px
         }
+
+
+        .layuiadmin-card-list p.layuiadmin-normal-font {
+            padding-bottom: 10px;
+            font-size: 20px;
+            color: #666;
+            line-height: 24px
+        }
+
+
     </style>
 </head>
 
@@ -109,7 +119,7 @@
                 <div class="layui-col-sm6 layui-col-md3">
                     <div class="layui-card">
                         <div class="layui-card-header">
-                            用户总数
+                            <span>用户概况</span>
                             <span class="layui-badge layui-bg-green layuiadmin-badge">ALL</span>
                         </div>
                         <div class="layui-card-body layuiadmin-card-list">
@@ -183,37 +193,83 @@
                     </div>
                 </div>
 
-                <!--发送邮件服务-->
-                <div class="layui-row layui-col-space15">
+                <div class="layui-row">
                     <div class="layui-col-sm12 layui-col-md5">
                         <div class="layui-card">
                             <div class="layui-card-header">
                                 <span>邮件服务</span>
                                 <div class="layui-layout-right" style="right: 15px;">
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="emailTheme" id="emailTheme" lay-verify="title"
+                                               autocomplete="off"
+                                               style="height: 30px;width: 300px;"
+                                               placeholder="主题" class="layui-input">
+                                    </div>
                                     <button class="layui-btn layui-btn-primary  layui-btn-sm" id="sendEmail">发送</button>
                                 </div>
                             </div>
+
                             <div class="layui-card-body layuiadmin-card-list">
-                                <textarea id="scheduleContent" class="layui-textarea"
+                                <textarea id="emailContent" class="layui-textarea"
                                           placeholder="请输入邮件内容" maxlength="200"
-                                          style="resize: none;min-height:150px"></textarea>
+                                          style="resize: none;min-height:159px"></textarea>
                             </div>
 
                         </div>
                     </div>
                     <!--账户详情-->
-
                     <div class="layui-col-sm12 layui-col-md7">
                         <div class="layui-card">
                             <div class="layui-card-header">
-                                <span>用户详情</span>
+                                <span id="accountName"
+                                      style="left:10px;top: 50%;color: #333;font-size: 18px">用户详情</span>
+
                             </div>
                             <div class="layui-card-body layuiadmin-card-list">
-                                <textarea id="" class="layui-textarea"
-                                          placeholder="请输入邮件内容" maxlength="200"
-                                          style="resize: none;min-height:150px"></textarea>
-                            </div>
+                                <div class="layui-row layui-col-space5">
+                                    <div class="layui-col-md6">
+                                        <div class="layui-card">
+                                            <div class="layui-card-header">
+                                                <span style="color: #666;font-size:14px">注册日期：</span>
+                                                <span id="createTime"></span>
+                                            </div>
+                                        </div>
+                                        <div class="layui-card">
+                                            <div class="layui-card-header">
+                                                <span style="color: #666;font-size:14px">最近登录时间：</span>
+                                                <span id="lastLoginTime"></span>
+                                            </div>
+                                        </div>
+                                        <div class="layui-card">
+                                            <div class="layui-card-header">
+                                                <span style="color: #666;font-size:14px">访问数：</span>
+                                                <span id="loginCount"></span>
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                    <div class="layui-col-md6">
+                                        <div class="layui-card">
+                                            <div class="layui-card-header">
+                                                <span style="color: #666;font-size:14px">笔记：</span>
+                                                <span id="noteCount1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="layui-card">
+                                            <div class="layui-card-header">
+                                                <span style="color: #666;font-size:14px">图片：</span>
+                                                <span id="imageCount1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="layui-card">
+                                            <div class="layui-card-header">
+                                                <span style="color: #666;font-size:14px">文档：</span>
+                                                <span id="fileCount1"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -235,7 +291,7 @@
 <script type="text/html" id="operate">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="lock">锁定</a>
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="unLock">解锁</a>
-    <!-- <a class="layui-btn layui-btn-xs" lay-event="showDetail">详情</a>-->
+    <a class="layui-btn layui-btn-xs" lay-event="showDetail">详情</a>
 </script>
 
 <script th:inline="none">
@@ -290,11 +346,9 @@
 
         //监听行操作
         table.on('tool(accountList)', function (obj) {
-            /*  if (obj.event === 'showDetail') {
-                  showDetail(obj.data);
-
-              } else*/
-            if (obj.event === 'unLock') {
+            if (obj.event === 'showDetail') {
+                showDetail(obj.data);
+            } else if (obj.event === 'unLock') {
                 if (obj.data.isLocked == "UNLOCK") {
                     layer.msg("不支持该操作!");
                 } else {
@@ -375,11 +429,47 @@
             //获取表格中所有选中的行数据
             let checkStatus = table.checkStatus('accountList');
             let arrayData = checkStatus.data;
+            let emails = "";
             //遍历获取id
-
+            for (var i in arrayData) {
+                emails = emails + arrayData[i].email + ",";
+            }
+            emails = emails.substr(0, emails.length - 1);
+            let jsonData = JSON.stringify({
+                "emails": emails,
+                "emailTheme": $('#emailTheme').val(),
+                "emailContent": $('#emailContent').val()
+            })
             //发送邮件
-
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                url: "/admin/send_mails.json",
+                data: jsonData,
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message);
+                    } else {
+                        layer.msg(result.message);
+                    }
+                },
+                error: function () {
+                    alert("网络出现异常!");
+                }
+            });
         });
+
+        //详情
+        function showDetail(data) {
+            $('#accountName').html(data.accountName);
+            $('#noteCount1').html(data.note);
+            $('#imageCount1').html(data.image);
+            $('#fileCount1').html(data.file);
+            $('#createTime').html(data.createTime);
+            $('#loginCount').html(data.loginCount);
+            $('#lastLoginTime').html(data.lastLoginTime);
+        }
 
         //注销
         $("#logout").click(function () {

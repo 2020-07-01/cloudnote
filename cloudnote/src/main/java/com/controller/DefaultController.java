@@ -4,6 +4,7 @@ import com.Util.TokenUtils;
 import com.interceptor.PassToken;
 import com.interceptor.UserLoginToken;
 import com.job.ScheduleJob;
+import com.oss.OSSUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,9 @@ public class DefaultController {
 
     @Autowired
     ScheduleJob scheduleJob;
+
+    @Autowired
+    OSSUtil ossUtil;
 
     @RequestMapping(value = "register")
     @PassToken
@@ -104,15 +108,18 @@ public class DefaultController {
         return "SUCCESS";
     }
 
-    @RequestMapping(value = "/rest_password")
-    public String toRestPassword() {
-        return "resetPasswordPage";
-    }
-
     @UserLoginToken
     @RequestMapping(value = "/recycle_bin")
-    public String toRecycleBin(){
+    public String toRecycleBin() {
         return "recycleBin";
+    }
+
+    @PassToken
+    @RequestMapping(value = "/test")
+    @ResponseBody
+    public String test1() {
+        ossUtil.getSize("59051fa2d1644f44a781ad1d9dacd67b");
+        return "SUCCESS";
     }
 
 }

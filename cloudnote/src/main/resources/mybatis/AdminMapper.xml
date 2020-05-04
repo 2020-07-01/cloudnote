@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.AdminMapper">
+
+
+    <resultMap id="baseMap" type="com.entity.admin.AdminCount">
+        <result column="noteCount" property="noteCount" />
+        <result column="imageCount" property="imageCount" />
+        <result column="fileCount" property="fileCount"/>
+    </resultMap>
+
+    <!--查询总数-->
+    <select id="findCount" parameterType="com.entity.Condition" resultType="com.entity.admin.AdminCount"
+            resultMap="baseMap">
+        select a.noteCount,b.imageCount,c.fileCount
+        from (
+            (select COUNT(note_id) as noteCount from note where account_id = #{accountId,jdbcType=VARCHAR}) a,
+            (select COUNT(image_id) as imageCount from image where account_id = #{accountId,jdbcType=VARCHAR}) b,
+            (select COUNT(file_id) as fileCount from file where account_id = #{accountId,jdbcType=VARCHAR}) c
+        )
+    </select>
+
+</mapper>

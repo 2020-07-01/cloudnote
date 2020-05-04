@@ -12,26 +12,26 @@ public class AdminData {
     public AdminData(Account account) {
         this.accountId = account.getAccountId();
         this.accountName = account.getAccountName();
-        this.area = account.getArea();
-        this.birthday = account.getBirthday();
-        this.sex = account.getSex();
         this.email = account.getEmail();
         this.isLocked = account.getIsLocked();
         this.isOnline = account.getIsOnline();
-        this.phone = account.getPhone();
         this.createTime = account.getCreateTime();
-
+        this.loginCount = account.getLoginCount();
+        this.phone = account.getPhone();
+        this.lastLoginTime = account.getLastLoginTime();
     }
 
     private String accountId;
     private String accountName;
-    private String sex;
-    private String birthday;
-    private String area;
     private String email;
     private String phone;
     private String createTime;
     private String isOnline;
     private String isLocked;
+    private Integer loginCount;
+    private String note;
+    private String file;
+    private String image;
+    private String lastLoginTime;
 
 }

@@ -1,6 +1,7 @@
 package com.service.serviceImpl;
 
 import com.entity.Condition;
+import com.entity.admin.AdminCount;
 import com.entity.admin.AdminData;
 import com.mapper.AdminMapper;
 import com.service.AdminService;
@@ -20,4 +21,12 @@ import java.util.List;
 @Service
 public class AdminServiceImpl implements AdminService {
 
+    @Autowired
+    AdminMapper adminMapper;
+
+    @Override
+    public AdminCount findCount(Condition condition) {
+        AdminCount adminCount = adminMapper.findCount(condition);
+        return adminCount;
+    }
 }

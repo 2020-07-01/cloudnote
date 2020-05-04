@@ -6,15 +6,20 @@ import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.*;
+import com.entity.admin.AdminCount;
 import com.entity.admin.AdminData;
 import com.entity.admin.GeneralData;
 import com.entity.file.CNFile;
 import com.entity.note.Note;
 import com.interceptor.UserLoginToken;
 import com.mailService.MailServiceImpl;
+import com.oss.OSSUtil;
 import com.service.serviceImpl.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +62,9 @@ public class AdminController {
     @Autowired
     FileServiceImpl fileService;
 
+    @Autowired
+    OSSUtil ossUtil;
+
     /**
      * 获取用户列表
      *
@@ -74,14 +82,49 @@ public class AdminController {
         Condition condition = new Condition();
         condition.setStartNumber(getStartNumber(Integer.parseInt(page), Integer.parseInt(pageSize)));
         condition.setPageSize(Integer.parseInt(pageSize));
-
         List<Account> accountList = accountService.getAccountByCondition(condition);
+
         List<AdminData> adminDataList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(accountList)) {
             accountList.forEach(p -> {
-                adminDataList.add(new AdminData(p));
+                AdminData adminData = new AdminData(p);
+                Condition conditionCount = new Condition();
+                conditionCount.setAccountId(p.getAccountId());
+                //获取count
+                AdminCount adminCount = adminService.findCount(conditionCount);
+                adminData.setNote(adminCount.getNoteCount());
+                adminData.setFile(adminCount.getFileCount());
+                adminData.setImage(adminCount.getImageCount());
+                adminDataList.add(adminData);
             });
         }
+        //存储空间大小
+        if (CollectionUtils.isNotEmpty(adminDataList)) {
+            adminDataList.forEach(p -> {
+                Map<String, String> map = ossUtil.getSize(p.getAccountId());
+                if (map != null) {
+                    Set<String> keys = map.keySet();
+                    keys.forEach(key -> {
+                        if (key.contains("headImage")) {
+                            return;
+                        } else if (key.contains("file")) {
+                            StringBuffer stringBuffer = new StringBuffer();
+                            stringBuffer.append(p.getFile() + "(");
+                            stringBuffer.append(map.get(key));
+                            stringBuffer.append(")");
+                            p.setFile(stringBuffer.toString());
+                        } else {
+                            StringBuffer stringBuffer = new StringBuffer();
+                            stringBuffer.append(p.getImage() + "(");
+                            stringBuffer.append(map.get(key));
+                            stringBuffer.append(")");
+                            p.setImage(stringBuffer.toString());
+                        }
+                    });
+                }
+            });
+        }
+
         Map<String, Object> responseMap = new HashMap();
         responseMap.put("code", "0");
         responseMap.put("msg", "success");
@@ -158,4 +201,39 @@ public class AdminController {
         Json.toJson(result, response);
     }
 
+
+    /**
+     * 管理员发送邮件服务
+     *
+     * @param jsonString
+     * @param request
+     * @param response
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/send_mails.json")
+    public void sendMails(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+        Result result;
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        String emails = jsonObject.getString("emails");
+        String[] emailsArray = emails.split(",");
+        List<String> emailsList = Arrays.asList(emailsArray);
+
+        String emailTheme = jsonObject.getString("emailTheme");
+        if (StringUtils.isEmpty(emailTheme)) {
+            emailTheme = "【云笔记】";
+        }
+        String emailContent = jsonObject.getString("emailContent");
+        if (StringUtils.isEmpty(emailContent)) {
+            result = new Result(false, "邮件正文不能为空!");
+        } else if (StringUtils.isEmpty(emails)) {
+            result = new Result(false, "请选择用户!");
+        } else {
+            if (mailService.sendEmailsByAdmin(emailsList, emailTheme, emailContent)) {
+                result = new Result(true, "SUCCESS");
+            } else {
+                result = new Result(false, "FAILURE");
+            }
+        }
+        Json.toJson(result, response);
+    }
 }

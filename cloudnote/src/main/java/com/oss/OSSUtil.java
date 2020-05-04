@@ -6,10 +6,13 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.*;
 import com.entity.Constant;
+import com.google.common.cache.LoadingCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,8 +40,8 @@ public class OSSUtil {
         typeMap.put("xlsx", "file");
         typeMap.put("png", "image");
         typeMap.put("jpg", "image");
-        typeMap.put("jpeg","image");
-        typeMap.put("jfif","image");
+        typeMap.put("jpeg", "image");
+        typeMap.put("jfif", "image");
     }
 
     @Autowired
@@ -57,9 +60,9 @@ public class OSSUtil {
         String type = wholeName.substring(wholeName.lastIndexOf(".") + 1);// 获取文件的后缀
         //判断是否需要进行文件名压缩
         String fileName = wholeName.substring(0, wholeName.lastIndexOf("."));// 文件名
-        if(fileName.length() > 90){
-            fileName = fileName.substring(0,90);
-            wholeName = fileName + "."+type;
+        if (fileName.length() > 90) {
+            fileName = fileName.substring(0, 90);
+            wholeName = fileName + "." + type;
         }
 
         String typeSwitch = typeMap.get(type);
@@ -196,9 +199,56 @@ public class OSSUtil {
         return accountId + "/" + "file" + "/" + date + "/" + type + "/" + sourceFileName;
     }
 
-/*
-    public OSSObject getObject() {
-        OSSObject ossObject = ossClient.getObject("001-bucket", "63/file/2020-04-23/doc/论文.doc");
-        return ossObject;
-    }*/
+
+    //获取用户的占用空间大小
+    public Map getSize(String accountId) {
+        Map<String, String> map = new HashMap<>();
+        // 指定前缀，若希望遍历主目录文件夹，则将该值置空。
+        final String keyPrefix = accountId + "/";
+        ObjectListing objectListing = null;
+        do {
+            // 默认情况下，每次列举100个文件或目录。
+            ListObjectsRequest request = new ListObjectsRequest("001-bucket").withDelimiter("/").withPrefix(keyPrefix);
+            if (objectListing != null) {
+                request.setMarker(objectListing.getNextMarker());
+            }
+            objectListing = ossClient.listObjects(request);
+            List<String> folders = objectListing.getCommonPrefixes();
+            for (String folder : folders) {
+                Long size = calculateFolderLength(ossClient, "001-bucket", folder);
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append(size / 1024 / 1024);//转换为MB 整数位
+                stringBuffer.append(".");
+                Long decimals = size % 1024 % 1024; //MB 小数位
+                stringBuffer.append(decimals);
+                stringBuffer.append("MB");
+                map.put(folder, stringBuffer.toString());
+            }
+          /*  List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+            for (OSSObjectSummary s : sums) {
+                String size = s.getSize()/1024 + "KB";
+
+                System.out.println(s.getKey() + " : " + (s.getSize() / 1024) + "KB");
+            }*/
+        } while (objectListing.isTruncated());
+        //ossClient.shutdown();
+        return map;
+    }
+
+    private static long calculateFolderLength(OSS ossClient, String bucketName, String folder) {
+        long size = 0L;
+        ObjectListing objectListing = null;
+        do {
+            ListObjectsRequest request = new ListObjectsRequest(bucketName).withPrefix(folder).withMaxKeys(1000);
+            if (objectListing != null) {
+                request.setMarker(objectListing.getNextMarker());
+            }
+            objectListing = ossClient.listObjects(request);
+            List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+            for (OSSObjectSummary s : sums) {
+                size += s.getSize();
+            }
+        } while (objectListing.isTruncated());
+        return size;
+    }
 }
