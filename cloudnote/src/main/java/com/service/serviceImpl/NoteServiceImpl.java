@@ -1,5 +1,7 @@
 package com.service.serviceImpl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,11 +9,14 @@ import java.util.Map;
 import com.Util.ASEUtils;
 import com.Util.UUIDUtils;
 import com.baidu.BaiDuUtils;
+import com.entity.Account;
 import com.entity.Constant;
 
+import com.mapper.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +26,6 @@ import com.entity.Condition;
 import com.entity.note.Note;
 import com.mapper.NoteMapper;
 import com.service.NoteService;
-import sun.misc.BASE64Encoder;
 
 /**
  * @author :qiang
@@ -41,6 +45,9 @@ public class NoteServiceImpl implements NoteService {
 
     @Autowired
     ASEUtils aseUtils;
+
+    @Autowired
+    AccountMapper accountMapper;
 
     /**
      * 存储笔记
@@ -63,13 +70,14 @@ public class NoteServiceImpl implements NoteService {
                 log.info("文本长度超过限制!" + "length:" + noteVo.getNoteContent().trim().length());
                 result.put(false, "内容长度超过限制!");
             } else {
-                Map<Boolean, String> map = check(noteVo);
+                //进行笔记内容的审核
+                Map<String, String> map = check(noteVo);
                 //true
-                if (StringUtils.isNotEmpty(map.get(true))) {
+                if (StringUtils.isNotEmpty(map.get("true"))) {
                     //进行加密
                     String noteContent = aseUtils.encrypt(noteVo.getNoteContent().trim().getBytes("UTF-8"), noteVo.getAccountId().toString().getBytes("UTF-8"));
-                    log.info("加密前的长度:"+noteVo.getNoteContent().trim().length());
-                    log.info("加密后的长度:"+noteContent.length());
+                    log.info("加密前的长度:" + noteVo.getNoteContent().trim().length());
+                    log.info("加密后的长度:" + noteContent.length());
                     noteVo.setNoteContent(noteContent);
 
                     //设置type
@@ -82,7 +90,14 @@ public class NoteServiceImpl implements NoteService {
                         result.put(false, "FAILURE");
                     }
                 } else {
-                    result.put(false, map.get(false));
+                    String message = map.get("false");
+                    String illegalData = map.get("illegalData");
+                    //存储到数据库
+                    Account account = new Account();
+                    account.setAccountId(noteVo.getAccountId());
+                    account.setIllegalData(illegalData);
+                    accountMapper.updateAccount(account);
+                    result.put(false,"审核不通过"+message.replaceAll("<br>", ""));
                 }
             }
         } catch (Exception e) {
@@ -98,16 +113,48 @@ public class NoteServiceImpl implements NoteService {
      * @param note
      * @return
      */
-    private Map<Boolean, String> check(Note note) {
-        Map<Boolean, String> result = new HashMap<>();
+    private Map<String, String> check(Note note) {
+        Map<String, String> result = new HashMap<>();
         JSONObject jsonObject = baiDuUtils.checkTextContent(note.getNoteContent());
-        if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
-            JSONArray dataJSONArray = jsonObject.getJSONArray("data");
-            String msg = dataJSONArray.getJSONObject(0).getString("msg");
-            result.put(false, msg);
+
+        //判断是否审核失败
+        if (!jsonObject.isNull("error_code")) {
+            result.put("false", "审核失败!");
         } else {
-            result.put(true, "文本审核通过!");
+            if (!jsonObject.isNull("conclusion")) {
+                if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
+
+                    //如果审核不合规
+                    StringBuffer stringBuffer = new StringBuffer();
+                    StringBuffer stringBuffer1 = new StringBuffer();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    JSONArray dataJSONArray = jsonObject.getJSONArray("data");//data数组
+                    //遍历数组
+                    for (int i = 0; i < dataJSONArray.length(); i++) {
+                        org.json.JSONObject jsonObjectI = dataJSONArray.getJSONObject(i);
+                        if (!jsonObjectI.isNull("msg")) {
+                            stringBuffer.append("【" +jsonObjectI.getString("msg") + "】" + "<br>");
+                            stringBuffer1.append("【" + jsonObjectI.getString("msg") + "】" + dateFormat.format(new Date()) + "<br>");
+                        }
+                    }
+                    String message = stringBuffer.toString();
+                    String message1 = stringBuffer1.toString();
+                    if(StringUtils.isEmpty(message)){
+                        message = message.substring(0, message.length() - 4);
+                        message1 = message1.substring(0, message1.length() - 4);
+                    }
+                    result.put("false", message);
+                    result.put("illegalData", message1);
+                } else if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_4)) {
+                    result.put("false", "审核失败!");
+                } else {
+                    result.put("true", "审核通过!");
+                }
+            } else {
+                result.put("false", "审核失败!");
+            }
         }
+
         return result;
     }
 
@@ -128,8 +175,8 @@ public class NoteServiceImpl implements NoteService {
         } else if (StringUtils.isNotBlank(noteVo.getNoteTitle())) {
             row = noteMapper.updateNote(noteVo);
         } else if (StringUtils.isNotBlank(noteVo.getNoteContent()) && noteVo.getNoteContent().trim().length() < 20000) {
-            Map<Boolean, String> map = check(noteVo);
-            if (StringUtils.isNotEmpty(map.get(true))) {
+            Map<String, String> map = check(noteVo);
+            if (StringUtils.isNotEmpty(map.get("true"))) {
                 try {
                     //进行加密
                     String noteContent = aseUtils.encrypt(noteVo.getNoteContent().trim().getBytes("UTF-8"), noteVo.getAccountId().toString().getBytes("UTF-8"));
@@ -139,7 +186,14 @@ public class NoteServiceImpl implements NoteService {
                 }
                 row = noteMapper.updateNote(noteVo);
             } else {
-                result.put(false, map.get(false));
+                result.put(false, map.get("false"));
+
+                String illegalData = map.get("illegalData");
+                //存储到数据库
+                Account account = new Account();
+                account.setAccountId(noteVo.getAccountId());
+                account.setIllegalData(illegalData);
+                accountMapper.updateAccount(account);
                 return result;
             }
         } else {

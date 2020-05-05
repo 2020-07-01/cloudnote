@@ -32,6 +32,7 @@ public class OSSUtil {
 
     public static HashMap<String, String> typeMap = new HashMap();
 
+    //PNG、JPG、JPEG、BMP，GIF
     static {
         typeMap.put("doc", "file");
         typeMap.put("docx", "file");
@@ -41,7 +42,8 @@ public class OSSUtil {
         typeMap.put("png", "image");
         typeMap.put("jpg", "image");
         typeMap.put("jpeg", "image");
-        typeMap.put("jfif", "image");
+        typeMap.put("gif", "image");
+        typeMap.put("bmp", "image");
     }
 
     @Autowired

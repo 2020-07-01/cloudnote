@@ -18,6 +18,10 @@ public class AdminData {
         this.loginCount = account.getLoginCount();
         this.phone = account.getPhone();
         this.lastLoginTime = account.getLastLoginTime();
+        this.area = account.getArea();
+        this.sex = account.getSex();
+        this.birthday = account.getBirthday();
+        this.illegalData = account.getIllegalData();
     }
 
     private String accountId;
@@ -31,5 +35,9 @@ public class AdminData {
     private String file;
     private String image;
     private String lastLoginTime;
+    private String sex;
+    private String area;
+    private String birthday;
+    private String illegalData;
 
 }

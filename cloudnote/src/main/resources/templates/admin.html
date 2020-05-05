@@ -3,7 +3,8 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset='utf-8'>
-    <title>cloudNote</title>
+    <title>云笔记</title>
+    <link rel="icon" href="https://001-bucket.oss-cn-shanghai.aliyuncs.com/admin/title.gif" type="image/x-icon"/>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <script src="../static/layui-v2.5.5/layui/admin.js"></script>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
@@ -88,7 +89,6 @@
             line-height: 24px
         }
 
-
     </style>
 </head>
 
@@ -103,7 +103,7 @@
 
             <li class="layui-nav-item">
                 <a href="javascript:;">
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    <img src="https://001-bucket.oss-cn-shanghai.aliyuncs.com/admin/title.gif" class="layui-nav-img">
                     <span id="headAccountName">admin</span>
                 </a>
                 <dl class="layui-nav-child">
@@ -193,7 +193,7 @@
                     </div>
                 </div>
 
-                <div class="layui-row">
+                <div class="layui-row layui-col-space10">
                     <div class="layui-col-sm12 layui-col-md5">
                         <div class="layui-card">
                             <div class="layui-card-header">
@@ -212,7 +212,7 @@
                             <div class="layui-card-body layuiadmin-card-list">
                                 <textarea id="emailContent" class="layui-textarea"
                                           placeholder="请输入邮件内容" maxlength="200"
-                                          style="resize: none;min-height:250px"></textarea>
+                                          style="resize: none;min-height:260px"></textarea>
                             </div>
 
                         </div>
@@ -226,45 +226,49 @@
 
                             </div>
                             <div class="layui-card-body layuiadmin-card-list">
-                                <div class="layui-row layui-col-space5">
-                                    <div class="layui-col-md6">
-                                        <div class="layui-card">
+                                <div class="layui-row layui-col-space10">
+                                    <div class="layui-col-md5 layui-col-sm5" >
+                                        <div class="layui-card" style="margin-bottom:0px">
                                             <div class="layui-card-header">
                                                 <span style="color: #666;font-size:14px">注册日期：</span>
                                                 <span id="createTime"></span>
                                             </div>
                                         </div>
-                                        <div class="layui-card">
+                                        <div class="layui-card" style="margin-bottom:0px">
                                             <div class="layui-card-header">
                                                 <span style="color: #666;font-size:14px">最近登录时间：</span>
                                                 <span id="lastLoginTime"></span>
                                             </div>
                                         </div>
-                                        <div class="layui-card">
-                                            <div class="layui-card-header">
-                                                <span style="color: #666;font-size:14px">访问数：</span>
-                                                <span id="loginCount"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="layui-col-md6">
-                                        <div class="layui-card">
+                                        <div class="layui-card" style="margin-bottom:0px">
                                             <div class="layui-card-header">
                                                 <span style="color: #666;font-size:14px">笔记：</span>
                                                 <span id="noteCount1"></span>
                                             </div>
                                         </div>
-                                        <div class="layui-card">
+                                        <div class="layui-card" style="margin-bottom:0px">
                                             <div class="layui-card-header">
                                                 <span style="color: #666;font-size:14px">图片：</span>
                                                 <span id="imageCount1"></span>
                                             </div>
                                         </div>
-                                        <div class="layui-card">
+                                        <div class="layui-card" style="margin-bottom:0px">
                                             <div class="layui-card-header">
                                                 <span style="color: #666;font-size:14px">文档：</span>
                                                 <span id="fileCount1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="layui-card" style="margin-bottom:0px">
+                                            <div class="layui-card-header">
+                                                <span style="color: #666;font-size:14px">登录次数：</span>
+                                                <span id="loginCount"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md7 layui-col-sm7">
+                                        <div class="layui-card" style="margin-bottom:0px">
+                                            <div class="layui-card-body" style="height: 240px;overflow:auto" id="illegalData">
+
                                             </div>
                                         </div>
                                     </div>
@@ -470,6 +474,7 @@
             $('#createTime').html(data.createTime);
             $('#loginCount').html(data.loginCount);
             $('#lastLoginTime').html(data.lastLoginTime);
+            $('#illegalData').html(data.illegalData);
         }
 
         //注销

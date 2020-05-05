@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 
 import com.cache.CacheService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -58,14 +59,14 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (method.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
             if (userLoginToken.required()) {
-                if (token == null) {
+                if (StringUtils.isEmpty(token)) {
                     log.info("无token请重新登录!");
                     response.sendRedirect("/login");
                     return false;
                 }
                 //获取token中的accountId
                 String accountId = tokenUtil.getAccountIdByToken(token);
-                Map<String, String> cacheMap = cacheService.getValue(accountId.toString());
+                Map<String, String> cacheMap = cacheService.getValue(accountId);
                 if (cacheMap != null) {
                     String cacheAccountId = cacheMap.get("accountId");
                     if (cacheAccountId.equals(accountId.toString())) {

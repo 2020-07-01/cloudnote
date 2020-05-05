@@ -10,8 +10,11 @@ import com.baidu.BaiDuUtils;
 import com.cache.CacheService;
 import com.entity.*;
 import com.entity.file.CNFile;
+
 import com.interceptor.UserLoginToken;
 import com.oss.OSSUtil;
+
+import com.service.serviceImpl.AccountServiceImpl;
 import com.service.serviceImpl.FileServiceImpl;
 import com.service.serviceImpl.ImageServiceImpl;
 
@@ -57,6 +60,9 @@ public class UploadController {
     @Autowired
     BaiDuUtils baiDuUtils;
 
+    @Autowired
+    AccountServiceImpl accountService;
+
     /**
      * 上传图片
      *
@@ -73,13 +79,9 @@ public class UploadController {
         Result result = null;
         try {
             //图片审核
-            org.json.JSONObject jsonObject = baiDuUtils.checkImage(uploadImage.getBytes());
-            //如果不合规
-            if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
-                JSONArray dataJSONArray = jsonObject.getJSONArray("data");
-                String msg = dataJSONArray.getJSONObject(0).getString("msg");
-                result = new Result("2", msg);
-            } else {
+            Map<String, String> map = check(uploadImage.getBytes());
+            //true
+            if (StringUtils.isNotEmpty(map.get("true"))) {
                 //如果图片审核通过
                 Map serviceData = imageService.uploadImage(uploadImage, accountId);
                 if (serviceData.get("true") != null) {
@@ -89,6 +91,16 @@ public class UploadController {
                     data.put("cache", serviceData.get("fail").toString());
                     result = new Result(false, serviceData.get("message").toString(), data);
                 }
+            } else {
+                //图片审核不通过
+                //存储到数据库
+                String message = map.get("false");
+                Account account = new Account();
+                account.setAccountId(accountId);
+                String illegalData = map.get("illegalData");
+                account.setIllegalData(illegalData);
+                accountService.updateAccount(account);
+                result = new Result("2", "审核不通过" + message.replaceAll("<br>", ""));
             }
         } catch (Exception e) {
             result = new Result(false, "异常错误!");
@@ -96,6 +108,57 @@ public class UploadController {
         }
         Json.toJson(result, response);
     }
+
+
+    /**
+     * 图片审核
+     *
+     * @param bytes
+     * @return
+     */
+    private Map<String, String> check(byte[] bytes) {
+        Map<String, String> result = new HashMap<>();
+        org.json.JSONObject jsonObject = baiDuUtils.checkImage(bytes);
+        //判断是否审核失败
+        if (!jsonObject.isNull("error_code")) {
+            result.put("false", "图片审核失败!");
+        } else {
+            //审核成功
+            if (!jsonObject.isNull("conclusion")) {
+                if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
+                    //如果审核不合规
+                    StringBuffer stringBuffer = new StringBuffer();
+                    StringBuffer stringBuffer1 = new StringBuffer();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    JSONArray dataJSONArray = jsonObject.getJSONArray("data");//data数组
+                    //遍历数组
+                    for (int i = 0; i < dataJSONArray.length(); i++) {
+                        org.json.JSONObject jsonObjectI = dataJSONArray.getJSONObject(i);
+                        if (!jsonObjectI.isNull("msg")) {
+                            stringBuffer.append("【" + jsonObjectI.getString("msg") + "】" + "<br>");
+                            stringBuffer1.append("【" + jsonObjectI.getString("msg") + "】" + dateFormat.format(new Date()) + "<br>");
+                        }
+                    }
+                    String message = stringBuffer.toString();
+                    String message1 = stringBuffer1.toString();
+                    if (StringUtils.isEmpty(message)) {
+                        message = message.substring(0, message.length() - 4);
+                        message1 = message1.substring(0, message1.length() - 4);
+                    }
+                    result.put("false", message);
+                    result.put("illegalData", message1);
+                } else if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_4)) {
+                    result.put("false", "审核失败!");
+                } else {
+                    result.put("true", "审核通过!");
+                }
+            } else {
+                result.put("false", "图片审核失败!");
+            }
+        }
+        return result;
+    }
+
 
     /**
      * 重命名图片
