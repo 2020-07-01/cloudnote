@@ -68,9 +68,6 @@ public class MailServiceImpl implements MailService {
         SimpleMailMessage mainMessage = new SimpleMailMessage();
         mainMessage.setFrom("2422321558@qq.com");
         mainMessage.setSubject(title);
-       /* StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("活动时间：");
-        stringBuffer.append("活动内容：" + content);*/
         mainMessage.setText(content);
         if (CollectionUtils.isNotEmpty(receiverList)) {
             for (String emailAddress : receiverList) {

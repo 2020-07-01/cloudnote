@@ -118,7 +118,7 @@ public class AccountController {
      */
     @PassToken
     @RequestMapping(value = "/login.json")
-    public void Login(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+    public void login(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject;
         Result result = null;
         jsonObject = JSON.parseObject(jsonParam);

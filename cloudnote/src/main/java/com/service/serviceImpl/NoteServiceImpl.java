@@ -123,7 +123,6 @@ public class NoteServiceImpl implements NoteService {
         } else {
             if (!jsonObject.isNull("conclusion")) {
                 if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
-
                     //如果审核不合规
                     StringBuffer stringBuffer = new StringBuffer();
                     StringBuffer stringBuffer1 = new StringBuffer();
@@ -154,7 +153,6 @@ public class NoteServiceImpl implements NoteService {
                 result.put("false", "审核失败!");
             }
         }
-
         return result;
     }
 
