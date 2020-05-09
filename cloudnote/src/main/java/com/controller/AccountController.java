@@ -154,7 +154,7 @@ public class AccountController {
                             HashMap data = new HashMap();
                             data.put("token", token);
                             if (jsonObject.getString("accountName").equals("admin")) {
-                                result = new Result("000", "SUCCESS!", data);
+                                result = new Result("admin", "SUCCESS!", data);
                             } else {
                                 result = new Result(true, "SUCCESS!", data);
                             }

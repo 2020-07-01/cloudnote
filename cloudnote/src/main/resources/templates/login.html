@@ -75,7 +75,7 @@
                         var tokenData = result.data.token;
                         sessionStorage.setItem("token", tokenData);//存储token
                         window.location.href = "/to_note_page?token=" + tokenData;//进入主页
-                    } else if (result.code == "000") {
+                    } else if (result.code == "admin") {
                         var tokenData = result.data.token;
                         sessionStorage.setItem("token", tokenData);//存储token
                         window.location.href = "/admin?token=" + tokenData; //进入管理页面

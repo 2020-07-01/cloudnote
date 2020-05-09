@@ -219,20 +219,20 @@
 
 <script th:inline="none">
 
-
     var token = sessionStorage.getItem("token");
 
     var globalNote = "";
 
     let showTypeFlag = true;
     let disableFlag = true;
+
     //导航栏识别
     let sideId = "all";
-
 
     layui.use(['table', 'element', 'form', 'layer'], function () {
         //初始化编辑器
         init_tinymce();
+
         //初始化用户名和头像
         init_head();
         //初始化标签
@@ -303,6 +303,14 @@
                         $('#headAccountName').html(result.data.accountName);
                     } else {
                         layer.msg(result.message);
+                    }
+                },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                },
+                beforeSend: function () {
+                    if (token == "" || token == "null") {
+                        window.location.href = "/login"; //进入登录界面
                     }
                 },
             })
@@ -422,6 +430,9 @@
                         layer.msg(result.message);
                     }
                 },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                }
             })
         }
 
@@ -465,12 +476,14 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
-                        if (sideId == "star") {
-                            init_select("NO", "YES");
-                        } else {
-                            init_table("", "", "", "NO");
-                            init_select("NO", "");
-                        }
+                        init_table("", "", "", "NO");
+                        init_select("NO", "");
+                        /*  if (sideId == "star") {
+                              init_select("NO", "YES");
+                          } else {
+                              init_table("", "", "", "NO");
+                              init_select("NO", "");
+                          }*/
                         hideNoteType();
                         clearEidtSpace();
                     } else {
@@ -478,6 +491,9 @@
                         layer.msg(result.message);
                     }
                 },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                }
             })
         });
 
@@ -539,6 +555,14 @@
                         layer.msg(result.message);
                     }
                 },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                },
+                beforeSend: function () {
+                    if (token == "" || token == "null") {
+                        window.location.href = "/login"; //进入登录界面
+                    }
+                }
             })
         });
 
@@ -564,6 +588,14 @@
                         layer.msg(result.message);
                     }
                 },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                },
+                beforeSend: function () {
+                    if (token == "" || token == "null") {
+                        window.location.href = "/login"; //进入登录界面
+                    }
+                }
             })
         });
 
@@ -674,6 +706,9 @@
                         form.render();
                     }
                 },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                }
             })
         };
 
@@ -793,6 +828,14 @@
                         layer.msg(result.message);
                     }
                 },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                },
+                beforeSend: function () {
+                    if (token == "" || token == "null") {
+                        window.location.href = "/login"; //进入登录界面
+                    }
+                }
             })
         }
 

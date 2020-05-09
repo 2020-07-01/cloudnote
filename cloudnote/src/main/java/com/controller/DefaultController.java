@@ -42,7 +42,7 @@ public class DefaultController {
     }
 
     @PassToken
-    @RequestMapping(value = "login")
+    @RequestMapping(value = "/login")
     public String toEmailLogin() {
         return "login";
     }

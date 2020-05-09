@@ -99,18 +99,21 @@ public class TokenUtils {
      * @return
      */
     public String getAccountIdByToken(String token) {
+        String result;
         try {
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("yq").build();
             DecodedJWT jwt = verifier.verify(token);// 进行验证
             String accountId = jwt.getAudience().get(0);
             if (accountId != null) {
-                return accountId;
+                result = accountId;
             } else {
-                throw new RuntimeException("token中不存在accountId");
+                result = null;
             }
         } catch (Exception e) {
-            throw new RuntimeException("token校验抛出异常");
+            result = null;
+            log.error(e.getMessage(), new Throwable(e));
         }
+        return result;
     }
 }

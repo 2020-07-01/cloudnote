@@ -59,19 +59,17 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (method.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
             if (userLoginToken.required()) {
-                if (StringUtils.isEmpty(token)) {
-                    log.info("无token请重新登录!");
-                    response.sendRedirect("/login");
-                    return false;
-                }
                 //获取token中的accountId
                 String accountId = tokenUtil.getAccountIdByToken(token);
-                Map<String, String> cacheMap = cacheService.getValue(accountId);
-                if (cacheMap != null) {
-                    String cacheAccountId = cacheMap.get("accountId");
-                    if (cacheAccountId.equals(accountId.toString())) {
-                        log.info("token验证成功!");
-                        return true;
+                //验证是否为空
+                if (StringUtils.isNotEmpty(accountId)) {
+                    Map<String, String> cacheMap = cacheService.getValue(accountId);
+                    if (cacheMap != null) {
+                        String cacheAccountId = cacheMap.get("accountId");
+                        if (cacheAccountId.equals(accountId)) {
+                            log.info("token验证成功!");
+                            return true;
+                        }
                     }
                 }
                 response.sendRedirect("/login");
@@ -79,6 +77,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 return false;
             }
         }
+        log.info("token验证失败，请重新登录!");
         return false;
     }
 }
