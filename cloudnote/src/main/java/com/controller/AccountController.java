@@ -330,7 +330,7 @@ public class AccountController {
     }
 
     /**
-     * 注销登录->修改login status->删除缓存->跳转至登录界面
+     * 注销登录->删除缓存->跳转至登录界面
      *
      * @param request
      * @param response
@@ -343,10 +343,7 @@ public class AccountController {
         String accountId = tokenService.getAccountIdByToken(token);
         try {
             //删除缓存
-            cacheService.deleteValue(String.valueOf(accountId));
-            Account account = new Account();
-            account.setAccountId(accountId);
-            accountService.updateLoginStatus(account);
+            cacheService.deleteValue(accountId);
             response.sendRedirect("/login");
         } catch (IOException e) {
             e.printStackTrace();

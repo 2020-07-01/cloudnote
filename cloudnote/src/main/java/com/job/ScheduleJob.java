@@ -49,7 +49,6 @@ public class ScheduleJob {
 
         /**
          * 两分钟刷新一次，当前时间点再延迟一分钟
-         * 包括前面但是不包括后面
          * 设置一个时间范围
          */
         Condition condition = new Condition();

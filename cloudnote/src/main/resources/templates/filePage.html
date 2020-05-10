@@ -345,8 +345,7 @@
             globalFile = obj.data;
             $('#fileWholeName').val(obj.data.wholeName);
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
-            if (obj.data.fileType == "pdf" || obj.data.fileType == "txt") {
-
+            /*if (obj.data.fileType == "pdf" || obj.data.fileType == "txt") {
                 $('#showFile').attr('src', obj.data.fileUrl);
                 $('#downloadFile').attr('download', obj.data.wholeName);
                 $('#downloadFile').attr('href', "");
@@ -363,7 +362,11 @@
                 $('#showFile').attr('src', obj.data.fileUrl);
                 $('#downloadFile').attr('download', obj.data.wholeName);
                 $('#downloadFile').attr('href', "");
-            }
+            }*/
+            $('#showFile').attr('src', obj.data.fileUrl);
+            $('#downloadFile').attr('download', obj.data.wholeName);
+            $('#downloadFile').attr('href', "");
+
         });
 
         //删除图片

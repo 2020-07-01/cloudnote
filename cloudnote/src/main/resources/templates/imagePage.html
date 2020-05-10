@@ -176,8 +176,7 @@
                             <div class="layui-col-xs12">
                                 <div class="grid-demo grid-demo-bg1">
                                     <div class="layui-upload-drag" style="width: 100%;height: 430px;padding: 2px;">
-                                        <img id="showImage"
-                                             style="max-width: 100%;max-height: 100%; top:0;left:0;right: 0;bottom: 0;margin: auto">
+                                        <img id="showImage" style="max-width: 100%;max-height: 100%; top:0;left:0;right: 0;bottom: 0;margin: auto">
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +245,6 @@
                 , acceptMime: '.jpg,.png,.jpeg,.gif,.bmp'
                 , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
                     obj.preview(function (index, file, result) {
-
                     });
                 }
                 , done: function (result, index, upload) {//每个文件触发一次，回调一次

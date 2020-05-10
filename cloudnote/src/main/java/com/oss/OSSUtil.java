@@ -136,7 +136,6 @@ public class OSSUtil {
         PutObjectResult putResult = ossClient.putObject(putObjectRequest);
         String url = this.getUrl(path);
         response.put(Constant.FILE_IMAGE_URL, url);
-        //ossClient.shutdown();//关闭客户端
         return response;
     }
 

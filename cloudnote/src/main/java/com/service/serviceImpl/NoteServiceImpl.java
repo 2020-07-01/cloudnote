@@ -66,7 +66,7 @@ public class NoteServiceImpl implements NoteService {
                 result.put(false, "标题不能为空!");
             } else if (StringUtils.isBlank(noteVo.getNoteContent())) {
                 result.put(false, "内容不能为空!");
-            } else if (noteVo.getNoteContent().trim().length() > 60000) {
+            } else if (noteVo.getNoteContent().trim().length() > 20000) {
                 log.info("文本长度超过限制!" + "length:" + noteVo.getNoteContent().trim().length());
                 result.put(false, "内容长度超过限制!");
             } else {
@@ -97,7 +97,7 @@ public class NoteServiceImpl implements NoteService {
                     account.setAccountId(noteVo.getAccountId());
                     account.setIllegalData(illegalData);
                     accountMapper.updateAccount(account);
-                    result.put(false,"审核不通过"+message.replaceAll("<br>", ""));
+                    result.put(false, "审核不通过" + message.replaceAll("<br>", ""));
                 }
             }
         } catch (Exception e) {
@@ -132,13 +132,13 @@ public class NoteServiceImpl implements NoteService {
                     for (int i = 0; i < dataJSONArray.length(); i++) {
                         org.json.JSONObject jsonObjectI = dataJSONArray.getJSONObject(i);
                         if (!jsonObjectI.isNull("msg")) {
-                            stringBuffer.append("【" +jsonObjectI.getString("msg") + "】" + "<br>");
+                            stringBuffer.append("【" + jsonObjectI.getString("msg") + "】" + "<br>");
                             stringBuffer1.append("【" + jsonObjectI.getString("msg") + "】" + dateFormat.format(new Date()) + "<br>");
                         }
                     }
                     String message = stringBuffer.toString();
                     String message1 = stringBuffer1.toString();
-                    if(StringUtils.isEmpty(message)){
+                    if (StringUtils.isEmpty(message)) {
                         message = message.substring(0, message.length() - 4);
                         message1 = message1.substring(0, message1.length() - 4);
                     }

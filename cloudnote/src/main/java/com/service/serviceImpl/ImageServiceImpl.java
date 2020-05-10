@@ -62,7 +62,7 @@ public class ImageServiceImpl implements ImageService {
         }
 
         Long imageSize = file.getSize();// 获取文件的大小 字节
-        String imagePath = getImagePath(wholeName, accountId.toString(), imageType);// 生成图片在oss上的目录
+        String imagePath = getImagePath(wholeName, accountId, imageType);// 生成图片在oss上的目录
         // 验证是否存在重名
         Image imageRepeat = new Image();
         imageRepeat.setAccountId(accountId);

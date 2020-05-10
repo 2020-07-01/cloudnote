@@ -69,7 +69,6 @@ public class ScheduleController {
         if (StringUtils.isNotEmpty(startTime)) {
             schedule.setStartTime(startTime);
         }
-
         String aheadTime = jsonObject.getString("aheadTime");
         schedule.setAheadTime(aheadTime);
         //是否发送邮件
@@ -199,6 +198,12 @@ public class ScheduleController {
         Json.toJson(result, response);
     }
 
+    /**
+     * 修改日程
+     * @param schedule
+     * @param request
+     * @param response
+     */
     @UserLoginToken
     @RequestMapping(value = "/update_schedule.json")
     public void updateSchedule(@RequestBody Schedule schedule, HttpServletRequest request, HttpServletResponse response) {
@@ -207,7 +212,6 @@ public class ScheduleController {
         newSchedule.setScheduleId(schedule.getScheduleId());
         newSchedule.setScheduleTitle(schedule.getScheduleTitle());
         newSchedule.setScheduleContent(schedule.getScheduleContent());
-
         try {
             //不需要发送邮件
             if (schedule.getAheadTime().equals("0")) {
@@ -234,8 +238,6 @@ public class ScheduleController {
             result = new Result(false, "异常错误!");
             log.error(e.getMessage(), new Throwable(e));
         }
-
-
         Json.toJson(result, response);
     }
 }
