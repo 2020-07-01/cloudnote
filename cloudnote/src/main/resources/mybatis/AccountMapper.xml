@@ -78,7 +78,7 @@
         </if>
     </select>
 
-    <!--更新账户信息-->
+    <!--更新用户信息-->
     <update id="updateAccount" parameterType="com.entity.Account">
         update account
         <set>

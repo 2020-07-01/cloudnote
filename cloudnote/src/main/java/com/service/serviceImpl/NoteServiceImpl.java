@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.Util.ASEUtils;
+import com.Util.AESUtils;
 import com.Util.UUIDUtils;
 import com.baidu.BaiDuUtils;
 import com.entity.Account;
@@ -16,7 +16,6 @@ import com.mapper.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class NoteServiceImpl implements NoteService {
     BaiDuUtils baiDuUtils;
 
     @Autowired
-    ASEUtils aseUtils;
+    AESUtils aseUtils;
 
     @Autowired
     AccountMapper accountMapper;
@@ -116,7 +115,6 @@ public class NoteServiceImpl implements NoteService {
     private Map<String, String> check(Note note) {
         Map<String, String> result = new HashMap<>();
         JSONObject jsonObject = baiDuUtils.checkTextContent(note.getNoteContent());
-
         //判断是否审核失败
         if (!jsonObject.isNull("error_code")) {
             result.put("false", "审核失败!");

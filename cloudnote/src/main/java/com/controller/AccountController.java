@@ -57,9 +57,8 @@ public class AccountController {
     @Autowired
     BaiDuUtils baiDuUtils;
 
-
     @Autowired
-    ASEUtils aseUtils;
+    AESUtils aesUtils;
 
     /**
      * 邮箱注册
@@ -71,34 +70,34 @@ public class AccountController {
     @RequestMapping(value = "register.json")
     public void emailRegister(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject = JSON.parseObject(jsonParam);
-        String securityCode = jsonObject.getString("securityCode");
+        //String securityCode = jsonObject.getString("securityCode");
         Result result;
         try {
-            Map<String, String> securityCodeCacheMap = cacheService.getValue(securityCode);
+          /*  Map<String, String> securityCodeCacheMap = cacheService.getValue(securityCode);
             if (!securityCodeCacheMap.get(securityCode).equals(securityCode)) {
                 result = new Result(false, "验证码错误");
             } else {
-                cacheService.deleteValue(securityCode);//删除缓存
-                String email = jsonObject.getString("email");
-                String accountName = jsonObject.getString("accountName");
-                String accountPassword = jsonObject.getString("accountPassword");
-                Account account = new Account();
-                String accountId = UUIDUtils.getUUID();
-                account.setAccountId(accountId);
-                account.setAccountName(accountName);
-                //对密码进行加密存储
-                String password = aseUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
-                account.setAccountPassword(password);
-                account.setEmail(email);
-                account.setHeadImageUrl("http://t.cn/RCzsdCq");
-                account.setIllegalData("");
-                Map<Boolean, String> map = accountService.insert(account);
-                if (StringUtils.isNotEmpty(map.get(true))) {
-                    result = new Result(true, "SUCCESS");
-                } else {
-                    result = new Result(false, map.get(false));
-                }
+            cacheService.deleteValue(securityCode);//删除缓存*/
+            String email = jsonObject.getString("email");
+            String accountName = jsonObject.getString("accountName");
+            String accountPassword = jsonObject.getString("accountPassword");
+            Account account = new Account();
+            String accountId = UUIDUtils.getUUID();
+            account.setAccountId(accountId);
+            account.setAccountName(accountName);
+            //对密码进行加密存储
+            String password = aesUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
+            account.setAccountPassword(password);
+            account.setEmail(email);
+            account.setHeadImageUrl("http://t.cn/RCzsdCq");
+            account.setIllegalData("");
+            Map<Boolean, String> map = accountService.insert(account);
+            if (StringUtils.isNotEmpty(map.get(true))) {
+                result = new Result(true, "SUCCESS");
+            } else {
+                result = new Result(false, map.get(false));
             }
+
         } catch (Exception e) {
             log.error("用户注册异常:", new Throwable(e));
             result = new Result(false, "FAILURE");
@@ -135,10 +134,10 @@ public class AccountController {
             } else {
                 if (StringUtils.isNotEmpty(account.getAccountPassword())) {
                     //解密
-                    String asePassword = new String(aseUtils.decrypt(Base64.decodeBase64(account.getAccountPassword()), account.getAccountId().getBytes("UTF-8")));
+                    String aesPassword = new String(aesUtils.decrypt(Base64.decodeBase64(account.getAccountPassword()), account.getAccountId().getBytes("UTF-8")));
                     String accountPassword = jsonObject.getString("accountPassword");
                     //如果验证成功
-                    if (asePassword.equals(accountPassword)) {
+                    if (aesPassword.equals(accountPassword)) {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String lastLoginTime = dateFormat.format(new Date());
                         account.setLastLoginTime(lastLoginTime);
@@ -194,18 +193,18 @@ public class AccountController {
             String securityCode = random(6);
             try {
                 mailService.sendSecurityCode(emailAddress, securityCode);
-                //将验证码存储在缓存中
+                /*//将验证码存储在缓存中
                 Map<String, String> securityCodeCacheMap = new HashMap<>();
                 securityCodeCacheMap.put(securityCode, securityCode);
-                cacheService.putValue(securityCode, securityCodeCacheMap);
-                result = new Result(true, "验证码已发送");
-                //Json.toJson(new Result(true, "验证码已发送"), response);
+                cacheService.putValue(securityCode, securityCodeCacheMap);*/
+                //将验证码传送到前端
+                result = new Result(true, "验证码已发送", securityCode);
             } catch (Exception e) {
                 log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
                 result = new Result(false, "FAILURE!");
             }
         } else {
-            log.info(emailAddress + "意见注册");
+            log.info(emailAddress + "已经注册");
             result = new Result(false, serviceData.get("false"));
         }
         Json.toJson(result, response);
@@ -232,7 +231,7 @@ public class AccountController {
             //获取旧的密码
             String oldAccountPassword = accountService.findPasswordByAccountId(accountId);
             //解密
-            String asePassword = new String(aseUtils.decrypt(Base64.decodeBase64(oldAccountPassword), accountId.getBytes("UTF-8")));
+            String asePassword = new String(aesUtils.decrypt(Base64.decodeBase64(oldAccountPassword), accountId.getBytes("UTF-8")));
             if (!asePassword.equals(currentPassword)) {
                 result = new Result(false, "密码错误!");
             } else if (!accountPassword.equals(confirmPassword)) {
@@ -244,7 +243,7 @@ public class AccountController {
                 Account account = new Account();
                 account.setAccountId(accountId);
                 //对新密码进行加密
-                String password = aseUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
+                String password = aesUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
                 account.setAccountPassword(password);
                 if (accountService.updateAccount(account)) {
                     result = new Result(true, "SUCCESS");
@@ -317,7 +316,7 @@ public class AccountController {
                 account.setEmail(email);
                 account.setAccountPassword(accountPassword);
                 //对新密码进行加密
-                String password = aseUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
+                String password = aesUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
                 account.setAccountPassword(password);
                 accountService.updateAccount(account);
                 result = new Result(true, "SUCCESS!");

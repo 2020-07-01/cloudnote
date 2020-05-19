@@ -22,7 +22,6 @@ public class BaiDuConfig {
     public static final String API_KEY = "G10htS19elFlF65EHmGbci5L";
     public static final String SECRET_KEY = "RRng6jhqKY3oFLa7z0zNi1kS1mb642gb";
 
-
     @Bean
     public AipContentCensor baiDuClient() {
         return new AipContentCensor(APP_ID, API_KEY, SECRET_KEY);

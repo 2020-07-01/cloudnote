@@ -72,12 +72,8 @@ public class LoginInterceptor implements HandlerInterceptor {
                         }
                     }
                 }
-                response.sendRedirect("/login");
-                log.info("token验证失败，请重新登录!");
-                return false;
             }
         }
-        log.info("token验证失败，请重新登录!");
         return false;
     }
 }

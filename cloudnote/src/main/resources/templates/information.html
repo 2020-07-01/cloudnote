@@ -99,7 +99,12 @@
                                                         <input type="text" name="accountName" id="accountName" readonly
                                                                class="layui-input">
                                                     </div>
-                                                    <div class="layui-form-mid layui-word-aux">不可修改</div>
+                                                </div>
+                                                <div class="layui-form-item">
+                                                    <label class="layui-form-label">邮箱</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" name="email" readonly class="layui-input">
+                                                    </div>
                                                 </div>
                                                 <div class="layui-form-item">
                                                     <label class="layui-form-label">性别</label>
@@ -117,16 +122,6 @@
                                                                class="layui-input">
                                                     </div>
                                                 </div>
-                                                <div class="layui-form-item">
-                                                    <label class="layui-form-label">区域</label>
-                                                    <div class="layui-inline">
-                                                        <div class="layui-input-inline">
-                                                            <input type="text" name="area" id="area"
-                                                                   placeholder="例:江苏省-无锡市" maxlength="255"
-                                                                   autocomplete="off" class="layui-input">
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
                                             <div class="layui-col-sm7 layui-col-md3">
                                                 <div class="layui-card">
@@ -140,8 +135,16 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-
+                                            </div>
+                                        </div>
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">区域</label>
+                                            <div class="layui-inline">
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="area" id="area"
+                                                           placeholder="例:江苏省-无锡市" maxlength="255"
+                                                           autocomplete="off" class="layui-input">
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
@@ -166,13 +169,7 @@
                                                        autocomplete="off" class="layui-input">
                                             </div>
                                         </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">邮箱</label>
-                                            <div class="layui-input-inline">
-                                                <input type="text" name="email" readonly class="layui-input">
-                                            </div>
-                                            <div class="layui-form-mid layui-word-aux">不可修改</div>
-                                        </div>
+
                                         <div class="layui-form-item layui-form-text">
                                             <label class="layui-form-label">备注</label>
                                             <div class="layui-input-block">
@@ -230,6 +227,7 @@
         laydate.render({
             elem: '#birthday'
             , type: 'date'
+            , format : "yyyy-MM-dd"
             , trigger: 'click'//呼出事件改成click
         });
 

@@ -92,14 +92,28 @@
 
     layui.use(['element', 'form', 'table'], function () {
         var form = layui.form;
-
+        var oldSecurityCode = "";
+        var oldEmailAddress = "";
         /**
          * 注册
          */
         form.on('submit(register)', function (data) {
-            //判断密码是否一直
+
+            //判断密码输入是否一致
             if (data.accountPassword != data.confirmPassword) {
                 layer.msg("密码不一致!");
+                return;
+            }
+
+            //判断邮箱是否改变
+            if (data.email != oldEmailAddress) {
+                layer.msg("邮箱地址已改变，请重新获取验证码!");
+                return;
+            }
+
+            //判断验证码是否一致
+            if (data.securityCode != oldSecurityCode) {
+                layer.msg("验证码错误!");
                 return;
             }
 
@@ -148,6 +162,8 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message);
+                        oldSecurityCode = result.securityCode;
+                        oldEmailAddress = emailAddress;
                     } else {
                         layer.msg(result.message);
                     }

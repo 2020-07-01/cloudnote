@@ -11,7 +11,7 @@
     <artifactId>cloudnote</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cloudnote</name>
-    <description>Demo project for Spring Boot</description>
+    <description>cloud note</description>
 
     <properties>
         <java.version>1.8</java.version>

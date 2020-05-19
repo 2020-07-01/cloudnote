@@ -14,7 +14,7 @@ import java.security.SecureRandom;
  * @create: 2020-01-16 11:11
  **/
 @Component
-public class ASEUtils {
+public class AESUtils {
 
     /**
      * 密钥长度: 128, 192 or 256

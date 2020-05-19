@@ -48,12 +48,12 @@ public class TokenUtils {
                 .withHeader(header)
                 // 设置签发者
                 .withIssuer("yq")
-                // 设置用户信息
+                // 设置用户ID
                 .withAudience(accountId)
                 // 设置创建时间
                 .withIssuedAt(new Date(System.currentTimeMillis()))
-                // 设置过期时间一天
-                .withExpiresAt(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+                // 设置过期时间一周
+                .withExpiresAt(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
                 // 设置签名
                 .sign(ALGORITHM);
         return token;
