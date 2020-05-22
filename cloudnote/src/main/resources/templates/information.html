@@ -18,6 +18,25 @@
             padding: 10px
         }
 
+        .footer {
+            padding: 30px 0;
+            line-height: 30px;
+            text-align: center;
+            /* color: #666; */
+            font-weight: 300;
+        }
+
+        .footer a {
+            padding: 0 5px;
+        }
+
+        .site-union {
+            color: #999;
+        }
+
+        .site-union a[sponsor] img {
+            width: 80px;
+        }
     </style>
 </head>
 
@@ -82,39 +101,33 @@
     </div>
     <!--中间部分-->
     <div class="layui-body">
-        <div class="layui-fluid">
+        <div class="layui-fluid" style="padding: 0 15px 0 0;">
             <div class="layui-row layui-col-space15">
                 <div class="layui-col-md12">
                     <div class="layui-card">
-                        <div class="layui-card-header">设置我的资料</div>
-                        <div class="layui-card-body">
+                        <div class="layui-card-body" style="padding:10px 15px 10px 0px;">
                             <div class="layui-row">
-                                <div class="layui-col-md11 layui-col-md-offset1">
+                                <div class="layui-col-md7">
                                     <form class="layui-form" lay-filter="form" action="">
                                         <div class="layui-row">
-                                            <div class="layui-col-sm7 layui-col-md7">
+                                            <div class="layui-col-md6">
                                                 <div class="layui-form-item">
-                                                    <label class="layui-form-label">用户名</label>
+                                                    <label class="layui-form-label" style="width: 50px">用户名</label>
                                                     <div class="layui-input-inline">
                                                         <input type="text" name="accountName" id="accountName" readonly
-                                                               class="layui-input">
+                                                               class="layui-input"
+                                                               style="border: none;font-size: 30px;color: #645f66;">
                                                     </div>
                                                 </div>
-                                                <div class="layui-form-item">
-                                                    <label class="layui-form-label">邮箱</label>
-                                                    <div class="layui-input-inline">
-                                                        <input type="text" name="email" readonly class="layui-input">
-                                                    </div>
-                                                </div>
-                                                <div class="layui-form-item">
-                                                    <label class="layui-form-label">性别</label>
+                                                <div class="layui-form-item" style="margin-bottom: 10px;">
+                                                    <label class="layui-form-label" style="width: 50px">性别</label>
                                                     <div class="layui-input-block">
                                                         <input type="radio" name="sex" value="男" title="男">
                                                         <input type="radio" name="sex" value="女" title="女" checked>
                                                     </div>
                                                 </div>
-                                                <div class="layui-form-item">
-                                                    <label class="layui-form-label">生日</label>
+                                                <div class="layui-form-item" style="margin-bottom: 10px;">
+                                                    <label class="layui-form-label" style="width: 50px">生日</label>
                                                     <div class="layui-input-inline">
                                                         <input type="text" name="birthday" id="birthday"
                                                                lay-verify="date"
@@ -122,33 +135,33 @@
                                                                class="layui-input">
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="layui-col-sm7 layui-col-md3">
-                                                <div class="layui-card">
-                                                    <div class="layui-card-header">
-                                                        头像预览
-                                                    </div>
-                                                    <div class="layui-card-body layuiadmin-card-list">
-                                                        <div>
-                                                            <img id="headImagePreview"
-                                                                 style="width: 150px;height: 150px" src="">
+                                                <div class="layui-form-item" style="margin-bottom: 10px;">
+                                                    <label class="layui-form-label" style="width: 50px">区域</label>
+                                                    <div class="layui-inline">
+                                                        <div class="layui-input-inline">
+                                                            <input type="text" name="area" id="area"
+                                                                   placeholder="例:江苏省-无锡市" maxlength="255"
+                                                                   autocomplete="off" class="layui-input">
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">区域</label>
-                                            <div class="layui-inline">
-                                                <div class="layui-input-inline">
-                                                    <input type="text" name="area" id="area"
-                                                           placeholder="例:江苏省-无锡市" maxlength="255"
-                                                           autocomplete="off" class="layui-input">
+                                            <div class="layui-col-md4" style="border: none">
+                                                <div class="grid-demo grid-demo-bg1">
+                                                    <div class="layui-upload-drag" style="border:none;padding: 10px">
+                                                        <div class="layui-card-header">
+                                                            头像预览
+                                                        </div>
+                                                        <img id="headImagePreview"
+                                                             style="border-radius: 50%;max-width: 150px;max-height: 100%; top:0;left:0;right: 0;bottom: 0;margin: auto"
+                                                             src="">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">头像</label>
+
+                                        <div class="layui-form-item" style="margin-bottom: 10px;">
+                                            <label class="layui-form-label" style="width: 50px">头像</label>
                                             <div class="layui-input-inline">
                                                 <input type="text" name="headImageUrl" lay-verify="required"
                                                        id="headImageUrl" readonly
@@ -162,22 +175,22 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="layui-form-item">
-                                            <label class="layui-form-label">手机</label>
+                                        <div class="layui-form-item" style="margin-bottom: 10px;">
+                                            <label class="layui-form-label" style="width: 50px">手机</label>
                                             <div class="layui-input-inline">
                                                 <input type="text" name="phone" id="phone" lay-verify="phone"
                                                        autocomplete="off" class="layui-input">
                                             </div>
                                         </div>
 
-                                        <div class="layui-form-item layui-form-text">
-                                            <label class="layui-form-label">备注</label>
-                                            <div class="layui-input-block">
+                                        <div class="layui-form-item layui-form-text" style="margin-bottom: 10px;">
+                                            <label class="layui-form-label" style="width: 50px">备注</label>
+                                            <div class="layui-input-block" style="margin-left: 80px">
                                             <textarea name="remark" id="remark" placeholder="请输入内容" maxlength="200"
                                                       class="layui-textarea"></textarea>
                                             </div>
                                         </div>
-                                        <div class="layui-form-item">
+                                        <div class="layui-form-item" style="margin-bottom: 10px;">
                                             <div class="layui-input-block">
                                                 <button type="button" class="layui-btn" lay-submit
                                                         lay-filter="accountInformation">
@@ -188,6 +201,26 @@
                                         </div>
                                     </form>
                                 </div>
+                                <div class="layui-col-md5">
+                                    <fieldset class="layui-elem-field">
+                                        <legend>邮箱换绑</legend>
+                                        <div class="layui-field-box">
+                                            <div class="layui-form-item" style="margin-bottom: 10px;">
+                                                <label class="layui-form-label" style="width: 50px">邮箱</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="email" readonly class="layui-input">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="layui-elem-field">
+                                        <legend>空间</legend>
+                                        <div class="layui-field-box">
+                                            你可以在这里放任何内容，比如表单神马的
+                                        </div>
+                                    </fieldset>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -196,9 +229,13 @@
         </div>
     </div>
     <!-- 底部固定区域 -->
-    <div class="layui-footer layui-bg-black">
+    <div class="layui-footer footer">
         <div class="layui-main">
-            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: #fffbf0;">苏ICP备19045217号</a>
+            <p>&copy; 2020 <a href="http://www.javadebug.cn:8080/login">cloud note</a>
+                <a href="javascript:void(0);">云笔记</a>
+                <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">苏ICP备19045217号</a>
+                <a href="javascript:void(0);">联系邮箱:2422321558@qq.com</a>
+            </p>
         </div>
     </div>
 </div>
@@ -227,7 +264,7 @@
         laydate.render({
             elem: '#birthday'
             , type: 'date'
-            , format : "yyyy-MM-dd"
+            , format: "yyyy-MM-dd"
             , trigger: 'click'//呼出事件改成click
         });
 

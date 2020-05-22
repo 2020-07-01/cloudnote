@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.internal.OSSHeaders;
 import com.aliyun.oss.model.*;
 import com.entity.Constant;
 import com.google.common.cache.LoadingCache;
@@ -116,11 +117,15 @@ public class OSSUtil {
         PutObjectRequest putObjectRequest = null;
 
         putObjectRequest = new PutObjectRequest("001-bucket", path, new ByteArrayInputStream(bytes));
+
+  /*      ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("image/jpg");
+        putObjectRequest.setMetadata(metadata);
+*/
         PutObjectResult putResult = ossClient.putObject(putObjectRequest);
         result.put("true", true);
         return result;
     }
-
 
     /**
      * 存储的头像
