@@ -116,13 +116,12 @@
         </set>
         where
         1 = 1
-       <!-- <if test="email != null and email != ''">
-            and email = #{email,jdbcType=VARCHAR}
-        </if>-->
+
         <if test="accountId != null and accountId != ''">
            and  account_id = #{accountId,jdbcType=VARCHAR}
         </if>
     </update>
+
 
     <!--登陆时更新账户状态-->
     <update id="updateLoginStatus" parameterType="com.entity.Account">

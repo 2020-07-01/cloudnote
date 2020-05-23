@@ -217,7 +217,7 @@ public class AccountController {
      */
     @PassToken
     @RequestMapping(value = "send_security_code_3.json")
-    public void sendSecurityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+    public void sendSecurityCode3(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         Result result;
         JSONObject jsonObject = JSON.parseObject(jsonParam);
         String emailAddress = jsonObject.getString("emailAddress");
@@ -277,15 +277,42 @@ public class AccountController {
     }
 
     /**
-     * 核对验证码是否正确
+     * 核对验证码是否一致
      *
      * @param jsonParam
      * @param request
      * @param response
      */
-    @UserLoginToken
     @RequestMapping(value = "/check_security_code.json")
     public void checkSecurityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+
+        Result result;
+        JSONObject jsonObject = JSON.parseObject(jsonParam);
+        String firstSecurityCodeAscii = jsonObject.getString("firstSecurityCode");
+        if (StringUtils.isNotEmpty(firstSecurityCodeAscii)) {
+            String firstSecurityCode = ascillToString(firstSecurityCodeAscii);
+            String secondSecurityCode = jsonObject.getString("secondSecurityCode");
+            if (firstSecurityCode.equals(secondSecurityCode)) {
+                result = new Result(true, Constant.security_code_message_2);
+            } else {
+                result = new Result(false, Constant.security_code_message_1);
+            }
+        } else {
+            result = new Result(false, Constant.security_code_message_1);
+        }
+        Json.toJson(result, response);
+    }
+
+    /**
+     * 核对验证码是否一致  不需要核对身份
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     */
+    @PassToken
+    @RequestMapping(value = "/check_security_code1.json")
+    public void checkSecurityCode1(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
 
         Result result;
         JSONObject jsonObject = JSON.parseObject(jsonParam);
@@ -419,29 +446,30 @@ public class AccountController {
      */
     @PassToken
     @RequestMapping(value = "/send_security_code.json")
-    public void getSecurityCode(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
+    public void sendSecurityCode(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
 
         JSONObject jsonObject = JSON.parseObject(jsonString);
         Result result;
         try {
+
             String email = jsonObject.getString("email");
             Condition condition = new Condition();
             condition.setEmail(email);
             Account account = accountService.getOneAccount(condition);
             if (account == null) {
-                result = new Result(false, "此邮箱不存在!");
+                result = new Result(false, Constant.email_message_5);
             } else {
                 //生成6位验证码
                 String securityCode = random(6);
                 mailService.sendSecurityCode(email, securityCode);
+                String securityCodeAscii = stringToAscii(securityCode);
                 HashMap data = new HashMap();
-                data.put("securityCode", securityCode);
-                data.put("email", email);
+                data.put("securityCode", securityCodeAscii);
                 data.put("accountId", account.getAccountId());
-                result = new Result(true, "验证码已发送，请查收!", data);
+                result = new Result(true, Constant.email_message_1,data);
             }
         } catch (Exception e) {
-            result = new Result(false, "FAILURE");
+            result = new Result(false, Constant.email_message_2);
             log.error(e.getMessage(), new Throwable(e));
         }
         Json.toJson(result, response);
@@ -466,7 +494,7 @@ public class AccountController {
             String email = jsonObject.getString("email");
             String accountId = jsonObject.getString("accountId");
             if (!confirmPassword.equals(confirmPassword)) {
-                result = new Result(false, "密码不一致!");
+                result = new Result(false, Constant.password_message_1);
             } else {
                 Account account = new Account();
                 account.setEmail(email);
@@ -474,11 +502,12 @@ public class AccountController {
                 //对新密码进行加密
                 String password = aesUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
                 account.setAccountPassword(password);
+                account.setAccountId(accountId);
                 accountService.updateAccount(account);
-                result = new Result(true, "SUCCESS!");
+                result = new Result(true, Constant.find_password_message_1);
             }
         } catch (Exception e) {
-            result = new Result(false, "FAILURE");
+            result = new Result(false, Constant.find_password_message_2);
             log.error(e.getMessage(), new Throwable(e));
         }
         Json.toJson(result, response);

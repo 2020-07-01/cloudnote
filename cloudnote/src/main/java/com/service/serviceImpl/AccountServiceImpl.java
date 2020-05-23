@@ -83,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 设置账户状态信息
-     * 当登录成功时更新login_count  last_login_time三个字段信息
+     * 当登录成功时更新login_count  last_login_time两个字段信息
      *
      * @param account
      * @return
@@ -101,7 +101,11 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
-    //获取用户id
+    /**
+     * 获取单个用户
+     * @param condition
+     * @return
+     */
     @Override
     public Account getOneAccount(Condition condition) {
 
@@ -132,6 +136,8 @@ public class AccountServiceImpl implements AccountService {
         Integer aliveCount = accountMapper.findAliveAccountByCondition(condition);
         return aliveCount;
     }
+
+
 
     /**
      * 验证邮箱是否已经注册

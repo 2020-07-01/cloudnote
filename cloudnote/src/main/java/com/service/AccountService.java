@@ -35,7 +35,5 @@ public interface AccountService {
 
     //获取活跃用户
     Integer findAliveAccountByCondintion(Condition condition);
-
-
 }
 

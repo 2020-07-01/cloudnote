@@ -36,7 +36,4 @@ public interface AccountMapper {
     //获取活跃用户
     Integer findAliveAccountByCondition(Condition condition);
 
-
-
-
 }

@@ -53,6 +53,9 @@ public final class Constant {
 
     public final static String email_message_4 = "邮箱格式不正正确!";
 
+    public final static String email_message_5 = "邮箱不存在!";
+
+
     public final static String security_code_message_1 = "验证码错误，请重新发送!";
 
     public final static String security_code_message_2 = "验证码正确!";
@@ -60,6 +63,13 @@ public final class Constant {
     public final static String update_email_message_1 = "邮箱更换成功!";
 
     public final static String update_email_message_2 = "邮箱更换失败!";
+
+
+    public final static String find_password_message_1 = "密码重置成功，请登录!";
+
+    public final static String find_password_message_2 = "密码重置异常，请重新设置!";
+
+    public final static String password_message_1 = "密码不一致，请重新输入!";
 
 
 }
