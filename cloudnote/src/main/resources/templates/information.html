@@ -22,7 +22,6 @@
             padding: 30px 0;
             line-height: 30px;
             text-align: center;
-            /* color: #666; */
             font-weight: 300;
         }
 
@@ -30,12 +29,21 @@
             padding: 0 5px;
         }
 
-        .site-union {
-            color: #999;
-        }
-
-        .site-union a[sponsor] img {
-            width: 80px;
+        h3 {
+            width: auto;
+            height: 48px;
+            line-height: 48px;
+            font-size: 15px;
+            font-family: 宋体;
+            font-weight: 700;
+            color: rgb(51, 51, 51);
+            text-indent: 20px;
+            display: block;
+            text-overflow: ellipsis;
+            text-align: left;
+            cursor: move;
+            margin: 0px 29px 0px 0px;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -203,21 +211,40 @@
                                 </div>
                                 <div class="layui-col-md5">
                                     <fieldset class="layui-elem-field">
-                                        <legend>邮箱换绑</legend>
-                                        <div class="layui-field-box">
-                                            <div class="layui-form-item" style="margin-bottom: 10px;">
-                                                <label class="layui-form-label" style="width: 50px">邮箱</label>
-                                                <div class="layui-input-inline">
-                                                    <input type="text" name="email" readonly class="layui-input">
-                                                </div>
+                                        <legend style="text-align: center">邮箱设置</legend>
+                                        <div style="margin-left: 10px">
+                                            已绑定邮箱
+                                            <br/>
+                                            <span id="email" style="font-size: 30px;"></span>
+                                            <br/><br/>
+                                            <span style="color: #645f66;">邮箱是您身份核对的重要信息。当账号发生异常时，将会通过该邮箱第一时间联系您!</span>
+                                            <br/>
+                                            <div class="layui-form-item" style="margin-top: 10px;text-align: center">
+
+                                                <button type="button" id="changeEmail"
+                                                        class="layui-btn layui-btn-primary layui-btn-lg"
+                                                        style="border-radius: 10px;">更换邮箱
+                                                </button>
                                             </div>
                                         </div>
                                     </fieldset>
 
-                                    <fieldset class="layui-elem-field">
-                                        <legend>空间</legend>
-                                        <div class="layui-field-box">
-                                            你可以在这里放任何内容，比如表单神马的
+                                    <fieldset class="layui-elem-field" style="margin-top: 20px">
+                                        <legend style="text-align: center">账户安全</legend>
+                                        <div style="margin-left: 10px">
+                                            已绑定邮箱
+                                            <br/>
+                                            <span id=" " style="font-size: 30px;"></span>
+                                            <br/><br/>
+                                            <span style="color: #645f66;">邮箱是您身份核对的重要信息。当账号发生异常时，将会通过该邮箱第一时间联系您!</span>
+                                            <br/>
+                                            <div class="layui-form-item" style="margin-top: 10px;text-align: center">
+
+                                                <button type="button" id="s"
+                                                        class="layui-btn layui-btn-primary layui-btn-lg"
+                                                        style="border-radius: 10px;">更换邮箱
+                                                </button>
+                                            </div>
                                         </div>
                                     </fieldset>
                                 </div>
@@ -231,7 +258,7 @@
     <!-- 底部固定区域 -->
     <div class="layui-footer footer">
         <div class="layui-main">
-            <p>&copy; 2020 <a href="http://www.javadebug.cn:8080/login">cloud note</a>
+            <p>
                 <a href="javascript:void(0);">云笔记</a>
                 <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">苏ICP备19045217号</a>
                 <a href="javascript:void(0);">联系邮箱:2422321558@qq.com</a>
@@ -240,11 +267,103 @@
     </div>
 </div>
 </body>
+<!--更换邮箱验证弹出框-->
+<div class="layui-card" id="changeEmailSpace" style="display: none">
+    <!--验证旧的邮箱-->
+    <div id="old" style="display: block;">
+        <div class="layui-card-header"
+             style="padding: 10px 15px;color: #645f66;text-align: center;">
+            为了保障您的账户安全，在更换邮箱前需要进行身份验证。
+        </div>
+        <div class="layui-card-body layui-form" id="oldBody" style="padding: 5px 30px;">
+            <div style="margin-bottom: 5px">
+                <label>验证方式</label>
+            </div>
+            <div class="layui-form-item" style="margin-bottom: 18px">
+                <div class="layui-input-inline" style="width: 100%;">
+                    <input type="text" name="oldEmail" id="oldEmail" readonly
+                           autocomplete="off" class="layui-input" style="width: 100%;font-size: 18px">
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="margin-bottom: 18px">
+                <div class="layui-row">
+                    <div class="layui-col-xs7">
+                        <input type="text" name="oldSecurityCode" id="oldSecurityCode" lay-verify="required"
+                               placeholder="请输入6位数验证码" class="layui-input">
+                    </div>
+
+                    <div class="layui-col-xs5">
+                        <div style="margin-left: 10px;">
+                            <button type="button" id="oldSecurityCodeButton"
+                                    class="layui-btn layui-btn-primary layui-btn-fluid">
+                                获取验证码
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" type="button" lay-submit lay-filter="check">确定</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!--新的邮箱设置-->
+    <div id="new" style="display: none;">
+        <div class="layui-card-header" id="newHeader"
+             style="padding: 3px 15px;color: #645f66;text-align: center;">
+            请输入您要绑定的邮箱地址，绑定后可通过该邮箱找回密码。
+        </div>
+        <div class="layui-card-body layui-form" id="newBody" style="padding: 10px 30px">
+
+            <div class="layui-form-item" style="margin-bottom: 18px">
+                <div class="layui-input-inline" style="width: 100%;">
+                    <input type="text" name="newEmail" id="newEmail" lay-verify="email"
+                           autocomplete="off" placeholder="请输入有效的邮箱地址" class="layui-input" style="width: 100%;">
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="margin-bottom: 18px">
+                <div class="layui-row">
+                    <div class="layui-col-xs7">
+                        <input type="text" name="newSecurityCode" id="newSecurityCode"
+                               placeholder="请输入6位数验证码" class="layui-input">
+                    </div>
+
+                    <div class="layui-col-xs5">
+                        <div style="margin-left: 10px;">
+                            <button class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
+                                    lay-filter="newSecurityCodeButton">
+                                获取验证码
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="margin-bottom: 15px">
+                <button class="layui-btn layui-btn-fluid" type="button" lay-submit lay-filter="change">确定</button>
+            </div>
+
+            <div class="layui-form-item" style="margin-bottom: 5px">
+                <hr class="layui-bg-gray" style="margin: 3px 0;">
+                <span style="color: #645f66">* 为了您的账户安全，请勿随意泄露邮箱地址</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <script>
 
     //设置全局token
     var token = sessionStorage.getItem("token");
 
+    var globalObject = "";
+
+    var firstSecurityCode = "";
 
     //初始化表头
     $('#headImagePreview').attr('src', sessionStorage.getItem("headImageUrl"));
@@ -279,6 +398,10 @@
                 success: function (result) {
                     if (result.code == 1) {
                         form.val("form", result.data);
+                        //设置邮箱
+                        $('#email').html(result.data.email);
+                        $("#oldEmail").val(result.data.email);
+                        globalObject = result.data;
                     } else {
                         layer.msg(result.message);
                     }
@@ -325,6 +448,137 @@
                 },
             })
         });
+
+        //更换邮箱
+        $("#changeEmail").click(function () {
+            index = layer.open({
+                type: 1,
+                title: '<h3>更换邮箱</h3>',
+                area: ['450px', '310px'], //宽高
+                content: $("#changeEmailSpace")
+                , success: function () {
+                }
+            })
+        })
+
+        /**
+         * 旧的邮箱发送验证码
+         */
+        $("#oldSecurityCodeButton").click(function () {
+            var data =
+                {
+                    "emailAddress": globalObject.email
+                };
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "/account/send_security_code_3.json",
+                error: function () {
+                    alert("网络出现异常");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message, {icon: 1});
+                        //获取验证码信息
+                        firstSecurityCode = result.data;
+                    } else {
+                        layer.msg(result.message, {icon: 2});
+                    }
+                }
+            });
+        });
+
+        //旧邮箱核对验证码
+        form.on('submit(check)', function (data) {
+            var securityCode = $('#oldSecurityCode').val();
+            var data =
+                {
+                    "firstSecurityCode": firstSecurityCode,
+                    "secondSecurityCode": securityCode
+                };
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "/account/check_security_code.json",
+                error: function () {
+                    alert("网络出现异常");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        $("#new").css("display", "block");
+                        $("#old").css("display", "none");
+                    } else {
+                        layer.msg(result.message, {icon: 2});
+                    }
+                }
+            });
+        })
+
+        //新邮箱发送验证码
+        form.on('submit(newSecurityCodeButton)', function (data) {
+            var data =
+                {
+                    "emailAddress": $('#newEmail').val()
+                };
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "/account/send_security_code_4.json",
+                error: function () {
+                    alert("网络出现异常");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message, {icon: 1});
+                        //获取验证码信息
+                        firstSecurityCode = result.data;
+                    } else {
+                        layer.msg(result.message, {icon: 2});
+                    }
+                }
+            });
+        });
+
+        //新邮箱核对验证码
+        form.on('submit(change)', function (data) {
+            var securityCode = $('#newSecurityCode').val();
+            var data =
+                {
+                    "firstSecurityCode": firstSecurityCode,
+                    "secondSecurityCode": securityCode,
+                    "email": $('#newEmail').val()
+                };
+            var jsonData = JSON.stringify(data);
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "/account/update_email.json",
+                error: function () {
+                    alert("网络出现异常");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        layer.msg(result.message, {icon: 1});
+                        globalObject.email = $('#newEmail').val();
+                        $('#email').html($('#newEmail').val());
+                        layer.close(index)
+                    } else {
+                        layer.msg(result.message, {icon: 2});
+                    }
+                }
+            });
+        })
 
         $("#logout").click(function () {
             //清空sessionStorage

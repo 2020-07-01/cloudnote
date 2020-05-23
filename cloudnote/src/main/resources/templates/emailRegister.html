@@ -11,6 +11,12 @@
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
+    <style>
+
+        .layadmin-user-login-footer a {
+            padding: 0 5px;
+        }
+    </style>
 </head>
 <body>
 
@@ -32,7 +38,7 @@
                         <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
                                for="securityCode"></label>
                         <input type="text" name="securityCode" id="securityCode" lay-verify="required"
-                               placeholder="验证码" class="layui-input">
+                               placeholder="请输入6位数验证码" class="layui-input">
                     </div>
                     <div class="layui-col-xs5">
                         <div style="margin-left: 10px;">
@@ -81,9 +87,12 @@
         </div>
     </div>
 
-    <!-- 底部固定区域 -->
     <div class="layui-trans layadmin-user-login-footer">
-        <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">苏ICP备19045217号</a>
+        <p>
+            <a href="javascript:void(0);">云笔记</a>
+            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">苏ICP备19045217号</a>
+            <a href="javascript:void(0);">联系邮箱:2422321558@qq.com</a>
+        </p>
     </div>
 
 </div>
@@ -161,7 +170,7 @@
                 },
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg(result.message);
+                        layer.msg('验证码已发送给到您的邮箱，请注意查收', {icon: 1});
                         oldSecurityCode = result.securityCode;
                         oldEmailAddress = emailAddress;
                     } else {

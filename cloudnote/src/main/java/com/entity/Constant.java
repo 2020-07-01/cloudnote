@@ -44,4 +44,22 @@ public final class Constant {
     public final static String OSS_IMAGE_SIZE = "ossImageSize";
 
     public final static String OSS_FILE_SIZE = "ossFileSize";
+
+    public final static String email_message_1 = "验证码已发送给到您的邮箱，请注意查收!";
+
+    public final static String email_message_2 = "邮件发送异常，请重新发送!";
+
+    public final static String email_message_3 = "邮箱已注册，请重新设置邮箱!";
+
+    public final static String email_message_4 = "邮箱格式不正正确!";
+
+    public final static String security_code_message_1 = "验证码错误，请重新发送!";
+
+    public final static String security_code_message_2 = "验证码正确!";
+
+    public final static String update_email_message_1 = "邮箱更换成功!";
+
+    public final static String update_email_message_2 = "邮箱更换失败!";
+
+
 }

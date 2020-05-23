@@ -2,6 +2,7 @@ package com.service.serviceImpl;
 
 import com.entity.Account;
 import com.entity.Condition;
+import com.entity.Constant;
 import com.mapper.AccountMapper;
 import com.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -145,14 +146,14 @@ public class AccountServiceImpl implements AccountService {
             condition.setEmail(email);
             List<Account> accountList = accountMapper.findAccountByCondition(condition);
             if (CollectionUtils.isNotEmpty(accountList)) {
-                result.put("false", "此邮箱已注册!");
+                result.put("false", Constant.email_message_3);
                 return result;
             } else {
-                result.put("true", "此邮箱不存在");
+                result.put("true", "邮箱不存在");
                 return result;
             }
         } catch (Exception e) {
-            result.put("false", "网络出现异常!");
+            result.put("false", Constant.email_message_2);
             return result;
         }
     }

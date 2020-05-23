@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.bcel.Const;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -193,10 +194,6 @@ public class AccountController {
             String securityCode = random(6);
             try {
                 mailService.sendSecurityCode(emailAddress, securityCode);
-                /*//将验证码存储在缓存中
-                Map<String, String> securityCodeCacheMap = new HashMap<>();
-                securityCodeCacheMap.put(securityCode, securityCode);
-                cacheService.putValue(securityCode, securityCodeCacheMap);*/
                 //将验证码传送到前端
                 result = new Result(true, "验证码已发送", securityCode);
             } catch (Exception e) {
@@ -208,6 +205,165 @@ public class AccountController {
             result = new Result(false, serviceData.get("false"));
         }
         Json.toJson(result, response);
+    }
+
+    /**
+     * 更换邮箱->旧邮箱发送验证码
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     * @return
+     */
+    @PassToken
+    @RequestMapping(value = "send_security_code_3.json")
+    public void sendSecurityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        Result result;
+        JSONObject jsonObject = JSON.parseObject(jsonParam);
+        String emailAddress = jsonObject.getString("emailAddress");
+        //生成验证码
+        String securityCode = random(6);
+        //获取验证码的ASCII值
+        String securityCodeASCII = stringToAscii(securityCode);
+        try {
+            mailService.sendSecurityCode(emailAddress, securityCode);
+            //将验证码传送到前端
+            result = new Result(true, Constant.email_message_1, securityCodeASCII);
+        } catch (Exception e) {
+            log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
+            result = new Result(false, Constant.email_message_2);
+        }
+        Json.toJson(result, response);
+    }
+
+    /**
+     * 更换邮箱->新邮箱发送验证码
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/send_security_code_4.json")
+    public void sendSecurityCode4(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        Result result;
+        JSONObject jsonObject = JSON.parseObject(jsonParam);
+        String emailAddress = jsonObject.getString("emailAddress");
+        if (StringUtils.isNotEmpty(emailAddress)) {
+            //生成验证码
+            String securityCode = random(6);
+            //获取验证码的ASCII值
+            String securityCodeASCII = stringToAscii(securityCode);
+            //对邮箱进行判断
+            Map<String, String> map = accountService.findUerByEmail(emailAddress);
+            if (map.get("true") != null) {
+                try {
+                    //邮箱发送
+                    mailService.sendSecurityCode(emailAddress, securityCode);
+                    //将验证码传送到前端
+                    result = new Result(true, Constant.email_message_1, securityCodeASCII);
+                } catch (Exception e) {
+                    log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
+                    result = new Result(false, Constant.email_message_2);
+                }
+            } else {
+                result = new Result(false, map.get("false"));
+            }
+        } else {
+            result = new Result(false, Constant.email_message_4);
+        }
+
+        Json.toJson(result, response);
+    }
+
+    /**
+     * 核对验证码是否正确
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/check_security_code.json")
+    public void checkSecurityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+
+        Result result;
+        JSONObject jsonObject = JSON.parseObject(jsonParam);
+        String firstSecurityCodeAscii = jsonObject.getString("firstSecurityCode");
+        if (StringUtils.isNotEmpty(firstSecurityCodeAscii)) {
+            String firstSecurityCode = ascillToString(firstSecurityCodeAscii);
+            String secondSecurityCode = jsonObject.getString("secondSecurityCode");
+            if (firstSecurityCode.equals(secondSecurityCode)) {
+                result = new Result(true, Constant.security_code_message_2);
+            } else {
+                result = new Result(false, Constant.security_code_message_1);
+            }
+        } else {
+            result = new Result(false, Constant.security_code_message_1);
+        }
+        Json.toJson(result, response);
+    }
+
+    /**
+     * 更换邮箱
+     * @param jsonParam
+     * @param request
+     * @param response
+     */
+    @UserLoginToken
+    @RequestMapping(value = "/update_email.json")
+    public void updateEmail(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response){
+        Result result;
+        JSONObject jsonObject = JSON.parseObject(jsonParam);
+        String firstSecurityCodeAscii = jsonObject.getString("firstSecurityCode");
+        if (StringUtils.isNotEmpty(firstSecurityCodeAscii)) {
+            String firstSecurityCode = ascillToString(firstSecurityCodeAscii);
+            String secondSecurityCode = jsonObject.getString("secondSecurityCode");
+            if (firstSecurityCode.equals(secondSecurityCode)) {
+                //更新邮箱地址
+                Account account = new Account();
+                String email = jsonObject.getString("email");
+                account.setEmail(email);
+
+                String token = request.getHeader("token");
+                String accountId = tokenService.getAccountIdByToken(token);
+                account.setAccountId(accountId);
+                if(accountService.updateAccount(account)){
+                    result = new Result(true, Constant.update_email_message_1);
+                }else {
+                    result = new Result(true, Constant.update_email_message_2);
+                }
+            } else {
+                result = new Result(false, Constant.security_code_message_1);
+            }
+        } else {
+            result = new Result(false, Constant.security_code_message_1);
+        }
+        Json.toJson(result, response);
+
+    }
+
+
+
+
+    //获取字符串的ASCII值，逗号进行分隔
+    private String stringToAscii(String string) {
+        StringBuffer stringBuffer = new StringBuffer();
+        char[] chars = string.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            stringBuffer.append(Integer.valueOf(chars[i])).append(",");
+        }
+        return stringBuffer.toString();
+    }
+
+    //获取ASCII对应的字符串
+    private String ascillToString(String stringASCII) {
+        String[] chars = stringASCII.split(",");
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < chars.length; i++) {
+            stringBuffer.append((char) Integer.parseInt(chars[i]));
+        }
+        return stringBuffer.toString();
     }
 
     /**
