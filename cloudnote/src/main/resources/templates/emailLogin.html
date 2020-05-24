@@ -8,8 +8,7 @@
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/login.css" type='text/css'>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/admin.css" type='text/css'>
-    <link rel='stylesheet' media='screen' href="http://at.alicdn.com/t/font_1839282_s34h0jl2vr.css" type='text/css'>
-
+    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/modules/layui-icon-extend/iconfont1.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <script type="text/javascript" src="../static/common.js"></script>
     <!--引入jquery-->
@@ -41,10 +40,10 @@
         </div>
         <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
             <div class="layui-form-item">
-                <label class="layadmin-user-login-icon layui-icon layui-icon-username"
+                <label class="layadmin-user-login-icon iconfont1 layui-icon-extendyoujian-"
                        for="accountName"></label>
                 <input type="text" name="accountName" id="accountName" lay-verify="required"
-                       placeholder="用户名" maxlength="10"
+                       placeholder="邮箱" maxlength="10"
                        class="layui-input">
             </div>
             <div class="layui-form-item">
@@ -65,7 +64,7 @@
             <div class="layui-trans layui-form-item layadmin-user-login-other" style="padding-top:0px">
                 <label>其他方式登入</label>
                 <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>
-                <a href="/email_login"><i class="iconfont layui-icon-extendyoujian- "></i></a>
+                <a href="/login"><i class="layui-icon layui-icon-username"></i></a>
                 <a href="/register" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
             </div>
         </div>
@@ -117,7 +116,5 @@
 
     })
 
-
 </script>
 </html>
-      

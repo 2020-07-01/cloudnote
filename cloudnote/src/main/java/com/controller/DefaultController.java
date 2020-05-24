@@ -36,9 +36,10 @@ public class DefaultController {
         return "emailRegister";
     }
 
-    @RequestMapping(value = "phoneRegister")
+    @PassToken
+    @RequestMapping(value = "/email_login")
     public String toPhoneRegister() {
-        return "phoneRegister";
+        return "emailLogin";
     }
 
     @PassToken
@@ -51,12 +52,6 @@ public class DefaultController {
     @UserLoginToken
     public String toNotePage() {
         return "notePage";
-    }
-
-
-    @RequestMapping(value = "to_editPassword")
-    public String toEditPassword() {
-        return "editPassword";
     }
 
     @UserLoginToken
@@ -114,12 +109,5 @@ public class DefaultController {
         return "recycleBin";
     }
 
-    @PassToken
-    @RequestMapping(value = "/test")
-    @ResponseBody
-    public String test1() {
-        ossUtil.getSize("59051fa2d1644f44a781ad1d9dacd67b");
-        return "SUCCESS";
-    }
 
 }
