@@ -49,7 +49,7 @@
 
     <script>
         //在加载页面之前先判断客户端的是否存在Token
-        if (sessionStorage.getItem("token") == null) {
+        if (getLocalStorage("token") == null) {
             window.location.href = "/login"; //进入登录界面
         }
     </script>
@@ -360,16 +360,16 @@
 <script>
 
     //设置全局token
-    var token = sessionStorage.getItem("token");
+    var token = getLocalStorage("token");
 
     var globalObject = "";
 
     var firstSecurityCode = "";
 
     //初始化表头
-    $('#headImagePreview').attr('src', sessionStorage.getItem("headImageUrl"));
-    $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
-    $('#headAccountName').html(sessionStorage.getItem("headAccountName"));
+    $('#headImagePreview').attr('src', localStorage.getItem("headImageUrl"));
+    $('#headImage').attr('src', localStorage.getItem("headImageUrl"));
+    $('#headAccountName').html(localStorage.getItem("headAccountName"));
 
     layui.use(['element', 'form', 'laydate', 'upload', 'croppers'], function () {
         var element = layui.element;
@@ -428,7 +428,7 @@
                 if (result.code == 1) {
                     $('#headImagePreview').attr('src', result.data);
                     $('#headImageUrl').val(result.data);
-                    sessionStorage.setItem("headImageUrl", result.data);
+                    localStorage.setItem("headImageUrl", result.data);
                 } else {
                     layer.msg(result.message, {icon: 2});
                 }
@@ -448,7 +448,7 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message, {icon: 1});
-                        $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
+                        $('#headImage').attr('src', localStorage.getItem("headImageUrl"));
                     } else {
                         layer.msg(result.message, {icon: 2});
                     }

@@ -2,7 +2,7 @@ package com.controller;
 
 import com.Util.Json;
 import com.Util.Result;
-import com.Util.TokenUtils;
+import com.interceptor.TokenUtils;
 import com.Util.UUIDUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

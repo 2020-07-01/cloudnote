@@ -45,7 +45,7 @@
 
     <script>
         //在加载页面之前先判断客户端的是否存在Token
-        if (sessionStorage.getItem("token") == null) {
+        if (getLocalStorage("token") == null) {
             window.location.href = "/login"; //进入登录界面
         }
     </script>
@@ -240,7 +240,8 @@
 
 <script th:inline="none">
 
-    var token = sessionStorage.getItem("token");
+
+    var token = getLocalStorage("token");
 
     var globalNote = "";
 
@@ -318,8 +319,8 @@
                 url: "/account/getHeadData.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        sessionStorage.setItem("headAccountName", result.data.accountName);
-                        sessionStorage.setItem("headImageUrl", result.data.headImageUrl)
+                        localStorage.setItem("headAccountName", result.data.accountName);
+                        localStorage.setItem("headImageUrl", result.data.headImageUrl)
                         $('#headImage').attr('src', result.data.headImageUrl);
                         $('#headAccountName').html(result.data.accountName);
                     } else {
@@ -857,10 +858,6 @@
         }
 
         $("#logout").click(function () {
-            //清空sessionStorage
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("headAccountName");
-            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 

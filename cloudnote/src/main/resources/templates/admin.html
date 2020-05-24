@@ -98,7 +98,7 @@
 
     <script>
         //在加载页面之前先判断客户端的是否存在Token
-        if (sessionStorage.getItem("token") == null) {
+        if (getLocalStorage("token") == null) {
             window.location.href = "/login"; //进入登录界面
         }
     </script>
@@ -293,8 +293,6 @@
         </div>
     </div>
 
-
-
     <!-- 底部固定区域 -->
     <div class="layui-footer1 ">
         <div class="layui-main">
@@ -318,7 +316,7 @@
 <script th:inline="none">
 
     //设置全局token
-    var token = sessionStorage.getItem("token");
+    var token = getLocalStorage("token");
 
     layui.use(['table', 'element', 'form', 'layer', 'util'], function () {
         var table = layui.table;
@@ -496,10 +494,6 @@
 
         //注销
         $("#logout").click(function () {
-            //清空sessionStorage
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("headAccountName");
-            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
     });

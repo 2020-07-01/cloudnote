@@ -10,6 +10,7 @@ import com.entity.Condition;
 import com.entity.Constant;
 import com.entity.account.AccountData;
 import com.interceptor.PassToken;
+import com.interceptor.TokenUtils;
 import com.interceptor.UserLoginToken;
 import com.mailService.MailServiceImpl;
 import com.oss.OSSUtil;
@@ -18,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -76,11 +75,6 @@ public class AccountController {
         //String securityCode = jsonObject.getString("securityCode");
         Result result;
         try {
-          /*  Map<String, String> securityCodeCacheMap = cacheService.getValue(securityCode);
-            if (!securityCodeCacheMap.get(securityCode).equals(securityCode)) {
-                result = new Result(false, "验证码错误");
-            } else {
-            cacheService.deleteValue(securityCode);//删除缓存*/
             String email = jsonObject.getString("email");
             String accountName = jsonObject.getString("accountName");
             String accountPassword = jsonObject.getString("accountPassword");
@@ -153,6 +147,7 @@ public class AccountController {
                             String token = tokenService.createToken(account.getAccountId());
                             HashMap cacheMap = new HashMap();
                             cacheMap.put("accountId", account.getAccountId());
+                            //当token过期时会自动删除，如果没有自动删除，旧的cacheMap会自动覆盖
                             cacheService.putValue(account.getAccountId(), cacheMap);
                             HashMap data = new HashMap();
                             data.put("token", token);

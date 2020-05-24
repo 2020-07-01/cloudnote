@@ -1,6 +1,6 @@
 package com.controller;
 
-import com.Util.TokenUtils;
+import com.interceptor.TokenUtils;
 import com.interceptor.PassToken;
 import com.interceptor.UserLoginToken;
 import com.job.ScheduleJob;

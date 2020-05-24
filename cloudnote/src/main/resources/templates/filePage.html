@@ -64,6 +64,13 @@
             padding: 0 5px;
         }
     </style>
+
+    <script>
+        //在加载页面之前先判断客户端的是否存在Token
+        if (getLocalStorage("token") == null) {
+            window.location.href = "/login"; //进入登录界面
+        }
+    </script>
 </head>
 <body>
 <div class="layui-layout layui-layout-admin">
@@ -219,6 +226,16 @@
 
 <script th:inline="none">
 
+    //设置全局token
+    var token = getLocalStorage("token");
+
+    //设置表头
+    $('#headImage').attr('src', localStorage.getItem("headImageUrl"));
+    $('#headAccountName').html(localStorage.getItem("headAccountName"));
+
+    var sideId = "all";
+    var globalFile = "";
+
     //预先加载模块
     layui.use(['element', 'form', 'layer', 'upload', 'table'], function () {
         var form = layui.form;
@@ -226,14 +243,6 @@
         var upload = layui.upload;
         var table = layui.table;
 
-        //获取token
-        var token = sessionStorage.getItem("token");
-        //设置表头
-        $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
-        $('#headAccountName').html(sessionStorage.getItem("headAccountName"));
-
-        var sideId = "all";
-        var globalFile = "";
 
         //设置下载按钮无反应
         $('#downloadFile').attr('download', "");

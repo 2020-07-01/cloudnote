@@ -9,6 +9,7 @@
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/login.css" type='text/css'>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/admin.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
+    <script type="text/javascript" src="../static/common.js"></script>
     <!--引入jquery-->
     <script src="../static/jquery-3.4.1.min.js"></script>
     <style>
@@ -16,6 +17,16 @@
             padding: 0 5px;
         }
     </style>
+
+    <script>
+        //localStorage.clear();
+        //在加载页面之前先判断客户端是否已经登录
+        let token = getLocalStorage("token");
+        //如果Token不为空则直接进入笔记页面
+        if (token != null) {
+            window.location.href = "/to_note_page?token=" + token;
+        }
+    </script>
 </head>
 <body>
 
@@ -82,11 +93,12 @@
                 success: function (result) {
                     if (result.code == 1) {
                         var tokenData = result.data.token;
-                        sessionStorage.setItem("token", tokenData);//存储token
+                        setLocalStorage("token", tokenData);
                         window.location.href = "/to_note_page?token=" + tokenData;//进入主页
                     } else if (result.code == "admin") {
                         var tokenData = result.data.token;
-                        sessionStorage.setItem("token", tokenData);//存储token
+                        //存储token数据
+                        setLocalStorage("token", tokenData);
                         window.location.href = "/admin?token=" + tokenData; //进入管理页面
                     } else {
                         layer.msg(result.message);
@@ -99,6 +111,7 @@
         });
 
     })
+
 
 </script>
 </html>

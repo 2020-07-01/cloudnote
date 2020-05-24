@@ -59,7 +59,7 @@
 
     <script>
         //在加载页面之前先判断客户端的是否存在Token
-        if (sessionStorage.getItem("token") == null) {
+        if (getLocalStorage("token") == null) {
             window.location.href = "/login"; //进入登录界面
         }
     </script>
@@ -216,11 +216,11 @@
 
 <script>
     //获取token
-    var token = sessionStorage.getItem("token");
+    var token = getLocalStorage("token");
 
     //设置表头
-    $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
-    $('#headAccountName').html(sessionStorage.getItem("headAccountName"));
+    $('#headImage').attr('src', localStorage.getItem("headImageUrl"));
+    $('#headAccountName').html(localStorage.getItem("headAccountName"));
 
     //加载页面日历模块
     layui.use(['layer', 'form', 'laydate', 'element'], function () {
