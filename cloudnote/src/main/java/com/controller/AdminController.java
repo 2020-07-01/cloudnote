@@ -6,6 +6,7 @@ import com.Util.TokenUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.entity.*;
+import com.entity.account.Account;
 import com.entity.admin.AdminCount;
 import com.entity.admin.AdminData;
 import com.entity.admin.GeneralData;
@@ -18,8 +19,6 @@ import com.service.serviceImpl.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
-import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -113,12 +112,15 @@ public class AdminController {
                             stringBuffer.append(map.get(key));
                             stringBuffer.append(")");
                             p.setFile(stringBuffer.toString());
-                        } else {
+                        } else if(key.contains("image")) {
                             StringBuffer stringBuffer = new StringBuffer();
                             stringBuffer.append(p.getImage() + "(");
                             stringBuffer.append(map.get(key));
                             stringBuffer.append(")");
                             p.setImage(stringBuffer.toString());
+                        }
+                        else {
+
                         }
                     });
                 }

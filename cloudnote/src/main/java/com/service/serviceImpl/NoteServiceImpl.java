@@ -9,7 +9,7 @@ import java.util.Map;
 import com.Util.AESUtils;
 import com.Util.UUIDUtils;
 import com.baidu.BaiDuUtils;
-import com.entity.Account;
+import com.entity.account.Account;
 import com.entity.Constant;
 
 import com.mapper.AccountMapper;

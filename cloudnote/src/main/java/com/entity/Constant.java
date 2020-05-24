@@ -72,4 +72,13 @@ public final class Constant {
     public final static String password_message_1 = "密码不一致，请重新输入!";
 
 
+    public final static String login_message_1 = "用户名或密码错误!";
+
+    public final static String login_message_2 = "您的账户存在违规操作，请联系管理员!";
+
+    public final static String login_message_3 = "登录成功!";
+
+    public final static String login_message_4 = "登录异常，请重新登录!";
+
+
 }

@@ -220,8 +220,10 @@ public class OSSUtil {
             }
             objectListing = ossClient.listObjects(request);
             List<String> folders = objectListing.getCommonPrefixes();
+            Long allSize = 0L;
             for (String folder : folders) {
                 Long size = calculateFolderLength(ossClient, "001-bucket", folder);
+                allSize  = allSize + size;
                 StringBuffer stringBuffer = new StringBuffer();
                 stringBuffer.append(size / 1024 / 1024);//转换为MB 整数位
                 stringBuffer.append(".");
@@ -230,14 +232,8 @@ public class OSSUtil {
                 stringBuffer.append("MB");
                 map.put(folder, stringBuffer.toString());
             }
-          /*  List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
-            for (OSSObjectSummary s : sums) {
-                String size = s.getSize()/1024 + "KB";
-
-                System.out.println(s.getKey() + " : " + (s.getSize() / 1024) + "KB");
-            }*/
+            map.put("allSize",String.valueOf(allSize));
         } while (objectListing.isTruncated());
-        //ossClient.shutdown();
         return map;
     }
 
@@ -246,6 +242,29 @@ public class OSSUtil {
         ObjectListing objectListing = null;
         do {
             ListObjectsRequest request = new ListObjectsRequest(bucketName).withPrefix(folder).withMaxKeys(1000);
+            if (objectListing != null) {
+                request.setMarker(objectListing.getNextMarker());
+            }
+            objectListing = ossClient.listObjects(request);
+            List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+            for (OSSObjectSummary s : sums) {
+                size += s.getSize();
+            }
+        } while (objectListing.isTruncated());
+        return size;
+    }
+
+
+    /**
+     * 获取指定目录下文件的大小
+     * @param path
+     * @return
+     */
+    public Long getSizeByPath(String path){
+        long size = 0L;
+        ObjectListing objectListing = null;
+        do {
+            ListObjectsRequest request = new ListObjectsRequest("001-bucket").withPrefix(path).withMaxKeys(1000);
             if (objectListing != null) {
                 request.setMarker(objectListing.getNextMarker());
             }

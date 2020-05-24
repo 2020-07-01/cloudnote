@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.mapper.AccountMapper">
 
-    <resultMap id="baseMap" type="com.entity.Account">
+    <resultMap id="baseMap" type="com.entity.account.Account">
         <id column="account_id" property="accountId" jdbcType="VARCHAR"/>
         <result column="account_name" property="accountName" jdbcType="VARCHAR"/>
         <result column="account_password" property="accountPassword" jdbcType="VARCHAR"/>
@@ -27,7 +27,7 @@
     </sql>
 
     <!--用户注册-->
-    <insert id="insertAccount" parameterType="com.entity.Account">
+    <insert id="insertAccount" parameterType="com.entity.account.Account">
         insert into account (account_id,email,account_name,account_password,head_image_url,illegal_data,create_time)
         value (
         #{accountId,jdbcType=VARCHAR},
@@ -47,7 +47,7 @@
     </select>
 
     <!--获取账户信息-->
-    <select id="findAccountByCondition" parameterType="com.entity.Condition" resultType="com.entity.Account"
+    <select id="findAccountByCondition" parameterType="com.entity.Condition" resultType="com.entity.account.Account"
             resultMap="baseMap">
         select
         <include refid="base_sql"/>
@@ -79,7 +79,7 @@
     </select>
 
     <!--更新用户信息-->
-    <update id="updateAccount" parameterType="com.entity.Account">
+    <update id="updateAccount" parameterType="com.entity.account.Account">
         update account
         <set>
             <if test="accountPassword!= null">
@@ -124,7 +124,7 @@
 
 
     <!--登陆时更新账户状态-->
-    <update id="updateLoginStatus" parameterType="com.entity.Account">
+    <update id="updateLoginStatus" parameterType="com.entity.account.Account">
         update account
         <set>
             <if test="lastLoginTime != null and lastLoginTime != ''">
@@ -147,7 +147,7 @@
     </update>
 
     <!--查询单个账号数据-->
-    <select id="findAccountData" parameterType="com.entity.Condition" resultType="com.entity.Account"
+    <select id="findAccountData" parameterType="com.entity.Condition" resultType="com.entity.account.Account"
             resultMap="baseMap">
         select
         account_id,account_password,is_locked

@@ -5,9 +5,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.BaiDuUtils;
 import com.cache.CacheService;
-import com.entity.Account;
+import com.entity.account.Account;
 import com.entity.Condition;
 import com.entity.Constant;
+import com.entity.account.AccountData;
 import com.interceptor.PassToken;
 import com.interceptor.UserLoginToken;
 import com.mailService.MailServiceImpl;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.bcel.Const;
+import org.checkerframework.checker.units.qual.A;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -128,10 +129,11 @@ public class AccountController {
             Condition condition = new Condition();
             condition.setAccountName(accountName);
             account = accountService.getOneAccount(condition);
+            account.setAccountName(accountName);
             if (account == null) {
-                result = new Result(false, "用户名或密码错误!");
+                result = new Result(false, Constant.login_message_1);
             } else if (account.getIsLocked().equals(Constant.LOCK_YES)) {
-                result = new Result(false, "账户被锁，请联系管理员!");
+                result = new Result(false, Constant.login_message_2);
             } else {
                 if (StringUtils.isNotEmpty(account.getAccountPassword())) {
                     //解密
@@ -154,19 +156,21 @@ public class AccountController {
                             HashMap data = new HashMap();
                             data.put("token", token);
                             if (jsonObject.getString("accountName").equals("admin")) {
-                                result = new Result("admin", "SUCCESS!", data);
+                                result = new Result("admin", Constant.login_message_3, data);
                             } else {
-                                result = new Result(true, "SUCCESS!", data);
+                                result = new Result(true, Constant.login_message_3, data);
                             }
+                        } else {
+                            result = new Result(false, Constant.login_message_1);
                         }
                     } else {
-                        result = new Result(false, "用户名或密码错误!");
+                        result = new Result(false, Constant.login_message_1);
                     }
                 }
             }
         } catch (Exception e) {
             log.error("账户" + accountName + "登录异常:", new Throwable(e));
-            result = new Result(false, "异常错误!");
+            result = new Result(false, Constant.login_message_4);
         }
         Json.toJson(result, response);
     }
@@ -333,13 +337,14 @@ public class AccountController {
 
     /**
      * 更换邮箱
+     *
      * @param jsonParam
      * @param request
      * @param response
      */
     @UserLoginToken
     @RequestMapping(value = "/update_email.json")
-    public void updateEmail(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response){
+    public void updateEmail(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         Result result;
         JSONObject jsonObject = JSON.parseObject(jsonParam);
         String firstSecurityCodeAscii = jsonObject.getString("firstSecurityCode");
@@ -355,9 +360,9 @@ public class AccountController {
                 String token = request.getHeader("token");
                 String accountId = tokenService.getAccountIdByToken(token);
                 account.setAccountId(accountId);
-                if(accountService.updateAccount(account)){
+                if (accountService.updateAccount(account)) {
                     result = new Result(true, Constant.update_email_message_1);
-                }else {
+                } else {
                     result = new Result(true, Constant.update_email_message_2);
                 }
             } else {
@@ -369,8 +374,6 @@ public class AccountController {
         Json.toJson(result, response);
 
     }
-
-
 
 
     //获取字符串的ASCII值，逗号进行分隔
@@ -466,7 +469,7 @@ public class AccountController {
                 HashMap data = new HashMap();
                 data.put("securityCode", securityCodeAscii);
                 data.put("accountId", account.getAccountId());
-                result = new Result(true, Constant.email_message_1,data);
+                result = new Result(true, Constant.email_message_1, data);
             }
         } catch (Exception e) {
             result = new Result(false, Constant.email_message_2);
@@ -572,7 +575,7 @@ public class AccountController {
     }
 
     /**
-     * 获取用户信息
+     * 用户设置-》获取用户信息
      *
      * @param request
      * @param response
@@ -587,10 +590,46 @@ public class AccountController {
         condition.setAccountId(accountId);
         List<Account> accountList = accountService.getAccountByCondition(condition);
         if (CollectionUtils.isNotEmpty(accountList)) {
-            result = new Result(true, "SUCCESS", accountList.get(0));
+            String size = getAllSize(accountList.get(0).getAccountId());
+            AccountData accountData = new AccountData(accountList.get(0));
+            accountData.setSize(size);
+            result = new Result(true,"SUCCESS",accountData);
         }
         Json.toJson(result, response);
     }
+
+    /**
+     * 获取总的空间大小
+     *
+     * @return
+     */
+    private String getAllSize(String accountId) {
+        //获取图片空间大小
+        String imagePath = accountId + "/" + "image" + "/";
+        Long imageSize = ossUtil.getSizeByPath(imagePath);
+        //获取文件图片大小
+        String filePath = accountId + "/" + "file" + "/";
+        Long fileSize = ossUtil.getSizeByPath(filePath);
+        Long size = imageSize + fileSize;
+        StringBuffer stringBuffer = new StringBuffer();
+        //转换为GB
+        if (size / 1024 / 1024 > 1024) {
+            stringBuffer.append(size / 1024 / 1024 / 1024);//转换为MB 整数位
+            stringBuffer.append(".");
+            Long decimals = size % 1024 % 1024 % 1024; //GB 小数位
+            stringBuffer.append(decimals);
+            stringBuffer.append("GB");
+        } else {
+            //转换为MB
+            stringBuffer.append(size / 1024 / 1024);//转换为MB 整数位
+            stringBuffer.append(".");
+            Long decimals = size % 1024 % 1024; //MB 小数位
+            stringBuffer.append(decimals);
+            stringBuffer.append("MB");
+        }
+        return stringBuffer.toString();
+    }
+
 
     /**
      * 上传头像->返回头像的url地址

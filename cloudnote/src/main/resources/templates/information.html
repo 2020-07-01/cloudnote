@@ -210,7 +210,7 @@
                                     </form>
                                 </div>
                                 <div class="layui-col-md5">
-                                    <fieldset class="layui-elem-field">
+                                    <fieldset class="layui-elem-field" style="margin-top: 35px">
                                         <legend style="text-align: center">邮箱设置</legend>
                                         <div style="margin-left: 10px">
                                             已绑定邮箱
@@ -229,23 +229,17 @@
                                         </div>
                                     </fieldset>
 
-                                    <fieldset class="layui-elem-field" style="margin-top: 20px">
+                                    <fieldset class="layui-elem-field" style="margin-top: 20px;padding-left: 20px">
                                         <legend style="text-align: center">账户安全</legend>
                                         <div style="margin-left: 10px">
-                                            已绑定邮箱
                                             <br/>
-                                            <span id=" " style="font-size: 30px;"></span>
-                                            <br/><br/>
-                                            <span style="color: #645f66;">邮箱是您身份核对的重要信息。当账号发生异常时，将会通过该邮箱第一时间联系您!</span>
-                                            <br/>
-                                            <div class="layui-form-item" style="margin-top: 10px;text-align: center">
-
-                                                <button type="button" id="s"
-                                                        class="layui-btn layui-btn-primary layui-btn-lg"
-                                                        style="border-radius: 10px;">更换邮箱
-                                                </button>
-                                            </div>
+                                            注册时间：<span id="registerTime" style="color: #645f66;"></span>
                                         </div>
+                                        <div style="margin-left: 10px">
+                                            <br/>
+                                            空间：<span id="spaceSize" style="color: #645f66;" >12M</span>
+                                        </div>
+                                        <br/>
                                     </fieldset>
                                 </div>
                             </div>
@@ -401,9 +395,12 @@
                         //设置邮箱
                         $('#email').html(result.data.email);
                         $("#oldEmail").val(result.data.email);
+                        $("#registerTime").html(result.data.createTime);
+                        $("#spaceSize").html(result.data.size);
+
                         globalObject = result.data;
                     } else {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 2});
                     }
                 },
             })
@@ -423,7 +420,7 @@
                     $('#headImageUrl').val(result.data);
                     sessionStorage.setItem("headImageUrl", result.data);
                 } else {
-                    layer.msg(result.message);
+                    layer.msg(result.message, {icon: 2});
                 }
             }
         });
@@ -440,10 +437,10 @@
                 url: "/account/update_account.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 1});
                         $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
                     } else {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 2});
                     }
                 },
             })

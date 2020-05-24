@@ -1,4 +1,4 @@
-package com.entity;
+package com.entity.account;
 
 public class Account {
 
@@ -28,8 +28,6 @@ public class Account {
     private String illegalData;
     //最近登录时间
     private String lastLoginTime;
-    //角色
-    private String accountRole;
     //是否锁定
     private String isLocked;
     //登录次数
@@ -107,14 +105,6 @@ public class Account {
 
     public void setLastLoginTime(String lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
-    }
-
-    public String getAccountRole() {
-        return accountRole;
-    }
-
-    public void setAccountRole(String accountRole) {
-        this.accountRole = accountRole;
     }
 
     public String getIsLocked() {
