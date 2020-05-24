@@ -117,11 +117,6 @@ public class OSSUtil {
         PutObjectRequest putObjectRequest = null;
 
         putObjectRequest = new PutObjectRequest("001-bucket", path, new ByteArrayInputStream(bytes));
-
-  /*      ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType("image/jpg");
-        putObjectRequest.setMetadata(metadata);
-*/
         PutObjectResult putResult = ossClient.putObject(putObjectRequest);
         result.put("true", true);
         return result;

@@ -1,5 +1,9 @@
 //退出登录
 function logout(token) {
+    //清空sessionStorage
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("headAccountName");
+    sessionStorage.removeItem("headImageUrl");
     window.location.href = "/account/logout.json?token=" + token;
 };
 

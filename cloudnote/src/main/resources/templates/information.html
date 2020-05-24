@@ -46,6 +46,13 @@
             overflow: hidden;
         }
     </style>
+
+    <script>
+        //在加载页面之前先判断客户端的是否存在Token
+        if (sessionStorage.getItem("token") == null) {
+            window.location.href = "/login"; //进入登录界面
+        }
+    </script>
 </head>
 
 <body class="layui-layout-body">
@@ -237,7 +244,7 @@
                                         </div>
                                         <div style="margin-left: 10px">
                                             <br/>
-                                            空间：<span id="spaceSize" style="color: #645f66;" >12M</span>
+                                            已用空间：<span id="spaceSize" style="color: #645f66;">12M</span>
                                         </div>
                                         <br/>
                                     </fieldset>
@@ -403,6 +410,9 @@
                         layer.msg(result.message, {icon: 2});
                     }
                 },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                }
             })
         };
 
@@ -443,6 +453,9 @@
                         layer.msg(result.message, {icon: 2});
                     }
                 },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                }
             })
         });
 
@@ -454,6 +467,7 @@
                 area: ['450px', '310px'], //宽高
                 content: $("#changeEmailSpace")
                 , success: function () {
+
                 }
             })
         })
@@ -484,6 +498,9 @@
                     } else {
                         layer.msg(result.message, {icon: 2});
                     }
+                },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
                 }
             });
         });
@@ -513,6 +530,9 @@
                     } else {
                         layer.msg(result.message, {icon: 2});
                     }
+                },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
                 }
             });
         })
@@ -541,7 +561,11 @@
                     } else {
                         layer.msg(result.message, {icon: 2});
                     }
+                },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
                 }
+
             });
         });
 
@@ -573,15 +597,14 @@
                     } else {
                         layer.msg(result.message, {icon: 2});
                     }
+                },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
                 }
             });
         })
 
         $("#logout").click(function () {
-            //清空sessionStorage
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("headAccountName");
-            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 

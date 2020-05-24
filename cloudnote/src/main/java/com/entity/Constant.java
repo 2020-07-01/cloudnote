@@ -65,11 +65,18 @@ public final class Constant {
     public final static String update_email_message_2 = "邮箱更换失败!";
 
 
-    public final static String find_password_message_1 = "密码重置成功，请登录!";
-
-    public final static String find_password_message_2 = "密码重置异常，请重新设置!";
 
     public final static String password_message_1 = "密码不一致，请重新输入!";
+
+    public final static String password_message_2 = "密码错误，请重新输入!";
+
+    public final static String password_message_3 = "新密码不能与原密码相同!";
+
+    public final static String password_message_4 = "密码重置成功，请登录!";
+
+    public final static String password_message_5 = "密码重置异常，请重新设置!";
+
+    public final static String password_message_6 = "密码修改成功，请重新登录!";
 
 
     public final static String login_message_1 = "用户名或密码错误!";
@@ -79,6 +86,13 @@ public final class Constant {
     public final static String login_message_3 = "登录成功!";
 
     public final static String login_message_4 = "登录异常，请重新登录!";
+
+
+    public final static String upload_message_2 = "上传异常，请重新上传!";
+
+    public final static String upload_message_3 = "SUCCESS!";
+
+    public final static String upload_message_4 = "FAILURE!";
 
 
 }

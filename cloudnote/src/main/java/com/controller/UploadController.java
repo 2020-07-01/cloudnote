@@ -86,7 +86,7 @@ public class UploadController {
                 //如果图片审核通过
                 Map serviceData = imageService.uploadImage(uploadImage, accountId);
                 if (serviceData.get("true") != null) {
-                    result = new Result(true, "上传成功!");
+                    result = new Result(true, Constant.upload_message_3);
                 } else {
                     Map<String, String> data = new HashMap<>();
                     data.put("cache", serviceData.get("fail").toString());
@@ -104,7 +104,7 @@ public class UploadController {
                 result = new Result("2", "审核不通过" + message.replaceAll("<br>", ""));
             }
         } catch (Exception e) {
-            result = new Result(false, "异常错误!");
+            result = new Result(false, Constant.upload_message_2);
             log.error(e.getMessage(), new Throwable(e));
         }
         Json.toJson(result, response);
@@ -305,9 +305,9 @@ public class UploadController {
         image.setImageId(imageId);
         Map<Boolean, String> map = imageService.deleteImage(image);
         if (StringUtils.isNotEmpty(map.get(true))) {
-            result = new Result(true, "SUCCESS");
+            result = new Result(true, Constant.upload_message_3);
         } else {
-            result = new Result(false, "FAILURE");
+            result = new Result(false, Constant.upload_message_4);
         }
         Json.toJson(result, response);
     }
@@ -355,7 +355,7 @@ public class UploadController {
         String accountId = tokenUtil.getAccountIdByToken(token);
         Map<String, String> serviceData = fileService.uploadFile(uploadFile, accountId);
         if (serviceData.get("true") != null) {
-            Result result = new Result(true, "上传成功!");
+            Result result = new Result(true, Constant.upload_message_3);
             Json.toJson(result, response);
         } else {
             Map<String, String> data = new HashMap<>();
@@ -387,12 +387,12 @@ public class UploadController {
         String newWholeName = fileCache.get(Constant.CACHE_NEW_NAME).toString();
         String fileName = newWholeName.substring(0, newWholeName.lastIndexOf("."));// 文件名
         String fileType = newWholeName.substring(newWholeName.lastIndexOf(".") + 1);// 文件类型
-        String filePath = getFilePath(newWholeName, accountId.toString(), fileType);
+        String filePath = getFilePath(newWholeName, accountId, fileType);
         String fileSize = fileCache.get(Constant.CACHE_SIZE).toString();
 
         objectInfo.put(Constant.CACHE_SIZE, fileSize);
         objectInfo.put(Constant.CACHE_NEW_NAME, newWholeName);
-        objectInfo.put(Constant.CACHE_ACCOUNTID, accountId.toString());
+        objectInfo.put(Constant.CACHE_ACCOUNTID, accountId);
         ossUtil.putObject(bytes, objectInfo);
 
         CNFile file = new CNFile();
@@ -406,7 +406,12 @@ public class UploadController {
 
         String fileUrl = ossUtil.getUrl(filePath);
         if (StringUtils.isNotEmpty(fileUrl)) {
-            file.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
+            if (fileType.equals("doc") || fileType.equals("docx") || fileType.equals("xlsx")) {
+                file.setFileUrl("https://view.officeapps.live.com/op/view.aspx?src=" + fileUrl.substring(0, fileUrl.lastIndexOf("?")));
+            }
+            if (fileType.equals("pdf") || fileType.equals("txt")) {
+                file.setFileUrl(fileUrl.substring(0, fileUrl.lastIndexOf("?")));
+            }
         } else {
             file.setFileUrl("");
         }
@@ -503,7 +508,7 @@ public class UploadController {
         cnFile.setFileId(fileId);
         cnFile.setIsRecycle(Constant.YES);
         fileService.updateFile(cnFile);
-        Result result = new Result(true, "删除成功");
+        Result result = new Result(true, Constant.upload_message_3);
         Json.toJson(result, response);
     }
 

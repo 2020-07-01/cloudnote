@@ -55,8 +55,14 @@
         .footer a {
             padding: 0 5px;
         }
-
     </style>
+
+    <script>
+        //在加载页面之前先判断客户端的是否存在Token
+        if (sessionStorage.getItem("token") == null) {
+            window.location.href = "/login"; //进入登录界面
+        }
+    </script>
 </head>
 
 <body class="layui-layout-body">
@@ -515,9 +521,6 @@
         })
 
         $("#logout").click(function () {
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("headAccountName");
-            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 
@@ -539,10 +542,6 @@
 
         $("#toResetPasswordPage").click(function () {
             toResetPasswordPage(token);
-        })
-
-        $("#toRecycleBinPage").click(function () {
-            toRecycleBinPage(token);
         })
 
     });

@@ -90,7 +90,7 @@ public class ImageServiceImpl implements ImageService {
             String newWholeName = newImageName + "." + imageType;
 
             result.put("false", "图片名称重复!");
-            result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><br><p style=\"text-align: center;\">" + newImageName + "." + imageType + "</p>");
+            result.put("message", "<br><p style=\"text-align: center;font-size: 15px\">已经存在重名文件，是否重命名为:</p>" + "<br><br><p style=\"text-align: center;\">" + newImageName + "." + imageType + "</p>");
 
             // 将文件存储到缓存中
             Map cacheMap = cacheService.getValue(accountId);

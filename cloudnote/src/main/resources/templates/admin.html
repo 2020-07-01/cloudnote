@@ -94,6 +94,14 @@
         }
 
     </style>
+
+
+    <script>
+        //在加载页面之前先判断客户端的是否存在Token
+        if (sessionStorage.getItem("token") == null) {
+            window.location.href = "/login"; //进入登录界面
+        }
+    </script>
 </head>
 
 <body>

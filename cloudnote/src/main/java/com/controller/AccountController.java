@@ -19,6 +19,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -419,11 +420,11 @@ public class AccountController {
             //解密
             String asePassword = new String(aesUtils.decrypt(Base64.decodeBase64(oldAccountPassword), accountId.getBytes("UTF-8")));
             if (!asePassword.equals(currentPassword)) {
-                result = new Result(false, "密码错误!");
+                result = new Result(false, Constant.password_message_2);
             } else if (!accountPassword.equals(confirmPassword)) {
-                result = new Result(false, "密码不一致!");
+                result = new Result(false, Constant.password_message_1);
             } else if (asePassword.equals(accountPassword)) { //判断密码是否重复
-                result = new Result(false, "新密码不能与原来的密码一致!");
+                result = new Result(false, Constant.password_message_3);
             } else {
                 //更新密码
                 Account account = new Account();
@@ -432,14 +433,14 @@ public class AccountController {
                 String password = aesUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
                 account.setAccountPassword(password);
                 if (accountService.updateAccount(account)) {
-                    result = new Result(true, "SUCCESS");
+                    result = new Result(true, Constant.password_message_6);
                 } else {
-                    result = new Result(false, "FAILURE");
+                    result = new Result(false, Constant.password_message_5);
                 }
             }
         } catch (Exception e) {
             log.error(e.getMessage(), new Throwable(e));
-            result = new Result(false, "FAILURE");
+            result = new Result(false, Constant.password_message_5);
         }
         Json.toJson(result, response);
     }
@@ -507,10 +508,10 @@ public class AccountController {
                 account.setAccountPassword(password);
                 account.setAccountId(accountId);
                 accountService.updateAccount(account);
-                result = new Result(true, Constant.find_password_message_1);
+                result = new Result(true, Constant.password_message_4);
             }
         } catch (Exception e) {
-            result = new Result(false, Constant.find_password_message_2);
+            result = new Result(false, Constant.password_message_5);
             log.error(e.getMessage(), new Throwable(e));
         }
         Json.toJson(result, response);

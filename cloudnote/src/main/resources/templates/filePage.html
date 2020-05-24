@@ -96,7 +96,7 @@
                         <dd><a href="#" id="toImagePage"><i class="layui-icon layui-icon-picture"></i> 图片</a></dd>
                         <dd class="layui-this"><a href="#" id="all"><i class="layui-icon layui-icon-file-b"></i> 文档</a>
                         </dd>
-                        <dd><a href="#" id="recycle"><i class="layui-icon layui-icon-file-b"></i> 回收站</a></dd>
+                        <dd><a href="#" id="recycle"><i class="layui-icon layui-icon-delete"></i> 回收站</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -278,6 +278,7 @@
                     });
                 }
                 , done: function (result) {//每个文件触发一次，回调一次
+                    //上传失败
                     if (result.code == 0) {
                         var formData = {
                             "cacheKey": result.data.cache
@@ -287,7 +288,7 @@
                             type: 1
                             , title: false //不显示标题栏
                             , closeBtn: false
-                            , area: '300px;'
+                            , area: ['480px', '200px']
                             , btn: ['yes', 'no']
                             , btnAlign: 'c'
                             , shade: 0.5
@@ -302,15 +303,17 @@
                                     headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                                     url: "/source/rename_file.json",
                                     error: function (result) {
-                                        alert("error");
+                                        layer.msg("网络异常!", {icon: 2});
                                     },
                                     success: function (result) {
                                         if (result.code == 1) {
+                                            layer.msg(result.message, {icon: 1});
                                             if (sideId == "all") {
                                                 initFileList("", "NO");
-                                            } else {
-                                                initFileList("", "YES");
-                                            }
+                                            }/* else {
+                                                //回收站下不用刷新
+                                                //initFileList("", "YES");
+                                            }*/
                                         }
                                     }
                                 })
@@ -325,7 +328,7 @@
                                     data: jsonData,
                                     url: "/source/no_rename_file.json",
                                     error: function (result) {
-                                        alert("error");
+                                        layer.msg("网络异常!", {icon: 2});
                                     },
                                     success: function (result) {
                                     }
@@ -336,21 +339,12 @@
                     } else {
                         if (sideId == "all") {
                             initFileList("", "NO");
-                        } else {
-                            initFileList("", "YES");
                         }
-
-
-                        return layer.msg(result.message);
+                        layer.msg(result.message, {icon: 1});
                     }
                 }
                 , error: function () {
-                    //演示失败状态，并实现重传
-                    /* var demoText = $('#demoText');
-                     demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-                     demoText.find('.demo-reload').on('click', function () {
-                         uploadInst.upload();
-                     });*/
+                    layer.msg("网络异常!", {icon: 2});
                 }
             });
         }
@@ -360,34 +354,17 @@
             globalFile = obj.data;
             $('#fileWholeName').val(obj.data.wholeName);
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
-            /*if (obj.data.fileType == "pdf" || obj.data.fileType == "txt") {
-                $('#showFile').attr('src', obj.data.fileUrl);
-                $('#downloadFile').attr('download', obj.data.wholeName);
-                $('#downloadFile').attr('href', "");
 
-            }
-            if (obj.data.fileType == "doc" || obj.data.fileType == "docx") {
-
-                $('#showFile').attr('src', obj.data.fileUrl);
-                $('#downloadFile').attr('download', obj.data.wholeName);
-                $('#downloadFile').attr('href', "");
-            }
-            if (obj.data.fileType == "xlsx") {
-
-                $('#showFile').attr('src', obj.data.fileUrl);
-                $('#downloadFile').attr('download', obj.data.wholeName);
-                $('#downloadFile').attr('href', "");
-            }*/
             $('#showFile').attr('src', obj.data.fileUrl);
             $('#downloadFile').attr('download', obj.data.wholeName);
             $('#downloadFile').attr('href', "");
 
         });
 
-        //删除图片
+        //删除文件
         $("#deleteFile").click(function () {
             if (globalFile == "") {
-                layer.msg('请先选择文件!');
+                layer.msg("请选择文档!", {icon: 2});
                 return;
             }
             $.ajax({
@@ -405,7 +382,9 @@
                         $('#downloadFile').attr('href', "javascript:void(0);");
                         initFileList("", "NO");
                         globalFile = "";
-                        layer.msg('删除成功!');
+                        layer.msg(result.message, {icon: 1});
+                    }else {
+                        layer.msg(result.message, {icon: 2});
                     }
                 },
             })
@@ -423,6 +402,7 @@
 
         //所有文件
         $("#all").click(function () {
+            sideId = "all";
             $('#fileWholeName').val("");
             $('#showFile').attr('src', "");
             globalFile = "";
@@ -449,7 +429,7 @@
         //恢复文件
         $("#revertFile").click(function () {
             if (globalFile == "") {
-                layer.msg("请先选择文件!");
+                layer.msg("请选择文档!", {icon: 2});
                 return;
             }
             $.ajax({
@@ -461,13 +441,13 @@
                 url: "/source/revert_file.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 1});
                         $('#fileWholeName').val("");
                         $('#showFile').attr('src', "");
                         initFileList("", "YES");
                         globalFile = "";
                     } else {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 2});
                     }
                 },
             })
@@ -476,7 +456,7 @@
         //彻底删除
         $("#completelyRemove").click(function () {
             if (globalFile == "") {
-                layer.msg("请先选择文件!");
+                layer.msg("请选择文档!", {icon: 2});
                 return;
             }
             $.ajax({
@@ -489,24 +469,19 @@
                 success: function (result) {
                     if (result.code == 1) {
                         initFileList("", "YES");
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 1});
                         //清空右侧区域
                         $('#fileWholeName').val("");
                         $('#showFile').attr('src', "");
                         globalFile = "";
-
                     } else {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 2});
                     }
                 },
             })
         });
 
         $("#logout").click(function () {
-            //清空sessionStorage
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("headAccountName");
-            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 

@@ -118,7 +118,7 @@ public class FileServiceImpl implements FileService {
             fileCache.put(Constant.CACHE_SIZE, file.getSize());//存储文件大小
             cacheMap.put(newWholeName, fileCache);
             result.put("false", "文件名重复!");
-            result.put("message", "<br><p style=\"text-align: center;font-size: 14px\">已经存在重名文件，是否重命名为:</p>" + "<br><br><p style=\"text-align: center;\">" + newFileName + "." + fileType + "</p>");
+            result.put("message", "<br><p style=\"text-align: center;font-size: 15px\">已经存在重名文件，是否重命名为:</p>" + "<br><br><p style=\"text-align: center;\">" + newFileName + "." + fileType + "</p>");
             result.put("fail", newWholeName);
         }
         return result;
