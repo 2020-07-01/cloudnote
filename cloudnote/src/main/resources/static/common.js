@@ -73,6 +73,27 @@ function getLocalStorage(key) {
     return data;
 }
 
+//读秒操作
+function countdown() {
+    var countdown = 60;  //设置时间60秒
+    $("#email").attr("disabled", true);
+    $("#show").css('display', 'block');
+    $("#send").css('display', 'none');
+    $("#show").html('重新发送(' + countdown + 's)');
+    var timer = setInterval(function () {
+        if (countdown == 0) {
+            clearInterval(timer);
+            $("#show").css('display', 'none');
+            $("#send").css('display', 'block');
+            countdown = 60;
+            $("#email").attr("disabled", false);
+            //删除客户端的验证码
+            localStorage.removeItem("cloudNoteSecurityCode");
+        }
+        $("#show").html('重新发送(' + (countdown - 1) + 's)');
+        countdown--;
+    }, 1000);
+}
 
 
 

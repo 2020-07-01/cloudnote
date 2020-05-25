@@ -21,6 +21,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,36 +74,49 @@ public class AccountController {
     @RequestMapping(value = "register.json")
     public void emailRegister(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
         JSONObject jsonObject = JSON.parseObject(jsonParam);
-        //String securityCode = jsonObject.getString("securityCode");
         Result result;
         try {
-            String email = jsonObject.getString("email");
-            String accountName = jsonObject.getString("accountName");
-            String accountPassword = jsonObject.getString("accountPassword");
-            Account account = new Account();
-            String accountId = UUIDUtils.getUUID();
-            account.setAccountId(accountId);
-            account.setAccountName(accountName);
-            //对密码进行加密存储
-            String password = aesUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
-            account.setAccountPassword(password);
-            account.setEmail(email);
-            account.setHeadImageUrl("http://t.cn/RCzsdCq");
-            account.setIllegalData("");
-            Map<Boolean, String> map = accountService.insert(account);
-            if (StringUtils.isNotEmpty(map.get(true))) {
-                result = new Result(true, "SUCCESS");
-            } else {
-                result = new Result(false, map.get(false));
-            }
+            if (check1(jsonParam)) {//验证码正确
+                //核对密码是否正确
+                String accountPassword = jsonObject.getString("accountPassword");
+                String confirmPassword = jsonObject.getString("confirmPassword");
 
+                if (!accountPassword.equals(confirmPassword)) {
+                    //两次密码输入不一致
+                    result = new Result(false, Constant.password_message_1);
+                } else {
+                    //两次密码一致
+                    String email = jsonObject.getString("email");
+                    String accountName = jsonObject.getString("accountName");
+
+                    Account account = new Account();
+                    String accountId = UUIDUtils.getUUID();
+                    account.setAccountId(accountId);
+                    account.setAccountName(accountName);
+                    //对密码进行加密存储
+                    String password = aesUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
+                    account.setAccountPassword(password);
+                    account.setEmail(email);
+                    account.setHeadImageUrl("http://t.cn/RCzsdCq");
+                    account.setIllegalData("");
+                    Map<Boolean, String> map = accountService.insert(account);
+                    if (StringUtils.isNotEmpty(map.get(true))) {
+                        result = new Result(true, Constant.register_message_1);
+                    } else {
+                        result = new Result(false, map.get(false));
+                    }
+                }
+
+            } else {
+                //验证码错误
+                result = new Result(false, Constant.security_code_message_1);
+            }
         } catch (Exception e) {
             log.error("用户注册异常:", new Throwable(e));
             result = new Result(false, "FAILURE");
         }
         Json.toJson(result, response);
     }
-
 
     /**
      * 用户名登录
@@ -186,23 +201,26 @@ public class AccountController {
         Result result;
         JSONObject jsonObject = JSON.parseObject(jsonParam);
         String emailAddress = jsonObject.getString("emailAddress");
-
-        //验证邮箱格式
-        Map<String, String> serviceData = accountService.findUerByEmail(emailAddress);
-        if (serviceData.get("true") != null) {
+        //验证邮箱
+        Map<String, String> map = accountService.findUerByEmail(emailAddress);
+        if (StringUtils.isNotEmpty(map.get("email_5"))) {//邮箱未注册
             //生成验证码
             String securityCode = random(6);
+            //获取验证码的ASCII值
+            String securityCodeASCII = stringToAscii(securityCode);
             try {
                 mailService.sendSecurityCode(emailAddress, securityCode);
                 //将验证码传送到前端
-                result = new Result(true, "验证码已发送", securityCode);
+                result = new Result(true, Constant.email_message_1, securityCodeASCII);
             } catch (Exception e) {
                 log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
-                result = new Result(false, "FAILURE!");
+                result = new Result(false, Constant.email_message_2);
             }
-        } else {
+        } else if (StringUtils.isNotEmpty(map.get("email_3"))) {
             log.info(emailAddress + "已经注册");
-            result = new Result(false, serviceData.get("false"));
+            result = new Result(false, Constant.email_message_3);
+        } else {
+            result = new Result(false, Constant.email_message_2);
         }
         Json.toJson(result, response);
     }
@@ -249,28 +267,27 @@ public class AccountController {
         Result result;
         JSONObject jsonObject = JSON.parseObject(jsonParam);
         String emailAddress = jsonObject.getString("emailAddress");
-        if (StringUtils.isNotEmpty(emailAddress)) {
+        try {
             //生成验证码
             String securityCode = random(6);
             //获取验证码的ASCII值
             String securityCodeASCII = stringToAscii(securityCode);
             //对邮箱进行判断
             Map<String, String> map = accountService.findUerByEmail(emailAddress);
-            if (map.get("true") != null) {
-                try {
-                    //邮箱发送
-                    mailService.sendSecurityCode(emailAddress, securityCode);
-                    //将验证码传送到前端
-                    result = new Result(true, Constant.email_message_1, securityCodeASCII);
-                } catch (Exception e) {
-                    log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
-                    result = new Result(false, Constant.email_message_2);
-                }
+            if (map.get("email_5") != null) {
+                //邮箱发送
+                mailService.sendSecurityCode(emailAddress, securityCode);
+                //将验证码传送到前端
+                result = new Result(true, Constant.email_message_1, securityCodeASCII);
+
+            } else if (StringUtils.isNotEmpty(map.get("email_3"))) {
+                result = new Result(false, map.get("email_3"));
             } else {
-                result = new Result(false, map.get("false"));
+                result = new Result(false, map.get("email_2"));
             }
-        } else {
-            result = new Result(false, Constant.email_message_4);
+        } catch (Exception e) {
+            log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
+            result = new Result(false, Constant.email_message_2);
         }
 
         Json.toJson(result, response);
@@ -283,6 +300,7 @@ public class AccountController {
      * @param request
      * @param response
      */
+    @UserLoginToken
     @RequestMapping(value = "/check_security_code.json")
     public void checkSecurityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
 
@@ -368,7 +386,6 @@ public class AccountController {
             result = new Result(false, Constant.security_code_message_1);
         }
         Json.toJson(result, response);
-
     }
 
 
@@ -589,7 +606,7 @@ public class AccountController {
             String size = getAllSize(accountList.get(0).getAccountId());
             AccountData accountData = new AccountData(accountList.get(0));
             accountData.setSize(size);
-            result = new Result(true,"SUCCESS",accountData);
+            result = new Result(true, "SUCCESS", accountData);
         }
         Json.toJson(result, response);
     }
@@ -708,5 +725,131 @@ public class AccountController {
             result = new Result(false, "FAILURE", data);
         }
         Json.toJson(result, response);
+    }
+
+
+    /**
+     * 邮箱登录-》发送验证码
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     * @return
+     */
+    @PassToken
+    @RequestMapping(value = "send_security_code_5.json")
+    public void sendSecurityCode5(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        Result result;
+        JSONObject jsonObject = JSON.parseObject(jsonParam);
+        String emailAddress = jsonObject.getString("email");
+        //生成验证码
+        String securityCode = random(6);
+        //获取验证码的ASCII值
+        String securityCodeASCII = stringToAscii(securityCode);
+        try {
+            //对邮箱进行判断
+            Map<String, String> map = accountService.findUerByEmail(emailAddress);
+            //如果邮箱不存在
+            if (StringUtils.isNotEmpty(map.get("email_3"))) {
+                mailService.sendSecurityCode(emailAddress, securityCode);
+                //将验证码传送到前端
+                result = new Result(true, Constant.email_message_1, securityCodeASCII);
+            } else if (StringUtils.isNotEmpty(map.get("email_5"))) { //如果邮箱不存在
+                result = new Result(false, Constant.email_message_5);
+            } else {
+                //如果出现异常
+                result = new Result(false, Constant.email_message_2);
+            }
+        } catch (Exception e) {
+            log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
+            result = new Result(false, Constant.email_message_2);
+        }
+        Json.toJson(result, response);
+    }
+
+
+    /**
+     * 邮箱登录-》核对验证码
+     * 邮箱登录不需要进行密码验证
+     * 登陆成功后在缓存中创建私有Map
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     * @return
+     */
+    @PassToken
+    @RequestMapping(value = "/login_1.json")
+    public void emailLogin(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        JSONObject jsonObject;
+        Result result = null;
+        jsonObject = JSON.parseObject(jsonParam);
+        String email = jsonObject.getString("email");
+        try {
+            //核对验证码
+            if (check1(jsonParam)) {//验证码核对通过
+                Condition condition = new Condition();
+                condition.setEmail(email);
+                Account account = accountService.getOneAccount(condition);
+                if (account == null) {
+                    result = new Result(false, Constant.login_message_5);
+                } else if (account.getIsLocked().equals(Constant.LOCK_YES)) {
+                    result = new Result(false, Constant.login_message_2);
+                } else {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String lastLoginTime = dateFormat.format(new Date());
+                    account.setLastLoginTime(lastLoginTime);
+                    account.setLoginCount(1);
+                    //更新状态
+                    boolean flag = accountService.updateLoginStatus(account);
+                    if (flag) {
+                        //生成token并存储在缓存中
+                        String token = tokenService.createToken(account.getAccountId());
+                        HashMap cacheMap = new HashMap();
+                        cacheMap.put("accountId", account.getAccountId());
+                        //当token过期时会自动删除，如果没有自动删除，旧的cacheMap会自动覆盖
+                        cacheService.putValue(account.getAccountId(), cacheMap);
+                        HashMap data = new HashMap();
+                        data.put("token", token);
+                        //此处通过邮箱来判断登录者身份
+                        if (email.equals(Constant.ADMIN_EMAIL)) {
+                            result = new Result("admin", Constant.login_message_3, data);
+                        } else {
+                            result = new Result(true, Constant.login_message_3, data);
+                        }
+                    } else {
+                        result = new Result(false, Constant.login_message_1);
+                    }
+                }
+            } else {
+                result = new Result(false, Constant.security_code_message_1);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+            result = new Result(false, Constant.login_message_4);
+        }
+        Json.toJson(result, response);
+    }
+
+    /**
+     * 邮箱登录/用户注册 核对验证码
+     *
+     * @param jsonParam
+     * @return
+     */
+    private boolean check1(String jsonParam) {
+        JSONObject jsonObject = JSON.parseObject(jsonParam);
+        String firstSecurityCodeAscii = jsonObject.getString("firstSecurityCode");
+        if (StringUtils.isNotEmpty(firstSecurityCodeAscii)) {
+            String firstSecurityCode = ascillToString(firstSecurityCodeAscii);
+            String secondSecurityCode = jsonObject.getString("secondSecurityCode");
+            if (firstSecurityCode.equals(secondSecurityCode)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

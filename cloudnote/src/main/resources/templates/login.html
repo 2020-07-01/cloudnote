@@ -63,8 +63,7 @@
                 <button class="layui-btn layui-btn-fluid" type="button" lay-submit lay-filter="login">登 入</button>
             </div>
             <div class="layui-trans layui-form-item layadmin-user-login-other" style="padding-top:0px">
-                <label>其他方式登入</label>
-                <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>
+                <label>邮箱登入</label>
                 <a href="/email_login"><i class="iconfont layui-icon-extendyoujian- "></i></a>
                 <a href="/register" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
             </div>
@@ -106,7 +105,7 @@
                         setLocalStorage("token", tokenData);
                         window.location.href = "/admin?token=" + tokenData; //进入管理页面
                     } else {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 2});
                     }
                 },
                 error: function () {

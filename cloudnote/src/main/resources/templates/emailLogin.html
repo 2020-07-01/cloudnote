@@ -8,7 +8,8 @@
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/login.css" type='text/css'>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/admin.css" type='text/css'>
-    <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/modules/layui-icon-extend/iconfont1.css" type='text/css'>
+    <link rel='stylesheet' media='screen'
+          href="../static/layui-v2.5.5/layui/css/modules/layui-icon-extend/iconfont1.css" type='text/css'>
     <script src="../static/layui-v2.5.5/layui/layui.js"></script>
     <script type="text/javascript" src="../static/common.js"></script>
     <!--引入jquery-->
@@ -41,16 +42,30 @@
         <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon iconfont1 layui-icon-extendyoujian-"
-                       for="accountName"></label>
-                <input type="text" name="accountName" id="accountName" lay-verify="required"
-                       placeholder="邮箱" maxlength="10"
-                       class="layui-input">
+                       for="email"></label>
+                <input type="text" name="email" id="email" lay-verify="email"
+                       placeholder="邮箱" class="layui-input">
             </div>
             <div class="layui-form-item">
-                <label class="layadmin-user-login-icon layui-icon layui-icon-password"
-                       for="accountPassword"></label>
-                <input type="password" name="accountPassword" id="accountPassword" lay-verify="required" maxlength="15"
-                       placeholder="密码" class="layui-input">
+                <div class="layui-row">
+                    <div class="layui-col-xs7">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
+                               for="securityCode"></label>
+                        <input type="text" name="securityCode" id="securityCode" autocomplete="off"
+                               placeholder="请输入6位数验证码" class="layui-input">
+                    </div>
+                    <div class="layui-col-xs5">
+                        <div style="margin-left: 10px;">
+                            <button id="send" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
+                                    lay-filter="securityCodeButton">
+                                获取验证码
+                            </button>
+                            <button id="show" class="layui-btn layui-btn-primary layui-btn-fluid" style="display: none;margin-left:0px"
+                                    lay-filter="securityCodeButton">
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="layui-form-item" style="margin-bottom: 20px;">
@@ -59,11 +74,10 @@
                    style="margin-top: 7px;">忘记密码？</a>
             </div>
             <div class="layui-form-item">
-                <button class="layui-btn layui-btn-fluid" type="button" lay-submit lay-filter="login">登 入</button>
+                <button class="layui-btn layui-btn-fluid" type="button" lay-submit lay-filter="login">确定</button>
             </div>
             <div class="layui-trans layui-form-item layadmin-user-login-other" style="padding-top:0px">
-                <label>其他方式登入</label>
-                <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>
+                <label>用户名登入</label>
                 <a href="/login"><i class="layui-icon layui-icon-username"></i></a>
                 <a href="/register" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
             </div>
@@ -86,14 +100,52 @@
         var form = layui.form;
         var layer = layui.layer;
 
-        //登录监听
-        form.on('submit(login)', function (data) {
-            var datajson = JSON.stringify(data.field);
+        /**
+         * 发送验证码
+         */
+        form.on('submit(securityCodeButton)', function (data) {
+
+            var jsonData = JSON.stringify({
+                "email": data.field.email
+            });
             $.ajax({
                 type: "post",
                 contentType: "application/json",
-                data: datajson,
-                url: "/account/login.json",
+                headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
+                data: jsonData,
+                url: "/account/send_security_code_5.json",
+                error: function () {
+                    alert("网络出现异常");
+                },
+                success: function (result) {
+                    if (result.code == 1) {
+                        //读秒操作
+                        countdown();
+                        layer.msg(result.message, {icon: 1});
+                        //将验证码存储在客户端
+                        localStorage.setItem("cloudNoteSecurityCode",result.data);
+                    } else {
+                        layer.msg(result.message, {icon: 2});
+                    }
+                },
+                error: function () {
+                    window.location.href = "/login"; //进入登录界面
+                }
+            });
+        });
+
+        //登录监听
+        form.on('submit(login)', function (data) {
+            var jsonData = JSON.stringify({
+                "email": data.field.email,
+                "firstSecurityCode": localStorage.getItem("cloudNoteSecurityCode"),
+                "secondSecurityCode": data.field.securityCode
+            });
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                data: jsonData,
+                url: "/account/login_1.json",
                 success: function (result) {
                     if (result.code == 1) {
                         var tokenData = result.data.token;

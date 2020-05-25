@@ -300,6 +300,10 @@
                                     class="layui-btn layui-btn-primary layui-btn-fluid">
                                 获取验证码
                             </button>
+                            <button id="showOld" class="layui-btn layui-btn-primary layui-btn-fluid"
+                                    style="display: none;margin-left:0px"
+                                    lay-filter="securityCodeButton">
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -335,9 +339,13 @@
 
                     <div class="layui-col-xs5">
                         <div style="margin-left: 10px;">
-                            <button class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
+                            <button id="send" class="layui-btn layui-btn-primary layui-btn-fluid" lay-submit
                                     lay-filter="newSecurityCodeButton">
                                 获取验证码
+                            </button>
+                            <button id="show" class="layui-btn layui-btn-primary layui-btn-fluid"
+                                    style="display: none;margin-left:0px"
+                                    lay-filter="securityCodeButton">
                             </button>
                         </div>
                     </div>
@@ -364,7 +372,6 @@
 
     var globalObject = "";
 
-    var firstSecurityCode = "";
 
     //初始化表头
     $('#headImagePreview').attr('src', localStorage.getItem("headImageUrl"));
@@ -493,8 +500,8 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message, {icon: 1});
-                        //获取验证码信息
-                        firstSecurityCode = result.data;
+                        localStorage.setItem("cloudNoteSecurityCode", result.data);
+                        countdownOld();
                     } else {
                         layer.msg(result.message, {icon: 2});
                     }
@@ -510,7 +517,7 @@
             var securityCode = $('#oldSecurityCode').val();
             var data =
                 {
-                    "firstSecurityCode": firstSecurityCode,
+                    "firstSecurityCode": localStorage.getItem("cloudNoteSecurityCode"),
                     "secondSecurityCode": securityCode
                 };
             var jsonData = JSON.stringify(data);
@@ -556,8 +563,8 @@
                 success: function (result) {
                     if (result.code == 1) {
                         layer.msg(result.message, {icon: 1});
-                        //获取验证码信息
-                        firstSecurityCode = result.data;
+                        localStorage.setItem("cloudNoteSecurityCode", result.data);
+                        countdownNew();
                     } else {
                         layer.msg(result.message, {icon: 2});
                     }
@@ -574,7 +581,7 @@
             var securityCode = $('#newSecurityCode').val();
             var data =
                 {
-                    "firstSecurityCode": firstSecurityCode,
+                    "firstSecurityCode": localStorage.getItem("cloudNoteSecurityCode"),
                     "secondSecurityCode": securityCode,
                     "email": $('#newEmail').val()
                 };
@@ -604,6 +611,50 @@
             });
         })
 
+
+        //旧邮箱-》读秒操作
+        function countdownOld() {
+            var countdown = 60;  //设置时间60秒
+            $("#showOld").css('display', 'block');
+            $("#oldSecurityCodeButton").css('display', 'none');
+            $("#showOld").html('重新发送(' + countdown + 's)');
+            var timer = setInterval(function () {
+                if (countdown == 0) {
+                    clearInterval(timer);
+                    $("#showOld").css('display', 'none');
+                    $("#oldSecurityCodeButton").css('display', 'block');
+                    countdown = 60;
+                    //删除客户端的验证码
+                    localStorage.removeItem("cloudNoteSecurityCode");
+                }
+                $("#showOld").html('重新发送(' + (countdown - 1) + 's)');
+                countdown--;
+            }, 1000);
+        }
+
+
+        //新邮箱-》读秒操作
+        function countdownNew() {
+            var countdown = 60;  //设置时间60秒
+            $("#newEmail").attr("disabled", true);
+            $("#show").css('display', 'block');
+            $("#send").css('display', 'none');
+            $("#show").html('重新发送(' + countdown + 's)');
+            var timer = setInterval(function () {
+                if (countdown == 0) {
+                    clearInterval(timer);
+                    $("#show").css('display', 'none');
+                    $("#send").css('display', 'block');
+                    countdown = 60;
+                    $("#newEmail").attr("disabled", false);
+                    //删除客户端的验证码
+                    localStorage.removeItem("cloudNoteSecurityCode");
+                }
+                $("#show").html('重新发送(' + (countdown - 1) + 's)');
+                countdown--;
+            }, 1000);
+        }
+
         $("#logout").click(function () {
             logout(token);
         })
@@ -632,7 +683,6 @@
         $("#toRecycleBinPage").click(function () {
             toRecycleBinPage(token);
         })
-
     });
 
 </script>
