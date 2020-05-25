@@ -24,4 +24,7 @@ public interface FileMapper {
     //删除文件
     int deleteFile(String fileId);
 
+    //获取文件大小
+    List<String> selectSize(Condition condition);
+
 }

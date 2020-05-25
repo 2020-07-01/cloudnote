@@ -68,6 +68,7 @@ public class TokenUtils {
             if (token == null) {
                 return false;
             }
+
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("yq").build();
             DecodedJWT jwt = verifier.verify(token);
@@ -84,7 +85,7 @@ public class TokenUtils {
                 return false;
             }
         } catch (Exception e) {
-            e.toString();
+            e.getMessage();
         }
         return true;
     }

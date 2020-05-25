@@ -17,6 +17,7 @@ import javafx.collections.ObservableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -201,6 +202,17 @@ public class ImageServiceImpl implements ImageService {
             map.put(false, "FAILURE");
         }
         return map;
+    }
+
+    /**
+     * 获取所有图片的大小
+     * @param condition
+     * @return
+     */
+    @Override
+    public List<String> selectSize(Condition condition) {
+        List<String> sizeList = imageMapper.selectSize(condition);
+        return sizeList;
     }
 
     /**

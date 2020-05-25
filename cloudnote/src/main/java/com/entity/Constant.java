@@ -6,6 +6,7 @@ package com.entity;
  * @Date 2020/4/2 13:14
  */
 public final class Constant {
+
     public final static String ADMIN_EMAIL = "2422321558@qq.com";
 
     public final static String register_message_1 = "注册成功，请登录!";

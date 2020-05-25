@@ -179,6 +179,17 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
+     * 获取所有图片的大小
+     * @param condition
+     * @return
+     */
+    @Override
+    public List<String> selectSize(Condition condition) {
+        List<String> sizeList = fileMapper.selectSize(condition);
+        return sizeList;
+    }
+
+    /**
      * 获取文件路径 55/images/png/2020-01-01/1.png
      *
      * @param sourceFileName

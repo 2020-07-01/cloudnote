@@ -100,30 +100,8 @@ public class AdminController {
         //存储空间大小
         if (CollectionUtils.isNotEmpty(adminDataList)) {
             adminDataList.forEach(p -> {
-                Map<String, String> map = ossUtil.getSize(p.getAccountId());
-                if (map != null) {
-                    Set<String> keys = map.keySet();
-                    keys.forEach(key -> {
-                        if (key.contains("headImage")) {
-                            return;
-                        } else if (key.contains("file")) {
-                            StringBuffer stringBuffer = new StringBuffer();
-                            stringBuffer.append(p.getFile() + "(");
-                            stringBuffer.append(map.get(key));
-                            stringBuffer.append(")");
-                            p.setFile(stringBuffer.toString());
-                        } else if(key.contains("image")) {
-                            StringBuffer stringBuffer = new StringBuffer();
-                            stringBuffer.append(p.getImage() + "(");
-                            stringBuffer.append(map.get(key));
-                            stringBuffer.append(")");
-                            p.setImage(stringBuffer.toString());
-                        }
-                        else {
-
-                        }
-                    });
-                }
+                p.setImage(getImageSize(p.getAccountId()));
+                p.setFile(getFileSize(p.getAccountId()));
             });
         }
 
@@ -134,6 +112,134 @@ public class AdminController {
         responseMap.put("data", adminDataList);
         return responseMap;
     }
+
+    /**
+     * 获取图片的空间大小
+     * 数据库中存储的是字节
+     *
+     * @return
+     */
+    private String getImageSize(String accountId) {
+        //获取图片空间大小
+        Condition conditionImage = new Condition();
+        conditionImage.setAccountId(accountId);
+        List<String> imageSizeList = imageService.selectSize(conditionImage);
+        Long size = 0L;
+        if (CollectionUtils.isNotEmpty(imageSizeList)) {
+            for (String item : imageSizeList) {
+                Long itemSize = Long.valueOf(item);
+                size = size + itemSize;
+            }
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+
+        //转换为GB
+        if (size / 1024 / 1024 > 1024) {
+            stringBuffer.append(size / 1024 / 1024 / 1024);//转换为GB 整数位
+            stringBuffer.append(".");
+            Long decimals = size % 1024 % 1024 % 1024; //GB 小数位
+            stringBuffer.append(decimals);
+            stringBuffer.append("GB");
+        } else {
+            //转换为MB
+            stringBuffer.append(size / 1024 / 1024);//转换为MB 整数位
+            stringBuffer.append(".");
+            Long decimals = size % 1024 % 1024; //MB 小数位
+            stringBuffer.append(decimals);
+            stringBuffer.append("MB");
+        }
+        return stringBuffer.toString();
+    }
+
+    /**
+     * 获取文件的空间大小
+     * 数据库中存储的是字节
+     *
+     * @return
+     */
+    private String getFileSize(String accountId) {
+        //获取文件图片大小
+        Condition conditionFile = new Condition();
+        conditionFile.setAccountId(accountId);
+        List<String> fileSizeList = fileService.selectSize(conditionFile);
+        Long size = 0L;
+
+        if (CollectionUtils.isNotEmpty(fileSizeList)) {
+            for (String item : fileSizeList) {
+                Long itemSize = Long.valueOf(item);
+                size = size + itemSize;
+            }
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+
+        //转换为GB
+        if (size / 1024 / 1024 > 1024) {
+            stringBuffer.append(size / 1024 / 1024 / 1024);//转换为GB 整数位
+            stringBuffer.append(".");
+            Long decimals = size % 1024 % 1024 % 1024; //GB 小数位
+            stringBuffer.append(decimals);
+            stringBuffer.append("GB");
+        } else {
+            //转换为MB
+            stringBuffer.append(size / 1024 / 1024);//转换为MB 整数位
+            stringBuffer.append(".");
+            Long decimals = size % 1024 % 1024; //MB 小数位
+            stringBuffer.append(decimals);
+            stringBuffer.append("MB");
+        }
+        return stringBuffer.toString();
+    }
+
+    /**
+     * 获取总的空间大小
+     * 数据库中存储的是字节
+     *
+     * @return
+     */
+    private String getAllSize(String accountId) {
+        //获取图片空间大小
+        Condition conditionImage = new Condition();
+        conditionImage.setAccountId(accountId);
+        List<String> imageSizeList = imageService.selectSize(conditionImage);
+        //获取文件图片大小
+        Condition conditionFile = new Condition();
+        conditionImage.setAccountId(accountId);
+        List<String> fileSizeList = fileService.selectSize(conditionFile);
+
+        Long size = 0L;
+        if (CollectionUtils.isNotEmpty(imageSizeList)) {
+            for (String item : imageSizeList) {
+                Long itemSize = Long.valueOf(item);
+                size = size + itemSize;
+            }
+        }
+        if (CollectionUtils.isNotEmpty(fileSizeList)) {
+            for (String item : fileSizeList) {
+                Long itemSize = Long.valueOf(item);
+                size = size + itemSize;
+            }
+        }
+
+        StringBuffer stringBuffer = new StringBuffer();
+
+        //转换为GB
+        if (size / 1024 / 1024 > 1024) {
+            stringBuffer.append(size / 1024 / 1024 / 1024);//转换为GB 整数位
+            stringBuffer.append(".");
+            Long decimals = size % 1024 % 1024 % 1024; //GB 小数位
+            stringBuffer.append(decimals);
+            stringBuffer.append("GB");
+        } else {
+            //转换为MB
+            stringBuffer.append(size / 1024 / 1024);//转换为MB 整数位
+            stringBuffer.append(".");
+            Long decimals = size % 1024 % 1024; //MB 小数位
+            stringBuffer.append(decimals);
+            stringBuffer.append("MB");
+        }
+        return stringBuffer.toString();
+    }
+
 
     private Integer getStartNumber(Integer page, Integer pageSize) {
         return page == 1 ? 0 : ((page - 1) * pageSize);

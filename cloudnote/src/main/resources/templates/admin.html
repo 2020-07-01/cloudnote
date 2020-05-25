@@ -489,7 +489,11 @@
             $('#createTime').html(data.createTime);
             $('#loginCount').html(data.loginCount);
             $('#lastLoginTime').html(data.lastLoginTime);
-            $('#illegalData').html(data.illegalData);
+            if(data.illegalData == ""){
+                $('#illegalData').html("该用户暂无违规记录!");
+            }else {
+                $('#illegalData').html(data.illegalData);
+            }
         }
 
         //注销

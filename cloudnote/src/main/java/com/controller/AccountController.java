@@ -15,10 +15,13 @@ import com.interceptor.UserLoginToken;
 import com.mailService.MailServiceImpl;
 import com.oss.OSSUtil;
 import com.service.serviceImpl.AccountServiceImpl;
+import com.service.serviceImpl.FileServiceImpl;
+import com.service.serviceImpl.ImageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -64,6 +67,15 @@ public class AccountController {
     @Autowired
     AESUtils aesUtils;
 
+    @Autowired
+    ImageServiceImpl imageService;
+
+    @Autowired
+    FileServiceImpl fileService;
+
+    @Autowired
+    TokenUtils tokenUtils;
+
     /**
      * 邮箱注册
      *
@@ -80,7 +92,6 @@ public class AccountController {
                 //核对密码是否正确
                 String accountPassword = jsonObject.getString("accountPassword");
                 String confirmPassword = jsonObject.getString("confirmPassword");
-
                 if (!accountPassword.equals(confirmPassword)) {
                     //两次密码输入不一致
                     result = new Result(false, Constant.password_message_1);
@@ -217,7 +228,6 @@ public class AccountController {
                 result = new Result(false, Constant.email_message_2);
             }
         } else if (StringUtils.isNotEmpty(map.get("email_3"))) {
-            log.info(emailAddress + "已经注册");
             result = new Result(false, Constant.email_message_3);
         } else {
             result = new Result(false, Constant.email_message_2);
@@ -370,7 +380,6 @@ public class AccountController {
                 Account account = new Account();
                 String email = jsonObject.getString("email");
                 account.setEmail(email);
-
                 String token = request.getHeader("token");
                 String accountId = tokenService.getAccountIdByToken(token);
                 account.setAccountId(accountId);
@@ -613,21 +622,39 @@ public class AccountController {
 
     /**
      * 获取总的空间大小
+     * 数据库中存储的是字节
      *
      * @return
      */
     private String getAllSize(String accountId) {
         //获取图片空间大小
-        String imagePath = accountId + "/" + "image" + "/";
-        Long imageSize = ossUtil.getSizeByPath(imagePath);
+        Condition conditionImage = new Condition();
+        conditionImage.setAccountId(accountId);
+        List<String> imageSizeList = imageService.selectSize(conditionImage);
         //获取文件图片大小
-        String filePath = accountId + "/" + "file" + "/";
-        Long fileSize = ossUtil.getSizeByPath(filePath);
-        Long size = imageSize + fileSize;
+        Condition conditionFile = new Condition();
+        conditionImage.setAccountId(accountId);
+        List<String> fileSizeList = fileService.selectSize(conditionFile);
+
+        Long size = 0L;
+        if (CollectionUtils.isNotEmpty(imageSizeList)) {
+            for (String item : imageSizeList) {
+                Long itemSize = Long.valueOf(item);
+                size = size + itemSize;
+            }
+        }
+        if (CollectionUtils.isNotEmpty(fileSizeList)) {
+            for (String item : fileSizeList) {
+                Long itemSize = Long.valueOf(item);
+                size = size + itemSize;
+            }
+        }
+
         StringBuffer stringBuffer = new StringBuffer();
+
         //转换为GB
         if (size / 1024 / 1024 > 1024) {
-            stringBuffer.append(size / 1024 / 1024 / 1024);//转换为MB 整数位
+            stringBuffer.append(size / 1024 / 1024 / 1024);//转换为GB 整数位
             stringBuffer.append(".");
             Long decimals = size % 1024 % 1024 % 1024; //GB 小数位
             stringBuffer.append(decimals);
@@ -852,4 +879,23 @@ public class AccountController {
             return false;
         }
     }
+
+    /**
+     * 验证Token是否正确
+     * @param request
+     * @param response
+     */
+    @PassToken
+    @RequestMapping(value = "/check_token.json")
+    public void toRecycleBin(HttpServletRequest request, HttpServletResponse response) {
+        Result result;
+        String token = request.getHeader("token");
+        if (tokenUtils.verifyToken(token)) {
+            result = new Result(true, Constant.SUCCESS);
+        } else {
+            result = new Result(false, Constant.FAILURE);
+        }
+        Json.toJson(result, response);
+    }
+
 }

@@ -107,4 +107,15 @@
     </delete>
 
 
+    <!--获取图片大小-->
+    <select id="selectSize" parameterType="com.entity.Condition" resultType="java.lang.String">
+        select file_size
+        from file
+        where
+        1 = 1
+        <if test="accountId != '' and accountId != null">
+            and account_id = #{accountId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
 </mapper>

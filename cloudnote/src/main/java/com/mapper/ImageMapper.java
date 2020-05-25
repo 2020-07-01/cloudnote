@@ -28,4 +28,7 @@ public interface ImageMapper {
 
     //删除图片
     Integer deleteImage(String imageId);
+
+    //获取图片大小
+    List<String> selectSize(Condition condition);
 }

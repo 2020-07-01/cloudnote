@@ -182,7 +182,7 @@ public class UploadController {
         String newWholeName = imageCache.get(Constant.CACHE_NEW_NAME).toString();
         String imageName = newWholeName.substring(0, newWholeName.lastIndexOf("."));// 文件名
         String imageType = newWholeName.substring(newWholeName.lastIndexOf(".") + 1);// 文件类型
-        String imagePath = getImagePath(newWholeName, accountId.toString(), imageType);
+        String imagePath = getImagePath(newWholeName, accountId, imageType);
         String imageSize = imageCache.get(Constant.CACHE_SIZE).toString();
         //存储到oss
         Map<String, String> objectInfo = new HashMap<>();
