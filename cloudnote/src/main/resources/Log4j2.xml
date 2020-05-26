@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
     <Appenders>
-        <!--添加一个控制台追加器-->
+        <!--添加一个控制台-->
         <Console name="Console" target="SYSTEM_OUT" follow="true">
             <PatternLayout>
                 <pattern>[%-5p] %d %c - %m%n</pattern>

@@ -1,12 +1,12 @@
 package com.service.serviceImpl;
 
-import com.entity.Account;
+import com.entity.account.Account;
 import com.entity.Condition;
+import com.entity.Constant;
 import com.mapper.AccountMapper;
 import com.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,16 +43,16 @@ public class AccountServiceImpl implements AccountService {
             conditionAccountName.setAccountName(account.getAccountName());
             List<Account> accountList = accountMapper.findAccountByCondition(conditionEmail);
             if (CollectionUtils.isNotEmpty(accountList)) {
-                result.put(false, "此邮箱已注册!");
+                result.put(false, Constant.email_message_3);
             } else if (CollectionUtils.isNotEmpty(accountMapper.findAccountByCondition(conditionAccountName))) {
-                result.put(false, "用户名已存在!");
+                result.put(false, Constant.register_message_3);
             } else {
                 accountMapper.insertAccount(account);
-                result.put(true, "SUCCESS!");
+                result.put(true, Constant.register_message_1);
             }
         } catch (Exception e) {
             log.error("注册异常:", new Throwable(e));
-            result.put(false, "出现异常!");
+            result.put(false, Constant.register_message_2);
         }
         return result;
     }
@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * 设置账户状态信息
-     * 当登录成功时更新login_count  last_login_time三个字段信息
+     * 当登录成功时更新login_count  last_login_time两个字段信息
      *
      * @param account
      * @return
@@ -100,7 +100,12 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
-    //获取用户id
+    /**
+     * 获取单个用户
+     *
+     * @param condition
+     * @return
+     */
     @Override
     public Account getOneAccount(Condition condition) {
 
@@ -132,8 +137,9 @@ public class AccountServiceImpl implements AccountService {
         return aliveCount;
     }
 
+
     /**
-     * 验证邮箱是否已经注册
+     * 对邮箱进行验证
      *
      * @param email
      * @return
@@ -145,16 +151,15 @@ public class AccountServiceImpl implements AccountService {
             condition.setEmail(email);
             List<Account> accountList = accountMapper.findAccountByCondition(condition);
             if (CollectionUtils.isNotEmpty(accountList)) {
-                result.put("false", "此邮箱已注册!");
-                return result;
+                result.put("email_3", Constant.email_message_3);
             } else {
-                result.put("true", "此邮箱不存在");
-                return result;
+                result.put("email_5", Constant.email_message_5);
             }
         } catch (Exception e) {
-            result.put("false", "网络出现异常!");
-            return result;
+            result.put("email_2", Constant.email_message_2);
         }
+        return result;
     }
+
 
 }

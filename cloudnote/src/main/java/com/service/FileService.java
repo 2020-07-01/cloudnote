@@ -25,5 +25,7 @@ public interface FileService {
     //删除文件
     Map deleteFile(CNFile file);
 
+    List<String> selectSize(Condition condition);
+
 
 }

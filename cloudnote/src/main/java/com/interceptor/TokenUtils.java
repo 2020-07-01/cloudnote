@@ -1,14 +1,11 @@
-package com.Util;
+package com.interceptor;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cache.CacheService;
-import com.entity.Account;
-import com.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -71,6 +68,7 @@ public class TokenUtils {
             if (token == null) {
                 return false;
             }
+
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer("yq").build();
             DecodedJWT jwt = verifier.verify(token);
@@ -87,7 +85,7 @@ public class TokenUtils {
                 return false;
             }
         } catch (Exception e) {
-            e.toString();
+            e.getMessage();
         }
         return true;
     }

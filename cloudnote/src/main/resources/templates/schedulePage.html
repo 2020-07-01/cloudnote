@@ -45,8 +45,24 @@
             font-weight: 400;
             text-align: center;
         }
+        .footer {
+            padding: 30px 0;
+            line-height: 30px;
+            text-align: center;
+            font-weight: 300;
+        }
 
+        .footer a {
+            padding: 0 5px;
+        }
     </style>
+
+    <script>
+        //在加载页面之前先判断客户端的是否存在Token
+        if (getLocalStorage("token") == null) {
+            window.location.href = "/login"; //进入登录界面
+        }
+    </script>
 </head>
 
 <body class="layui-layout-body">
@@ -121,9 +137,13 @@
     </div>
 
     <!-- 底部固定区域 -->
-    <div class="layui-footer layui-bg-black">
+    <div class="layui-footer footer">
         <div class="layui-main">
-            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: #fffbf0;">苏ICP备19045217号</a>
+            <p>
+                <a href="javascript:void(0);">云笔记</a>
+                <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">苏ICP备19045217号</a>
+                <a href="javascript:void(0);">联系邮箱:2422321558@qq.com</a>
+            </p>
         </div>
     </div>
 </div>
@@ -196,11 +216,11 @@
 
 <script>
     //获取token
-    var token = sessionStorage.getItem("token");
+    var token = getLocalStorage("token");
 
     //设置表头
-    $('#headImage').attr('src', sessionStorage.getItem("headImageUrl"));
-    $('#headAccountName').html(sessionStorage.getItem("headAccountName"));
+    $('#headImage').attr('src', localStorage.getItem("headImageUrl"));
+    $('#headAccountName').html(localStorage.getItem("headAccountName"));
 
     //加载页面日历模块
     layui.use(['layer', 'form', 'laydate', 'element'], function () {
@@ -501,9 +521,6 @@
         })
 
         $("#logout").click(function () {
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("headAccountName");
-            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 
@@ -525,10 +542,6 @@
 
         $("#toResetPasswordPage").click(function () {
             toResetPasswordPage(token);
-        })
-
-        $("#toRecycleBinPage").click(function () {
-            toRecycleBinPage(token);
         })
 
     });

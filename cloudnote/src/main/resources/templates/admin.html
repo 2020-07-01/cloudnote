@@ -25,7 +25,8 @@
             height: 44px;
             line-height: 44px;
             padding: 0 15px;
-            background-color: #eee
+            background-color: #eee;
+            text-align: center;
         }
 
         .layuiadmin-card-list p.layuiadmin-big-font {
@@ -88,8 +89,19 @@
             color: #666;
             line-height: 24px
         }
+        .layui-footer1 a {
+            padding: 0 5px;
+        }
 
     </style>
+
+
+    <script>
+        //在加载页面之前先判断客户端的是否存在Token
+        if (getLocalStorage("token") == null) {
+            window.location.href = "/login"; //进入登录界面
+        }
+    </script>
 </head>
 
 <body>
@@ -282,10 +294,13 @@
     </div>
 
     <!-- 底部固定区域 -->
-    <div class="layui-footer1 layui-bg-black">
-        <div class="layui-main" style="text-align: center">
-            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow"
-               style="color: #fffbf0;">苏ICP备19045217号</a>
+    <div class="layui-footer1 ">
+        <div class="layui-main">
+            <p>
+                <a href="javascript:void(0);">云笔记</a>
+                <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">苏ICP备19045217号</a>
+                <a href="javascript:void(0);">联系邮箱:2422321558@qq.com</a>
+            </p>
         </div>
     </div>
 </div>
@@ -301,7 +316,7 @@
 <script th:inline="none">
 
     //设置全局token
-    var token = sessionStorage.getItem("token");
+    var token = getLocalStorage("token");
 
     layui.use(['table', 'element', 'form', 'layer', 'util'], function () {
         var table = layui.table;
@@ -474,15 +489,15 @@
             $('#createTime').html(data.createTime);
             $('#loginCount').html(data.loginCount);
             $('#lastLoginTime').html(data.lastLoginTime);
-            $('#illegalData').html(data.illegalData);
+            if(data.illegalData == ""){
+                $('#illegalData').html("该用户暂无违规记录!");
+            }else {
+                $('#illegalData').html(data.illegalData);
+            }
         }
 
         //注销
         $("#logout").click(function () {
-            //清空sessionStorage
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("headAccountName");
-            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
     });

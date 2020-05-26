@@ -119,5 +119,16 @@
         where image_id = #{imageId,jdbcType=VARCHAR}
     </delete>
 
+    <!--获取图片大小-->
+    <select id="selectSize" parameterType="com.entity.Condition" resultType="java.lang.String">
+        select image_size
+        from image
+        where
+        1 = 1
+        <if test="accountId != '' and accountId != null">
+            and account_id = #{accountId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
 
 </mapper>

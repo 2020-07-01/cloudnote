@@ -1,6 +1,6 @@
 package com.mapper;
 
-import com.entity.Account;
+import com.entity.account.Account;
 import com.entity.Condition;
 import org.springframework.stereotype.Repository;
 
@@ -35,8 +35,5 @@ public interface AccountMapper {
 
     //获取活跃用户
     Integer findAliveAccountByCondition(Condition condition);
-
-
-
 
 }

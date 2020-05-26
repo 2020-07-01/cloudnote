@@ -1,6 +1,6 @@
 package com.entity.admin;
 
-import com.entity.Account;
+import com.entity.account.Account;
 import lombok.Data;
 
 /**

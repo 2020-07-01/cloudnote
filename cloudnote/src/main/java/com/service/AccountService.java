@@ -1,8 +1,7 @@
 package com.service;
 
-import com.entity.Account;
+import com.entity.account.Account;
 import com.entity.Condition;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,5 @@ public interface AccountService {
 
     //获取活跃用户
     Integer findAliveAccountByCondintion(Condition condition);
-
-
 }
 

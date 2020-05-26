@@ -1,8 +1,5 @@
 package com.interceptor;
 
-import com.Util.TokenUtils;
-import com.alibaba.fastjson.JSON;
-
 import com.cache.CacheService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +55,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         //检查有没有需要用户权限的注解
         if (method.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
-            if (userLoginToken.required()) {
+            if (userLoginToken.required()) { //如果为true
                 //获取token中的accountId
                 String accountId = tokenUtil.getAccountIdByToken(token);
                 //验证是否为空
@@ -71,9 +68,14 @@ public class LoginInterceptor implements HandlerInterceptor {
                             return true;
                         }
                     }
+                } else {
+                    response.sendRedirect("/login");
+                    log.info("token验证失败，请重新登录!");
                 }
             }
         }
+        response.sendRedirect("/login");
+        log.info("token验证失败，请重新登录!");
         return false;
     }
 }

@@ -31,7 +31,24 @@
         .layui-form-item {
         }
 
+        .footer {
+            padding: 30px 0;
+            line-height: 30px;
+            text-align: center;
+            font-weight: 300;
+        }
+
+        .footer a {
+            padding: 0 5px;
+        }
     </style>
+
+    <script>
+        //在加载页面之前先判断客户端的是否存在Token
+        if (getLocalStorage("token") == null) {
+            window.location.href = "/login"; //进入登录界面
+        }
+    </script>
 </head>
 
 <body>
@@ -87,8 +104,8 @@
                     <a href="javascript:;"><i class="layui-icon layui-icon-set"></i> 系统设置</a>
                     <dl class="layui-nav-child" style="padding-left: 15px">
                         <dd><a href="#" id="toInformationPage"><i class="layui-icon layui-icon-user"></i> 用户设置</a></dd>
-                        <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a>
-                        </dd>
+                        <dd><a href="#" id="toResetPasswordPage"><i class="layui-icon layui-icon-password"></i> 修改密码</a></dd>
+                        <dd><a href="#" id="feedback"><i class="layui-icon layui-icon-survey"></i> 意见反馈</a></dd>
                         <dd><a href="#" id="logout"><i class="layui-icon layui-icon-prev"></i> 注销登录</a></dd>
                     </dl>
                 </li>
@@ -209,9 +226,13 @@
     </div>
 
     <!-- 底部固定区域 -->
-    <div class="layui-footer layui-bg-black">
+    <div class="layui-footer footer">
         <div class="layui-main">
-            <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: #fffbf0;">苏ICP备19045217号</a>
+            <p>
+                <a href="javascript:void(0);">云笔记</a>
+                <a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">苏ICP备19045217号</a>
+                <a href="javascript:void(0);">联系邮箱:2422321558@qq.com</a>
+            </p>
         </div>
     </div>
 </div>
@@ -219,7 +240,8 @@
 
 <script th:inline="none">
 
-    var token = sessionStorage.getItem("token");
+
+    var token = getLocalStorage("token");
 
     var globalNote = "";
 
@@ -297,8 +319,8 @@
                 url: "/account/getHeadData.json",
                 success: function (result) {
                     if (result.code == 1) {
-                        sessionStorage.setItem("headAccountName", result.data.accountName);
-                        sessionStorage.setItem("headImageUrl", result.data.headImageUrl)
+                        localStorage.setItem("headAccountName", result.data.accountName);
+                        localStorage.setItem("headImageUrl", result.data.headImageUrl)
                         $('#headImage').attr('src', result.data.headImageUrl);
                         $('#headAccountName').html(result.data.accountName);
                     } else {
@@ -836,10 +858,6 @@
         }
 
         $("#logout").click(function () {
-            //清空sessionStorage
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("headAccountName");
-            sessionStorage.removeItem("headImageUrl");
             logout(token);
         })
 
