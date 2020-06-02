@@ -21,11 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,8 +86,8 @@ public class AccountController {
         JSONObject jsonObject = JSON.parseObject(jsonParam);
         Result result;
         try {
-            if (check1(jsonParam)) {//验证码正确
-                //核对密码是否正确
+            if (checkSecurity(jsonParam)) {//验证码正确
+                //核对密码是否正确，前端会对密码进行判空处理
                 String accountPassword = jsonObject.getString("accountPassword");
                 String confirmPassword = jsonObject.getString("confirmPassword");
                 if (!accountPassword.equals(confirmPassword)) {
@@ -99,7 +97,6 @@ public class AccountController {
                     //两次密码一致
                     String email = jsonObject.getString("email");
                     String accountName = jsonObject.getString("accountName");
-
                     Account account = new Account();
                     String accountId = UUIDUtils.getUUID();
                     account.setAccountId(accountId);
@@ -108,7 +105,7 @@ public class AccountController {
                     String password = aesUtils.encrypt(accountPassword.getBytes("UTF-8"), accountId.getBytes("UTF-8"));
                     account.setAccountPassword(password);
                     account.setEmail(email);
-                    account.setHeadImageUrl("http://t.cn/RCzsdCq");
+                    account.setHeadImageUrl("https://001-bucket.oss-cn-shanghai.aliyuncs.com/common/title.gif");//设置默认头像
                     account.setIllegalData("");
                     Map<Boolean, String> map = accountService.insert(account);
                     if (StringUtils.isNotEmpty(map.get(true))) {
@@ -117,14 +114,52 @@ public class AccountController {
                         result = new Result(false, map.get(false));
                     }
                 }
-
             } else {
                 //验证码错误
                 result = new Result(false, Constant.security_code_message_1);
             }
         } catch (Exception e) {
             log.error("用户注册异常:", new Throwable(e));
-            result = new Result(false, "FAILURE");
+            result = new Result(false, Constant.register_message_2);
+        }
+        Json.toJson(result, response);
+    }
+
+
+    /**
+     * 用户(邮箱)注册->发送验证码
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     * @return
+     */
+    @PassToken
+    @RequestMapping(value = "send_security_code1.json")
+    public void securityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        Result result;
+        JSONObject jsonObject = JSON.parseObject(jsonParam);
+        String emailAddress = jsonObject.getString("emailAddress");
+        //验证邮箱
+        Map<String, String> map = accountService.findUerByEmail(emailAddress);
+        if (StringUtils.isNotEmpty(map.get("email_5"))) {//邮箱未注册
+            //生成验证码
+            String securityCode = random(6);
+            //获取验证码的ASCII值
+            String securityCodeASCII = stringToAscii(securityCode);
+            try {
+                String content = "【<span style=\"font-weight: bold\">云笔记</span>】您正在进行云笔记注册，验证码<span style=\"font-size: 20px\">" + securityCode + "</span>，请在10分钟内按页面提示提交验证码，如非本人操作请忽略。<br><span style=\"color: #645f66;\">&nbsp;提示：请勿将验证码泄露于他人</span>";
+                mailService.sendSecurityCode(Constant.email_address_1, emailAddress, Constant.subject_1, content);
+                //将验证码传送到前端
+                result = new Result(true, Constant.email_message_1, securityCodeASCII);
+            } catch (Exception e) {
+                log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
+                result = new Result(false, Constant.email_message_2);
+            }
+        } else if (StringUtils.isNotEmpty(map.get("email_3"))) {
+            result = new Result(false, Constant.email_message_3);
+        } else {
+            result = new Result(false, Constant.email_message_2);
         }
         Json.toJson(result, response);
     }
@@ -199,43 +234,6 @@ public class AccountController {
 
 
     /**
-     * 注册->发送验证码
-     *
-     * @param jsonParam
-     * @param request
-     * @param response
-     * @return
-     */
-    @PassToken
-    @RequestMapping(value = "send_security_code1.json")
-    public void securityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
-        Result result;
-        JSONObject jsonObject = JSON.parseObject(jsonParam);
-        String emailAddress = jsonObject.getString("emailAddress");
-        //验证邮箱
-        Map<String, String> map = accountService.findUerByEmail(emailAddress);
-        if (StringUtils.isNotEmpty(map.get("email_5"))) {//邮箱未注册
-            //生成验证码
-            String securityCode = random(6);
-            //获取验证码的ASCII值
-            String securityCodeASCII = stringToAscii(securityCode);
-            try {
-                mailService.sendSecurityCode(emailAddress, securityCode);
-                //将验证码传送到前端
-                result = new Result(true, Constant.email_message_1, securityCodeASCII);
-            } catch (Exception e) {
-                log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
-                result = new Result(false, Constant.email_message_2);
-            }
-        } else if (StringUtils.isNotEmpty(map.get("email_3"))) {
-            result = new Result(false, Constant.email_message_3);
-        } else {
-            result = new Result(false, Constant.email_message_2);
-        }
-        Json.toJson(result, response);
-    }
-
-    /**
      * 更换邮箱->旧邮箱发送验证码
      *
      * @param jsonParam
@@ -254,7 +252,8 @@ public class AccountController {
         //获取验证码的ASCII值
         String securityCodeASCII = stringToAscii(securityCode);
         try {
-            mailService.sendSecurityCode(emailAddress, securityCode);
+            String content = "【<span style=\"font-weight: bold\">云笔记</span>】您正在进行邮箱换绑，验证码<span style=\"font-size: 20px\">" + securityCode + "</span>，请在1分钟内按页面提示提交验证码，如非本人操作请忽略。<br><span style=\"color: #645f66;\">&nbsp;提示：请勿将验证码泄露于他人</span>";
+            mailService.sendSecurityCode(Constant.email_address_1, emailAddress, Constant.subject_1, content);
             //将验证码传送到前端
             result = new Result(true, Constant.email_message_1, securityCodeASCII);
         } catch (Exception e) {
@@ -285,8 +284,8 @@ public class AccountController {
             //对邮箱进行判断
             Map<String, String> map = accountService.findUerByEmail(emailAddress);
             if (map.get("email_5") != null) {
-                //邮箱发送
-                mailService.sendSecurityCode(emailAddress, securityCode);
+                String content = "【<span style=\"font-weight: bold\">云笔记</span>】您正在进行邮箱换绑，验证码<span style=\"font-size: 20px\">" + securityCode + "</span>，请在1分钟内按页面提示提交验证码，如非本人操作请忽略。<br><span style=\"color: #645f66;\">&nbsp;提示：请勿将验证码泄露于他人</span>";
+                mailService.sendSecurityCode(Constant.email_address_1, emailAddress, Constant.subject_1, content);
                 //将验证码传送到前端
                 result = new Result(true, Constant.email_message_1, securityCodeASCII);
 
@@ -299,7 +298,6 @@ public class AccountController {
             log.error("验证码发送失败:" + e.getMessage(), new Throwable(e));
             result = new Result(false, Constant.email_message_2);
         }
-
         Json.toJson(result, response);
     }
 
@@ -313,34 +311,6 @@ public class AccountController {
     @UserLoginToken
     @RequestMapping(value = "/check_security_code.json")
     public void checkSecurityCode(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
-
-        Result result;
-        JSONObject jsonObject = JSON.parseObject(jsonParam);
-        String firstSecurityCodeAscii = jsonObject.getString("firstSecurityCode");
-        if (StringUtils.isNotEmpty(firstSecurityCodeAscii)) {
-            String firstSecurityCode = ascillToString(firstSecurityCodeAscii);
-            String secondSecurityCode = jsonObject.getString("secondSecurityCode");
-            if (firstSecurityCode.equals(secondSecurityCode)) {
-                result = new Result(true, Constant.security_code_message_2);
-            } else {
-                result = new Result(false, Constant.security_code_message_1);
-            }
-        } else {
-            result = new Result(false, Constant.security_code_message_1);
-        }
-        Json.toJson(result, response);
-    }
-
-    /**
-     * 核对验证码是否一致  不需要核对身份
-     *
-     * @param jsonParam
-     * @param request
-     * @param response
-     */
-    @PassToken
-    @RequestMapping(value = "/check_security_code1.json")
-    public void checkSecurityCode1(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
 
         Result result;
         JSONObject jsonObject = JSON.parseObject(jsonParam);
@@ -396,7 +366,6 @@ public class AccountController {
         }
         Json.toJson(result, response);
     }
-
 
     //获取字符串的ASCII值，逗号进行分隔
     private String stringToAscii(String string) {
@@ -486,7 +455,8 @@ public class AccountController {
             } else {
                 //生成6位验证码
                 String securityCode = random(6);
-                mailService.sendSecurityCode(email, securityCode);
+                String content = "【<span style=\"font-weight: bold\">云笔记</span>】您正在找回密码，验证码<span style=\"font-size: 20px\">" + securityCode + "</span>，请在1分钟内按页面提示提交验证码，如非本人操作请忽略。<br><span style=\"color: #645f66;\">&nbsp;提示：请勿将验证码泄露于他人</span>";
+                mailService.sendSecurityCode(Constant.email_address_1, email, Constant.subject_1, content);
                 String securityCodeAscii = stringToAscii(securityCode);
                 HashMap data = new HashMap();
                 data.put("securityCode", securityCodeAscii);
@@ -778,7 +748,8 @@ public class AccountController {
             Map<String, String> map = accountService.findUerByEmail(emailAddress);
             //如果邮箱不存在
             if (StringUtils.isNotEmpty(map.get("email_3"))) {
-                mailService.sendSecurityCode(emailAddress, securityCode);
+                String content = "【<span style=\"font-weight: bold\">云笔记</span>】您正在进行邮箱登录，验证码<span style=\"font-size: 20px\">" + securityCode + "</span>，请在1分钟内按页面提示提交验证码，如非本人操作请忽略。<br><span style=\"color: #645f66;\">&nbsp;提示：请勿将验证码泄露于他人</span>";
+                mailService.sendSecurityCode(Constant.email_address_1, emailAddress, Constant.subject_1, content);
                 //将验证码传送到前端
                 result = new Result(true, Constant.email_message_1, securityCodeASCII);
             } else if (StringUtils.isNotEmpty(map.get("email_5"))) { //如果邮箱不存在
@@ -814,7 +785,7 @@ public class AccountController {
         String email = jsonObject.getString("email");
         try {
             //核对验证码
-            if (check1(jsonParam)) {//验证码核对通过
+            if (checkSecurity(jsonParam)) {//验证码核对通过
                 Condition condition = new Condition();
                 condition.setEmail(email);
                 Account account = accountService.getOneAccount(condition);
@@ -859,12 +830,12 @@ public class AccountController {
     }
 
     /**
-     * 邮箱登录/用户注册 核对验证码
+     * 邮箱登录/用户注册->核对验证码
      *
      * @param jsonParam
      * @return
      */
-    private boolean check1(String jsonParam) {
+    private boolean checkSecurity(String jsonParam) {
         JSONObject jsonObject = JSON.parseObject(jsonParam);
         String firstSecurityCodeAscii = jsonObject.getString("firstSecurityCode");
         if (StringUtils.isNotEmpty(firstSecurityCodeAscii)) {
@@ -882,6 +853,7 @@ public class AccountController {
 
     /**
      * 验证Token是否正确
+     *
      * @param request
      * @param response
      */

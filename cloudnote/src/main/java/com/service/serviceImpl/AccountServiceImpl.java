@@ -37,14 +37,10 @@ public class AccountServiceImpl implements AccountService {
     public Map insert(Account account) {
         Map<Boolean, String> result = new HashMap();
         try {
-            Condition conditionEmail = new Condition();
-            conditionEmail.setEmail(account.getEmail());
+            //判断用户名是否已经注册，在发送验证码时已对邮箱是否已经注册判断
             Condition conditionAccountName = new Condition();
             conditionAccountName.setAccountName(account.getAccountName());
-            List<Account> accountList = accountMapper.findAccountByCondition(conditionEmail);
-            if (CollectionUtils.isNotEmpty(accountList)) {
-                result.put(false, Constant.email_message_3);
-            } else if (CollectionUtils.isNotEmpty(accountMapper.findAccountByCondition(conditionAccountName))) {
+            if (CollectionUtils.isNotEmpty(accountMapper.findAccountByCondition(conditionAccountName))) {
                 result.put(false, Constant.register_message_3);
             } else {
                 accountMapper.insertAccount(account);

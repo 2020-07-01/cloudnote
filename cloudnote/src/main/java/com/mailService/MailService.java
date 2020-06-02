@@ -11,8 +11,9 @@ import java.util.List;
 
 public interface MailService {
 
+
     //发送验证码
-    boolean sendSecurityCode(String receiver, String context);
+    boolean sendSecurityCode(String form, String receiver, String subject, String context);
 
     //发送日程提醒
     boolean sendSchedule(String receiver, String title, String content);
