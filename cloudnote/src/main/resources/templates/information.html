@@ -4,7 +4,7 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>云笔记</title>
-    <link rel="icon" href="https://001-bucket.oss-cn-shanghai.aliyuncs.com/admin/title.gif" type="image/x-icon"/>
+    <link rel="icon" href="https://001-bucket.oss-cn-shanghai.aliyuncs.com/common/title.gif" type="image/x-icon"/>
     <!--引入layui-->
     <link rel='stylesheet' type='text/css' media='screen' href='../static/layui-v2.5.5/layui/css/layui.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../static/cropper/cropper.css'>
@@ -133,6 +133,7 @@
                                                                class="layui-input"
                                                                style="border: none;font-size: 30px;color: #645f66;">
                                                     </div>
+
                                                 </div>
                                                 <div class="layui-form-item" style="margin-bottom: 10px;">
                                                     <label class="layui-form-label" style="width: 50px">性别</label>
@@ -476,6 +477,15 @@
                 , success: function () {
 
                 }
+                , cancel: function (index, layero) {
+                    //关闭回调函数
+                    $("#new").css("display", "none");
+                    $("#old").css("display", "block");
+                    //清空
+                    $("#oldSecurityCode").val("");
+                    $("#newSecurityCode").val("");
+                    layer.close(index);
+                }
             })
         })
 
@@ -483,6 +493,16 @@
          * 旧的邮箱发送验证码
          */
         $("#oldSecurityCodeButton").click(function () {
+            /**
+             * 为了防止连续点击发送多个验证码
+             * 在第一次点击之后设置按钮不可用
+             * 延迟3秒之后设置可用
+             */
+            $('#oldSecurityCodeButton').attr("disabled", "disabled");
+            setTimeout(function () {
+                $('#oldSecurityCodeButton').removeAttr("disabled");
+            }, 3000);
+
             var data =
                 {
                     "emailAddress": globalObject.email
@@ -546,6 +566,17 @@
 
         //新邮箱发送验证码
         form.on('submit(newSecurityCodeButton)', function (data) {
+
+            /**
+             * 为了防止连续点击发送多个验证码
+             * 在第一次点击之后设置按钮不可用
+             * 延迟3秒之后设置可用
+             */
+            $('#newSecurityCodeButton').attr("disabled", "disabled");
+            setTimeout(function () {
+                $('#newSecurityCodeButton').removeAttr("disabled");
+            }, 3000);
+
             var data =
                 {
                     "emailAddress": $('#newEmail').val()
@@ -586,6 +617,7 @@
                     "email": $('#newEmail').val()
                 };
             var jsonData = JSON.stringify(data);
+            alert(jsonData);
             $.ajax({
                 type: "post",
                 contentType: "application/json",

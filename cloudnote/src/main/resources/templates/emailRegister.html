@@ -31,7 +31,7 @@
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon iconfont1 layui-icon-extendyoujian-"
                        for="email"></label>
-                <input type="text" name="email" id="email" lay-verify="email" placeholder="邮箱"
+                <input type="text" name="email" id="email" lay-verify="email" placeholder="邮箱" autocomplete="on"
                        class="layui-input">
             </div>
             <div class="layui-form-item">
@@ -145,6 +145,16 @@
          * 发送验证码
          */
         $("#send").click(function () {
+            /**
+             * 为了防止连续点击发送多个验证码
+             * 在第一次点击之后设置按钮不可用
+             * 延迟3秒之后设置可用
+             */
+            $('#send').attr("disabled", "disabled");
+            setTimeout(function () {
+                $('#send').removeAttr("disabled");
+            }, 3000);
+
             var email = $('#email').val();
             //正则表达式验证邮箱格式
             if (!/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)) {
@@ -178,7 +188,7 @@
 
         //读秒操作
         function countdown() {
-            var countdown = 60;  //设置时间60秒
+            var countdown = 60 * 10 ; //设置时间10分钟
             $("#email").attr("disabled", true);
             $("#show").css('display', 'block');
             $("#send").css('display', 'none');
@@ -188,7 +198,7 @@
                     clearInterval(timer);
                     $("#show").css('display', 'none');
                     $("#send").css('display', 'block');
-                    countdown = 60;
+                    countdown = 60 * 10;
                     $("#email").attr("disabled", false);
                     //删除客户端的验证码
                     localStorage.removeItem("cloudNoteSecurityCode");

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>云笔记</title>
-    <link rel="icon" href="https://001-bucket.oss-cn-shanghai.aliyuncs.com/admin/title.gif" type="image/x-icon"/>
+    <link rel="icon" href="https://001-bucket.oss-cn-shanghai.aliyuncs.com/common/title.gifautocomplete" type="image/x-icon"/>
     <!--引入layui-->
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/layui.css" type='text/css'>
     <link rel='stylesheet' media='screen' href="../static/layui-v2.5.5/layui/css/login.css" type='text/css'>
@@ -30,6 +30,7 @@
                 type: "post",
                 contentType: "application/json",
                 dataType: 'json',
+                async: false, //禁止异步加载
                 headers: {'Content-Type': 'application/json;charset=utf8', 'token': token},
                 url: "/account/check_token.json",
                 success: function (result) {
@@ -58,7 +59,7 @@
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-username"
                        for="accountName"></label>
-                <input type="text" name="accountName" id="accountName" lay-verify="required"
+                <input type="text" name="accountName" id="accountName" lay-verify="required" autocomplete="off"
                        placeholder="用户名" maxlength="10"
                        class="layui-input">
             </div>
@@ -82,6 +83,7 @@
                 <a href="/email_login"><i class="iconfont layui-icon-extendyoujian- "></i></a>
                 <a href="/register" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
             </div>
+
         </div>
     </div>
 
