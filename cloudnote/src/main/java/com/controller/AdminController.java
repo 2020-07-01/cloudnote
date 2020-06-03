@@ -331,12 +331,13 @@ public class AdminController {
             emailTheme = "【云笔记】";
         }
         String emailContent = jsonObject.getString("emailContent");
+        String emailContentHtml = emailContent.replaceAll("\n","<br>").replaceAll(" ","&nbsp;");
         if (StringUtils.isEmpty(emailContent)) {
             result = new Result(false, "邮件正文不能为空!");
         } else if (StringUtils.isEmpty(emails)) {
             result = new Result(false, "请选择用户!");
         } else {
-            if (mailService.sendEmailsByAdmin(emailsList, emailTheme, emailContent)) {
+            if (mailService.sendEmailsByAdmin(emailsList, emailTheme, emailContentHtml)) {
                 result = new Result(true, "SUCCESS");
             } else {
                 result = new Result(false, "FAILURE");

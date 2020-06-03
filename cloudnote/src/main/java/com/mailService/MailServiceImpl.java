@@ -65,6 +65,7 @@ public class MailServiceImpl implements MailService {
 
     /**
      * 发送验证码
+     *
      * @param form
      * @param receiver
      * @param subject
@@ -79,7 +80,7 @@ public class MailServiceImpl implements MailService {
         try {
             message.setFrom(Constant.email_address_1);
             message.setRecipients(Message.RecipientType.TO, receiver);//设置邮件收信人
-            message.setSubject("验证码");
+            message.setSubject(subject);
             message.setContent(context, "text/html;charset=utf-8");
             Transport transport = session.getTransport();
             transport.send(message);
@@ -95,9 +96,36 @@ public class MailServiceImpl implements MailService {
         return false;
     }
 
+
+    /**
+     * 管理员群发邮件
+     * @param receiverList
+     * @param subject
+     * @param content
+     * @return
+     */
     @Override
-    public boolean sendEmailsByAdmin(List<String> receiverList, String title, String content) {
-        return false;
+    public boolean sendEmailsByAdmin(List<String> receiverList, String subject, String content) {
+
+        Session session = initSession();
+        MimeMessage message = new MimeMessage(session);
+        try {
+            message.setFrom(Constant.email_address_1);
+            message.setSubject(subject);
+            message.setContent(content, "text/html;charset=utf-8");
+            Transport transport = session.getTransport();
+
+            if (CollectionUtils.isNotEmpty(receiverList)) {
+                for (String emailAddress : receiverList) {
+                    message.setRecipients(Message.RecipientType.TO, emailAddress);//设置邮件收信人
+                    transport.send(message);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), new Throwable(e));
+            return false;
+        }
+        return true;
     }
 
    /* //日程提醒
@@ -123,12 +151,7 @@ public class MailServiceImpl implements MailService {
         mainMessage.setFrom("2422321558@qq.com");
         mainMessage.setSubject(title);
         mainMessage.setText(content);
-        if (CollectionUtils.isNotEmpty(receiverList)) {
-            for (String emailAddress : receiverList) {
-                mainMessage.setTo(emailAddress);
-                javaMailSender.send(mainMessage);
-            }
-        }
+
         return true;
     }*/
 }

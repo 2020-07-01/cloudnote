@@ -292,7 +292,7 @@
                 <div class="layui-row">
                     <div class="layui-col-xs7">
                         <input type="text" name="oldSecurityCode" id="oldSecurityCode" lay-verify="required"
-                               placeholder="请输入6位数验证码" class="layui-input">
+                               placeholder="请输入6位数验证码" class="layui-input" autocomplete="off">
                     </div>
 
                     <div class="layui-col-xs5">
@@ -334,7 +334,7 @@
             <div class="layui-form-item" style="margin-bottom: 18px">
                 <div class="layui-row">
                     <div class="layui-col-xs7">
-                        <input type="text" name="newSecurityCode" id="newSecurityCode"
+                        <input type="text" name="newSecurityCode" id="newSecurityCode" autocomplete="off"
                                placeholder="请输入6位数验证码" class="layui-input">
                     </div>
 
@@ -572,9 +572,9 @@
              * 在第一次点击之后设置按钮不可用
              * 延迟3秒之后设置可用
              */
-            $('#newSecurityCodeButton').attr("disabled", "disabled");
+            $('#send').attr("disabled", "disabled");
             setTimeout(function () {
-                $('#newSecurityCodeButton').removeAttr("disabled");
+                $('#send').removeAttr("disabled");
             }, 3000);
 
             var data =

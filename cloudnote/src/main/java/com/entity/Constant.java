@@ -107,7 +107,8 @@ public final class Constant {
 
     public final static String email_address_1 = "2422321558@qq.com";
 
-    public final static String subject_1 = "云笔记";
+    public final static String subject_1 = "验证码";
 
+    public final static String subject_2 = "云笔记";
 
 }
