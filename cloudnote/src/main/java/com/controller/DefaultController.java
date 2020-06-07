@@ -109,4 +109,10 @@ public class DefaultController {
         return "recycleBin";
     }
 
+    @UserLoginToken
+    @RequestMapping(value = "/feedback_page")
+    public String toFeedbackPage(){
+        return "feedbackPage";
+    }
+
 }

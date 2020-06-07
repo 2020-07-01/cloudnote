@@ -43,6 +43,7 @@ function toRecycleBinPage(token) {
     window.location.href = "/recycle_bin?token=" + token;
 }
 
+
 //存储信息
 function setLocalStorage(key, value) {
     //获取当前时间

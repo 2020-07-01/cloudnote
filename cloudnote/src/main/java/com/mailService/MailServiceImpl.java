@@ -63,11 +63,11 @@ public class MailServiceImpl implements MailService {
      * @param form
      * @param receiver
      * @param subject
-     * @param context
+     * @param content
      * @return
      */
     @Override
-    public boolean sendSecurityCode(String form, String receiver, String subject, String context) {
+    public boolean sendSecurityCode(String form, String receiver, String subject, String content) {
 
         Session session = initSession();
         MimeMessage message = new MimeMessage(session);
@@ -75,7 +75,7 @@ public class MailServiceImpl implements MailService {
             message.setFrom(Constant.email_address_1);
             message.setRecipients(Message.RecipientType.TO, receiver);//设置邮件收信人
             message.setSubject(subject);
-            message.setContent(context, "text/html;charset=utf-8");
+            message.setContent(content, "text/html;charset=utf-8");
             Transport transport = session.getTransport();
             transport.send(message);
         } catch (Exception e) {
@@ -88,9 +88,9 @@ public class MailServiceImpl implements MailService {
     /**
      * 日程发送邮件
      *
-     * @param receiver  接收者
-     * @param title     日程标题
-     * @param content   内容
+     * @param receiver 接收者
+     * @param title    日程标题
+     * @param content  内容
      * @return
      */
     @Override
@@ -145,19 +145,32 @@ public class MailServiceImpl implements MailService {
         return true;
     }
 
-   /* //日程提醒
+    /**
+     * 发送意见反馈
+     *
+     * @param receiver
+     * @param subject
+     * @param content
+     * @return
+     */
     @Override
-    public boolean sendSchedule(String receiver, String title, String content) {
+    public boolean sendFeedback(String receiver, String subject, String content) {
 
-        SimpleMailMessage mainMessage = new SimpleMailMessage();
-        mainMessage.setFrom("2422321558@qq.com");
-        mainMessage.setTo(receiver);
-        mainMessage.setSubject("【云笔记】：您有新的活动即将开始:" + title);
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("活动时间：");
-        stringBuffer.append("活动内容：" + content);
-        mainMessage.setText(content);
-        javaMailSender.send(mainMessage);
+        Session session = initSession();
+        MimeMessage message = new MimeMessage(session);
+        try {
+            message.setFrom(Constant.email_address_1);
+            message.setRecipients(Message.RecipientType.TO, receiver);//设置邮件收信人
+            message.setSubject(subject);
+            message.setContent(content, "text/html;charset=utf-8");
+            Transport transport = session.getTransport();
+            transport.send(message);
+        } catch (Exception e) {
+            log.error(e.getMessage(), new Throwable(e));
+            return false;
+        }
         return true;
-    }*/
+    }
+
+
 }

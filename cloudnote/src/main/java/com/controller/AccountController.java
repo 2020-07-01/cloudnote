@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -870,4 +871,82 @@ public class AccountController {
         Json.toJson(result, response);
     }
 
+    /**
+     * 意见反馈
+     *
+     * @param jsonParam
+     * @param request
+     * @param response
+     */
+    @PassToken
+    @RequestMapping(value = "/feedback.json")
+    public void feedback(@RequestBody String jsonParam, HttpServletRequest request, HttpServletResponse response) {
+        JSONObject jsonObject;
+        Result result = null;
+        try {
+            jsonObject = JSON.parseObject(jsonParam);
+            String token = request.getHeader("token");
+            String accountId = tokenService.getAccountIdByToken(token);
+            Condition condition = new Condition();
+            condition.setAccountId(accountId);
+            Account account = accountService.getOneAccount(condition);
+            Set<String> key = jsonObject.keySet();
+            //如果key的数量为1，并且其他信息为空时直接返回
+            if (key.size() == 1 && StringUtils.isEmpty(jsonObject.getString("feedback_9"))) {
+                result = new Result(true, Constant.feedback_1);
+            } else {
+                String content = "<span style=\"font-size: 16px\">" + "用户" + "<span style=\"font-size: 16px;font-weight: bold\">" + account.getAccountName()  + "</span>" +"(" +  account.getEmail()+ ")" + "意见反馈信息：" + "</span>";
+                int i = 1;
+                for (String p : key) {
+                    content = content + "<br>" + "问题" + i++ + "：";
+                    switch (p) {
+                        case "feedback_1":
+                            content = content + "笔记丢失";
+                            break;
+                        case "feedback_2":
+                            content = content + "笔记无法收藏";
+                            break;
+                        case "feedback_3":
+                            content = content + "无法添加笔记";
+                            break;
+                        case "feedback_4":
+                            content = content + "文件丢失";
+                            break;
+                        case "feedback_5":
+                            content = content + "无法上传文件";
+                            break;
+                        case "feedback_6":
+                            content = content + "无法下载文件";
+                            break;
+                        case "feedback_7":
+                            content = content + "无法创建日程";
+                            break;
+                        case "feedback_8":
+                            content = content + "日程提醒失败";
+                            break;
+                        case "feedback_9":
+                            if (StringUtils.isNotBlank(jsonObject.getString("feedback_9"))) {
+                                content = content + jsonObject.getString("feedback_9");
+                            }
+                            break;
+                        default:
+                            continue;
+                    }
+                }
+                String receiver = Constant.email_address_1;
+                String subject = "【云笔记】：用户意见反馈";
+                content = content.substring(0, content.length() - 4);
+                if (mailService.sendFeedback(receiver, subject, content)) {
+                    result = new Result(true, Constant.SUCCESS);
+                } else {
+                    result = new Result(true, Constant.FAILURE);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), new Throwable(e));
+            result = new Result(true, Constant.FAILURE);
+        }
+
+        Json.toJson(result, response);
+    }
 }
