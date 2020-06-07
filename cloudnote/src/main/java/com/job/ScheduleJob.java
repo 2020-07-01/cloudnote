@@ -70,6 +70,11 @@ public class ScheduleJob {
                 String receiver = taskData.getEmail();
                 String title = taskData.getScheduleTitle();
                 String content = taskData.getScheduleContent();
+                 /*
+                 对标题、内容、时间格式进行封装
+                  */
+                title = "【云笔记日程提醒】" + title;
+                content = "<span style=\"font-size: 16px\">开始时间：</span>"+startTime +"<br>"+"<span style=\"font-size: 16px\">内容：</span>"+content;
                 mailService.sendSchedule(receiver, title, content);
                 //存储id
                 listSchedule.add(new Schedule(taskData.getScheduleId(), Constant.NO));
@@ -79,7 +84,4 @@ public class ScheduleJob {
         }
         log.info(startTime + "刷新日程:SUCCESS");
     }
-
-
-
 }
