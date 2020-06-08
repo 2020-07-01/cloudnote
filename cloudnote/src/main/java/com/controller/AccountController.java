@@ -895,10 +895,13 @@ public class AccountController {
             if (key.size() == 1 && StringUtils.isEmpty(jsonObject.getString("feedback_9"))) {
                 result = new Result(true, Constant.feedback_1);
             } else {
-                String content = "<span style=\"font-size: 16px\">" + "用户" + "<span style=\"font-size: 16px;font-weight: bold\">" + account.getAccountName()  + "</span>" +"(" +  account.getEmail()+ ")" + "意见反馈信息：" + "</span>";
+                //进行升序排序
+                ArrayList<String> keyList = new ArrayList<>(key);
+                Collections.sort(keyList);
+                String content = "<span style=\"font-size: 16px\">" + "用户" + "<span style=\"font-size: 16px;font-weight: bold\">" + account.getAccountName() + "</span>" + "(" + account.getEmail() + ")" + "意见反馈信息：" + "</span>";
                 int i = 1;
-                for (String p : key) {
-                    content = content + "<br>" + "问题" + i++ + "：";
+                for (String p : keyList) {
+                    content = content + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + "问题" + i++ + "：";
                     switch (p) {
                         case "feedback_1":
                             content = content + "笔记丢失";
