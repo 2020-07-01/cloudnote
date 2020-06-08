@@ -95,7 +95,6 @@
 
     </style>
 
-
     <script>
         //在加载页面之前先判断客户端的是否存在Token
         if (getLocalStorage("token") == null) {
@@ -222,9 +221,9 @@
                             </div>
 
                             <div class="layui-card-body layuiadmin-card-list">
-                                <textarea id="emailContent" class="layui-textarea"
+                                 <textarea id="emailContent" class="layui-textarea"
                                           placeholder="请输入邮件内容" maxlength="200"
-                                          style="resize: none;min-height:260px"></textarea>
+                                               style="resize: none;min-height:260px;"></textarea>
                             </div>
 
                         </div>
@@ -469,9 +468,9 @@
                 data: jsonData,
                 success: function (result) {
                     if (result.code == 1) {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 1});
                     } else {
-                        layer.msg(result.message);
+                        layer.msg(result.message, {icon: 2});
                     }
                 },
                 error: function () {

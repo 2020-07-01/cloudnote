@@ -15,9 +15,9 @@ public final class Constant {
 
     public final static String register_message_3 = "用户名已存在，请重新输入!";
 
-    public final static String SUCCESS = "success";
+    public final static String SUCCESS = "SUCCESS";
 
-    public final static String FAILURE = "failure";
+    public final static String FAILURE = "FAILURE";
 
     public final static String YES = "YES";
 
@@ -107,7 +107,10 @@ public final class Constant {
 
     public final static String email_address_1 = "2422321558@qq.com";
 
-    public final static String subject_1 = "云笔记";
+    public final static String subject_1 = "验证码";
 
+    public final static String subject_2 = "云笔记";
+
+    public final static String feedback_1 = "反馈信息不能为空!";
 
 }

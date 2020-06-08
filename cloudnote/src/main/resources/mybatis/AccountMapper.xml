@@ -150,7 +150,7 @@
     <select id="findAccountData" parameterType="com.entity.Condition" resultType="com.entity.account.Account"
             resultMap="baseMap">
         select
-        account_id,account_password,is_locked
+        account_id,account_password,is_locked,email,account_name,phone
         from account
         where
         1=1
@@ -159,6 +159,9 @@
         </if>
         <if test="email != null and email != ''">
             and email = #{email,jdbcType=VARCHAR}
+        </if>
+        <if test="accountId != null and accountId != ''">
+            and account_id = #{accountId,jdbcType=VARCHAR}
         </if>
     </select>
 
