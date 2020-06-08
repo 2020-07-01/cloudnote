@@ -655,17 +655,10 @@ public class AccountController {
     public void uploadHeadImage(@RequestParam(value = "file", required = false) MultipartFile headImage,
                                 HttpServletRequest request, HttpServletResponse response) throws IOException {
         Result result = null;
-        //图片审核
-        org.json.JSONObject jsonObject = baiDuUtils.checkImage(headImage.getBytes());
-        if (jsonObject == null) {
-            result = new Result(false, "FAILURE");
-        } else
-            //如果不合规
-            if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
-                JSONArray dataJSONArray = jsonObject.getJSONArray("data");
-                String msg = dataJSONArray.getJSONObject(0).getString("msg");
-                result = new Result(false, msg);
-            } else {
+
+        try {
+            //如果图片大于2M则不进行审核
+            if (headImage.getSize() > 1024 * 1024 * 2) {
                 String token = request.getHeader("token");
                 String accountId = tokenService.getAccountIdByToken(token);
                 String headName = random(5);
@@ -678,7 +671,36 @@ public class AccountController {
                 } else {
                     result = new Result(false, "上传失败!");
                 }
+            } else {
+                //图片审核
+                org.json.JSONObject jsonObject = baiDuUtils.checkImage(headImage.getBytes());
+                if (jsonObject == null) {
+                    result = new Result(false, "FAILURE");
+                } else
+                    //如果不合规
+                    if (jsonObject.getString("conclusion").equals(Constant.CONCLUSION_2)) {
+                        JSONArray dataJSONArray = jsonObject.getJSONArray("data");
+                        String msg = dataJSONArray.getJSONObject(0).getString("msg");
+                        result = new Result(false, msg);
+                    } else {
+                        String token = request.getHeader("token");
+                        String accountId = tokenService.getAccountIdByToken(token);
+                        String headName = random(5);
+                        String imageType = headImage.getOriginalFilename().substring(headImage.getOriginalFilename().lastIndexOf(".") + 1);// 获取文件的类型
+                        String headPath = accountId + "/" + "headImage" + "/" + headName + "." + imageType;
+                        Map<String, String> ossMap = ossUtil.putObject(headImage.getBytes(), headPath);
+                        if (StringUtils.isNotEmpty(ossMap.get(Constant.FILE_IMAGE_URL))) {
+                            String url = ossMap.get(Constant.FILE_IMAGE_URL).substring(0, ossMap.get(Constant.FILE_IMAGE_URL).lastIndexOf("?"));
+                            result = new Result(true, "上传成功!", url);
+                        } else {
+                            result = new Result(false, "上传失败!");
+                        }
+                    }
             }
+        } catch (Exception e) {
+            log.error("头像上传失败!", new Throwable(e));
+            result = new Result(false, "上传失败!");
+        }
         Json.toJson(result, response);
     }
 

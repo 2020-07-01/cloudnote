@@ -42,7 +42,6 @@ public class ScheduleController {
 
     /**
      * 创建日程
-     * 同一天不能有两个相同的标题
      *
      * @param jsonString
      * @param request
